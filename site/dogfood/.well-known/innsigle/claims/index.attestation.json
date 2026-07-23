@@ -1,0 +1,53 @@
+{
+  "payload": {
+    "innsigle": "1",
+    "type": "https://innsigle.dev/claim/mash-bill/v1",
+    "issued_at": "2026-07-23T13:40:09Z",
+    "issuer": {
+      "id": "azgaard-dogfood",
+      "name": "Azgaard Dogfood",
+      "key_id": "ed25519:56a6f2f799318d5153b3ba9b5e955d3b",
+      "key_url": "./keys.json"
+    },
+    "subjects": [
+      {
+        "uri": "https://innsigle.local/dogfood/",
+        "digest": {
+          "alg": "sha256",
+          "value": "305c20001d1b30ba0b1e331fbae890dcdd94f509f962d4ad010d58d89352827d"
+        }
+      }
+    ],
+    "mash_bill": {
+      "schema_version": "1",
+      "composition": "model-primary",
+      "ingredients": [
+        {
+          "kind": "model",
+          "name": "Claude",
+          "role": "draft"
+        },
+        {
+          "kind": "tool",
+          "name": "sloptimizer",
+          "role": "rewrite"
+        },
+        {
+          "kind": "human",
+          "name": "operator",
+          "role": "structure-edit"
+        }
+      ],
+      "notes": "Dogfood page for Innsigle UC-AI-docs"
+    }
+  },
+  "payload_encoding": "json",
+  "signatures": [
+    {
+      "key_id": "ed25519:56a6f2f799318d5153b3ba9b5e955d3b",
+      "alg": "ed25519",
+      "sig": "w4At25LReDVHOf70O5qroCh1DZo_cLrrBhGPPLJMLKYsIobehzV19xj66l7cfXZXZvWjArhSt5c_xtvj8P9GDg",
+      "signed_at": "2026-07-23T13:40:09Z"
+    }
+  ]
+}

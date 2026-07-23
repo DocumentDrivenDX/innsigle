@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mash bill — Innsigle</title>
+  <meta name="description" content="Mash bill: composition states and ingredients for how work was made." />
+  <link rel="stylesheet" href="assets/css/site.css" />
+  <link rel="icon" href="assets/marks/innsigle-base.svg" type="image/svg+xml" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">
+        <img src="assets/marks/innsigle-base.svg" width="32" height="32" alt="" />
+        Innsigle
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="index.html">What it is</a>
+        <a href="mash-bill.html" aria-current="page">Mash bill</a>
+        <a href="verify.html">Verify</a>
+        <a href="marks.html">Marks</a>
+        <a href="non-goals.html">Non-goals</a>
+        <a href="dogfood/index.html">Dogfood</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <h1>Mash bill</h1>
+    <p class="lede">
+      The mash bill is the recipe of making—not a moral grade. Like a distiller’s grain bill:
+      ingredients and roles, not “good” vs “bad.”
+    </p>
+
+    <h2>Composition</h2>
+    <table>
+      <thead>
+        <tr><th>Value</th><th>When</th><th>Mark cue</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>human-authored</code></td>
+          <td>Humans produced the substantive work; models not primary authors</td>
+          <td>H</td>
+        </tr>
+        <tr>
+          <td><code>mixed</code></td>
+          <td>Material human and model authorship both present</td>
+          <td>M</td>
+        </tr>
+        <tr>
+          <td><code>model-primary</code></td>
+          <td>Model(s) produced most substantive content; humans may edit</td>
+          <td>A</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Ingredients</h2>
+    <p>Each line is a tool, model, or human role:</p>
+    <table>
+      <thead>
+        <tr><th>Field</th><th>Rule</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>kind</code></td><td><code>model</code> · <code>tool</code> · <code>human</code> · <code>other</code></td></tr>
+        <tr><td><code>name</code></td><td>e.g. Claude, sloptimizer, operator</td></tr>
+        <tr><td><code>role</code></td><td>e.g. draft, rewrite, structure-edit</td></tr>
+        <tr><td><code>version</code> / <code>uri</code></td><td>Optional</td></tr>
+      </tbody>
+    </table>
+
+    <div class="panel">
+      <h3>Edit is not origin</h3>
+      <p class="note" style="margin:0">
+        Running sloptimizer (or similar) on model output does <strong>not</strong> flip
+        <code>model-primary</code> to <code>human-authored</code>. List the tool as
+        <code>kind: tool</code>. Sounding less “AI” is prose quality, not composition.
+      </p>
+    </div>
+
+    <h2>Example (docs)</h2>
+    <pre><code>{
+  "schema_version": "1",
+  "composition": "model-primary",
+  "ingredients": [
+    { "kind": "model", "name": "Claude", "role": "draft" },
+    { "kind": "tool", "name": "sloptimizer", "role": "rewrite" },
+    { "kind": "human", "name": "operator", "role": "structure-edit" }
+  ]
+}</code></pre>
+
+    <p class="note">Normative schema: CONTRACT-001 and <code>docs/helix/02-design/schemas/</code> in the repo.</p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <a class="innsigle-footer-seal" href="index.html">
+        <img src="assets/marks/innsigle-base.svg" width="28" height="28" alt="" />
+        <span>
+          <strong>Innsigle</strong>
+          <span class="cue">Mash bill · not a detector</span>
+        </span>
+      </a>
+      <p><a href="https://github.com/DocumentDrivenDX/innsigle">Source</a></p>
+    </div>
+  </footer>
+</body>
+</html>

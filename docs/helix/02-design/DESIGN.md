@@ -149,8 +149,11 @@ Prefer a readable grotesque + mono for digests. Final faces open.
 
 | Surface | Model |
 |---------|-------|
-| Marketing / docs site | Top links: What it is, Mash bill, Verify, Mark pack, Non-goals |
+| Marketing / docs site | Top links: What it is, Mash bill, Verify, Mark pack, Non-goals, Dogfood |
 | Active state | Underline or weight + `aria-current="page"` |
+
+**Live microsite:** `site/` deployed by `.github/workflows/pages.yml` to
+GitHub Pages (`https://documentdrivendx.github.io/innsigle/`).
 
 ## Design deliverables checklist
 

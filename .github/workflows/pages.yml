@@ -1,0 +1,60 @@
+name: Deploy microsite
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Test CLI and golden vectors
+        run: npm test
+
+      - name: Sync dogfood into site
+        run: |
+          set -euo pipefail
+          mkdir -p site/assets/marks site/dogfood/.well-known/innsigle/claims
+          cp docs/dogfood/assets/marks/*.svg site/assets/marks/
+          cp docs/dogfood/.well-known/innsigle/keys.json site/dogfood/.well-known/innsigle/
+          cp docs/dogfood/.well-known/innsigle/claims/*.json site/dogfood/.well-known/innsigle/claims/
+          # Keep committed dogfood HTML (paths already site-relative); refresh from source and fix mark paths
+          cp docs/dogfood/index.html site/dogfood/index.html
+          sed -i 's|src="assets/marks/|src="../assets/marks/|g' site/dogfood/index.html
+          # Point verify pre block at repo paths for operators; site still hosts claims
+          test -f site/index.html
+          test -f site/assets/css/site.css
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

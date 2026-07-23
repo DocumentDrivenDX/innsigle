@@ -6,6 +6,9 @@ verify. Not an AI detector. Not a C2PA replacement.
 
 **Say:** INN-siggle (rhymes with *single*).
 
+**Site:** [documentdrivendx.github.io/innsigle](https://documentdrivendx.github.io/innsigle/)
+(GitHub Pages via Actions on `main`).
+
 ## CLI (v0)
 
 Requires Node 20+.

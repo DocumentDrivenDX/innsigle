@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Innsigle — craft seal for content mash bills</title>
+  <meta name="description" content="Innsigle is a content-origin seal: declare how work was made, optionally sign who sealed that bill. Not a detector." />
+  <link rel="stylesheet" href="assets/css/site.css" />
+  <link rel="icon" href="assets/marks/innsigle-base.svg" type="image/svg+xml" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">
+        <img src="assets/marks/innsigle-base.svg" width="32" height="32" alt="" />
+        Innsigle
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="index.html" aria-current="page">What it is</a>
+        <a href="mash-bill.html">Mash bill</a>
+        <a href="verify.html">Verify</a>
+        <a href="marks.html">Marks</a>
+        <a href="non-goals.html">Non-goals</a>
+        <a href="dogfood/index.html">Dogfood</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="hero">
+      <div class="hero-seal" aria-hidden="true">
+        <img src="assets/marks/innsigle-model.svg" alt="" />
+      </div>
+      <div>
+        <h1>A craft seal for how work was made</h1>
+        <p class="pronounce">Say <strong>INN-siggle</strong> (rhymes with <em>single</em>).</p>
+        <p class="lede">
+          Innsigle is a visible mark plus a <strong>mash bill</strong>—the recipe of production:
+          human-authored, mixed, or model-primary—with optional house or person signatures.
+          Same seal family for both poles. Not a purity score. Not an AI detector.
+        </p>
+        <div class="pill-row" aria-label="Tags">
+          <span class="pill">composition, not verdict</span>
+          <span class="pill">claim ≠ oracle</span>
+          <span class="pill">DKIM-like signet</span>
+        </div>
+      </div>
+    </div>
+
+    <h2>Two jobs, one system</h2>
+    <div class="panel">
+      <h3>Docs (model-primary, proud)</h3>
+      <p>
+        Long-lived documentation—methodology sites, specs—often drafted with models.
+        Seal a mash bill that <em>names</em> tools (e.g. Claude, sloptimizer) and,
+        when you want standing, sign with a house key.
+      </p>
+      <h3>Social (human-authored, clear)</h3>
+      <p>
+        Short posts on X and similar strip file metadata. Use the same seal family
+        with a human cue and a link out. Visibility first; per-post crypto optional.
+      </p>
+    </div>
+
+    <h2>What verification answers</h2>
+    <p>
+      When a claim is signed: <strong>did this issuer seal this mash bill for these content bytes?</strong>
+      It does not answer whether the prose is true, pure, or free of AI.
+    </p>
+
+    <h2>Start</h2>
+    <ul class="tight">
+      <li><a href="mash-bill.html">Read the mash bill model</a></li>
+      <li><a href="verify.html">How to verify a seal</a></li>
+      <li><a href="marks.html">Mark pack (H / M / A)</a></li>
+      <li><a href="https://github.com/DocumentDrivenDX/innsigle">Source &amp; CLI on GitHub</a></li>
+      <li><a href="dogfood/index.html">Dogfood sample page</a> (signed model-primary artifact)</li>
+    </ul>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <a class="innsigle-footer-seal" href="mash-bill.html">
+        <img src="assets/marks/innsigle-base.svg" width="28" height="28" alt="" />
+        <span>
+          <strong>Innsigle</strong>
+          <span class="cue">Mash bill · not a detector</span>
+        </span>
+      </a>
+      <p>
+        House affinity: Azgaard ·
+        <a href="https://github.com/DocumentDrivenDX/innsigle">DocumentDrivenDX/innsigle</a>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>
