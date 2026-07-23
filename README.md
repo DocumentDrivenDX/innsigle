@@ -27,6 +27,27 @@ node src/cli.mjs verify --attestation att.json --content ./page.html --keys keys
 npm test
 ```
 
+## Dogfood
+
+Static sample page with footer seal and signed claim:
+
+- Page: [`docs/dogfood/index.html`](docs/dogfood/index.html)
+- Attestation: `docs/dogfood/.well-known/innsigle/claims/index.attestation.json`
+- Marks: `docs/dogfood/assets/marks/`
+- Footer snippet: `docs/dogfood/snippets/footer.html`
+
+```bash
+node src/cli.mjs verify \
+  --attestation docs/dogfood/.well-known/innsigle/claims/index.attestation.json \
+  --content docs/dogfood/index.html \
+  --keys docs/dogfood/.well-known/innsigle/keys.json
+```
+
+## Golden vectors
+
+See [`tests/vectors/README.md`](tests/vectors/README.md). Regenerate only when
+crypto/schema changes: `npm run vectors`.
+
 ## Specs
 
 HELIX docs under `docs/helix/`. Normative claim/CLI surface:

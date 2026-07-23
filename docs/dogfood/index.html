@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Innsigle dogfood — model-primary docs sample</title>
+  <style>
+    :root { color-scheme: light dark; --ink: #121212; --muted: #555; --line: #ccc; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #eee; --muted: #aaa; --line: #444; }
+    }
+    body { font: 16px/1.5 system-ui, sans-serif; color: var(--ink); max-width: 40rem; margin: 2rem auto; padding: 0 1rem; }
+    h1 { font-size: 1.5rem; }
+    .meta { color: var(--muted); font-size: 0.9rem; }
+    table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.95rem; }
+    th, td { border: 1px solid var(--line); padding: 0.4rem 0.5rem; text-align: left; }
+    .innsigle-footer { margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+    .innsigle-seal { display: inline-flex; align-items: center; gap: 0.6rem; color: inherit; text-decoration: none; }
+    .innsigle-seal strong { display: block; }
+    .cue { font-size: 0.8rem; color: var(--muted); }
+    code { font-size: 0.9em; }
+  </style>
+</head>
+<body>
+  <h1>Innsigle dogfood page</h1>
+  <p class="meta">UC-AI-docs sample. Composition: <strong>model-primary</strong>. Say the product name <strong>INN-siggle</strong> (rhymes with <em>single</em>).</p>
+
+  <p>This page is a real subject for an Innsigle claim: a short documentation-style
+  artifact whose mash bill names model and editorial tools. It is not a claim that
+  the prose is “true.” Verification answers whether a named issuer sealed this
+  bill for these exact bytes.</p>
+
+  <h2>Mash bill (human-readable)</h2>
+  <table>
+    <thead><tr><th>Kind</th><th>Name</th><th>Role</th></tr></thead>
+    <tbody>
+      <tr><td>model</td><td>Claude</td><td>draft</td></tr>
+      <tr><td>tool</td><td>sloptimizer</td><td>rewrite</td></tr>
+      <tr><td>human</td><td>operator</td><td>structure-edit</td></tr>
+    </tbody>
+  </table>
+  <p class="cue">Editorial tools do not flip composition to human-authored.</p>
+
+  <h2>Verify</h2>
+  <p>Attestation: <a href=".well-known/innsigle/claims/index.attestation.json"><code>claims/index.attestation.json</code></a>.
+  Keys: <a href=".well-known/innsigle/keys.json"><code>keys.json</code></a>.</p>
+  <pre><code>node src/cli.mjs verify \
+  --attestation docs/dogfood/.well-known/innsigle/claims/index.attestation.json \
+  --content docs/dogfood/index.html \
+  --keys docs/dogfood/.well-known/innsigle/keys.json</code></pre>
+
+  <footer class="innsigle-footer">
+    <a class="innsigle-seal" href=".well-known/innsigle/claims/index.attestation.json">
+      <img src="assets/marks/innsigle-model.svg" width="32" height="32" alt="Innsigle seal, model-primary" />
+      <span>
+        <strong>Innsigle</strong>
+        <span class="cue">Mash bill · model-primary · signed claim</span>
+      </span>
+    </a>
+  </footer>
+</body>
+</html>

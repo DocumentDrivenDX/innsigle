@@ -306,8 +306,8 @@ Exact flags belong in Contract, not here.
 1. ~~Schema JSON Schema + examples~~
 2. ~~ADR + Contract freeze~~ (ADR-001, CONTRACT-001)
 3. ~~Keygen + hash + sign + verify CLI~~ (`src/cli.mjs`, `npm test`)
-4. Golden test vectors under `tests/vectors/`
-5. Docs footer snippet + claim path convention
-6. Mark pack (DESIGN.md deliverables)
-7. Brand explainer pages
+4. ~~Golden test vectors~~ (`tests/vectors/`, `tests/vectors.test.mjs`)
+5. ~~Docs footer + dogfood claim~~ (`docs/dogfood/`)
+6. ~~Mark exploration pack~~ (`docs/dogfood/assets/marks/`)
+7. Brand explainer / public site polish
 8. Optional: in-toto/DSSE export; WoT cross-sign experiment

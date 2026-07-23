@@ -36,4 +36,7 @@ coverage/
 # Package manager / local
 bun.lockb
 .tmp-test/
+.tmp-vec-keys/
+.dogfood-secrets/
 *.priv.pem
+!tests/vectors/ed25519.priv.pem

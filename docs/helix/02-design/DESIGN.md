@@ -154,16 +154,32 @@ Prefer a readable grotesque + mono for digests. Final faces open.
 
 ## Design deliverables checklist
 
-- [ ] Glyph SVG (mono light/dark) + PNG exports at 32/64/128/256
-- [ ] State cue variants H/M/A (or final set)
-- [ ] Footer embed snippet (HTML)
-- [ ] Social still template
-- [ ] Verify + bill page wireframes
-- [ ] Do/don't sheet for mark misuse (truth badge, purity colors)
+- [x] Glyph SVG (mono via `currentColor`) — `docs/dogfood/assets/marks/`
+- [x] State cue variants H/M/A — human / mixed / model SVGs
+- [x] Footer embed snippet — `docs/dogfood/snippets/footer.html`
+- [ ] Social still template (PNG export pipeline)
+- [x] Bill + verify dogfood page — `docs/dogfood/index.html`
+- [x] Do/don't sheet — marks README
+
+## Mark exploration (2026-07-23)
+
+**Direction chosen for exploration pack:** geometric double-ring stamp with a
+simple vertical stem (letter-I / post mark), not a figurative Nordic cosplay
+mark. State is a **caption letter** under the disk (H/M/A), not a color code.
+
+| Asset | Path |
+|-------|------|
+| Base | `docs/dogfood/assets/marks/innsigle-base.svg` |
+| Human | `docs/dogfood/assets/marks/innsigle-human.svg` |
+| Mixed | `docs/dogfood/assets/marks/innsigle-mixed.svg` |
+| Model | `docs/dogfood/assets/marks/innsigle-model.svg` |
+
+**Still open for brand polish:** custom wordmark, Azgaard palette accent, PNG
+renders, whether state letters stay Latin H/M/A or move to inner geometry only.
 
 ## Open design decisions
 
-- [ ] Final glyph geometry (Norse-adjacent without Marvel Asgard cosplay)
-- [ ] State cue: letters vs inner geometry only
+- [ ] Final glyph polish (stroke weights, optical balance at 16px)
+- [ ] State cue: keep letters vs inner geometry only
 - [ ] Wordmark custom lettering vs system font
 - [ ] Accent color family under Azgaard house palette

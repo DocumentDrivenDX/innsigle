@@ -1,0 +1,22 @@
+{
+  "schema_version": "1",
+  "composition": "model-primary",
+  "ingredients": [
+    {
+      "kind": "model",
+      "name": "Claude",
+      "role": "draft"
+    },
+    {
+      "kind": "tool",
+      "name": "sloptimizer",
+      "role": "rewrite"
+    },
+    {
+      "kind": "human",
+      "name": "operator",
+      "role": "structure-edit"
+    }
+  ],
+  "notes": null
+}
