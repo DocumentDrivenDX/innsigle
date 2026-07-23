@@ -7,8 +7,6 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 concurrency:
   group: pages
@@ -29,7 +27,7 @@ jobs:
       - name: Test CLI and golden vectors
         run: npm test
 
-      - name: Sync dogfood into site
+      - name: Sync dogfood and marks into site
         run: |
           set -euo pipefail
           mkdir -p site/assets/marks site/dogfood/.well-known/innsigle/claims
@@ -38,13 +36,11 @@ jobs:
           cp docs/dogfood/.well-known/innsigle/claims/*.json site/dogfood/.well-known/innsigle/claims/
           cp docs/dogfood/index.html site/dogfood/index.html
           sed -i 's|src="assets/marks/|src="../assets/marks/|g' site/dogfood/index.html
-          # Prefer site-relative mark path when already rewritten
-          sed -i 's|src="../assets/marks/|src="../assets/marks/|g' site/dogfood/index.html
+          touch site/.nojekyll
           test -f site/index.html
           test -f site/assets/css/site.css
 
-      # Primary: classic gh-pages branch (works without Actions Pages environment approval)
-      - name: Deploy to gh-pages branch
+      - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -52,24 +48,3 @@ jobs:
           force_orphan: true
           user_name: github-actions[bot]
           user_email: github-actions[bot]@users.noreply.github.com
-
-      # Also publish via Actions artifact when org runners + Pages env allow it
-      - name: Upload Pages artifact
-        if: success()
-        continue-on-error: true
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: site
-
-  deploy-pages:
-    needs: build-and-deploy
-    if: success()
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    continue-on-error: true
-    steps:
-      - name: Deploy to GitHub Pages (workflow)
-        id: deployment
-        uses: actions/deploy-pages@v4
