@@ -1,0 +1,16 @@
+{
+  "name": "innsigle",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "innsigle": "./src/cli.mjs"
+  },
+  "scripts": {
+    "innsigle": "node src/cli.mjs",
+    "test": "node --test tests/cli.test.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

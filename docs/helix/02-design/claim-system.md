@@ -294,19 +294,20 @@ Exact flags belong in Contract, not here.
 
 ## Open questions
 
-- [ ] Freeze Ed25519 + canonicalization in ADR
-- [ ] HTML canonicalization rules for hashed docs
-- [ ] Type URI host (`innsigle.dev` vs azgaard.net path)
-- [ ] Multi-subject release claims for whole site versions
+- [x] Freeze Ed25519 + canonicalization in ADR → **ADR-001 accepted**
+- [x] Claim/CLI normative surface → **CONTRACT-001** (+ JSON Schema)
+- [ ] Type URI host (`innsigle.dev` vs azgaard.net path) when domain bought
+- [ ] Multi-subject release claims for whole site versions (schema allows array)
 - [ ] Whether `mixed` needs sub-ratios (human-led vs model-led)
 - [ ] P2: map ingredients to IPTC digitalSourceType / C2PA assertions
 
 ## Implementation sequence (suggested)
 
-1. Schema JSON Schema file + examples (Claude docs bill; human social unsigned).
-2. Keygen + keys.json format.
-3. Hash + sign + verify CLI on files.
-4. Docs footer snippet + claim path convention.
-5. Mark pack (DESIGN.md deliverables).
-6. Brand explainer pages.
-7. Optional: in-toto/DSSE export; WoT cross-sign experiment.
+1. ~~Schema JSON Schema + examples~~ (draft present)
+2. ~~ADR + Contract freeze~~ (ADR-001, CONTRACT-001)
+3. Keygen + hash + sign + verify CLI on files (next build slice)
+4. Golden test vectors under `tests/vectors/`
+5. Docs footer snippet + claim path convention
+6. Mark pack (DESIGN.md deliverables)
+7. Brand explainer pages
+8. Optional: in-toto/DSSE export; WoT cross-sign experiment

@@ -33,6 +33,7 @@ logs/
 coverage/
 .nyc_output/
 
-# Package manager
+# Package manager / local
 bun.lockb
-# keep lockfiles when we add a package manager intentionally
+.tmp-test/
+*.priv.pem

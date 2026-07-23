@@ -36,7 +36,7 @@ not principles, requirements, ADRs, test plans, or implementation tasks.
 
 | Slot | Filler | Source |
 |------|--------|--------|
-| `language-runtime` | `typescript-bun` | shipped-default |
+| `language-runtime` | `typescript-bun` intended; **v0 CLI is Node ESM (`.mjs`)** until Bun is available in CI | assumption / interim |
 | `frontend-framework` | deferred / static-first | assumption — brand site may be static or light framework; lock in ADR when site builds |
 | `e2e-framework` | `e2e-playwright` when UI exists | shipped-default (activate when verify UI ships) |
 | `auth-provider` | none in v1 | assumption — no multi-tenant accounts; keys + public discovery only |
