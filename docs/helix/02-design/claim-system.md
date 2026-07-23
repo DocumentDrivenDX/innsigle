@@ -303,9 +303,9 @@ Exact flags belong in Contract, not here.
 
 ## Implementation sequence (suggested)
 
-1. ~~Schema JSON Schema + examples~~ (draft present)
+1. ~~Schema JSON Schema + examples~~
 2. ~~ADR + Contract freeze~~ (ADR-001, CONTRACT-001)
-3. Keygen + hash + sign + verify CLI on files (next build slice)
+3. ~~Keygen + hash + sign + verify CLI~~ (`src/cli.mjs`, `npm test`)
 4. Golden test vectors under `tests/vectors/`
 5. Docs footer snippet + claim path convention
 6. Mark pack (DESIGN.md deliverables)
