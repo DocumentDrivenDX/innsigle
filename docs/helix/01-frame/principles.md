@@ -27,6 +27,11 @@ concerns, ADRs, or process rules. They are lenses when two valid options compete
    (when signed) who sealed it. It does not detect, score, or prove cosmic truth.
    This changes decisions when marketing or UX would imply AI detection.
 
+2a. **Edit is not origin** — Prose cleanup (including sloptimizer or similar) changes
+   how text *reads*, not how it was *produced*. Composition state and tool list must
+   still name models and roles honestly. This changes decisions when "sounds human"
+   would tempt a `human-authored` mark on model-primary work.
+
 3. **Mark first, string second** — Recognition lives in the Innsigle visual seal.
    Names, URLs, and CLI strings support the mark; they do not replace it. This
    changes decisions when wordmark polish crowds out glyph system work.
@@ -61,6 +66,7 @@ concerns, ADRs, or process rules. They are lenses when two valid options compete
 | Tension | When it shows up | Resolution |
 |---------|------------------|------------|
 | Craft pride vs civic transparency | Compliance-heavy copy vs maker voice | Lead with craft; put legal/civic detail one layer deeper (footer, verify page, docs)—not in the seal’s first read |
-| Mark first vs claim not oracle | Beautiful mark that looks like a “verified true” badge | Mark design must not use checkmark/shield-of-truth tropes; composition layout beats authenticity theater |
+| Mark first vs claim not oracle | Beautiful mark that looks like a “verified true” badge | Mark design must not use checkmark/shield-of-truth tropes; composition layout over authenticity theater |
+| Edit is not origin vs craft pride | Desire to look fully human after model draft | Keep model on the bill; pride is honest BOM + optional house seal, not laundering |
 | Signet optional vs attribution goals | Pushing signed verify rates vs low friction | Never block unsigned seals; measure signed share as secondary success, not launch gate |
 | Simplicity vs industry interop | C2PA / platform demands | Stay portable and simple in v1; interop is a later bridge with an explicit FR, not a silent scope expand |

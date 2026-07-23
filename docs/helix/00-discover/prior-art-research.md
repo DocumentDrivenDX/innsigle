@@ -115,3 +115,5 @@ Signed badges assert **who said what about origin**, not **what an oracle detect
 | Not an AI detector | **Proposed non-goal** | Confirmed in vision; formalize in PRD |
 | Not a C2PA replacement | **Proposed non-goal** | Interop later |
 | Product name | **Locked: Innsigle** | See `naming-exploration.md`; visual seal is primary recognition surface |
+| Competitive depth | **Done (this pass)** | See `competitive-analysis.md`; dual UCs (AI docs BOM + human social) drive thesis |
+| Primary use cases | **Locked** | UC-AI-docs (signed model-named BOM); UC-human-social (human mark, metadata-safe) |

@@ -1,0 +1,14 @@
+{
+  "innsigle_keys": "1",
+  "issuer_id": "azgaard",
+  "issuer_name": "Azgaard",
+  "keys": [
+    {
+      "key_id": "ed25519:EXAMPLE_FINGERPRINT",
+      "alg": "ed25519",
+      "public_key": "BASE64URL_PUBLIC_KEY_MATERIAL",
+      "created_at": "2026-07-22T00:00:00Z",
+      "revoked_at": null
+    }
+  ]
+}

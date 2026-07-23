@@ -1,0 +1,43 @@
+{
+  "innsigle": "1",
+  "type": "https://innsigle.dev/claim/mash-bill/v1",
+  "issued_at": "2026-07-22T18:00:00Z",
+  "issuer": {
+    "id": "azgaard",
+    "name": "Azgaard",
+    "key_id": "ed25519:EXAMPLE_FINGERPRINT",
+    "key_url": "https://azgaard.net/.well-known/innsigle/keys.json"
+  },
+  "subjects": [
+    {
+      "uri": "https://example.com/docs/helix/",
+      "digest": {
+        "alg": "sha256",
+        "value": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "mash_bill": {
+    "schema_version": "1",
+    "composition": "model-primary",
+    "ingredients": [
+      {
+        "kind": "model",
+        "name": "Claude",
+        "role": "draft"
+      },
+      {
+        "kind": "tool",
+        "name": "sloptimizer",
+        "role": "rewrite",
+        "uri": "https://github.com/easel/easel-skills"
+      },
+      {
+        "kind": "human",
+        "name": "Erik",
+        "role": "structure-edit"
+      }
+    ],
+    "notes": null
+  }
+}
