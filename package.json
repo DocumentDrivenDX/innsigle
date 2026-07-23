@@ -9,6 +9,8 @@
   "scripts": {
     "innsigle": "node src/cli.mjs",
     "test": "node --test tests/cli.test.mjs tests/vectors.test.mjs tests/site-build.test.mjs",
+    "test:e2e": "playwright test",
+    "test:e2e:update": "playwright test --update-snapshots",
     "vectors": "node scripts/generate-vectors.mjs",
     "site:publish": "node scripts/publish-artifacts.mjs",
     "site:build": "node scripts/build-site.mjs",
@@ -16,5 +18,9 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.1",
+    "serve": "^14.2.6"
   }
 }

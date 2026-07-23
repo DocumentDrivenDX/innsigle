@@ -9,7 +9,7 @@ description: What Innsigle is not — category integrity.
 
 Category integrity matters as much as features.
 
-- **Not an AI detector** — no scores, no SynthID decode, no “% AI.”
+- **Not an AI detector** — no scores, no SynthID decode, no authorship percentages.
 - **Not a C2PA replacement** — media-pipeline Content Credentials stay in their lane.
 - **Not a purity product** — human is not the only first-class state.
 - **Not a guarantee of truth** — declaration + optional signature only.

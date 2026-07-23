@@ -40,3 +40,8 @@ bun.lockb
 .dogfood-secrets/
 *.priv.pem
 !tests/vectors/ed25519.priv.pem
+node_modules/
+playwright-report/
+test-results/
+blob-report/
+

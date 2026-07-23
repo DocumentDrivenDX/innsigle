@@ -53,7 +53,7 @@ not principles, requirements, ADRs, test plans, or implementation tasks.
 |------|--------|--------|
 | `language-runtime` | `typescript-bun` intended; **v0 CLI is Node ESM (`.mjs`)** until Bun is available in CI | assumption / interim |
 | `frontend-framework` | deferred / static-first | assumption — brand site may be static or light framework; lock in ADR when site builds |
-| `e2e-framework` | `e2e-playwright` when UI exists | shipped-default (activate when verify UI ships) |
+| `e2e-framework` | `e2e-playwright` | shipped-default — `e2e/*.spec.ts` against static microsite |
 | `auth-provider` | none in v1 | assumption — no multi-tenant accounts; keys + public discovery only |
 | `datastore` | none required in v1 | assumption — claims travel with content or sidecar; no central claim DB required for P0 |
 | `deploy-target` | static host + npm/CLI distribute | assumption — lock when packaging |

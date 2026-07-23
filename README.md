@@ -19,6 +19,7 @@ Content pipeline (HELIX **product-microsite-ia**):
 
 ```bash
 npm run site:build          # publish artifacts + HTML
+npm run test:e2e            # Playwright: links + design-voice screenshots
 bash scripts/publish-site.sh
 ```
 
