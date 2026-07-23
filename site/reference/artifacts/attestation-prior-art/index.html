@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Attestation and Trust Prior Art — Innsigle</title>
+  <meta name="description" content="Attestation and Trust Prior Art" />
+  <link rel="stylesheet" href="/innsigle/assets/css/site.css" />
+  <link rel="icon" href="/innsigle/assets/marks/innsigle-base.svg" type="image/svg+xml" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/innsigle/">
+        <img src="/innsigle/assets/marks/innsigle-base.svg" width="32" height="32" alt="" />
+        Innsigle
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/innsigle/">What it is</a>
+        <a href="/innsigle/why/">Why</a>
+        <a href="/innsigle/use/">Use</a>
+        <a href="/innsigle/reference/" aria-current="page">Reference</a>
+        <a href="/innsigle/dogfood/">Dogfood</a>
+      </nav>
+    </div>
+  </header>
+  <div class="wrap layout-docs">
+    <p class="crumbs" aria-label="Breadcrumb"><a href="/innsigle/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/innsigle/reference/">Reference</a> <span aria-hidden="true">/</span> <span>Attestation and Trust Prior Art</span></p>
+    <div class="docs-grid">
+      <aside class="docs-side" aria-label="Section">
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/innsigle/">Home</a></li><li><a href="/innsigle/why/">Why</a></li><li><a href="/innsigle/dogfood/">Dogfood</a></li><li><a href="/innsigle/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/innsigle/use/">Use overview</a></li><li><a href="/innsigle/use/cli/">CLI</a></li><li><a href="/innsigle/use/mash-bill/">Mash bill</a></li><li><a href="/innsigle/use/verify/">Verify</a></li><li><a href="/innsigle/use/marks/">Marks</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/innsigle/reference/" aria-current="page">Reference home</a></li><li><a href="/innsigle/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/innsigle/reference/glossary/">Glossary</a></li></ul>
+      </aside>
+      <main class="docs-main prose">
+        <p class="gen-banner note">Generated reference — edit sources under <code>docs/helix/</code>, then <code>npm run site:build</code>.</p>
+<blockquote><strong>Generated from HELIX docs.</strong> Source: <code>docs/helix/02-design/attestation-prior-art.md</code>. Edit the source, not this file or <code>site/</code> HTML.</blockquote>
+<details><summary>Source frontmatter</summary>
+<pre><code class="language-yaml">ddx:
+  id: aibadge.design.attestation-prior-art
+  type: research-note
+  links:
+    - target: aibadge.competitive-analysis
+      kind: informed_by
+    - target: aibadge.prd
+      kind: informs
+status: draft
+activity: 02-design
+created: 2026-07-22</code></pre>
+</details>
+<h1 id="attestation-and-trust-prior-art">Attestation and Trust Prior Art</h1>
+<p><strong>Purpose:</strong> Ground Innsigle signing, key discovery, and trust posture in open systems that already solve related jobs. Not a product competitor list (see <code>competitive-analysis.md</code>); a design inventory for claim envelopes, trust graphs, and storage.</p>
+<h2 id="summary-for-design">Summary for design</h2>
+<table>
+<tr><th>Source</th><th>Steal</th><th>Do not copy wholesale</th></tr>
+<tr><td><strong>PGP web of trust</strong></td><td>User-chosen trust; key signs key (identity vouch); no single CA required</td><td>Full global strongset UX; keysigning-party friction as the only path</td></tr>
+<tr><td><strong>OpenPGP / GnuPG</strong></td><td>Detached signatures over content; fingerprint as identity handle</td><td>Email-era keyserver spam and UX collapse</td></tr>
+<tr><td><strong>DKIM</strong></td><td>Domain publishes pubkey; signature over message; receivers verify "domain authorized this"</td><td>Domain-only identity (we need person/house too)</td></tr>
+<tr><td><strong>in-toto attestations</strong></td><td>Subject (artifact) + predicate (claim type) + signed envelope</td><td>Software-build layout complexity as v1</td></tr>
+<tr><td><strong>SLSA provenance</strong></td><td>Provenance = how it was built, not "true content"</td><td>CI builder levels as product surface</td></tr>
+<tr><td><strong>Sigstore / cosign</strong></td><td>Optional keyless path later; transparency log ideas; cosign-style verify UX</td><td>Mandatory OIDC/cloud for v1 house keys</td></tr>
+<tr><td><strong>C2PA</strong></td><td>Signed assertions about content; tamper-evident; optional identity</td><td>Media-file embedding as only store; CA-heavy trust</td></tr>
+<tr><td><strong>Keyoxide / Keybase-class</strong></td><td>Proofs that bind keys to public profiles (domain, social)</td><td>Centralized identity product as v1 dependency</td></tr>
+<tr><td><strong>SBOM (SPDX/CycloneDX)</strong></td><td>Bill-of-materials metaphor and field discipline</td><td>Software-component graph as the only mash bill shape</td></tr>
+</table>
+<p><strong>Innsigle v1 posture:</strong> local long-lived keys (PGP/DKIM spirit) + claim shaped like a small in-toto predicate about <em>composition</em> + storage that works for HTML docs without media embedding + trust that starts as "I fetched this house pubkey from a URL I chose" (not full WoT). WoT-style cross-signatures are a later optional graph, not launch blockers.</p>
+<h2 id="pgp-web-of-trust">PGP web of trust</h2>
+<h3 id="what-it-is">What it is</h3>
+<p>OpenPGP binds a public key to an identity string. Other users <strong>sign keys</strong> to vouch for that binding. Each user sets <strong>ownertrust</strong> (how much they trust a key's owner to introduce others). Validity of a key for you is computed from signatures and your trust settings. Alternative to hierarchical PKI/CAs: every user can be a mini-CA for people they actually know.</p>
+<h3 id="mechanics-that-matter">Mechanics that matter</h3>
+<ul>
+<li><strong>Certification signature:</strong> Alice signs Bob's key → "I believe this key is Bob's."</li>
+<li><strong>Ownertrust:</strong> Alice marks Bob fully/marginally trusted as an introducer.</li>
+<li><strong>Validity:</strong> Calculated from intro path length and trust levels (classic model:</li>
+</ul>
+<p>  one full trust path or multiple marginal paths).</p>
+<ul>
+<li><strong>Keysigning parties / out-of-band check:</strong> Fingerprint verification before</li>
+</ul>
+<p>  signing (in person or careful remote).</p>
+<ul>
+<li><strong>Multiple webs:</strong> No single global trust root; overlapping webs.</li>
+</ul>
+<h3 id="failures-design-lessons">Failures (design lessons)</h3>
+<ul>
+<li>UX and key management burden limited mainstream use.</li>
+<li>Keyservers and spam eroded trust in discovery.</li>
+<li>Indirect trust paths are hard for non-experts to interpret.</li>
+<li>"Valid key" ≠ "this email content is true."</li>
+</ul>
+<h3 id="apply-to-innsigle">Apply to Innsigle</h3>
+<table>
+<tr><th>PGP idea</th><th>Innsigle mapping (v1 / later)</th></tr>
+<tr><td>Key fingerprint</td><td>House/person key id shown on verify</td></tr>
+<tr><td>Detached sig over data</td><td>Sign claim envelope + content hash</td></tr>
+<tr><td>Ownertrust</td><td>Later: user marks which house keys they trust</td></tr>
+<tr><td>Key certification</td><td>Later: house A signs house B's key (optional WoT)</td></tr>
+<tr><td>No claim of content truth</td><td>Same: seal is declaration + crypto, not oracle</td></tr>
+</table>
+<p>v1 does <strong>not</strong> require a working global WoT. v1 requires: generate key, publish pubkey, sign claim, verify claim. WoT is alignment for <em>identity</em> of signers over time, not for mash bill fields.</p>
+<h2 id="dkim-email">DKIM (email)</h2>
+<p>Already in product thesis. Domain publishes selector pubkey (DNS TXT); signature headers bind body hash to domain. Receivers verify authorization, not honesty of the email body.</p>
+<p><strong>Apply:</strong> Content hash + claim + signer key; discovery via HTTPS URL or well-known path first; DNS TXT as optional later discovery (DKIM-like for domains that want it).</p>
+<h2 id="in-toto-attestations">in-toto attestations</h2>
+<h3 id="model">Model</h3>
+<ul>
+<li><strong>Subject:</strong> artifact(s) identified by digest.</li>
+<li><strong>Predicate:</strong> typed claim (<code>predicateType</code> URI) with structured body.</li>
+<li><strong>Statement:</strong> subject + predicate.</li>
+<li><strong>Attestation:</strong> statement inside a signed envelope (often DSSE).</li>
+</ul>
+<p>SLSA provenance is one predicate type: how software was built (source, builder, materials). Explicitly <em>not</em> "the binary is free of vulnerabilities."</p>
+<h3 id="apply-to-innsigle">Apply to Innsigle</h3>
+<p>Mash bill + composition fits a <strong>custom predicate type</strong>, e.g.:</p>
+<p><code>https://innsigle.dev/attestation/mash-bill/v1</code></p>
+<p>Subject = content digest(s). Predicate = mash bill fields. Envelope = signature by house/person key.</p>
+<p>Reuse the <em>shape</em> (subject/predicate/envelope) even if v1 ships a simpler JSON file before full DSSE/in-toto tooling.</p>
+<h2 id="slsa">SLSA</h2>
+<p>Framework of levels and provenance expectations for supply chains. Teaches: separate <strong>provenance</strong> (how produced) from <strong>trust policy</strong> (what the verifier accepts). Innsigle should keep the same split: crypto validity vs policy ("do I trust Azgaard's key for docs?").</p>
+<h2 id="sigstore">Sigstore</h2>
+<p>Cosign, Fulcio (OIDC short-lived certs), Rekor (transparency log). Strength: low key-management friction for CI. Risk for v1 craft house: dependency on public infrastructure and OIDC.</p>
+<p><strong>Apply:</strong> Document as P2 path for CI-signed releases of the Innsigle CLI or for users who refuse long-lived keys. Not the only path; long-lived house keys remain first-class (PGP/DKIM spirit).</p>
+<h2 id="c2pa-trust-model-note">C2PA (trust model note)</h2>
+<p>Signed manifests; trust often via certificate chains and trust lists, not PGP WoT. Assertions are richer than our mash bill. Privacy reviews stress identity and tracking risks.</p>
+<p><strong>Apply:</strong> Optional export bridge later; do not make CA membership a v1 requirement for a personal house seal.</p>
+<h2 id="profile-bound-keys-keyoxide-and-kin">Profile-bound keys (Keyoxide and kin)</h2>
+<p>Projects that prove control of domain/social accounts and bind them to OpenPGP or similar keys. Useful mental model for "this key is Azgaard" without a CA.</p>
+<p><strong>Apply:</strong> v1 pubkey at <code>https://…/.well-known/innsigle/keys.json</code> or profile URL; later optional proofs that the same key controls a domain or forge.</p>
+<h2 id="sbom">SBOM</h2>
+<p>SPDX / CycloneDX list components of software. Mash bill is the narrative cousin: components of <em>making</em> (models, tools, human roles), not package graph.</p>
+<p><strong>Apply:</strong> Field discipline (typed ingredients, versions when known); do not require full SBOM tooling for content seals.</p>
+<h2 id="trust-model-spectrum-design-choice">Trust model spectrum (design choice)</h2>
+<pre><code class="language-text">CA hierarchy (X.509)     Web of trust (PGP)     Trust-on-first-use / pin
+        |                        |                        |
+   industrial C2PA          later Innsigle           Innsigle v1 default
+   enterprise PKI           optional graph           "I trust this URL's key"</code></pre>
+<p><strong>v1 default:</strong> TOFU / explicit pin of house pubkey URL.   <strong>Later:</strong> optional cross-signatures between houses (WoT light).   <strong>Avoid for craft makers:</strong> mandatory commercial CA for every personal seal.</p>
+<h2 id="open-questions-from-prior-art">Open questions from prior art</h2>
+<ul>
+<li>Envelope: custom JSON + Ed25519 vs DSSE + in-toto from day one?</li>
+<li>Key format: raw Ed25519, JWK, or OpenPGP packets?</li>
+<li>Transparency log: none in v1, optional Rekor-like later?</li>
+<li>Cross-sign vocabulary: only keys, or also "I trust their mash bills"?</li>
+</ul>
+<h2 id="references-anchors">References (anchors)</h2>
+<ul>
+<li>OpenPGP web of trust concepts (PGP/GnuPG; Wikipedia "Web of trust"; Zimmermann lineage)</li>
+<li>in-toto attestation framework; SLSA provenance as predicate</li>
+<li>Sigstore (cosign, keyless, transparency)</li>
+<li>C2PA / CAI (signed content credentials)</li>
+<li>DKIM (domain-authorized mail signatures)</li>
+<li>SBOM formats (SPDX, CycloneDX) as BOM discipline analogues</li>
+</ul>
+      </main>
+    </div>
+  </div>
+  <footer class="site-footer">
+    <div class="wrap">
+      <a class="innsigle-footer-seal" href="/innsigle/use/mash-bill/">
+        <img src="/innsigle/assets/marks/innsigle-base.svg" width="28" height="28" alt="" />
+        <span>
+          <strong>Innsigle</strong>
+          <span class="cue">Mash bill · not a detector</span>
+        </span>
+      </a>
+      <p>
+        <a href="https://github.com/DocumentDrivenDX/innsigle">Source</a>
+        · curated in <code>docs/website/</code>
+        · specs from <code>docs/helix/</code>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

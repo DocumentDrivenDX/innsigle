@@ -7,7 +7,20 @@ verify. Not an AI detector. Not a C2PA replacement.
 **Say:** INN-siggle (rhymes with *single*).
 
 **Site:** [documentdrivendx.github.io/innsigle](https://documentdrivendx.github.io/innsigle/)
-(GitHub Pages via Actions on `main`).
+(GitHub Pages via `gh-pages`).
+
+Content pipeline (HELIX **product-microsite-ia**):
+
+| Layer | Path |
+|-------|------|
+| Curated copy | `docs/website/content/curated/` |
+| Generated from HELIX | `docs/website/content/generated/` ← `docs/helix/` |
+| Build output | `site/` |
+
+```bash
+npm run site:build          # publish artifacts + HTML
+bash scripts/publish-site.sh
+```
 
 ## CLI (v0)
 

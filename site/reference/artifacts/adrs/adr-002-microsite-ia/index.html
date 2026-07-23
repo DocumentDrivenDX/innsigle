@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ADR-002: Microsite information architecture and content pipeline — Innsigle</title>
+  <meta name="description" content="ADR-002: Microsite information architecture and content pipeline" />
+  <link rel="stylesheet" href="/innsigle/assets/css/site.css" />
+  <link rel="icon" href="/innsigle/assets/marks/innsigle-base.svg" type="image/svg+xml" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/innsigle/">
+        <img src="/innsigle/assets/marks/innsigle-base.svg" width="32" height="32" alt="" />
+        Innsigle
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/innsigle/">What it is</a>
+        <a href="/innsigle/why/">Why</a>
+        <a href="/innsigle/use/">Use</a>
+        <a href="/innsigle/reference/" aria-current="page">Reference</a>
+        <a href="/innsigle/dogfood/">Dogfood</a>
+      </nav>
+    </div>
+  </header>
+  <div class="wrap layout-docs">
+    <p class="crumbs" aria-label="Breadcrumb"><a href="/innsigle/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/innsigle/reference/">Reference</a> <span aria-hidden="true">/</span> <span>ADR-002: Microsite information architecture and content pipeline</span></p>
+    <div class="docs-grid">
+      <aside class="docs-side" aria-label="Section">
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/innsigle/">Home</a></li><li><a href="/innsigle/why/">Why</a></li><li><a href="/innsigle/dogfood/">Dogfood</a></li><li><a href="/innsigle/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/innsigle/use/">Use overview</a></li><li><a href="/innsigle/use/cli/">CLI</a></li><li><a href="/innsigle/use/mash-bill/">Mash bill</a></li><li><a href="/innsigle/use/verify/">Verify</a></li><li><a href="/innsigle/use/marks/">Marks</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/innsigle/reference/" aria-current="page">Reference home</a></li><li><a href="/innsigle/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/innsigle/reference/glossary/">Glossary</a></li></ul>
+      </aside>
+      <main class="docs-main prose">
+        <p class="gen-banner note">Generated reference — edit sources under <code>docs/helix/</code>, then <code>npm run site:build</code>.</p>
+<blockquote><strong>Generated from HELIX docs.</strong> Source: <code>docs/helix/02-design/adrs/ADR-002-microsite-ia.md</code>. Edit the source, not this file or <code>site/</code> HTML.</blockquote>
+<details><summary>Source frontmatter</summary>
+<pre><code class="language-yaml">ddx:
+  id: aibadge.adr.002
+  type: adr
+  links:
+    - target: aibadge.prd
+      kind: informed_by
+    - target: aibadge.design-system
+      kind: informed_by
+status: accepted
+activity: 02-design
+created: 2026-07-23</code></pre>
+</details>
+<h1 id="adr-002-microsite-information-architecture-and-content-pipeline">ADR-002: Microsite information architecture and content pipeline</h1>
+<table>
+<tr><th>Date</th><th>Status</th><th>Deciders</th><th>Related</th><th>Confidence</th></tr>
+<tr><td>2026-07-23</td><td>Accepted</td><td>Operator</td><td>product-microsite-ia concern; PRD brand site FRs</td><td>High</td></tr>
+</table>
+<h2 id="context">Context</h2>
+<table>
+<tr><th>Aspect</th><th>Description</th></tr>
+<tr><td>Problem</td><td>Public site mixed hand HTML with specs; HELIX concern requires reader-mode IA and generated reference from artifact sources</td></tr>
+<tr><td>Requirements</td><td>Auto-publish walkthroughs/specs/design docs/glossary from <code>docs/</code>; keep carefully curated copy outside the HELIX source tree (<code>docs/helix/</code>)</td></tr>
+<tr><td>Drivers</td><td>product-microsite-ia; DESIGN.md voice; dual UC evaluate/start/operate paths</td></tr>
+</table>
+<h2 id="decision">Decision</h2>
+<p>We will use a <strong>two-layer content model</strong>:</p>
+<ol>
+<li><strong>Curated</strong> product copy under <code>docs/website/content/curated/</code> (outside</li>
+</ol>
+<p>   <code>docs/helix/</code>). Hand-authored Why / Use / Non-goals pages for evaluate and    start reader modes.</p>
+<ol>
+<li><strong>Generated</strong> reference under <code>docs/website/content/generated/</code>, rebuilt</li>
+</ol>
+<p>   deterministically from <code>docs/helix/</code> (and glossary sources) by    <code>scripts/publish-artifacts.mjs</code>.</p>
+<ol>
+<li><strong>Build</strong> HTML into <code>site/</code> via <code>scripts/build-site.mjs</code> using DESIGN.md tokens</li>
+</ol>
+<p>   and IA from <code>docs/website/ia.yml</code>.</p>
+<ol>
+<li><strong>Top-level nav</strong> separates: What it is (home) · Why · Use · Reference · Dogfood.</li>
+</ol>
+<p><strong>Key points:</strong> Curated ≠ generated | <code>site/</code> is output only | HELIX sources remain authoritative for specs</p>
+<h2 id="alternatives">Alternatives</h2>
+<table>
+<tr><th>Option</th><th>Pros</th><th>Cons</th><th>Evaluation</th></tr>
+<tr><td>Hand-only static HTML in <code>site/</code></td><td>Simple</td><td>Specs drift; violates microsite concern</td><td>Rejected</td></tr>
+<tr><td>Full Hugo/Hextra like HELIX</td><td>Mature</td><td>Heavy for v0; dependency burden</td><td>Deferred</td></tr>
+<tr><td><strong>Curated MD + generate artifacts → static build</strong></td><td>Matches concern; light deps</td><td>Custom builder</td><td><strong>Selected</strong></td></tr>
+</table>
+<h2 id="consequences">Consequences</h2>
+<table>
+<tr><th>Type</th><th>Impact</th></tr>
+<tr><td>Positive</td><td>Specs stay in <code>docs/helix/</code>; site always regenerable; IA named by reader mode</td></tr>
+<tr><td>Negative</td><td>Must run publish+build before deploy</td></tr>
+<tr><td>Neutral</td><td>Dogfood and marks still synced as static assets</td></tr>
+</table>
+<h2 id="risks">Risks</h2>
+<table>
+<tr><th>Risk</th><th>Prob</th><th>Impact</th><th>Mitigation</th></tr>
+<tr><td>Hand-edit generated HTML</td><td>M</td><td>M</td><td>Wipe <code>site/</code> content pages on build; README warnings</td></tr>
+<tr><td>Nav hides core leaves</td><td>L</td><td>H</td><td><code>ia.yml</code> core_leaves + concern quality gates</td></tr>
+</table>
+<h2 id="validation">Validation</h2>
+<table>
+<tr><th>Success Metric</th><th>Review Trigger</th></tr>
+<tr><td><code>npm run site:build</code> produces Why/Use/Reference + artifact pages</td><td>IA change</td></tr>
+<tr><td>Generated artifact index groups by activity</td><td>HELIX tree reorg</td></tr>
+</table>
+<h2 id="supersession">Supersession</h2>
+<ul>
+<li><strong>Supersedes:</strong> None</li>
+<li><strong>Superseded by:</strong> None</li>
+</ul>
+<h2 id="concern-impact">Concern Impact</h2>
+<ul>
+<li>Satisfies <strong>product-microsite-ia</strong> ADR requirement (IA model + content pipeline).</li>
+<li>Updates <code>concerns.md</code> practice for generated vs curated roots.</li>
+</ul>
+<h2 id="references">References</h2>
+<ul>
+<li><code>docs/website/ia.yml</code></li>
+<li>HELIX <code>workflows/concerns/product-microsite-ia/</code></li>
+<li>HELIX <code>scripts/publish-artifacts.py</code> (pattern source)</li>
+</ul>
+      </main>
+    </div>
+  </div>
+  <footer class="site-footer">
+    <div class="wrap">
+      <a class="innsigle-footer-seal" href="/innsigle/use/mash-bill/">
+        <img src="/innsigle/assets/marks/innsigle-base.svg" width="28" height="28" alt="" />
+        <span>
+          <strong>Innsigle</strong>
+          <span class="cue">Mash bill · not a detector</span>
+        </span>
+      </a>
+      <p>
+        <a href="https://github.com/DocumentDrivenDX/innsigle">Source</a>
+        · curated in <code>docs/website/</code>
+        · specs from <code>docs/helix/</code>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

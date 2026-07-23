@@ -9,7 +9,10 @@
   "scripts": {
     "innsigle": "node src/cli.mjs",
     "test": "node --test tests/cli.test.mjs tests/vectors.test.mjs",
-    "vectors": "node scripts/generate-vectors.mjs"
+    "vectors": "node scripts/generate-vectors.mjs",
+    "site:publish": "node scripts/publish-artifacts.mjs",
+    "site:build": "node scripts/build-site.mjs",
+    "site:build:local": "SITE_BASE= node scripts/build-site.mjs"
   },
   "engines": {
     "node": ">=20"

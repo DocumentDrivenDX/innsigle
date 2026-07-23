@@ -1,0 +1,79 @@
+# Product microsite IA (product-microsite-ia concern)
+# Curated copy: docs/website/content/curated/
+# Generated from docs/helix (+ dogfood, schemas): docs/website/content/generated/
+
+project: Innsigle
+base_path: /innsigle/  # GitHub project pages; empty for local root preview
+
+reader_modes:
+  evaluate:
+    question: What is this, and is it worth my time?
+    path: [home, why, dogfood]
+  start:
+    question: How do I try it correctly?
+    path: [use, use/cli, dogfood]
+  decide:
+    question: What concept do I need next?
+    path: [use/mash-bill, use/verify, use/marks]
+  operate:
+    question: How do I look up exact behavior?
+    path: [reference/artifacts, reference/glossary, reference/contracts]
+
+nav:
+  - id: home
+    title: What it is
+    href: /
+    role: evaluate
+  - id: why
+    title: Why
+    href: /why/
+    role: evaluate
+  - id: use
+    title: Use
+    href: /use/
+    role: start
+  - id: reference
+    title: Reference
+    href: /reference/
+    role: operate
+  - id: dogfood
+    title: Dogfood
+    href: /dogfood/
+    role: evaluate
+
+# Core pages visible without drilldown
+core_leaves:
+  - /why/
+  - /use/
+  - /use/cli/
+  - /use/mash-bill/
+  - /use/verify/
+  - /use/marks/
+  - /reference/artifacts/
+  - /reference/glossary/
+  - /non-goals/
+  - /dogfood/
+
+generated:
+  helix_source: docs/helix
+  dest: docs/website/content/generated
+  include_activities:
+    - 00-discover
+    - 01-frame
+    - 02-design
+  # Supporting material (lighter nav treatment)
+  supporting_globs:
+    - "**/naming-exploration.md"
+    - "**/prior-art-research.md"
+    - "**/examples/**"
+
+curated:
+  root: docs/website/content/curated
+
+static:
+  - docs/dogfood/assets/marks
+  - docs/website/static
+
+build:
+  out: site
+  # site/ is build output; do not hand-edit generated HTML

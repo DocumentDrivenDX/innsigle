@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Claim System: Mash Bill, Storage, Signing — Innsigle</title>
+  <meta name="description" content="Claim System: Mash Bill, Storage, Signing" />
+  <link rel="stylesheet" href="/innsigle/assets/css/site.css" />
+  <link rel="icon" href="/innsigle/assets/marks/innsigle-base.svg" type="image/svg+xml" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/innsigle/">
+        <img src="/innsigle/assets/marks/innsigle-base.svg" width="32" height="32" alt="" />
+        Innsigle
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/innsigle/">What it is</a>
+        <a href="/innsigle/why/">Why</a>
+        <a href="/innsigle/use/">Use</a>
+        <a href="/innsigle/reference/" aria-current="page">Reference</a>
+        <a href="/innsigle/dogfood/">Dogfood</a>
+      </nav>
+    </div>
+  </header>
+  <div class="wrap layout-docs">
+    <p class="crumbs" aria-label="Breadcrumb"><a href="/innsigle/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/innsigle/reference/">Reference</a> <span aria-hidden="true">/</span> <span>Claim System: Mash Bill, Storage, Signing</span></p>
+    <div class="docs-grid">
+      <aside class="docs-side" aria-label="Section">
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/innsigle/">Home</a></li><li><a href="/innsigle/why/">Why</a></li><li><a href="/innsigle/dogfood/">Dogfood</a></li><li><a href="/innsigle/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/innsigle/use/">Use overview</a></li><li><a href="/innsigle/use/cli/">CLI</a></li><li><a href="/innsigle/use/mash-bill/">Mash bill</a></li><li><a href="/innsigle/use/verify/">Verify</a></li><li><a href="/innsigle/use/marks/">Marks</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/innsigle/reference/" aria-current="page">Reference home</a></li><li><a href="/innsigle/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/innsigle/reference/glossary/">Glossary</a></li></ul>
+      </aside>
+      <main class="docs-main prose">
+        <p class="gen-banner note">Generated reference — edit sources under <code>docs/helix/</code>, then <code>npm run site:build</code>.</p>
+<blockquote><strong>Generated from HELIX docs.</strong> Source: <code>docs/helix/02-design/claim-system.md</code>. Edit the source, not this file or <code>site/</code> HTML.</blockquote>
+<details><summary>Source frontmatter</summary>
+<pre><code class="language-yaml">ddx:
+  id: aibadge.design.claim-system
+  type: solution-design
+  links:
+    - target: aibadge.prd
+      kind: informed_by
+    - target: aibadge.design.attestation-prior-art
+      kind: informed_by
+    - target: aibadge.design-system
+      kind: informed_by
+status: draft
+activity: 02-design
+created: 2026-07-22</code></pre>
+</details>
+<h1 id="claim-system-mash-bill-storage-signing">Claim System: Mash Bill, Storage, Signing</h1>
+<p>Solution-level design for composition declaration and optional attestation. Normative field names here are design intent; freeze in a Contract before implementing the CLI.</p>
+<p><strong>Prior art stance:</strong> in-toto-shaped subject/predicate; PGP/DKIM-shaped long-lived keys; TOFU key discovery for v1; optional later WoT cross-signs. Details: <code>attestation-prior-art.md</code>.</p>
+<h2 id="goals">Goals</h2>
+<table>
+<tr><th>Goal</th><th>Source</th></tr>
+<tr><td>Typed mash bill with named tools (Claude, sloptimizer, …)</td><td>PRD FR-1–4, FR-4a</td></tr>
+<tr><td>Sign content hash + bill + issuer</td><td>PRD FR-9–12</td></tr>
+<tr><td>Docs-friendly storage (no media embed required)</td><td>UC-AI-docs</td></tr>
+<tr><td>Social-safe mark without claim-in-file</td><td>UC-human-social</td></tr>
+<tr><td>Not a detector; edit ≠ human-authored</td><td>Principles, FR-4a</td></tr>
+</table>
+<h2 id="naming">Naming</h2>
+<table>
+<tr><th>Term</th><th>Meaning</th></tr>
+<tr><td><strong>Mash bill</strong></td><td>Declared recipe of how the work was made (composition + ingredients)</td></tr>
+<tr><td><strong>Composition</strong></td><td>Coarse state: <code>human-authored</code> \</td><td><code>mixed</code> \</td><td><code>model-primary</code></td></tr>
+<tr><td><strong>Ingredient</strong></td><td>One tool, model, or human role line item</td></tr>
+<tr><td><strong>Claim</strong></td><td>JSON document: subjects + mash bill + metadata (unsigned or to-be-signed body)</td></tr>
+<tr><td><strong>Attestation</strong></td><td>Claim body + signature by an issuer key</td></tr>
+<tr><td><strong>Issuer</strong></td><td>Person or house key that signs</td></tr>
+<tr><td><strong>Subject</strong></td><td>Content unit identified by digest (and optional URI)</td></tr>
+<tr><td><strong>Seal / mark</strong></td><td>Visual Innsigle badge (see DESIGN.md)</td></tr>
+<tr><td><strong>Signet</strong></td><td>Act of signing; optional depth</td></tr>
+</table>
+<p>Avoid public "credentials" for the product object (C2PA collision). Internal type URIs may still say <code>attestation</code>.</p>
+<h2 id="mash-bill-schema-draft-v1">Mash bill schema (draft v1)</h2>
+<h3 id="conceptual-model">Conceptual model</h3>
+<pre><code class="language-text">MashBill
+  composition: enum
+  ingredients[]: Ingredient
+  notes?: string          # short free text; not a loophole for hiding models
+  schema_version: "1"
+
+Ingredient
+  kind: model | tool | human | other
+  name: string            # "Claude", "sloptimizer", "Erik LaBianca"
+  role?: string           # "draft", "edit", "structure", "rewrite"
+  version?: string        # model id or tool version when known
+  uri?: string            # optional link to product/docs</code></pre>
+<h3 id="composition-enum">Composition enum</h3>
+<table>
+<tr><th>Value</th><th>When to use</th></tr>
+<tr><td><code>human-authored</code></td><td>Substantive prose/media produced by humans; models not primary authors</td></tr>
+<tr><td><code>mixed</code></td><td>Material human and model authorship both present</td></tr>
+<tr><td><code>model-primary</code></td><td>Model(s) produced most of the substantive content; humans may edit/structure</td></tr>
+</table>
+<p><strong>Rule (FR-4a):</strong> Running sloptimizer (or similar) on model output does not by itself change <code>model-primary</code> → <code>human-authored</code>. List sloptimizer as <code>kind: tool</code>, <code>role: rewrite</code> (or similar).</p>
+<h3 id="claim-document-unsigned-body">Claim document (unsigned body)</h3>
+<pre><code class="language-json">{
+  "innsigle": "1",
+  "type": "https://innsigle.dev/claim/mash-bill/v1",
+  "issued_at": "2026-07-22T18:00:00Z",
+  "issuer": {
+    "id": "azgaard",
+    "name": "Azgaard",
+    "key_id": "ed25519:BASE64URL_FINGERPRINT",
+    "key_url": "https://azgaard.net/.well-known/innsigle/keys.json"
+  },
+  "subjects": [
+    {
+      "uri": "https://example.com/docs/page/",
+      "digest": {
+        "alg": "sha256",
+        "value": "hex-or-base64url"
+      }
+    }
+  ],
+  "mash_bill": {
+    "schema_version": "1",
+    "composition": "model-primary",
+    "ingredients": [
+      {
+        "kind": "model",
+        "name": "Claude",
+        "role": "draft",
+        "version": null
+      },
+      {
+        "kind": "tool",
+        "name": "sloptimizer",
+        "role": "rewrite",
+        "uri": "https://github.com/easel/easel-skills"
+      },
+      {
+        "kind": "human",
+        "name": "Erik",
+        "role": "structure-edit"
+      }
+    ],
+    "notes": null
+  }
+}</code></pre>
+<p>Aligns with in-toto mentally: <code>subjects</code> ≈ subject digests; <code>mash_bill</code> ≈ predicate; <code>type</code> ≈ predicateType. v1 may ship this JSON without full DSSE.</p>
+<h3 id="canonical-content-hashing">Canonical content hashing</h3>
+<table>
+<tr><th>Content</th><th>v1 approach</th></tr>
+<tr><td>Single file</td><td>SHA-256 of raw bytes</td></tr>
+<tr><td>HTML page</td><td>SHA-256 of <strong>canonical bytes</strong> defined by CLI (document exact rules in Contract): prefer raw file as published, or normalized UTF-8 without volatile fields</td></tr>
+<tr><td>Multi-page site</td><td>Per-page claims, or one claim with multiple subjects (release set)</td></tr>
+</table>
+<p>Open: strip HTML comments / CDN query strings? Prefer: hash the artifact the operator points at; document foot-guns.</p>
+<h2 id="storage-mechanisms">Storage mechanisms</h2>
+<h3 id="design-constraints">Design constraints</h3>
+<ul>
+<li>Docs sites: static hosting, no required DB.</li>
+<li>Social: no reliance on platform-preserved metadata.</li>
+<li>Verify: offline possible given claim + content + pubkey.</li>
+</ul>
+<h3 id="v1-stores">v1 stores</h3>
+<table>
+<tr><th>Store</th><th>What lives there</th><th>Channel</th></tr>
+<tr><td><strong>A. Sidecar file</strong></td><td><code>page.innsigle.json</code> next to content or in <code>/.well-known/innsigle/claims/…</code></td><td>Docs</td></tr>
+<tr><td><strong>B. Embedded link</strong></td><td>Footer mark links to claim URL or <code>#innsigle</code> fragment page</td><td>Docs</td></tr>
+<tr><td><strong>C. Inline unsigned bill</strong></td><td>Human-readable bill in HTML (optional duplicate of JSON fields)</td><td>Docs</td></tr>
+<tr><td><strong>D. Mark asset only</strong></td><td>SVG/PNG + link to profile/bill explainer; no per-post signature</td><td>Social</td></tr>
+<tr><td><strong>E. Key document</strong></td><td><code>keys.json</code> (public keys, key_id, optional revoke)</td><td>Discovery</td></tr>
+</table>
+<h3 id="not-v1-parked">Not v1 (parked)</h3>
+<table>
+<tr><th>Store</th><th>Why park</th></tr>
+<tr><td>C2PA embed in JPEG/PNG</td><td>Social strip; media-first</td></tr>
+<tr><td>Central claim database</td><td>Scope</td></tr>
+<tr><td>DNS TXT for full claim</td><td>Size; use for key selectors later (DKIM-like)</td></tr>
+<tr><td>Blockchain / always-on transparency log</td><td>Optional later (Sigstore Rekor-class)</td></tr>
+</table>
+<h3 id="recommended-layouts">Recommended layouts</h3>
+<p><strong>Docs (signed page):</strong></p>
+<pre><code class="language-text">site/
+  docs/foo/index.html          # footer → seal + link
+  .well-known/innsigle/
+    keys.json
+    claims/docs-foo.json       # attestation (claim + sig)</code></pre>
+<p><strong>Social:</strong></p>
+<pre><code class="language-text">mark: innsigle-human.svg (or PNG)
+bio: https://azgaard.net/innsigle
+# no per-tweet claim file required in v1</code></pre>
+<h2 id="signing-and-attestation">Signing and attestation</h2>
+<h3 id="algorithms-v1-proposal">Algorithms (v1 proposal)</h3>
+<table>
+<tr><th>Choice</th><th>Proposal</th><th>Rationale</th></tr>
+<tr><td>Sign</td><td>Ed25519</td><td>Small keys, modern default, wide support</td></tr>
+<tr><td>Hash</td><td>SHA-256</td><td>Universal</td></tr>
+<tr><td>Key encode</td><td>JWK or raw base64url in <code>keys.json</code></td><td>Simple; OpenPGP packets optional later</td></tr>
+</table>
+<p>ADR to freeze.</p>
+<h3 id="attestation-envelope-v1-simple">Attestation envelope (v1 simple)</h3>
+<pre><code class="language-json">{
+  "payload": { /* claim body as above */ },
+  "payload_encoding": "json",
+  "signatures": [
+    {
+      "key_id": "ed25519:…",
+      "alg": "ed25519",
+      "sig": "base64url",
+      "signed_at": "2026-07-22T18:00:01Z"
+    }
+  ]
+}</code></pre>
+<p><strong>Signed bytes:</strong> canonical JSON of <code>payload</code> (rules in Contract: key sort, UTF-8, no insignificant whitespace) or hash of payload then sign hash. Pick one in Contract; prefer sign-over-hash of canonical payload.</p>
+<p><strong>Later (P2):</strong> DSSE envelope + in-toto statement for cosign/SLSA ecosystem alignment.</p>
+<h3 id="verify-algorithm">Verify algorithm</h3>
+<ol>
+<li>Fetch attestation JSON.</li>
+<li>Load issuer key by <code>key_id</code> from <code>key_url</code> or local pin.</li>
+<li>Verify signature over payload (canonical).</li>
+<li>Recompute digest of local/canonical content; match <code>subjects[].digest</code>.</li>
+<li>Report: <code>valid</code> | <code>bad_signature</code> | <code>content_mismatch</code> | <code>unknown_key</code> | <code>revoked</code>.</li>
+<li>Display mash bill fields regardless of validity, with clear banner if invalid.</li>
+</ol>
+<p>Never report "this is 80% AI."</p>
+<h3 id="key-lifecycle-v1">Key lifecycle (v1)</h3>
+<table>
+<tr><th>Operation</th><th>Behavior</th></tr>
+<tr><td>Generate</td><td>CLI creates Ed25519 keypair; private key local file; never log</td></tr>
+<tr><td>Publish</td><td>Public key in <code>keys.json</code> at HTTPS URL</td></tr>
+<tr><td>Rotate</td><td>New key_id; old optional <code>revoked_at</code>; new claims use new key</td></tr>
+<tr><td>Discover</td><td>HTTPS <code>key_url</code> on claim; TOFU warn on first change of key material</td></tr>
+<tr><td>WoT</td><td>Not required; optional later cross-sign of keys (PGP inspiration)</td></tr>
+</table>
+<h3 id="trust-policy-verifier">Trust policy (verifier)</h3>
+<table>
+<tr><th>Level</th><th>Meaning</th></tr>
+<tr><td>Crypto valid</td><td>Signature + content match</td></tr>
+<tr><td>Issuer recognized</td><td>key_url / key_id in user's trust list or first-seen pin</td></tr>
+<tr><td>Policy accept</td><td>User/org chooses to treat issuer as trusted for this class of content</td></tr>
+</table>
+<p>SLSA lesson: separate crypto success from policy trust.</p>
+<h2 id="cli-surface-intent-only-contract-later">CLI surface (intent only; Contract later)</h2>
+<table>
+<tr><th>Command intent</th><th>Result</th></tr>
+<tr><td><code>bill init</code> / edit</td><td>Write mash bill fields</td></tr>
+<tr><td><code>claim build</code></td><td>Bind subjects + bill → claim payload</td></tr>
+<tr><td><code>sign</code></td><td>Attach signature with local key</td></tr>
+<tr><td><code>verify</code></td><td>Path or URL to attestation + content</td></tr>
+<tr><td><code>keygen</code> / <code>key publish-template</code></td><td>Key material + sample keys.json</td></tr>
+</table>
+<p>Exact flags belong in Contract, not here.</p>
+<h2 id="alignment-matrix">Alignment matrix</h2>
+<table>
+<tr><th>Prior art</th><th>Innsigle v1 choice</th></tr>
+<tr><td>PGP WoT</td><td>Deferred graph; steal fingerprint + user trust concept</td></tr>
+<tr><td>DKIM</td><td>Steal domain/URL-published pubkey + sig over content</td></tr>
+<tr><td>in-toto</td><td>Steal subject + predicate typing</td></tr>
+<tr><td>SLSA</td><td>Steal provenance ≠ truth; policy separate</td></tr>
+<tr><td>Sigstore</td><td>Optional later keyless/transparency</td></tr>
+<tr><td>C2PA</td><td>Optional export; not primary store</td></tr>
+<tr><td>SBOM</td><td>Steal typed ingredients discipline</td></tr>
+<tr><td>Sloptimizer</td><td>Ingredient <code>tool</code>, not composition flip</td></tr>
+</table>
+<h2 id="security-notes">Security notes</h2>
+<ul>
+<li>Private keys never in claims or site static files.</li>
+<li><code>key_url</code> must be HTTPS in production guidance.</li>
+<li>Treat claim <code>notes</code> as untrusted display text (escape HTML).</li>
+<li>Unsigned bills are allowed; UI must not look "more true" than signed ones</li>
+</ul>
+<p>  without labeling signed/unsigned clearly.</p>
+<h2 id="open-questions">Open questions</h2>
+<ul>
+<li>[x] Freeze Ed25519 + canonicalization in ADR → <strong>ADR-001 accepted</strong></li>
+<li>[x] Claim/CLI normative surface → <strong>CONTRACT-001</strong> (+ JSON Schema)</li>
+<li>[ ] Type URI host (<code>innsigle.dev</code> vs azgaard.net path) when domain bought</li>
+<li>[ ] Multi-subject release claims for whole site versions (schema allows array)</li>
+<li>[ ] Whether <code>mixed</code> needs sub-ratios (human-led vs model-led)</li>
+<li>[ ] P2: map ingredients to IPTC digitalSourceType / C2PA assertions</li>
+</ul>
+<h2 id="implementation-sequence-suggested">Implementation sequence (suggested)</h2>
+<ol>
+<li>~~Schema JSON Schema + examples~~</li>
+<li>~~ADR + Contract freeze~~ (ADR-001, CONTRACT-001)</li>
+<li>~~Keygen + hash + sign + verify CLI~~ (<code>src/cli.mjs</code>, <code>npm test</code>)</li>
+<li>~~Golden test vectors~~ (<code>tests/vectors/</code>, <code>tests/vectors.test.mjs</code>)</li>
+<li>~~Docs footer + dogfood claim~~ (<code>docs/dogfood/</code>)</li>
+<li>~~Mark exploration pack~~ (<code>docs/dogfood/assets/marks/</code>)</li>
+<li>Brand explainer / public site polish</li>
+<li>Optional: in-toto/DSSE export; WoT cross-sign experiment</li>
+</ol>
+      </main>
+    </div>
+  </div>
+  <footer class="site-footer">
+    <div class="wrap">
+      <a class="innsigle-footer-seal" href="/innsigle/use/mash-bill/">
+        <img src="/innsigle/assets/marks/innsigle-base.svg" width="28" height="28" alt="" />
+        <span>
+          <strong>Innsigle</strong>
+          <span class="cue">Mash bill · not a detector</span>
+        </span>
+      </a>
+      <p>
+        <a href="https://github.com/DocumentDrivenDX/innsigle">Source</a>
+        · curated in <code>docs/website/</code>
+        · specs from <code>docs/helix/</code>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

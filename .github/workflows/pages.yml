@@ -27,18 +27,10 @@ jobs:
       - name: Test CLI and golden vectors
         run: npm test
 
-      - name: Sync dogfood and marks into site
-        run: |
-          set -euo pipefail
-          mkdir -p site/assets/marks site/dogfood/.well-known/innsigle/claims
-          cp docs/dogfood/assets/marks/*.svg site/assets/marks/
-          cp docs/dogfood/.well-known/innsigle/keys.json site/dogfood/.well-known/innsigle/
-          cp docs/dogfood/.well-known/innsigle/claims/*.json site/dogfood/.well-known/innsigle/claims/
-          cp docs/dogfood/index.html site/dogfood/index.html
-          sed -i 's|src="assets/marks/|src="../assets/marks/|g' site/dogfood/index.html
-          touch site/.nojekyll
-          test -f site/index.html
-          test -f site/assets/css/site.css
+      - name: Publish artifacts + build site
+        env:
+          SITE_BASE: /innsigle
+        run: npm run site:build
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4

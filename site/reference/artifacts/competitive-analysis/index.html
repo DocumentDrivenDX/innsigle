@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Competitive Analysis: Content Origin Labeling and Provenance — Innsigle</title>
+  <meta name="description" content="Competitive Analysis: Content Origin Labeling and Provenance" />
+  <link rel="stylesheet" href="/innsigle/assets/css/site.css" />
+  <link rel="icon" href="/innsigle/assets/marks/innsigle-base.svg" type="image/svg+xml" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/innsigle/">
+        <img src="/innsigle/assets/marks/innsigle-base.svg" width="32" height="32" alt="" />
+        Innsigle
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/innsigle/">What it is</a>
+        <a href="/innsigle/why/">Why</a>
+        <a href="/innsigle/use/">Use</a>
+        <a href="/innsigle/reference/" aria-current="page">Reference</a>
+        <a href="/innsigle/dogfood/">Dogfood</a>
+      </nav>
+    </div>
+  </header>
+  <div class="wrap layout-docs">
+    <p class="crumbs" aria-label="Breadcrumb"><a href="/innsigle/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/innsigle/reference/">Reference</a> <span aria-hidden="true">/</span> <span>Competitive Analysis: Content Origin Labeling and Provenance</span></p>
+    <div class="docs-grid">
+      <aside class="docs-side" aria-label="Section">
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/innsigle/">Home</a></li><li><a href="/innsigle/why/">Why</a></li><li><a href="/innsigle/dogfood/">Dogfood</a></li><li><a href="/innsigle/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/innsigle/use/">Use overview</a></li><li><a href="/innsigle/use/cli/">CLI</a></li><li><a href="/innsigle/use/mash-bill/">Mash bill</a></li><li><a href="/innsigle/use/verify/">Verify</a></li><li><a href="/innsigle/use/marks/">Marks</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/innsigle/reference/" aria-current="page">Reference home</a></li><li><a href="/innsigle/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/innsigle/reference/glossary/">Glossary</a></li></ul>
+      </aside>
+      <main class="docs-main prose">
+        <p class="gen-banner note">Generated reference — edit sources under <code>docs/helix/</code>, then <code>npm run site:build</code>.</p>
+<blockquote><strong>Generated from HELIX docs.</strong> Source: <code>docs/helix/00-discover/competitive-analysis.md</code>. Edit the source, not this file or <code>site/</code> HTML.</blockquote>
+<details><summary>Source frontmatter</summary>
+<pre><code class="language-yaml">ddx:
+  id: aibadge.competitive-analysis
+  type: competitive-analysis
+  links:
+    - target: aibadge.research.prior-art
+      kind: informed_by
+    - target: aibadge.product-vision
+      kind: informs
+    - target: aibadge.prd
+      kind: informs
+status: draft
+activity: 00-discover
+created: 2026-07-22</code></pre>
+</details>
+<h1 id="competitive-analysis-content-origin-labeling-and-provenance">Competitive Analysis: Content Origin Labeling and Provenance</h1>
+<p><strong>Scope:</strong> Technologies and products that label, watermark, or cryptographically attest how digital content was made, or who stands behind a claim about it.   <strong>Operator use cases under test:</strong></p>
+<ol>
+<li><strong>UC-AI-docs:</strong> Long-lived documentation sites (e.g. HELIX microsite): mostly</li>
+</ol>
+<p>   model-generated; maker wants a signed mash bill that <em>proudly</em> names tools    (e.g. Claude) and binds the claim to a house or person.</p>
+<ol>
+<li><strong>UC-human-social:</strong> Short posts on X/Twitter and similar: maker wants it</li>
+</ol>
+<p>   clear the words are human-authored, under their control, not a platform    "Made with AI" stamp or a purity cult badge alone.</p>
+<h2 id="market-landscape">Market Landscape</h2>
+<table>
+<tr><th>Attribute</th><th>Assessment</th></tr>
+<tr><td>Market Maturity</td><td>Emerging / fragmenting: industrial standards, vendor watermarks, and DIY badges coexist; no single consumer mental model</td></tr>
+<tr><td>Key Trends</td><td>Layered AI-image labeling (C2PA + SynthID); EU AI Act Art. 50 transparency (from 2 Aug 2026); human-only badge movements; platform-side labels</td></tr>
+<tr><td>Entry Barriers</td><td>Low for badges and claim formats; high for becoming the media-industry default (C2PA coalition + camera OEMs)</td></tr>
+<tr><td>Buyer Power</td><td>High for individual makers (many free substitutes); low influence over platform strip of metadata</td></tr>
+</table>
+<h2 id="layer-map-what-competes-for-the-same-job">Layer map (what competes for the same job)</h2>
+<table>
+<tr><th>Layer</th><th>Job</th><th>Examples</th><th>Fits UC-AI-docs?</th><th>Fits UC-human-social?</th></tr>
+<tr><td>A. Craft / social badge</td><td>Visible origin story the maker chooses</td><td>Not By AI, ad-hoc footers</td><td>Partial (no proud-AI peer)</td><td>Partial (human-only, no crypto)</td></tr>
+<tr><td>B. Signed media provenance</td><td>Tamper-evident file history</td><td>C2PA Content Credentials, CAI SDK</td><td>Partial (docs/images if file-bound; heavy)</td><td>Weak (uploads strip metadata; text posts lack files)</td></tr>
+<tr><td>C. Model-side watermark</td><td>Survive distribution without rich payload</td><td>SynthID, Meta Video Seal</td><td>Weak (vendor, not maker BOM)</td><td>Weak (no human-authored path)</td></tr>
+<tr><td>D. Metadata taxonomy</td><td>Structured source codes in EXIF/IPTC/XMP</td><td>IPTC <code>digitalSourceType</code></td><td>Partial (vocabulary only)</td><td>Weak (stripped on social)</td></tr>
+<tr><td>E. Platform disclosure</td><td>Site labels AI media</td><td>Meta, others</td><td>N/A</td><td>Platform-owned, not portable</td></tr>
+<tr><td>F. Detectors</td><td>Guess AI vs human</td><td>Various classifiers</td><td>No (wrong job)</td><td>No (wrong job)</td></tr>
+<tr><td>G. Prose quality / AI-tell edit</td><td>Detect or rewrite AI-shaped writing patterns</td><td><strong>Sloptimizer</strong> (<code>easel-skills</code>)</td><td>Complementary (edit step, not origin seal)</td><td>Complementary (does not declare human authorship)</td></tr>
+</table>
+<p><strong>Thesis implication:</strong> UC-AI-docs needs A+B-like <em>maker</em> signing with a rich BOM (not only vendor watermark). UC-human-social needs A that survives metadata death (visible mark + outlink), with human composition first-class. No incumbent owns both as one brand system.</p>
+<h3 id="adjacent-sloptimizer-complement-not-rival">Adjacent: Sloptimizer (complement, not rival)</h3>
+<p>Source: <code>/home/erik/Projects/easel-skills/skills/sloptimizer</code> (Easel skill; Vale-backed detect / rewrite / validate). Shared house context with HELIX/DDx dogfood.</p>
+<table>
+<tr><th>Dimension</th><th>Sloptimizer</th><th>Innsigle</th></tr>
+<tr><td>Job</td><td>Remove AI-isms, filler, unsupported claims; harden specs</td><td>Declare mash bill; optional sign who sealed it</td></tr>
+<tr><td>Authorship score</td><td>Explicitly <strong>does not</strong> claim text was written by AI</td><td>Explicitly <strong>is not</strong> a detector</td></tr>
+<tr><td>Output</td><td>Cleaner prose / executable work items</td><td>Mark + bill + optional signature</td></tr>
+<tr><td>UC-AI-docs fit</td><td>Post-generate edit pass before publish</td><td>Seal names models (e.g. Claude) <strong>and</strong> can list editorial tools</td></tr>
+<tr><td>UC-human-social fit</td><td>Optional polish if human draft has AI-tell patterns</td><td>Human-authored mark only when composition is actually human</td></tr>
+</table>
+<p><strong>Pipeline (dogfood target for methodology docs):</strong></p>
+<pre><code class="language-text">model draft (Claude, …) → sloptimizer detect|rewrite|validate → Innsigle mash bill
+  (model-primary + named tools + human roles + optional "sloptimizer" tool line)
+  → house sign → publish site</code></pre>
+<p><strong>Hard boundary (product integrity):</strong> A sloptimizer rewrite does <strong>not</strong> turn model-primary text into <code>human-authored</code> for Innsigle. Sounding less AI is a prose outcome; composition state tracks <strong>how the words were produced</strong>, not how human they read after edit. Mislabeling AI→sloptimizer text as human is a category violation (same class as detector theater).</p>
+<p><strong>Why this matters competitively:</strong> Not By AI and detectors both push toward a binary human/AI <em>appearance</em> test. Operators can run both in sequence: use models, clean the prose, <strong>disclose</strong> the bill, sign it. That is a different category story than "make it look human so no one notices."</p>
+<h2 id="competitive-forces">Competitive Forces</h2>
+<table>
+<tr><th>Force</th><th>Pressure</th><th>Evidence</th><th>Implication</th></tr>
+<tr><td>Direct rivalry (badges)</td><td>Med</td><td>Not By AI has recognition and media coverage</td><td>Do not compete as human-only sticker clone</td></tr>
+<tr><td>Direct rivalry (standards)</td><td>High in media</td><td>C2PA / CAI backed by Adobe, camera OEMs, major AI labs</td><td>Do not position as C2PA replacement; optional bridge later</td></tr>
+<tr><td>Substitutes</td><td>High</td><td>Footnotes, README lines, platform labels, silence</td><td>Product must be faster/clearer than a sentence in a footer <em>or</em> add verify depth footnotes lack</td></tr>
+<tr><td>New entrants</td><td>High</td><td>Low cost to ship SVG + docs</td><td>Defensibility = mark recognition + claim format + dogfood on real properties</td></tr>
+<tr><td>Buyer power</td><td>High</td><td>Makers switch costs near zero</td><td>Dogfood (Azgaard, HELIX docs, social) is the adoption path</td></tr>
+</table>
+<h2 id="competitor-profiles">Competitor Profiles</h2>
+<table>
+<tr><th>Competitor</th><th>Type</th><th>Positioning</th><th>Strengths</th><th>Weaknesses vs Innsigle UCs</th><th>Confidence</th></tr>
+<tr><td><strong>Not By AI</strong></td><td>Direct (brand badge)</td><td>Human-made pride badge; 90% rule; project pages</td><td>Clear mark; low friction; cultural recognition</td><td>Human-only; self-asserted; no crypto; no proud-AI BOM for UC-AI-docs</td><td>High (product site)</td></tr>
+<tr><td><strong>C2PA / Content Credentials (CAI)</strong></td><td>Indirect (standard + tools)</td><td>Nutrition label for media origin and edits; signed manifests</td><td>Open standard; industry adoption; CAI open-source SDK; verify UIs</td><td>File/media-centric; fragile when metadata stripped; identity optional; not a dual craft brand; weak for plain text social</td><td>High</td></tr>
+<tr><td><strong>SynthID (Google; also OpenAI images)</strong></td><td>Substitute (vendor watermark)</td><td>Invisible model-origin signal in media</td><td>Survives some transforms; pairs with C2PA in vendor stacks</td><td>Not maker-authored BOM; little payload; no human path; not text-post native</td><td>High</td></tr>
+<tr><td><strong>Meta Video Seal</strong></td><td>Substitute</td><td>Open-source video watermark research/product line</td><td>Open direction for video durability</td><td>Video-focused; not dual human/AI craft seal for docs+social</td><td>Med</td></tr>
+<tr><td><strong>IPTC digitalSourceType</strong></td><td>Indirect (taxonomy)</td><td>Codes for trained algorithmic media, composites, etc.</td><td>Shared vocabulary for news/media metadata</td><td>Not a brand; not a signer UX; rides on metadata that social strips</td><td>High (IPTC docs)</td></tr>
+<tr><td><strong>Platform labels</strong></td><td>Substitute</td><td>"Made with AI" style UI</td><td>Audience already sees them</td><td>Not maker-controlled; not portable; no personal key</td><td>High</td></tr>
+<tr><td><strong>AI detectors</strong></td><td>False substitute</td><td>Score content as AI/human</td><td>Buyer demand for certainty</td><td>Arms race; wrong product category; liability</td><td>High</td></tr>
+<tr><td><strong>DIY footer / README disclosure</strong></td><td>Substitute</td><td>Free text declaration</td><td>Zero cost</td><td>No mark system; no verify; easy to ignore</td><td>High</td></tr>
+<tr><td><strong>Sloptimizer</strong> (easel-skills)</td><td><strong>Complement</strong></td><td>Audit/rewrite AI-shaped prose; does not claim authorship</td><td>Vale rules; HELIX/DDx adapters; house-aligned</td><td>Not an origin seal; no social mark; no DKIM-like bind</td><td>High (skill contract + repo)</td></tr>
+<tr><td><strong>Bare Sigli / consultancies</strong></td><td>Name collision only</td><td>AI software shops</td><td>SEO noise</td><td>Not provenance products</td><td>High (sigli.com)</td></tr>
+</table>
+<h2 id="feature-comparison">Feature Comparison</h2>
+<table>
+<tr><th>Capability</th><th>Innsigle (target)</th><th>Not By AI</th><th>C2PA/CAI</th><th>SynthID</th><th>IPTC DST</th><th>Platform label</th></tr>
+<tr><td>Visible maker mark</td><td>Full</td><td>Full</td><td>Partial (pin UI)</td><td>None</td><td>None</td><td>Platform UI</td></tr>
+<tr><td>Human-authored state</td><td>Full</td><td>Full</td><td>Partial (if asserted)</td><td>None</td><td>Partial codes</td><td>Rare</td></tr>
+<tr><td>Proud AI / model-named BOM</td><td>Full</td><td>None</td><td>Partial (tool in manifest)</td><td>Weak signal</td><td>Partial codes</td><td>Weak</td></tr>
+<tr><td>Same system for human + AI</td><td>Full</td><td>None</td><td>Yes (neutral)</td><td>No</td><td>Yes (codes)</td><td>No</td></tr>
+<tr><td>Maker-controlled crypto sign</td><td>Full (DKIM-like)</td><td>None</td><td>Full (cert chain)</td><td>N/A</td><td>None</td><td>None</td></tr>
+<tr><td>Survives social metadata strip</td><td>Partial (visible mark + URL)</td><td>Partial (image badge)</td><td>Weak</td><td>Strong for media</td><td>Weak</td><td>N/A</td></tr>
+<tr><td>Text / HTML docs site</td><td>Full</td><td>Partial</td><td>Partial</td><td>Weak</td><td>Weak</td><td>None</td></tr>
+<tr><td>Text post on X/Twitter</td><td>Partial (badge/link pattern)</td><td>Partial</td><td>None native</td><td>None</td><td>None</td><td>Platform only</td></tr>
+<tr><td>Not a detector</td><td>Full</td><td>Full</td><td>Full</td><td>Detection-side</td><td>Full</td><td>Full</td></tr>
+</table>
+<p><strong>Legend:</strong> Full / Partial / None / Weak relative to the two operator UCs.</p>
+<h2 id="durability-and-channel-reality">Durability and channel reality</h2>
+<table>
+<tr><th>Channel</th><th>What survives</th><th>What dies</th><th>UC impact</th></tr>
+<tr><td>Owned docs site (Hugo/static)</td><td>HTML, footer mark, linked claim, signed sidecar or well-known URL</td><td>Little</td><td><strong>UC-AI-docs:</strong> full signet + rich BOM is viable</td></tr>
+<tr><td>Downloaded PDF/image with C2PA</td><td>Manifest until re-export</td><td>Often lost on screenshot/re-encode</td><td>Optional later interop, not P0</td></tr>
+<tr><td>X/Twitter text post</td><td>Visible characters, attached image if any</td><td>Embedded file metadata routinely</td><td><strong>UC-human-social:</strong> must be visual + short link or image card; no file-manifest dependency</td></tr>
+<tr><td>X/Twitter image post</td><td>Pixels (watermark may live); badge in image</td><td>C2PA often stripped</td><td>Prefer mark baked into image or clear caption + verify URL</td></tr>
+</table>
+<p>Industry practice (2025–2026): vendors stack C2PA (rich, fragile) with SynthID (sparse, durable) for <em>images</em>. That stack does not give a maker a <strong>named Claude BOM</strong> on a docs site or a <strong>human seal</strong> on a tweet.</p>
+<h2 id="differentiation-strategy">Differentiation Strategy</h2>
+<table>
+<tr><th>Differentiator</th><th>Why it matters for UCs</th><th>Defensibility</th></tr>
+<tr><td>Dual composition brand (human and AI equally first-class)</td><td>UC-human-social and UC-AI-docs share one mark family</td><td>Med (brand + guidelines)</td></tr>
+<tr><td>Mash bill with named tools (e.g. Claude) as pride, not confession</td><td>UC-AI-docs needs model credit without shame language</td><td>Med (vocabulary + UX)</td></tr>
+<tr><td>Maker/house signet (DKIM-like), not only vendor watermark</td><td>UC-AI-docs: "Azgaard sealed this bill"</td><td>Med-High if key discovery is simple</td></tr>
+<tr><td>Social-safe pattern (mark + outlink; no metadata dependence)</td><td>UC-human-social on X</td><td>Med (design pattern, not a protocol monopoly)</td></tr>
+<tr><td>Explicit non-detector, non-C2PA-replacement stance</td><td>Avoids arms race and standards war</td><td>High (positioning discipline)</td></tr>
+</table>
+<p><strong>Positioning (sharpened):</strong> For operators who publish both model-heavy docs and human social posts, Innsigle is a content-origin seal and mash bill: one visual system for human-authored and AI-generated work, with optional personal/house signatures. Unlike Not By AI, AI is a first-class bill ingredient. Unlike C2PA and SynthID, the primary job is maker-facing brand and claim for web text and social, not industry media pipelines or model-side watermarks.</p>
+<h2 id="strategic-implications">Strategic Implications</h2>
+<table>
+<tr><th>Move</th><th>Action</th></tr>
+<tr><td>Attack</td><td>Owned documentation sites with signed AI mash bills (dogfood HELIX / Azgaard docs); optional sloptimizer pass recorded in the bill; human social mark packs for X-class platforms; CLI sign/verify for site content</td></tr>
+<tr><td>Defend</td><td>Category integrity (not detection; not "sloptimized = human"); dual-state mark family; simple key custody for house signers</td></tr>
+<tr><td>Avoid</td><td>Competing as the C2PA implementation of record; building detectors; human-only purity as the only story; requiring C2PA survival on Twitter for P0; treating prose de-AI-ifying as composition change to human-authored</td></tr>
+<tr><td>Interop (later)</td><td>Map mash bill fields to IPTC <code>digitalSourceType</code> / C2PA assertions when exporting media files; keep Innsigle claim as the maker layer; optional skill/CLI hook after sloptimizer in easel-skills or agent workflows</td></tr>
+</table>
+<h2 id="evidence-anchors-survey">Evidence anchors (survey)</h2>
+<ul>
+<li>C2PA: open standard; Content Credentials "nutrition label"; CAI open-source tools</li>
+</ul>
+<p>  (contentauthenticity.org, c2pa.org).</p>
+<ul>
+<li>SynthID vs C2PA: metadata-rich vs pixel-durable; OpenAI documents both on images</li>
+</ul>
+<p>  (2026 public materials).</p>
+<ul>
+<li>Not By AI: human-centric badge; not a detector (notbyai.fyi).</li>
+<li>IPTC NewsCodes <code>digitalSourceType</code>: algorithmic / composite codes for media</li>
+</ul>
+<p>  metadata (iptc.org).</p>
+<ul>
+<li>EU AI Act Art. 50: transparency duties for synthetic content (from 2 Aug 2026).</li>
+<li>Channel fact: social re-encoding commonly strips signed metadata (industry</li>
+</ul>
+<p>  commentary and CAI durability discussions); treat as design constraint for UC-human-social.</p>
+<h2 id="open-research-non-blocking">Open research (non-blocking)</h2>
+<ul>
+<li>Exact claim envelope vs C2PA assertion subset (design).</li>
+<li>Whether a tweet-length "claim pointer" URL scheme is enough for social verify.</li>
+<li>Trademark/name collisions beyond Sigli (ongoing).</li>
+</ul>
+      </main>
+    </div>
+  </div>
+  <footer class="site-footer">
+    <div class="wrap">
+      <a class="innsigle-footer-seal" href="/innsigle/use/mash-bill/">
+        <img src="/innsigle/assets/marks/innsigle-base.svg" width="28" height="28" alt="" />
+        <span>
+          <strong>Innsigle</strong>
+          <span class="cue">Mash bill · not a detector</span>
+        </span>
+      </a>
+      <p>
+        <a href="https://github.com/DocumentDrivenDX/innsigle">Source</a>
+        · curated in <code>docs/website/</code>
+        · specs from <code>docs/helix/</code>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

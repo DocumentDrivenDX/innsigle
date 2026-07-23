@@ -1,4 +1,17 @@
 ---
+title: "Project Concerns"
+slug: concerns
+activity: "Frame"
+source: "01-frame/concerns.md"
+generated: true
+supporting: false
+---
+
+> **Generated from HELIX docs.** Source: `docs/helix/01-frame/concerns.md`. Edit the source, not this file or `site/` HTML.
+
+<details><summary>Source frontmatter</summary>
+
+```yaml
 ddx:
   id: aibadge.concerns
   type: concerns
@@ -10,7 +23,9 @@ ddx:
 status: draft
 activity: 01-frame
 created: 2026-07-22
----
+```
+
+</details>
 
 # Project Concerns
 

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Project Principles — Innsigle</title>
+  <meta name="description" content="Project Principles" />
+  <link rel="stylesheet" href="/innsigle/assets/css/site.css" />
+  <link rel="icon" href="/innsigle/assets/marks/innsigle-base.svg" type="image/svg+xml" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/innsigle/">
+        <img src="/innsigle/assets/marks/innsigle-base.svg" width="32" height="32" alt="" />
+        Innsigle
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/innsigle/">What it is</a>
+        <a href="/innsigle/why/">Why</a>
+        <a href="/innsigle/use/">Use</a>
+        <a href="/innsigle/reference/" aria-current="page">Reference</a>
+        <a href="/innsigle/dogfood/">Dogfood</a>
+      </nav>
+    </div>
+  </header>
+  <div class="wrap layout-docs">
+    <p class="crumbs" aria-label="Breadcrumb"><a href="/innsigle/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/innsigle/reference/">Reference</a> <span aria-hidden="true">/</span> <span>Project Principles</span></p>
+    <div class="docs-grid">
+      <aside class="docs-side" aria-label="Section">
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/innsigle/">Home</a></li><li><a href="/innsigle/why/">Why</a></li><li><a href="/innsigle/dogfood/">Dogfood</a></li><li><a href="/innsigle/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/innsigle/use/">Use overview</a></li><li><a href="/innsigle/use/cli/">CLI</a></li><li><a href="/innsigle/use/mash-bill/">Mash bill</a></li><li><a href="/innsigle/use/verify/">Verify</a></li><li><a href="/innsigle/use/marks/">Marks</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/innsigle/reference/" aria-current="page">Reference home</a></li><li><a href="/innsigle/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/innsigle/reference/glossary/">Glossary</a></li></ul>
+      </aside>
+      <main class="docs-main prose">
+        <p class="gen-banner note">Generated reference — edit sources under <code>docs/helix/</code>, then <code>npm run site:build</code>.</p>
+<blockquote><strong>Generated from HELIX docs.</strong> Source: <code>docs/helix/01-frame/principles.md</code>. Edit the source, not this file or <code>site/</code> HTML.</blockquote>
+<details><summary>Source frontmatter</summary>
+<pre><code class="language-yaml">ddx:
+  id: aibadge.principles
+  type: principles
+  links:
+    - target: aibadge.product-vision
+      kind: informed_by
+    - target: aibadge.prd
+      kind: informed_by
+status: draft
+activity: 01-frame
+created: 2026-07-22</code></pre>
+</details>
+<h1 id="project-principles">Project Principles</h1>
+<p>These principles guide judgment calls for <strong>Innsigle</strong>. They are not requirements, concerns, ADRs, or process rules. They are lenses when two valid options compete.</p>
+<h2 id="principles">Principles</h2>
+<ol>
+<li><strong>Composition, not verdict</strong> — Origin language describes <em>how the work was made</em></li>
+</ol>
+<p>   (mash bill), never moral grades of human vs AI. This changes decisions when    copy, UI, or defaults would shame one ingredient or saint another.</p>
+<ol>
+<li><strong>Claim is not oracle</strong> — A sealed mash bill asserts what a maker declared and</li>
+</ol>
+<p>   (when signed) who sealed it. It does not detect, score, or prove cosmic truth.    This changes decisions when marketing or UX would imply AI detection.</p>
+<p>2a. <strong>Edit is not origin</strong> — Prose cleanup (including sloptimizer or similar) changes    how text <em>reads</em>, not how it was <em>produced</em>. Composition state and tool list must    still name models and roles honestly. This changes decisions when "sounds human"    would tempt a <code>human-authored</code> mark on model-primary work.</p>
+<ol>
+<li><strong>Mark first, string second</strong> — Recognition lives in the Innsigle visual seal.</li>
+</ol>
+<p>   Names, URLs, and CLI strings support the mark; they do not replace it. This    changes decisions when wordmark polish crowds out glyph system work.</p>
+<ol>
+<li><strong>Craft pride before compliance theater</strong> — Lead with maker dignity and house</li>
+</ol>
+<p>   stamp; civic transparency is a consequence, not the primary voice. This changes    decisions when legal-disclaimer tone would flatten brand.</p>
+<ol>
+<li><strong>Signet is optional depth</strong> — Unsigned composition marks are valid Innsigles.</li>
+</ol>
+<p>   Cryptographic standing is opt-in power, not a tax on using the mark. This changes    decisions when flows would force key setup before a maker can show a seal.</p>
+<ol>
+<li><strong>Design for simplicity</strong> — Start with the minimal viable approach. Extra</li>
+</ol>
+<p>   complexity (C2PA pipelines, identity providers, multi-tenant accounts) needs a    current requirement. This changes decisions when industry “full stack provenance”    would bloat v1.</p>
+<ol>
+<li><strong>Prefer reversible decisions</strong> — When uncertain, choose what is easiest to undo.</li>
+</ol>
+<p>   This changes decisions when confidence is low on crypto formats, domains, or stack.</p>
+<ol>
+<li><strong>Spec is the contract</strong> — The governing artifact stack is the source of truth;</li>
+</ol>
+<p>   code is a projection of it. Keep traceability bidirectional.</p>
+<ol>
+<li><strong>Validate your work</strong> — Verify changes with the strongest appropriate evidence</li>
+</ol>
+<p>   (tests, type checks, visual review, manual verify path).</p>
+<ol>
+<li><strong>Make intent explicit</strong> — Docs, copy, and code should show <em>why</em>, especially</li>
+</ol>
+<p>    where claim vs fact and composition vs purity could be misread.</p>
+<h2 id="tension-resolution">Tension Resolution</h2>
+<table>
+<tr><th>Tension</th><th>When it shows up</th><th>Resolution</th></tr>
+<tr><td>Craft pride vs civic transparency</td><td>Compliance-heavy copy vs maker voice</td><td>Lead with craft; put legal/civic detail one layer deeper (footer, verify page, docs)—not in the seal’s first read</td></tr>
+<tr><td>Mark first vs claim not oracle</td><td>Beautiful mark that looks like a “verified true” badge</td><td>Mark design must not use checkmark/shield-of-truth tropes; composition layout over authenticity theater</td></tr>
+<tr><td>Edit is not origin vs craft pride</td><td>Desire to look fully human after model draft</td><td>Keep model on the bill; pride is honest BOM + optional house seal, not laundering</td></tr>
+<tr><td>Signet optional vs attribution goals</td><td>Pushing signed verify rates vs low friction</td><td>Never block unsigned seals; measure signed share as secondary success, not launch gate</td></tr>
+<tr><td>Simplicity vs industry interop</td><td>C2PA / platform demands</td><td>Stay portable and simple in v1; interop is a later bridge with an explicit FR, not a silent scope expand</td></tr>
+</table>
+      </main>
+    </div>
+  </div>
+  <footer class="site-footer">
+    <div class="wrap">
+      <a class="innsigle-footer-seal" href="/innsigle/use/mash-bill/">
+        <img src="/innsigle/assets/marks/innsigle-base.svg" width="28" height="28" alt="" />
+        <span>
+          <strong>Innsigle</strong>
+          <span class="cue">Mash bill · not a detector</span>
+        </span>
+      </a>
+      <p>
+        <a href="https://github.com/DocumentDrivenDX/innsigle">Source</a>
+        · curated in <code>docs/website/</code>
+        · specs from <code>docs/helix/</code>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

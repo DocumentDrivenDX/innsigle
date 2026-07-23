@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CLI — Innsigle</title>
+  <meta name="description" content="Innsigle command-line surface for keygen, claim, sign, and verify." />
+  <link rel="stylesheet" href="/innsigle/assets/css/site.css" />
+  <link rel="icon" href="/innsigle/assets/marks/innsigle-base.svg" type="image/svg+xml" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/innsigle/">
+        <img src="/innsigle/assets/marks/innsigle-base.svg" width="32" height="32" alt="" />
+        Innsigle
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/innsigle/">What it is</a>
+        <a href="/innsigle/why/">Why</a>
+        <a href="/innsigle/use/" aria-current="page">Use</a>
+        <a href="/innsigle/reference/">Reference</a>
+        <a href="/innsigle/dogfood/">Dogfood</a>
+      </nav>
+    </div>
+  </header>
+  <div class="wrap layout-docs">
+    <p class="crumbs" aria-label="Breadcrumb"><a href="/innsigle/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/innsigle/use/">Use</a> <span aria-hidden="true">/</span> <span>CLI</span></p>
+    <div class="docs-grid">
+      <aside class="docs-side" aria-label="Section">
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/innsigle/">Home</a></li><li><a href="/innsigle/why/">Why</a></li><li><a href="/innsigle/dogfood/">Dogfood</a></li><li><a href="/innsigle/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/innsigle/use/" aria-current="page">Use overview</a></li><li><a href="/innsigle/use/cli/" aria-current="page">CLI</a></li><li><a href="/innsigle/use/mash-bill/">Mash bill</a></li><li><a href="/innsigle/use/verify/">Verify</a></li><li><a href="/innsigle/use/marks/">Marks</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/innsigle/reference/">Reference home</a></li><li><a href="/innsigle/reference/artifacts/">Artifacts</a></li><li><a href="/innsigle/reference/glossary/">Glossary</a></li></ul>
+      </aside>
+      <main class="docs-main prose">
+        <h1 id="cli">CLI</h1>
+<p>Runnable distribution for the signed docs path (CONTRACT-001). Requires Node 20+.</p>
+<pre><code class="language-bash">node src/cli.mjs keygen --out-dir ./keys
+node src/cli.mjs bill example --kind model-primary &gt; bill.json
+node src/cli.mjs claim build --content ./page.html --bill bill.json \
+  --issuer-id azgaard --issuer-name Azgaard \
+  --key-id "$(cat keys/key-id.txt)" \
+  --key-url https://example.com/.well-known/innsigle/keys.json \
+  --out claim.json
+node src/cli.mjs sign --claim claim.json --key keys/ed25519.priv.pem --out att.json
+node src/cli.mjs verify --attestation att.json --content ./page.html --keys keys.json</code></pre>
+<p>Exact flags and exit codes: <a href="/innsigle/reference/artifacts/contracts/CONTRACT-001-claim-and-cli/">CONTRACT-001</a> (generated from the HELIX design tree).</p>
+      </main>
+    </div>
+  </div>
+  <footer class="site-footer">
+    <div class="wrap">
+      <a class="innsigle-footer-seal" href="/innsigle/use/mash-bill/">
+        <img src="/innsigle/assets/marks/innsigle-base.svg" width="28" height="28" alt="" />
+        <span>
+          <strong>Innsigle</strong>
+          <span class="cue">Mash bill · not a detector</span>
+        </span>
+      </a>
+      <p>
+        <a href="https://github.com/DocumentDrivenDX/innsigle">Source</a>
+        · curated in <code>docs/website/</code>
+        · specs from <code>docs/helix/</code>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

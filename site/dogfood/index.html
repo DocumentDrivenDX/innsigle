@@ -20,6 +20,7 @@
     .cue { font-size: 0.8rem; color: var(--muted); }
     code { font-size: 0.9em; }
   </style>
+  <link rel="stylesheet" href="/innsigle/assets/css/site.css" />
 </head>
 <body>
   <h1>Innsigle dogfood page</h1>
@@ -42,16 +43,16 @@
   <p class="cue">Editorial tools do not flip composition to human-authored.</p>
 
   <h2>Verify</h2>
-  <p>Attestation: <a href=".well-known/innsigle/claims/index.attestation.json"><code>claims/index.attestation.json</code></a>.
-  Keys: <a href=".well-known/innsigle/keys.json"><code>keys.json</code></a>.</p>
-  <pre><code>node https://github.com/DocumentDrivenDX/innsigle verify \
+  <p>Attestation: <a href="/innsigle/dogfood/.well-known/innsigle/claims/index.attestation.json"><code>claims/index.attestation.json</code></a>.
+  Keys: <a href="/innsigle/dogfood/.well-known/innsigle/keys.json"><code>keys.json</code></a>.</p>
+  <pre><code>node src/cli.mjs verify \
   --attestation docs/dogfood/.well-known/innsigle/claims/index.attestation.json \
   --content docs/dogfood/index.html \
   --keys docs/dogfood/.well-known/innsigle/keys.json</code></pre>
 
   <footer class="innsigle-footer">
-    <a class="innsigle-seal" href=".well-known/innsigle/claims/index.attestation.json">
-      <img src="../assets/marks/innsigle-model.svg" width="32" height="32" alt="Innsigle seal, model-primary" />
+    <a class="innsigle-seal" href="/innsigle/dogfood/.well-known/innsigle/claims/index.attestation.json">
+      <img src="/innsigle/assets/marks/innsigle-model.svg" width="32" height="32" alt="Innsigle seal, model-primary" />
       <span>
         <strong>Innsigle</strong>
         <span class="cue">Mash bill · model-primary · signed claim</span>

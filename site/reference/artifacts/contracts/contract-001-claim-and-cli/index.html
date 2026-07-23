@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contract — Innsigle</title>
+  <meta name="description" content="Contract" />
+  <link rel="stylesheet" href="/innsigle/assets/css/site.css" />
+  <link rel="icon" href="/innsigle/assets/marks/innsigle-base.svg" type="image/svg+xml" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/innsigle/">
+        <img src="/innsigle/assets/marks/innsigle-base.svg" width="32" height="32" alt="" />
+        Innsigle
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/innsigle/">What it is</a>
+        <a href="/innsigle/why/">Why</a>
+        <a href="/innsigle/use/">Use</a>
+        <a href="/innsigle/reference/" aria-current="page">Reference</a>
+        <a href="/innsigle/dogfood/">Dogfood</a>
+      </nav>
+    </div>
+  </header>
+  <div class="wrap layout-docs">
+    <p class="crumbs" aria-label="Breadcrumb"><a href="/innsigle/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/innsigle/reference/">Reference</a> <span aria-hidden="true">/</span> <span>Contract</span></p>
+    <div class="docs-grid">
+      <aside class="docs-side" aria-label="Section">
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/innsigle/">Home</a></li><li><a href="/innsigle/why/">Why</a></li><li><a href="/innsigle/dogfood/">Dogfood</a></li><li><a href="/innsigle/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/innsigle/use/">Use overview</a></li><li><a href="/innsigle/use/cli/">CLI</a></li><li><a href="/innsigle/use/mash-bill/">Mash bill</a></li><li><a href="/innsigle/use/verify/">Verify</a></li><li><a href="/innsigle/use/marks/">Marks</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/innsigle/reference/" aria-current="page">Reference home</a></li><li><a href="/innsigle/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/innsigle/reference/glossary/">Glossary</a></li></ul>
+      </aside>
+      <main class="docs-main prose">
+        <p class="gen-banner note">Generated reference — edit sources under <code>docs/helix/</code>, then <code>npm run site:build</code>.</p>
+<blockquote><strong>Generated from HELIX docs.</strong> Source: <code>docs/helix/02-design/contracts/CONTRACT-001-claim-and-cli.md</code>. Edit the source, not this file or <code>site/</code> HTML.</blockquote>
+<details><summary>Source frontmatter</summary>
+<pre><code class="language-yaml">ddx:
+  id: aibadge.contract.001
+  type: contract
+  links:
+    - target: aibadge.adr.001
+      kind: informed_by
+    - target: aibadge.design.claim-system
+      kind: informed_by
+    - target: aibadge.prd
+      kind: informed_by
+status: draft
+activity: 02-design
+created: 2026-07-22</code></pre>
+</details>
+<h1 id="contract">Contract</h1>
+<p><strong>Contract ID:</strong> CONTRACT-001   <strong>Type:</strong> schema + CLI   <strong>Version:</strong> v1   <strong>Status:</strong> draft (normative for implementers; bump version on breaking field changes)   <strong>Related:</strong> ADR-001; claim-system.md; PRD FR-1–4a, FR-8–12, FR-18–19</p>
+<h2 id="purpose">Purpose</h2>
+<p>Define the mash-bill claim document, attestation envelope, public key document, content hashing rules for v1, and CLI commands that produce and verify them.</p>
+<h2 id="scope-and-boundaries">Scope and Boundaries</h2>
+<ul>
+<li><strong>In scope:</strong> JSON claim payload; attestation envelope; <code>keys.json</code>; SHA-256</li>
+</ul>
+<p>  content digests; Ed25519 sign/verify; CLI verbs listed below.</p>
+<ul>
+<li><strong>Out of scope:</strong> C2PA embed; DSSE/in-toto wire format (MAY export later);</li>
+</ul>
+<p>  multi-tenant accounts; social platform APIs; HTML DOM normalization beyond   "hash the file bytes given."</p>
+<ul>
+<li><strong>Owning system:</strong> Innsigle CLI / library (TypeScript + Bun assumed).</li>
+</ul>
+<h2 id="normative-surface">Normative Surface</h2>
+<p>Use MUST / MUST NOT / SHOULD / MAY as written.</p>
+<h3 id="claim-payload">Claim payload</h3>
+<p>A claim payload MUST be a JSON object with:</p>
+<table>
+<tr><th>Element</th><th>Type</th><th>Required</th><th>Rules</th></tr>
+<tr><td><code>innsigle</code></td><td>string</td><td>yes</td><td>MUST be <code>"1"</code> for this version</td></tr>
+<tr><td><code>type</code></td><td>string (URI)</td><td>yes</td><td>MUST be <code>https://innsigle.dev/claim/mash-bill/v1</code> until domain freeze changes it via version bump</td></tr>
+<tr><td><code>issued_at</code></td><td>string</td><td>yes</td><td>MUST be RFC 3339 UTC timestamp</td></tr>
+<tr><td><code>issuer</code></td><td>object</td><td>yes</td><td>See issuer object</td></tr>
+<tr><td><code>subjects</code></td><td>array</td><td>yes</td><td>MUST contain ≥1 subject</td></tr>
+<tr><td><code>mash_bill</code></td><td>object</td><td>yes</td><td>See mash_bill object</td></tr>
+</table>
+<h4 id="issuer-object">issuer object</h4>
+<table>
+<tr><th>Element</th><th>Type</th><th>Required</th><th>Rules</th></tr>
+<tr><td><code>id</code></td><td>string</td><td>yes</td><td>Stable issuer slug (e.g. <code>azgaard</code>)</td></tr>
+<tr><td><code>name</code></td><td>string</td><td>yes</td><td>Display name</td></tr>
+<tr><td><code>key_id</code></td><td>string</td><td>yes</td><td>MUST match a key in the issuer key document; format <code>ed25519:&lt;fingerprint&gt;</code></td></tr>
+<tr><td><code>key_url</code></td><td>string</td><td>yes</td><td>HTTPS URL of <code>keys.json</code> (or local <code>file:</code> only for tests)</td></tr>
+</table>
+<h4 id="subject-object">subject object</h4>
+<table>
+<tr><th>Element</th><th>Type</th><th>Required</th><th>Rules</th></tr>
+<tr><td><code>uri</code></td><td>string</td><td>no</td><td>Content locator when known</td></tr>
+<tr><td><code>digest</code></td><td>object</td><td>yes</td><td><code>alg</code> MUST be <code>"sha256"</code>; <code>value</code> MUST be lowercase hex of SHA-256</td></tr>
+</table>
+<h4 id="mash_bill-object">mash_bill object</h4>
+<table>
+<tr><th>Element</th><th>Type</th><th>Required</th><th>Rules</th></tr>
+<tr><td><code>schema_version</code></td><td>string</td><td>yes</td><td>MUST be <code>"1"</code></td></tr>
+<tr><td><code>composition</code></td><td>string</td><td>yes</td><td>MUST be one of <code>human-authored</code>, <code>mixed</code>, <code>model-primary</code></td></tr>
+<tr><td><code>ingredients</code></td><td>array</td><td>yes</td><td>MAY be empty only if composition is <code>human-authored</code> and notes explain; SHOULD list tools/models when used</td></tr>
+<tr><td><code>notes</code></td><td>string or null</td><td>no</td><td>Free text; MUST NOT replace required composition honesty</td></tr>
+</table>
+<h4 id="ingredient-object">ingredient object</h4>
+<table>
+<tr><th>Element</th><th>Type</th><th>Required</th><th>Rules</th></tr>
+<tr><td><code>kind</code></td><td>string</td><td>yes</td><td>MUST be one of <code>model</code>, <code>tool</code>, <code>human</code>, <code>other</code></td></tr>
+<tr><td><code>name</code></td><td>string</td><td>yes</td><td>Non-empty</td></tr>
+<tr><td><code>role</code></td><td>string</td><td>no</td><td>e.g. <code>draft</code>, <code>edit</code>, <code>rewrite</code></td></tr>
+<tr><td><code>version</code></td><td>string or null</td><td>no</td><td>Model/tool version when known</td></tr>
+<tr><td><code>uri</code></td><td>string</td><td>no</td><td>Link to tool/model docs</td></tr>
+</table>
+<p><strong>Composition integrity:</strong> Implementations MUST NOT offer a mode that sets <code>composition</code> to <code>human-authored</code> solely because an editorial tool (including sloptimizer) rewrote model-primary text. Tools MUST be listable as <code>kind: "tool"</code>.</p>
+<h3 id="attestation-envelope">Attestation envelope</h3>
+<table>
+<tr><th>Element</th><th>Type</th><th>Required</th><th>Rules</th></tr>
+<tr><td><code>payload</code></td><td>object</td><td>yes</td><td>MUST be a claim payload as above</td></tr>
+<tr><td><code>payload_encoding</code></td><td>string</td><td>yes</td><td>MUST be <code>"json"</code></td></tr>
+<tr><td><code>signatures</code></td><td>array</td><td>yes</td><td>MUST contain ≥1 signature object for signed attestations</td></tr>
+</table>
+<h4 id="signature-object">signature object</h4>
+<table>
+<tr><th>Element</th><th>Type</th><th>Required</th><th>Rules</th></tr>
+<tr><td><code>key_id</code></td><td>string</td><td>yes</td><td>MUST match <code>payload.issuer.key_id</code> for the primary signature</td></tr>
+<tr><td><code>alg</code></td><td>string</td><td>yes</td><td>MUST be <code>"ed25519"</code></td></tr>
+<tr><td><code>sig</code></td><td>string</td><td>yes</td><td>base64url (no padding) raw Ed25519 signature</td></tr>
+<tr><td><code>signed_at</code></td><td>string</td><td>yes</td><td>RFC 3339 UTC</td></tr>
+</table>
+<p><strong>Bytes to sign (ADR-001):</strong>   Let <code>canonical = JCS(payload)</code> per RFC 8785.   Let <code>h = SHA-256(canonical)</code> (raw 32 bytes).   <code>sig</code> MUST be Ed25519 signature of <code>h</code> using the issuer private key.</p>
+<p>Unsigned claims MAY be distributed as payload-only JSON for display; they MUST NOT be labeled as signed in UI or CLI success paths.</p>
+<h3 id="key-document-keysjson">Key document (<code>keys.json</code>)</h3>
+<table>
+<tr><th>Element</th><th>Type</th><th>Required</th><th>Rules</th></tr>
+<tr><td><code>innsigle_keys</code></td><td>string</td><td>yes</td><td>MUST be <code>"1"</code></td></tr>
+<tr><td><code>issuer_id</code></td><td>string</td><td>yes</td><td>Matches claim <code>issuer.id</code></td></tr>
+<tr><td><code>issuer_name</code></td><td>string</td><td>yes</td><td>Display</td></tr>
+<tr><td><code>keys</code></td><td>array</td><td>yes</td><td>≥0 keys (empty means no active keys)</td></tr>
+</table>
+<h4 id="key-object">key object</h4>
+<table>
+<tr><th>Element</th><th>Type</th><th>Required</th><th>Rules</th></tr>
+<tr><td><code>key_id</code></td><td>string</td><td>yes</td><td><code>ed25519:</code> + fingerprint</td></tr>
+<tr><td><code>alg</code></td><td>string</td><td>yes</td><td><code>"ed25519"</code></td></tr>
+<tr><td><code>public_key</code></td><td>string</td><td>yes</td><td>base64url 32-byte public key</td></tr>
+<tr><td><code>created_at</code></td><td>string</td><td>yes</td><td>RFC 3339</td></tr>
+<tr><td><code>revoked_at</code></td><td>string or null</td><td>yes</td><td>null if active</td></tr>
+</table>
+<p><strong>Fingerprint:</strong> lowercase hex of SHA-256 over the 32-byte public key, truncated to first 16 bytes (32 hex chars), prefixed as <code>ed25519:&lt;hex&gt;</code>.</p>
+<h3 id="content-hashing-v1">Content hashing (v1)</h3>
+<ul>
+<li>For a subject that is a <strong>file</strong>, digest MUST be SHA-256 of the exact file</li>
+</ul>
+<p>  bytes the operator supplies (no silent transcoding).</p>
+<ul>
+<li>CLI MUST record the path or URI used when building the claim.</li>
+<li>HTML "live page" fetch MAY be supported later; v1 CLI MUST support local file</li>
+</ul>
+<p>  subjects.</p>
+<h3 id="cli">CLI</h3>
+<p>Binary name: <code>innsigle</code> (package may ship as such).</p>
+<table>
+<tr><th>Command</th><th>Args (normative intent)</th><th>Behavior</th></tr>
+<tr><td><code>innsigle keygen</code></td><td><code>--out-dir &lt;dir&gt;</code></td><td>MUST write private key (permissions 0600 when FS supports) and public material; MUST NOT print private key</td></tr>
+<tr><td><code>innsigle keys template</code></td><td><code>--issuer-id</code> <code>--issuer-name</code> <code>--public-key</code></td><td>MUST emit <code>keys.json</code> skeleton</td></tr>
+<tr><td><code>innsigle claim build</code></td><td><code>--content &lt;file&gt;</code> <code>--uri &lt;uri?&gt;</code> <code>--bill &lt;bill.json&gt;</code> <code>--issuer &lt;issuer fields&gt;</code></td><td>MUST emit claim payload JSON on stdout or <code>--out</code></td></tr>
+<tr><td><code>innsigle sign</code></td><td><code>--claim &lt;file&gt;</code> <code>--key &lt;private&gt;</code></td><td>MUST emit attestation envelope</td></tr>
+<tr><td><code>innsigle verify</code></td><td><code>--attestation &lt;file&gt;</code> <code>--content &lt;file&gt;</code> `--keys &lt;file\</td><td>url&gt;`</td><td>MUST exit 0 iff signature valid, key not revoked, and content digest matches; MUST exit non-zero otherwise</td></tr>
+<tr><td><code>innsigle bill example</code></td><td>`--kind model-primary\</td><td>human-authored\</td><td>mixed`</td><td>MUST print example mash_bill JSON</td></tr>
+</table>
+<h4 id="verify-exit-codes">verify exit codes</h4>
+<table>
+<tr><th>Code</th><th>Meaning</th></tr>
+<tr><td>0</td><td>Valid signature, active key, content match</td></tr>
+<tr><td>1</td><td>Usage / IO error</td></tr>
+<tr><td>2</td><td>Bad signature</td></tr>
+<tr><td>3</td><td>Content digest mismatch</td></tr>
+<tr><td>4</td><td>Unknown or revoked key</td></tr>
+<tr><td>5</td><td>Invalid schema invalid</td></tr>
+</table>
+<h4 id="verify-stdout-human">verify stdout (human)</h4>
+<p>MUST include lines sufficient to see: result keyword (<code>VALID</code> / <code>INVALID</code>), issuer id, composition, and failure reason when invalid. MUST NOT print AI detection scores.</p>
+<h2 id="precedence-and-compatibility">Precedence and Compatibility</h2>
+<ul>
+<li>Versioning: <code>innsigle</code> field and <code>schema_version</code> / <code>innsigle_keys</code> govern</li>
+</ul>
+<p>  payload compatibility. Breaking changes MUST bump these and the contract   version.</p>
+<ul>
+<li>Unknown JSON fields in payload: verifiers MUST ignore unknown fields when</li>
+</ul>
+<p>  verifying signatures (signature covers canonical form of known payload as   signed; producers SHOULD avoid unknown fields in v1).</p>
+<ul>
+<li>Deprecation: announce in release notes; keep verify for prior <code>innsigle: "1"</code></li>
+</ul>
+<p>  for at least one minor series after a bump.</p>
+<h2 id="error-semantics">Error Semantics</h2>
+<table>
+<tr><th>Condition</th><th>Outcome</th><th>Retry</th></tr>
+<tr><td>Missing file</td><td>exit 1</td><td>no</td></tr>
+<tr><td>Invalid JSON schema</td><td>exit 5</td><td>no</td></tr>
+<tr><td>Signature fail</td><td>exit 2</td><td>no</td></tr>
+<tr><td>Digest mismatch</td><td>exit 3</td><td>no</td></tr>
+<tr><td>Revoked key</td><td>exit 4</td><td>no</td></tr>
+</table>
+<h2 id="examples">Examples</h2>
+<p>See:</p>
+<ul>
+<li><code>docs/helix/02-design/examples/claim-model-primary-docs.json</code></li>
+<li><code>docs/helix/02-design/examples/keys.json</code></li>
+</ul>
+<pre><code class="language-text">innsigle keygen --out-dir ~/.config/innsigle/azgaard
+innsigle claim build --content ./site/index.html --uri https://example.com/ \
+  --bill ./bill.json --out claim.json
+innsigle sign --claim claim.json --key ~/.config/innsigle/azgaard/ed25519.priv \
+  --out claim.attestation.json
+innsigle verify --attestation claim.attestation.json --content ./site/index.html \
+  --keys ./keys.json</code></pre>
+<h2 id="non-normative-notes">Non-Normative Notes</h2>
+<ul>
+<li>Type URI host <code>innsigle.dev</code> is provisional until domain purchase.</li>
+<li>JCS libraries: implement or depend on a reviewed RFC 8785 implementation;</li>
+</ul>
+<p>  golden vectors will live under <code>tests/vectors/</code> when code lands.</p>
+<ul>
+<li>Social UC often uses mark assets without per-post <code>sign</code>.</li>
+</ul>
+<h2 id="validation-checklist">Validation Checklist</h2>
+<ul>
+<li>[x] Normative fields and rules explicit</li>
+<li>[x] Compatibility rules explicit</li>
+<li>[x] Error / exit codes explicit</li>
+<li>[x] Tests can be derived (golden vectors + CLI exits)</li>
+<li>[x] Non-normative section separated</li>
+</ul>
+      </main>
+    </div>
+  </div>
+  <footer class="site-footer">
+    <div class="wrap">
+      <a class="innsigle-footer-seal" href="/innsigle/use/mash-bill/">
+        <img src="/innsigle/assets/marks/innsigle-base.svg" width="28" height="28" alt="" />
+        <span>
+          <strong>Innsigle</strong>
+          <span class="cue">Mash bill · not a detector</span>
+        </span>
+      </a>
+      <p>
+        <a href="https://github.com/DocumentDrivenDX/innsigle">Source</a>
+        · curated in <code>docs/website/</code>
+        · specs from <code>docs/helix/</code>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>
