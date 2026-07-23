@@ -149,6 +149,8 @@ function sidebar(pageUrl) {
         { t: "Mash bill", h: `${BASE}/use/mash-bill/` },
         { t: "Verify", h: `${BASE}/use/verify/` },
         { t: "Marks", h: `${BASE}/use/marks/` },
+        { t: "Walkthrough: docs", h: `${BASE}/use/walkthrough-docs/` },
+        { t: "Walkthrough: social", h: `${BASE}/use/walkthrough-social/` },
       ],
     },
     {

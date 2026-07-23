@@ -8,7 +8,7 @@
   },
   "scripts": {
     "innsigle": "node src/cli.mjs",
-    "test": "node --test tests/cli.test.mjs tests/vectors.test.mjs",
+    "test": "node --test tests/cli.test.mjs tests/vectors.test.mjs tests/site-build.test.mjs",
     "vectors": "node scripts/generate-vectors.mjs",
     "site:publish": "node scripts/publish-artifacts.mjs",
     "site:build": "node scripts/build-site.mjs",

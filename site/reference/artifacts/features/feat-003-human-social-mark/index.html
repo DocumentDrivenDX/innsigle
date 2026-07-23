@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Feature Specification: FEAT-003 — Human social mark pattern — Innsigle</title>
+  <meta name="description" content="Feature Specification: FEAT-003 — Human social mark pattern" />
+  <link rel="stylesheet" href="/innsigle/assets/css/site.css" />
+  <link rel="icon" href="/innsigle/assets/marks/innsigle-base.svg" type="image/svg+xml" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/innsigle/">
+        <img src="/innsigle/assets/marks/innsigle-base.svg" width="32" height="32" alt="" />
+        Innsigle
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/innsigle/">What it is</a>
+        <a href="/innsigle/why/">Why</a>
+        <a href="/innsigle/use/">Use</a>
+        <a href="/innsigle/reference/" aria-current="page">Reference</a>
+        <a href="/innsigle/dogfood/">Dogfood</a>
+      </nav>
+    </div>
+  </header>
+  <div class="wrap layout-docs">
+    <p class="crumbs" aria-label="Breadcrumb"><a href="/innsigle/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/innsigle/reference/">Reference</a> <span aria-hidden="true">/</span> <span>Feature Specification: FEAT-003 — Human social mark pattern</span></p>
+    <div class="docs-grid">
+      <aside class="docs-side" aria-label="Section">
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/innsigle/">Home</a></li><li><a href="/innsigle/why/">Why</a></li><li><a href="/innsigle/dogfood/">Dogfood</a></li><li><a href="/innsigle/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/innsigle/use/">Use overview</a></li><li><a href="/innsigle/use/cli/">CLI</a></li><li><a href="/innsigle/use/mash-bill/">Mash bill</a></li><li><a href="/innsigle/use/verify/">Verify</a></li><li><a href="/innsigle/use/marks/">Marks</a></li><li><a href="/innsigle/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/innsigle/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/innsigle/reference/" aria-current="page">Reference home</a></li><li><a href="/innsigle/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/innsigle/reference/glossary/">Glossary</a></li></ul>
+      </aside>
+      <main class="docs-main prose">
+        <p class="gen-banner note">Generated reference — edit sources under <code>docs/helix/</code>, then <code>npm run site:build</code>.</p>
+<blockquote><strong>Generated from HELIX docs.</strong> Source: <code>docs/helix/01-frame/features/FEAT-003-human-social-mark.md</code>. Edit the source, not this file or <code>site/</code> HTML.</blockquote>
+<details><summary>Source frontmatter</summary>
+<pre><code class="language-yaml">ddx:
+  id: aibadge.feat.003
+  type: feature-specification
+  links:
+    - target: aibadge.prd
+      kind: informed_by
+    - target: aibadge.feat.001
+      kind: informed_by
+status: draft
+activity: 01-frame
+created: 2026-07-23</code></pre>
+</details>
+<h1 id="feature-specification-feat-003-human-social-mark-pattern">Feature Specification: FEAT-003 — Human social mark pattern</h1>
+<p><strong>Feature ID</strong>: FEAT-003   <strong>Status</strong>: Specified   <strong>Priority</strong>: P0   <strong>Owner</strong>: Operator   <strong>Covered PRD Subsystem(s)</strong>: UC-human-social   <strong>Covered PRD Requirements</strong>: FR-13, FR-14, FR-15   <strong>Cross-Subsystem Rationale</strong>: None — single subsystem.</p>
+<h2 id="overview">Overview</h2>
+<p>Makers mark short social posts as human-authored using the same seal family as docs, without depending on platform-preserved file metadata.</p>
+<h2 id="ideal-future-state">Ideal Future State</h2>
+<p>Operator attaches or includes the H-cue Innsigle mark (image and/or link). Viewers can open a short explanation URL. Unsigned is valid. Mark is not a separate “purity brand.”</p>
+<h2 id="problem-statement">Problem Statement</h2>
+<ul>
+<li><strong>Current situation</strong>: Mark SVGs exist; social placement pattern needs productized guidance and walkthrough.</li>
+<li><strong>Pain points</strong>: C2PA/EXIF die on X-class platforms; human posts need a visible maker-controlled cue.</li>
+<li><strong>Desired outcome</strong>: Documented social pack + caption pattern + same-family rule.</li>
+</ul>
+<h2 id="requirements">Requirements</h2>
+<h3 id="functional">Functional</h3>
+<p><strong>SOC-01.</strong> Human-authored mark asset (H cue) available as SVG/PNG path.   <strong>SOC-02.</strong> Placement pattern does not require surviving C2PA/EXIF on the platform.   <strong>SOC-03.</strong> Pattern includes viewer path to meaning (profile/site/short URL).   <strong>SOC-04.</strong> Per-post signature is optional; unsigned human marks allowed.   <strong>SOC-05.</strong> Social mark uses same seal family as docs (not a fork brand).</p>
+<h3 id="non-functional">Non-Functional</h3>
+<ul>
+<li>Caption/template text stays under ~280 chars for X when including URL.</li>
+</ul>
+<h2 id="acceptance-sketches">Acceptance sketches</h2>
+<table>
+<tr><th>ID</th><th>Scenario</th><th>Expect</th></tr>
+<tr><td>SOC-02</td><td>Platform strips metadata</td><td>Mark still visible as image/link</td></tr>
+<tr><td>SOC-05</td><td>Compare H and A assets</td><td>Shared outer geometry; cue differs</td></tr>
+</table>
+<h2 id="dependencies">Dependencies</h2>
+<ul>
+<li>FEAT-001 seal family</li>
+</ul>
+      </main>
+    </div>
+  </div>
+  <footer class="site-footer">
+    <div class="wrap">
+      <a class="innsigle-footer-seal" href="/innsigle/use/mash-bill/">
+        <img src="/innsigle/assets/marks/innsigle-base.svg" width="28" height="28" alt="" />
+        <span>
+          <strong>Innsigle</strong>
+          <span class="cue">Mash bill · not a detector</span>
+        </span>
+      </a>
+      <p>
+        <a href="https://github.com/DocumentDrivenDX/innsigle">Source</a>
+        · curated in <code>docs/website/</code>
+        · specs from <code>docs/helix/</code>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

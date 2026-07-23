@@ -18,13 +18,18 @@ Onboarding path: install CLI → write a mash bill → claim and sign a file →
 | [Verify](verify/) | What does a valid seal mean? |
 | [Marks](marks/) | Which seal cue for which state? |
 
+## Walkthroughs
+
+| Walkthrough | Use case |
+|-------------|----------|
+| [Seal a docs page](walkthrough-docs/) | UC-AI-docs (FEAT-002) |
+| [Human social mark](walkthrough-social/) | UC-human-social (FEAT-003) |
+
+Screenshots go in `docs/website/static/captures/` and link from those pages.
+
 ## Proof
 
 - [Dogfood sample](../dogfood/) — live signed model-primary page in this site tree
 - [Golden vectors](https://github.com/DocumentDrivenDX/innsigle/tree/main/tests/vectors) — reproducible crypto fixtures
 
-## Walkthroughs
-
-Walkthroughs and captures live under curated use content and
-`docs/website/static/captures/` (screenshots). Spec-backed detail is generated
-from `docs/helix/` under [Reference](../reference/).
+Spec-backed detail is generated from `docs/helix/` under [Reference](../reference/).

@@ -22,5 +22,6 @@ node src/cli.mjs sign --claim claim.json --key keys/ed25519.priv.pem --out att.j
 node src/cli.mjs verify --attestation att.json --content ./page.html --keys keys.json
 ```
 
-Exact flags and exit codes: [CONTRACT-001](../../reference/artifacts/contracts/CONTRACT-001-claim-and-cli/)
+Exact flags and exit codes:
+[CONTRACT-001](../../reference/artifacts/contracts/contract-001-claim-and-cli/)
 (generated from the HELIX design tree).

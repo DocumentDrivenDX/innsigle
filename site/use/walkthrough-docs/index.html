@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Walkthrough — seal a docs page — Innsigle</title>
+  <meta name="description" content="Step-by-step UC-AI-docs path from mash bill to verify." />
+  <link rel="stylesheet" href="/innsigle/assets/css/site.css" />
+  <link rel="icon" href="/innsigle/assets/marks/innsigle-base.svg" type="image/svg+xml" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/innsigle/">
+        <img src="/innsigle/assets/marks/innsigle-base.svg" width="32" height="32" alt="" />
+        Innsigle
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/innsigle/">What it is</a>
+        <a href="/innsigle/why/">Why</a>
+        <a href="/innsigle/use/" aria-current="page">Use</a>
+        <a href="/innsigle/reference/">Reference</a>
+        <a href="/innsigle/dogfood/">Dogfood</a>
+      </nav>
+    </div>
+  </header>
+  <div class="wrap layout-docs">
+    <p class="crumbs" aria-label="Breadcrumb"><a href="/innsigle/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/innsigle/use/">Use</a> <span aria-hidden="true">/</span> <span>Walkthrough — seal a docs page</span></p>
+    <div class="docs-grid">
+      <aside class="docs-side" aria-label="Section">
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/innsigle/">Home</a></li><li><a href="/innsigle/why/">Why</a></li><li><a href="/innsigle/dogfood/">Dogfood</a></li><li><a href="/innsigle/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/innsigle/use/" aria-current="page">Use overview</a></li><li><a href="/innsigle/use/cli/">CLI</a></li><li><a href="/innsigle/use/mash-bill/">Mash bill</a></li><li><a href="/innsigle/use/verify/">Verify</a></li><li><a href="/innsigle/use/marks/">Marks</a></li><li><a href="/innsigle/use/walkthrough-docs/" aria-current="page">Walkthrough: docs</a></li><li><a href="/innsigle/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/innsigle/reference/">Reference home</a></li><li><a href="/innsigle/reference/artifacts/">Artifacts</a></li><li><a href="/innsigle/reference/glossary/">Glossary</a></li></ul>
+      </aside>
+      <main class="docs-main prose">
+        <h1 id="walkthrough-seal-a-docs-page">Walkthrough: seal a docs page</h1>
+<p><strong>Reader mode:</strong> Start. <strong>Feature:</strong> FEAT-002. <strong>Use case:</strong> UC-AI-docs.</p>
+<h2 id="goal">Goal</h2>
+<p>Publish a static HTML page with a model-primary mash bill and a signed claim a third party can verify offline.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li>Node 20+</li>
+<li>Clone of <a href="https://github.com/DocumentDrivenDX/innsigle">DocumentDrivenDX/innsigle</a></li>
+</ul>
+<h2 id="steps">Steps</h2>
+<h3 id="1-draft-and-edit">1. Draft and edit</h3>
+<p>Produce the page content (often model draft). Optionally run <strong>sloptimizer</strong> on prose. Do <strong>not</strong> change composition to human-authored because of that rewrite.</p>
+<h3 id="2-write-the-mash-bill">2. Write the mash bill</h3>
+<pre><code class="language-bash">node src/cli.mjs bill example --kind model-primary &gt; bill.json
+# edit ingredients: name Claude, sloptimizer, human roles</code></pre>
+<h3 id="3-generate-issuer-keys-once">3. Generate issuer keys (once)</h3>
+<pre><code class="language-bash">node src/cli.mjs keygen --out-dir ./keys
+node src/cli.mjs keys template \
+  --issuer-id my-house --issuer-name "My House" \
+  --public-key "$(cat keys/ed25519.pub.raw.b64url)" \
+  --key-id "$(cat keys/key-id.txt)" \
+  --out keys.json</code></pre>
+<p>Publish <code>keys.json</code> over HTTPS (or ship beside content for dogfood).</p>
+<h3 id="4-build-claim-and-sign">4. Build claim and sign</h3>
+<pre><code class="language-bash">node src/cli.mjs claim build \
+  --content ./page.html \
+  --uri https://example.com/page/ \
+  --bill bill.json \
+  --issuer-id my-house --issuer-name "My House" \
+  --key-id "$(cat keys/key-id.txt)" \
+  --key-url https://example.com/.well-known/innsigle/keys.json \
+  --out claim.json
+
+node src/cli.mjs sign \
+  --claim claim.json \
+  --key keys/ed25519.priv.pem \
+  --out claim.attestation.json</code></pre>
+<p>Keep the private key offline (not in the site tree).</p>
+<h3 id="5-place-the-seal">5. Place the seal</h3>
+<p>Footer (see <code>docs/dogfood/snippets/footer.html</code>): glyph + link to the attestation or a bill page. Use the <strong>A</strong> mark for model-primary.</p>
+<h3 id="6-verify">6. Verify</h3>
+<pre><code class="language-bash">node src/cli.mjs verify \
+  --attestation claim.attestation.json \
+  --content ./page.html \
+  --keys keys.json
+# expect VALID</code></pre>
+<p>Mutate the HTML and re-run: expect content mismatch (exit 3).</p>
+<h2 id="proof-in-this-repo">Proof in this repo</h2>
+<ul>
+<li>Dogfood: <a href="/innsigle/dogfood/">Dogfood sample</a></li>
+<li>Vectors: <code>tests/vectors/</code> on GitHub</li>
+</ul>
+<h2 id="captures">Captures</h2>
+<p>Drop screenshots into <code>docs/website/static/captures/</code> (e.g. <code>walkthrough-docs-verify.png</code>) and link them here when recorded.</p>
+      </main>
+    </div>
+  </div>
+  <footer class="site-footer">
+    <div class="wrap">
+      <a class="innsigle-footer-seal" href="/innsigle/use/mash-bill/">
+        <img src="/innsigle/assets/marks/innsigle-base.svg" width="28" height="28" alt="" />
+        <span>
+          <strong>Innsigle</strong>
+          <span class="cue">Mash bill · not a detector</span>
+        </span>
+      </a>
+      <p>
+        <a href="https://github.com/DocumentDrivenDX/innsigle">Source</a>
+        · curated in <code>docs/website/</code>
+        · specs from <code>docs/helix/</code>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -49,6 +49,8 @@ core_leaves:
   - /use/mash-bill/
   - /use/verify/
   - /use/marks/
+  - /use/walkthrough-docs/
+  - /use/walkthrough-social/
   - /reference/artifacts/
   - /reference/glossary/
   - /non-goals/

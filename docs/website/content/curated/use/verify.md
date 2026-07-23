@@ -25,4 +25,5 @@ scores.
 4. Ed25519 over SHA-256(JCS(payload))  
 
 Trust policy (whether you accept the issuer) is separate from crypto validity
-(SLSA / PGP lesson). See [ADR-001](../../reference/artifacts/adrs/ADR-001-signing-and-canonicalization/).
+(SLSA / PGP lesson). See
+[ADR-001](../../reference/artifacts/adrs/adr-001-signing-and-canonicalization/).
