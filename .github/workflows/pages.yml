@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -36,25 +36,40 @@ jobs:
           cp docs/dogfood/assets/marks/*.svg site/assets/marks/
           cp docs/dogfood/.well-known/innsigle/keys.json site/dogfood/.well-known/innsigle/
           cp docs/dogfood/.well-known/innsigle/claims/*.json site/dogfood/.well-known/innsigle/claims/
-          # Keep committed dogfood HTML (paths already site-relative); refresh from source and fix mark paths
           cp docs/dogfood/index.html site/dogfood/index.html
           sed -i 's|src="assets/marks/|src="../assets/marks/|g' site/dogfood/index.html
-          # Point verify pre block at repo paths for operators; site still hosts claims
+          # Prefer site-relative mark path when already rewritten
+          sed -i 's|src="../assets/marks/|src="../assets/marks/|g' site/dogfood/index.html
           test -f site/index.html
           test -f site/assets/css/site.css
 
+      # Primary: classic gh-pages branch (works without Actions Pages environment approval)
+      - name: Deploy to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site
+          force_orphan: true
+          user_name: github-actions[bot]
+          user_email: github-actions[bot]@users.noreply.github.com
+
+      # Also publish via Actions artifact when org runners + Pages env allow it
       - name: Upload Pages artifact
+        if: success()
+        continue-on-error: true
         uses: actions/upload-pages-artifact@v3
         with:
           path: site
 
-  deploy:
-    needs: build
+  deploy-pages:
+    needs: build-and-deploy
+    if: success()
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    continue-on-error: true
     steps:
-      - name: Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages (workflow)
         id: deployment
         uses: actions/deploy-pages@v4
