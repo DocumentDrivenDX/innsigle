@@ -28,7 +28,7 @@
     <p class="crumbs" aria-label="Breadcrumb"><a href="/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/reference/">Reference</a> <span aria-hidden="true">/</span> <span>Feature Specification: FEAT-002 — Signed documentation claims</span></p>
     <div class="docs-grid">
       <aside class="docs-side" aria-label="Section">
-        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/dogfood/">Dogfood</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/mash-bill/">Mash bill</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/" aria-current="page">Reference home</a></li><li><a href="/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/dogfood/">Dogfood</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/colophon/">Colophon</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/" aria-current="page">Reference home</a></li><li><a href="/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
       </aside>
       <main class="docs-main prose">
         <p class="gen-banner note">Generated reference — edit sources under <code>docs/helix/</code>, then <code>npm run site:build</code>.</p>
@@ -53,7 +53,7 @@ created: 2026-07-23</code></pre>
 <h2 id="overview">Overview</h2>
 <p>Operators publish static/HTML docs with an Innsigle, optional signed claim over file bytes, and offline verify (CONTRACT-001 / ADR-001).</p>
 <h2 id="ideal-future-state">Ideal Future State</h2>
-<p>Maker records mash bill (named models/tools), places footer seal, signs with a local house key, publishes claim next to content. Third party verifies without an account. Tamper fails closed.</p>
+<p>Maker records colophon (named models/tools), places footer seal, signs with a local house key, publishes claim next to content. Third party verifies without an account. Tamper fails closed.</p>
 <h2 id="problem-statement">Problem Statement</h2>
 <ul>
 <li><strong>Current situation</strong>: CLI v0 + dogfood sample exist; need feature-level acceptance and walkthrough as product surface.</li>
@@ -62,7 +62,7 @@ created: 2026-07-23</code></pre>
 </ul>
 <h2 id="requirements">Requirements</h2>
 <h3 id="functional">Functional</h3>
-<p><strong>DOC-01.</strong> Maker publishes seal + bill on HTML/static page (inline or linked).   <strong>DOC-02.</strong> Maker builds claim with content SHA-256 subject and mash bill including named tools.   <strong>DOC-03.</strong> Maker signs with local Ed25519 key; private key never published.   <strong>DOC-04.</strong> Verify succeeds when sig valid, key active, content digest matches.   <strong>DOC-05.</strong> Verify fails closed on content mutation (exit 3) and bad signature (exit 2).   <strong>DOC-06.</strong> Verify output never includes detection scores.</p>
+<p><strong>DOC-01.</strong> Maker publishes seal + bill on HTML/static page (inline or linked).   <strong>DOC-02.</strong> Maker builds claim with content SHA-256 subject and colophon including named tools.   <strong>DOC-03.</strong> Maker signs with local Ed25519 key; private key never published.   <strong>DOC-04.</strong> Verify succeeds when sig valid, key active, content digest matches.   <strong>DOC-05.</strong> Verify fails closed on content mutation (exit 3) and bad signature (exit 2).   <strong>DOC-06.</strong> Verify output never includes detection scores.</p>
 <h3 id="non-functional">Non-Functional</h3>
 <ul>
 <li>Offline verify given claim + content + pubkey file.</li>
@@ -85,11 +85,11 @@ created: 2026-07-23</code></pre>
   </div>
   <footer class="site-footer">
     <div class="wrap">
-      <a class="innsigle-footer-seal" href="/use/mash-bill/">
+      <a class="innsigle-footer-seal" href="/use/colophon/">
         <img src="/assets/marks/innsigle-base.svg" width="28" height="28" alt="" />
         <span>
           <strong>Innsigle</strong>
-          <span class="cue">Mash bill · not a detector</span>
+          <span class="cue">Colo · not a detector</span>
         </span>
       </a>
       <p>

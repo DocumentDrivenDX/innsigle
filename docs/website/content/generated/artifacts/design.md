@@ -40,16 +40,16 @@ mark language. Complements claim schema and signing in
 | Axis | Choice |
 |------|--------|
 | Tone | Craft stamp, not compliance form; not panic "AI warning" |
-| Register | Short nouns; mash bill / seal / signet; avoid "credentials," "authentic real," "verified true content" |
-| Dual composition | Human and model-primary use the **same seal family**; state is in the bill and optional mark variant, never shame color |
+| Register | Short nouns; colophon / colo / seal / signet; avoid "credentials," "authentic real," "verified true content" |
+| Dual composition | Human and model-primary use the **same seal family**; state is in the colo and optional mark variant, never shame color |
 | Pride | Model names (e.g. Claude) and human roles both allowed as credit |
-| Trust copy | "Who sealed this bill for these bytes," not "this content is true" |
+| Trust copy | "Who sealed this colo for these bytes," not "this content is true" |
 | Spoken name | **INN-siggle** (rhymes with *single*) |
 
 **Do not use in UI or mark chrome:** green check "verified authentic," red "AI
 danger," detector percentages, Not By AI clone language as the only path.
 
-**Pairing with sloptimizer:** Editorial cleanup may be listed on the bill; it
+**Pairing with sloptimizer:** Editorial cleanup may be listed on the colophon; it
 must not be presented as converting model-primary work into human-authored.
 
 ## Brand architecture
@@ -59,7 +59,7 @@ must not be presented as converting model-primary work into human-authored.
 | House | Azgaard (or other issuer) — signer identity |
 | Product | Innsigle — seal system |
 | Mark | Visual seal glyph + optional state cue |
-| Bill | Mash bill (composition recipe) |
+| Colophon | Colo — declared composition recipe |
 | Signet | Optional cryptographic bind |
 
 ## The badge (seal mark)
@@ -68,7 +68,7 @@ must not be presented as converting model-primary work into human-authored.
 
 1. Recognizable at small size (footer ~24–32px; social avatar-adjacent ~48–96px).
 2. One family for all composition states.
-3. Opens or links to mash bill (and verify when signed).
+3. Opens or links to colophon (and verify when signed).
 4. Works as SVG/PNG without embedded C2PA (social-safe).
 
 ### Anatomy
@@ -102,11 +102,11 @@ Exact geometry TBD in mark exploration (runic/craft/minimal). Constraint:
 
 | Surface | Pattern |
 |---------|---------|
-| Docs footer | Glyph (+ wordmark) left or right; link "Mash bill" / open panel |
-| Docs about | Larger seal + full bill table |
+| Docs footer | Glyph (+ wordmark) left or right; link "Colo" / open panel |
+| Docs about | Larger seal + full colophon table |
 | Social image | Glyph baked into image or attached still; caption optional short URL |
 | Social profile | Link in bio to house keys + "how to read Innsigle" |
-| Verify page | Glyph + validity line + bill + signer fingerprint |
+| Verify page | Glyph + validity line + colo + signer fingerprint |
 
 ### Interaction states (web)
 
@@ -114,20 +114,20 @@ Exact geometry TBD in mark exploration (runic/craft/minimal). Constraint:
 |-------|------------|
 | Default | High contrast glyph; focus ring on link/button wrapper |
 | Hover / `:focus-visible` | Slight lift or ring; no color-only state change |
-| Open bill | Inline expand or dedicated `/bill` / hash route |
+| Open colo | Inline expand or dedicated `/use/colophon/` / hash route |
 | Verify OK | Text: "Signature valid for this content" + signer id; not a green truth badge alone |
 | Verify fail | Text: fail reason (mismatch, bad key, mutated content); no detector language |
 
 ### Accessibility
 
-- State not by color alone (cue letter or pattern + text on bill).
-- Link text not "click here"; prefer "Innsigle mash bill" / "Verify seal".
+- State not by color alone (cue letter or pattern + text on colophon).
+- Link text not "click here"; prefer "Innsigle colo" / "Verify seal".
 - Contrast WCAG AA for glyph on light and dark footers (provide mono variants).
 
-## Visual hierarchy (verify and bill pages)
+## Visual hierarchy (verify and colophon pages)
 
 - **Primary:** Validity + signer (if signed), or "Unsigned declaration" if not.
-- **Secondary:** Composition state and tool list (mash bill).
+- **Secondary:** Composition state and tool list (colophon).
 - **Tertiary:** Content fingerprint, timestamps, raw claim download.
 
 Layout: single column, dense craft manual, not dashboard chrome.
@@ -164,7 +164,7 @@ Prefer a readable grotesque + mono for digests. Final faces open.
 
 | Surface | Model |
 |---------|-------|
-| Marketing / docs site | Top links: What it is, Mash bill, Verify, Mark pack, Non-goals, Dogfood |
+| Marketing / docs site | Top links: What it is, Colophon, Verify, Mark pack, Non-goals, Dogfood |
 | Active state | Underline or weight + `aria-current="page"` |
 
 **Live microsite:** `site/` deployed by `.github/workflows/pages.yml` to

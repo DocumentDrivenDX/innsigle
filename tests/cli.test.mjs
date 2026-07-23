@@ -46,10 +46,10 @@ describe("innsigle CLI CONTRACT-001", () => {
     ]);
     assert.equal(r.status, 0, r.stderr);
 
-    const billPath = join(tmp, "bill.json");
-    r = run(["bill", "example", "--kind", "model-primary"]);
+    const coloPath = join(tmp, "colo.json");
+    r = run(["colo", "example", "--kind", "model-primary"]);
     assert.equal(r.status, 0, r.stderr);
-    writeFileSync(billPath, r.stdout);
+    writeFileSync(coloPath, r.stdout);
 
     const claimPath = join(tmp, "claim.json");
     r = run([
@@ -59,8 +59,8 @@ describe("innsigle CLI CONTRACT-001", () => {
       content,
       "--uri",
       "https://example.com/",
-      "--bill",
-      billPath,
+      "--colo",
+      coloPath,
       "--issuer-id",
       "azgaard",
       "--issuer-name",

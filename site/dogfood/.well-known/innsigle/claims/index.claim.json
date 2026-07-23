@@ -1,7 +1,7 @@
 {
   "innsigle": "1",
-  "type": "https://innsigle.dev/claim/mash-bill/v1",
-  "issued_at": "2026-07-23T13:40:09Z",
+  "type": "https://innsigle.dev/claim/colophon/v1",
+  "issued_at": "2026-07-23T23:55:58Z",
   "issuer": {
     "id": "azgaard-dogfood",
     "name": "Azgaard Dogfood",
@@ -10,14 +10,13 @@
   },
   "subjects": [
     {
-      "uri": "https://innsigle.local/dogfood/",
       "digest": {
         "alg": "sha256",
-        "value": "305c20001d1b30ba0b1e331fbae890dcdd94f509f962d4ad010d58d89352827d"
+        "value": "87e4373e216c3c2cfed96e5ef0dfeb4fb185a76a36a83ab04d3815c8d1c794cc"
       }
     }
   ],
-  "mash_bill": {
+  "colophon": {
     "schema_version": "1",
     "composition": "model-primary",
     "ingredients": [

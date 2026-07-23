@@ -14,7 +14,7 @@ scores.
 ## Hierarchy on a verify view
 
 1. **Primary:** Signature valid or invalid; issuer id when valid. Or “unsigned declaration.”
-2. **Secondary:** Composition and ingredient list (mash bill).
+2. **Secondary:** Composition and ingredient list (colophon).
 3. **Tertiary:** Content fingerprint, timestamps, raw claim download.
 
 ## CLI checks

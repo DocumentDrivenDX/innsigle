@@ -22,7 +22,7 @@ One seal family for all composition states. State is a letter cue—not a traffi
 | Do | Don’t |
 |----|--------|
 | Monochrome / high contrast | Green = human, red = AI |
-| Link mark to mash bill | Imply “content is true” |
+| Link mark to colophon | Imply “content is true” |
 | Same family for all states | Human-only purity as the whole product |
 
 SVG pack ships under site assets (synced from `docs/dogfood/assets/marks/`).

@@ -19,10 +19,10 @@ function usage(msg) {
 Usage:
   innsigle keygen --out-dir <dir>
   innsigle keys template --issuer-id <id> --issuer-name <name> --public-key <b64url> --key-id <id> [--out file]
-  innsigle claim build --content <file> [--uri <uri>] --bill <bill.json> --issuer-id <id> --issuer-name <name> --key-id <id> --key-url <url> [--out file]
+  innsigle claim build --content <file> [--uri <uri>] --colo <colo.json> --issuer-id <id> --issuer-name <name> --key-id <id> --key-url <url> [--out file]
   innsigle sign --claim <file> --key <private.pem> [--out file]
   innsigle verify --attestation <file> --content <file> --keys <file>
-  innsigle bill example --kind model-primary|human-authored|mixed
+  innsigle colo example --kind model-primary|human-authored|mixed
 `);
   process.exit(EXIT.usage);
 }
@@ -31,6 +31,11 @@ function arg(args, name) {
   const i = args.indexOf(name);
   if (i === -1) return undefined;
   return args[i + 1];
+}
+
+/** Prefer --colo; accept --bill as transitional alias. */
+function argColoPath(args) {
+  return arg(args, "--colo") ?? arg(args, "--bill");
 }
 
 function requireArg(args, name) {
@@ -87,18 +92,19 @@ function cmdKeysTemplate(args) {
 
 function cmdClaimBuild(args) {
   const contentPath = requireArg(args, "--content");
-  const billPath = requireArg(args, "--bill");
-  if (!existsSync(contentPath) || !existsSync(billPath)) usage("content or bill file missing");
-  const mash_bill = JSON.parse(readFileSync(billPath, "utf8"));
-  if (!mash_bill.composition || !Array.isArray(mash_bill.ingredients)) {
-    console.error("INVALID: mash_bill schema");
+  const coloPath = argColoPath(args);
+  if (!coloPath) usage("missing --colo <colo.json>");
+  if (!existsSync(contentPath) || !existsSync(coloPath)) usage("content or colo file missing");
+  const colophon = JSON.parse(readFileSync(coloPath, "utf8"));
+  if (!colophon.composition || !Array.isArray(colophon.ingredients)) {
+    console.error("INVALID: colophon schema");
     process.exit(EXIT.badSchema);
   }
-  mash_bill.schema_version = "1";
+  colophon.schema_version = "1";
   const uri = arg(args, "--uri");
   const payload = {
     innsigle: "1",
-    type: "https://innsigle.dev/claim/mash-bill/v1",
+    type: "https://innsigle.dev/claim/colophon/v1",
     issued_at: nowIso(),
     issuer: {
       id: requireArg(args, "--issuer-id"),
@@ -112,7 +118,7 @@ function cmdClaimBuild(args) {
         digest: { alg: "sha256", value: sha256Hex(readFileSync(contentPath)) },
       },
     ],
-    mash_bill,
+    colophon,
   };
   writeOut(arg(args, "--out"), JSON.stringify(payload, null, 2));
 }
@@ -165,7 +171,7 @@ function cmdVerify(args) {
   const subject = payload.subjects?.[0];
   if (!subject?.digest?.value || subject.digest.value !== contentHash) {
     console.error("INVALID: content_mismatch");
-    console.error(`composition=${payload.mash_bill?.composition ?? "?"}`);
+    console.error(`composition=${payload.colophon?.composition ?? "?"}`);
     process.exit(EXIT.contentMismatch);
   }
   const ok = verifyPayload(payload, b64urlDecode(sigBlock.sig), b64urlDecode(key.public_key));
@@ -175,14 +181,14 @@ function cmdVerify(args) {
   }
   console.log("VALID");
   console.log(`issuer=${payload.issuer.id}`);
-  console.log(`composition=${payload.mash_bill.composition}`);
+  console.log(`composition=${payload.colophon.composition}`);
   console.log(`key_id=${sigBlock.key_id}`);
   process.exit(EXIT.ok);
 }
 
-function cmdBillExample(args) {
+function cmdColoExample(args) {
   const kind = requireArg(args, "--kind");
-  const bills = {
+  const colos = {
     "model-primary": {
       schema_version: "1",
       composition: "model-primary",
@@ -210,8 +216,8 @@ function cmdBillExample(args) {
       notes: null,
     },
   };
-  if (!bills[kind]) usage("kind must be model-primary|human-authored|mixed");
-  writeOut(undefined, JSON.stringify(bills[kind], null, 2));
+  if (!colos[kind]) usage("kind must be model-primary|human-authored|mixed");
+  writeOut(undefined, JSON.stringify(colos[kind], null, 2));
 }
 
 const argv = process.argv.slice(2);
@@ -236,9 +242,10 @@ switch (cmd) {
   case "verify":
     cmdVerify(rest);
     break;
-  case "bill":
+  case "colo":
+  case "bill": // transitional alias
     if (rest[0] !== "example") usage();
-    cmdBillExample(rest.slice(1));
+    cmdColoExample(rest.slice(1));
     break;
   default:
     usage();

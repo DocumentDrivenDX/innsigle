@@ -27,7 +27,7 @@ naming: locked
 product_name: Innsigle
 etymon: innsigli
 concept: signet
-composition_metaphor: mash-bill
+composition_metaphor: colophon
 house_affinity: azgaard
 repo_slug: aibadge
 activity: 00-discover
@@ -43,7 +43,7 @@ updated: 2026-07-22
 > *innsigli* (document seal). House: Azgaard. Repo slug: `aibadge`.
 >
 > **Thesis:** One seal family for two jobs makers actually have: (1) sign
-> long-lived docs with a mash bill that can *name models proudly*; (2) mark
+> long-lived docs with a colophon that can *name models proudly*; (2) mark
 > short social posts as human-authored when platforms strip metadata. Not a
 > detector. Not a C2PA replacement. Visual seal first; optional house/person
 > signature second.
@@ -57,7 +57,7 @@ choose, bind that bill to a person or house others can verify.
 
 For operators who ship documentation sites and short social posts and need
 origin under *their* control, Innsigle is a content-origin seal: a visible mark
-plus a mash bill (recipe of making), with optional DKIM-style signing.
+plus a colophon (recipe of making), with optional DKIM-style signing.
 
 Unlike Not By AI, model-generated work is first-class and can credit tools by
 name. Unlike C2PA Content Credentials and SynthID, the primary surface is
@@ -66,7 +66,7 @@ media-pipeline manifests (those may interop later).
 
 ## Vision
 
-Docs sites show an Innsigle that opens to a signed mash bill: e.g. mostly
+Docs sites show an Innsigle that opens to a signed colophon: e.g. mostly
 Claude (or other named models), human review, house key. Social posts show a
 sibling mark that reads as human-authored without implying AI is shameful
 elsewhere. Same system, different bills. Readers learn the seal by sight;
@@ -82,7 +82,7 @@ public sealed docs expose a working verify path to a named maker or house.
 **UC-AI-docs (documentation site).** Erik publishes a HELIX-style microsite
 mostly drafted by Claude, with human structure/edit and often a **sloptimizer**
 pass (Easel skill: tighten AI-shaped prose; it does not score authorship). He
-records a mash bill: composition `model-primary`, tools Claude + sloptimizer
+records a colophon: composition `model-primary`, tools Claude + sloptimizer
 (if used) + human edit, then signs with an Azgaard house key over the canonical
 page. Footer carries the Innsigle. Reader opens it: named tools, fingerprint
 match, Azgaard as signer. No detection score. Prose that *reads* cleaner after
@@ -109,7 +109,7 @@ when the post is ephemeral. Same seal family as the docs site, not a separate
 | Value Proposition | Customer Benefit |
 |-------------------|------------------|
 | Dual-channel composition seal | Docs (AI-primary) and social (human-primary) share one mark language |
-| Mash bill with named tools (models and editorial tooling) | "Claude + sloptimizer + human edit" as credit, not confession or laundering |
+| Colophon with named tools (models and editorial tooling) | "Claude + sloptimizer + human edit" as credit, not confession or laundering |
 | Optional house/person signet | Verify who sealed the bill for durable content |
 | Social-safe mark pattern | Human claim remains visible when C2PA-style metadata is gone |
 
@@ -129,4 +129,4 @@ Platforms label AI media. Human-only badges ignore model-heavy docs. Operators
 who build methodology sites with models and still post human writing on X fall
 between those stools. EU AI Act Art. 50 (from 2 Aug 2026) increases disclosure
 pressure without giving makers a dual-channel craft seal. Innsigle targets that
-gap: mash bill + mark + optional signature under maker control.
+gap: colophon + mark + optional signature under maker control.

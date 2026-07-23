@@ -1,6 +1,6 @@
 {
   "innsigle": "1",
-  "type": "https://innsigle.dev/claim/mash-bill/v1",
+  "type": "https://innsigle.dev/claim/colophon/v1",
   "issued_at": "2026-07-22T18:00:00Z",
   "issuer": {
     "id": "azgaard",
@@ -17,7 +17,7 @@
       }
     }
   ],
-  "mash_bill": {
+  "colophon": {
     "schema_version": "1",
     "composition": "model-primary",
     "ingredients": [

@@ -14,7 +14,7 @@ reader_modes:
     path: [use, use/cli, dogfood]
   decide:
     question: What concept do I need next?
-    path: [use/mash-bill, use/verify, use/marks]
+    path: [use/colophon, use/verify, use/marks]
   operate:
     question: How do I look up exact behavior?
     path: [reference/artifacts, reference/glossary, reference/contracts]
@@ -46,7 +46,7 @@ core_leaves:
   - /why/
   - /use/
   - /use/cli/
-  - /use/mash-bill/
+  - /use/colophon/
   - /use/verify/
   - /use/marks/
   - /use/walkthrough-docs/

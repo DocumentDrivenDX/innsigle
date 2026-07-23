@@ -1,13 +1,13 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://innsigle.dev/schema/mash-bill-claim/v1.json",
-  "title": "Innsigle mash-bill claim payload v1",
+  "$id": "https://innsigle.dev/schema/colophon-claim/v1.json",
+  "title": "Innsigle colophon claim payload v1",
   "type": "object",
   "additionalProperties": true,
-  "required": ["innsigle", "type", "issued_at", "issuer", "subjects", "mash_bill"],
+  "required": ["innsigle", "type", "issued_at", "issuer", "subjects", "colophon"],
   "properties": {
     "innsigle": { "const": "1" },
-    "type": { "const": "https://innsigle.dev/claim/mash-bill/v1" },
+    "type": { "const": "https://innsigle.dev/claim/colophon/v1" },
     "issued_at": { "type": "string", "minLength": 1 },
     "issuer": {
       "type": "object",
@@ -38,7 +38,7 @@
         }
       }
     },
-    "mash_bill": {
+    "colophon": {
       "type": "object",
       "required": ["schema_version", "composition", "ingredients"],
       "properties": {

@@ -5,7 +5,7 @@ Fixed fixtures for independent verify implementations.
 | File | Role |
 |------|------|
 | `content/sample.html` | Subject bytes (do not edit without regen) |
-| `bill-model-primary.json` | Mash bill only |
+| `colo-model-primary.json` | Colophon only |
 | `claim.json` | Claim payload (`issued_at` fixed) |
 | `claim.jcs.txt` | RFC 8785 canonical JSON of payload |
 | `claim.jcs.sha256` | SHA-256 hex of JCS bytes |

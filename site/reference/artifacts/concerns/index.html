@@ -28,7 +28,7 @@
     <p class="crumbs" aria-label="Breadcrumb"><a href="/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/reference/">Reference</a> <span aria-hidden="true">/</span> <span>Project Concerns</span></p>
     <div class="docs-grid">
       <aside class="docs-side" aria-label="Section">
-        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/dogfood/">Dogfood</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/mash-bill/">Mash bill</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/" aria-current="page">Reference home</a></li><li><a href="/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/dogfood/">Dogfood</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/colophon/">Colophon</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/" aria-current="page">Reference home</a></li><li><a href="/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
       </aside>
       <main class="docs-main prose">
         <p class="gen-banner note">Generated reference — edit sources under <code>docs/helix/</code>, then <code>npm run site:build</code>.</p>
@@ -51,13 +51,13 @@ created: 2026-07-22</code></pre>
 <h2 id="active-concerns">Active Concerns</h2>
 <table>
 <tr><th>Concern</th><th>Source</th><th>Areas</th><th>Why Active</th><th>Key Practices</th></tr>
-<tr><td><code>scope-discipline</code></td><td>library</td><td><code>area:brand</code>, <code>area:cli</code>, <code>area:web</code>, <code>area:crypto</code></td><td>Brand-first product; easy to gold-plate into C2PA, detectors, or full IdP</td><td>Ship mark + mash bill + optional sign/verify first; park industrial provenance and multi-tenant identity unless an FR demands them</td></tr>
+<tr><td><code>scope-discipline</code></td><td>library</td><td><code>area:brand</code>, <code>area:cli</code>, <code>area:web</code>, <code>area:crypto</code></td><td>Brand-first product; easy to gold-plate into C2PA, detectors, or full IdP</td><td>Ship mark + colophon + optional sign/verify first; park industrial provenance and multi-tenant identity unless an FR demands them</td></tr>
 <tr><td><code>claim-not-oracle</code></td><td>project-local</td><td><code>area:brand</code>, <code>area:web</code>, <code>area:cli</code>, <code>area:docs</code></td><td>Category integrity: not an AI detector</td><td>Copy, UI, and verify results never imply detection scores; always attribute claims to a principal when signed</td></tr>
-<tr><td><code>visual-seal-system</code></td><td>project-local</td><td><code>area:brand</code>, <code>area:web</code></td><td>Recognition is mark-first</td><td>One seal family for human / AI / mixed composition; readable mash-bill layout; no purity/shame color coding</td></tr>
+<tr><td><code>visual-seal-system</code></td><td>project-local</td><td><code>area:brand</code>, <code>area:web</code></td><td>Recognition is mark-first</td><td>One seal family for human / AI / mixed composition; readable colophon layout; no purity/shame color coding</td></tr>
 <tr><td><code>key-custody</code></td><td>project-local</td><td><code>area:cli</code>, <code>area:crypto</code></td><td>DKIM-like signing needs safe keys without enterprise IdP in v1</td><td>Local key generation; never log private keys; clear compromise guidance; public key discovery via URL or well-known path</td></tr>
 <tr><td><code>security-owasp</code></td><td>library</td><td><code>area:web</code>, <code>area:cli</code>, <code>area:crypto</code></td><td>Verify pages and tooling handle untrusted input and keys</td><td>Input validation on claims; safe URL handling; no secret leakage in errors</td></tr>
 <tr><td><code>typescript-bun</code></td><td>library (shipped-default)</td><td><code>area:cli</code>, <code>area:web</code></td><td>Language/runtime slot for tooling</td><td>Prefer TypeScript + Bun for CLI and any app code unless an ADR overrides</td></tr>
-<tr><td><code>testing</code></td><td>library</td><td><code>area:cli</code>, <code>area:web</code>, <code>area:crypto</code></td><td>Assertions and verify paths must be falsifiable</td><td>Unit tests for hash/sign/verify; fixture mash bills; golden claim payloads</td></tr>
+<tr><td><code>testing</code></td><td>library</td><td><code>area:cli</code>, <code>area:web</code>, <code>area:crypto</code></td><td>Assertions and verify paths must be falsifiable</td><td>Unit tests for hash/sign/verify; fixture colophons; golden claim payloads</td></tr>
 <tr><td><code>verification</code></td><td>library</td><td><code>area:cli</code>, <code>area:web</code></td><td>Claims-vs-reality for product integrity</td><td>No phantom “we verify AI content” claims; demos exercise real sign→verify</td></tr>
 <tr><td><code>product-microsite-ia</code></td><td>library</td><td><code>area:web</code>, <code>area:brand</code></td><td>Brand site for evaluate/start/operate readers; generated reference from HELIX docs</td><td>Curated copy in <code>docs/website/content/curated/</code>; generate artifacts/glossary from <code>docs/helix/</code> via <code>npm run site:build</code>; nav by reader mode (ADR-002); <code>site/</code> is build output only</td></tr>
 <tr><td><code>a11y-wcag-aa</code></td><td>library</td><td><code>area:web</code>, <code>area:brand</code></td><td>Seal and verify UI must be readable beyond color</td><td>Text labels for composition states; contrast; keyboard access on verify views</td></tr>
@@ -101,11 +101,11 @@ created: 2026-07-22</code></pre>
   </div>
   <footer class="site-footer">
     <div class="wrap">
-      <a class="innsigle-footer-seal" href="/use/mash-bill/">
+      <a class="innsigle-footer-seal" href="/use/colophon/">
         <img src="/assets/marks/innsigle-base.svg" width="28" height="28" alt="" />
         <span>
           <strong>Innsigle</strong>
-          <span class="cue">Mash bill · not a detector</span>
+          <span class="cue">Colo · not a detector</span>
         </span>
       </a>
       <p>

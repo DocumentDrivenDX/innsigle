@@ -31,7 +31,7 @@ file bytes, and offline verify (CONTRACT-001 / ADR-001).
 
 ## Ideal Future State
 
-Maker records mash bill (named models/tools), places footer seal, signs with a
+Maker records colophon (named models/tools), places footer seal, signs with a
 local house key, publishes claim next to content. Third party verifies without
 an account. Tamper fails closed.
 
@@ -46,7 +46,7 @@ an account. Tamper fails closed.
 ### Functional
 
 **DOC-01.** Maker publishes seal + bill on HTML/static page (inline or linked).  
-**DOC-02.** Maker builds claim with content SHA-256 subject and mash bill including named tools.  
+**DOC-02.** Maker builds claim with content SHA-256 subject and colophon including named tools.  
 **DOC-03.** Maker signs with local Ed25519 key; private key never published.  
 **DOC-04.** Verify succeeds when sig valid, key active, content digest matches.  
 **DOC-05.** Verify fails closed on content mutation (exit 3) and bad signature (exit 2).  

@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Claim System: Mash Bill, Storage, Signing — Innsigle</title>
-  <meta name="description" content="Claim System: Mash Bill, Storage, Signing" />
+  <title>Claim System: Colophon, Storage, Signing — Innsigle</title>
+  <meta name="description" content="Claim System: Colophon, Storage, Signing" />
   <link rel="stylesheet" href="/assets/css/site.css" />
   <link rel="icon" href="/assets/marks/innsigle-base.svg" type="image/svg+xml" />
 </head>
@@ -25,10 +25,10 @@
     </div>
   </header>
   <div class="wrap layout-docs">
-    <p class="crumbs" aria-label="Breadcrumb"><a href="/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/reference/">Reference</a> <span aria-hidden="true">/</span> <span>Claim System: Mash Bill, Storage, Signing</span></p>
+    <p class="crumbs" aria-label="Breadcrumb"><a href="/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/reference/">Reference</a> <span aria-hidden="true">/</span> <span>Claim System: Colophon, Storage, Signing</span></p>
     <div class="docs-grid">
       <aside class="docs-side" aria-label="Section">
-        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/dogfood/">Dogfood</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/mash-bill/">Mash bill</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/" aria-current="page">Reference home</a></li><li><a href="/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/dogfood/">Dogfood</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/colophon/">Colophon</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/" aria-current="page">Reference home</a></li><li><a href="/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
       </aside>
       <main class="docs-main prose">
         <p class="gen-banner note">Generated reference — edit sources under <code>docs/helix/</code>, then <code>npm run site:build</code>.</p>
@@ -48,13 +48,13 @@ status: draft
 activity: 02-design
 created: 2026-07-22</code></pre>
 </details>
-<h1 id="claim-system-mash-bill-storage-signing">Claim System: Mash Bill, Storage, Signing</h1>
+<h1 id="claim-system-colophon-storage-signing">Claim System: Colophon, Storage, Signing</h1>
 <p>Solution-level design for composition declaration and optional attestation. Normative field names here are design intent; freeze in a Contract before implementing the CLI.</p>
 <p><strong>Prior art stance:</strong> in-toto-shaped subject/predicate; PGP/DKIM-shaped long-lived keys; TOFU key discovery for v1; optional later WoT cross-signs. Details: <code>attestation-prior-art.md</code>.</p>
 <h2 id="goals">Goals</h2>
 <table>
 <tr><th>Goal</th><th>Source</th></tr>
-<tr><td>Typed mash bill with named tools (Claude, sloptimizer, …)</td><td>PRD FR-1–4, FR-4a</td></tr>
+<tr><td>Typed colophon with named tools (Claude, sloptimizer, …)</td><td>PRD FR-1–4, FR-4a</td></tr>
 <tr><td>Sign content hash + bill + issuer</td><td>PRD FR-9–12</td></tr>
 <tr><td>Docs-friendly storage (no media embed required)</td><td>UC-AI-docs</td></tr>
 <tr><td>Social-safe mark without claim-in-file</td><td>UC-human-social</td></tr>
@@ -63,10 +63,10 @@ created: 2026-07-22</code></pre>
 <h2 id="naming">Naming</h2>
 <table>
 <tr><th>Term</th><th>Meaning</th></tr>
-<tr><td><strong>Mash bill</strong></td><td>Declared recipe of how the work was made (composition + ingredients)</td></tr>
+<tr><td><strong>Colophon (colo)</strong></td><td>Declared recipe of how the work was made (composition + ingredients); short form <strong>colo</strong></td></tr>
 <tr><td><strong>Composition</strong></td><td>Coarse state: <code>human-authored</code> \</td><td><code>mixed</code> \</td><td><code>model-primary</code></td></tr>
 <tr><td><strong>Ingredient</strong></td><td>One tool, model, or human role line item</td></tr>
-<tr><td><strong>Claim</strong></td><td>JSON document: subjects + mash bill + metadata (unsigned or to-be-signed body)</td></tr>
+<tr><td><strong>Claim</strong></td><td>JSON document: subjects + colophon + metadata (unsigned or to-be-signed body)</td></tr>
 <tr><td><strong>Attestation</strong></td><td>Claim body + signature by an issuer key</td></tr>
 <tr><td><strong>Issuer</strong></td><td>Person or house key that signs</td></tr>
 <tr><td><strong>Subject</strong></td><td>Content unit identified by digest (and optional URI)</td></tr>
@@ -74,9 +74,9 @@ created: 2026-07-22</code></pre>
 <tr><td><strong>Signet</strong></td><td>Act of signing; optional depth</td></tr>
 </table>
 <p>Avoid public "credentials" for the product object (C2PA collision). Internal type URIs may still say <code>attestation</code>.</p>
-<h2 id="mash-bill-schema-draft-v1">Mash bill schema (draft v1)</h2>
+<h2 id="colophon-schema-draft-v1">Colophon schema (draft v1)</h2>
 <h3 id="conceptual-model">Conceptual model</h3>
-<pre><code class="language-text">MashBill
+<pre><code class="language-text">Colophon
   composition: enum
   ingredients[]: Ingredient
   notes?: string          # short free text; not a loophole for hiding models
@@ -99,7 +99,7 @@ Ingredient
 <h3 id="claim-document-unsigned-body">Claim document (unsigned body)</h3>
 <pre><code class="language-json">{
   "innsigle": "1",
-  "type": "https://innsigle.dev/claim/mash-bill/v1",
+  "type": "https://innsigle.dev/claim/colophon/v1",
   "issued_at": "2026-07-22T18:00:00Z",
   "issuer": {
     "id": "azgaard",
@@ -116,7 +116,7 @@ Ingredient
       }
     }
   ],
-  "mash_bill": {
+  "colophon": {
     "schema_version": "1",
     "composition": "model-primary",
     "ingredients": [
@@ -141,7 +141,7 @@ Ingredient
     "notes": null
   }
 }</code></pre>
-<p>Aligns with in-toto mentally: <code>subjects</code> ≈ subject digests; <code>mash_bill</code> ≈ predicate; <code>type</code> ≈ predicateType. v1 may ship this JSON without full DSSE.</p>
+<p>Aligns with in-toto mentally: <code>subjects</code> ≈ subject digests; <code>colophon</code> ≈ predicate; <code>type</code> ≈ predicateType. v1 may ship this JSON without full DSSE.</p>
 <h3 id="canonical-content-hashing">Canonical content hashing</h3>
 <table>
 <tr><th>Content</th><th>v1 approach</th></tr>
@@ -163,7 +163,7 @@ Ingredient
 <tr><td><strong>A. Sidecar file</strong></td><td><code>page.innsigle.json</code> next to content or in <code>/.well-known/innsigle/claims/…</code></td><td>Docs</td></tr>
 <tr><td><strong>B. Embedded link</strong></td><td>Footer mark links to claim URL or <code>#innsigle</code> fragment page</td><td>Docs</td></tr>
 <tr><td><strong>C. Inline unsigned bill</strong></td><td>Human-readable bill in HTML (optional duplicate of JSON fields)</td><td>Docs</td></tr>
-<tr><td><strong>D. Mark asset only</strong></td><td>SVG/PNG + link to profile/bill explainer; no per-post signature</td><td>Social</td></tr>
+<tr><td><strong>D. Mark asset only</strong></td><td>SVG/PNG + link to profile/colo explainer; no per-post signature</td><td>Social</td></tr>
 <tr><td><strong>E. Key document</strong></td><td><code>keys.json</code> (public keys, key_id, optional revoke)</td><td>Discovery</td></tr>
 </table>
 <h3 id="not-v1-parked">Not v1 (parked)</h3>
@@ -216,7 +216,7 @@ bio: https://azgaard.net/innsigle
 <li>Verify signature over payload (canonical).</li>
 <li>Recompute digest of local/canonical content; match <code>subjects[].digest</code>.</li>
 <li>Report: <code>valid</code> | <code>bad_signature</code> | <code>content_mismatch</code> | <code>unknown_key</code> | <code>revoked</code>.</li>
-<li>Display mash bill fields regardless of validity, with clear banner if invalid.</li>
+<li>Display colophon fields regardless of validity, with clear banner if invalid.</li>
 </ol>
 <p>Never report "this is 80% AI."</p>
 <h3 id="key-lifecycle-v1">Key lifecycle (v1)</h3>
@@ -239,8 +239,8 @@ bio: https://azgaard.net/innsigle
 <h2 id="cli-surface-intent-only-contract-later">CLI surface (intent only; Contract later)</h2>
 <table>
 <tr><th>Command intent</th><th>Result</th></tr>
-<tr><td><code>bill init</code> / edit</td><td>Write mash bill fields</td></tr>
-<tr><td><code>claim build</code></td><td>Bind subjects + bill → claim payload</td></tr>
+<tr><td><code>colo example</code> / edit</td><td>Write colophon fields</td></tr>
+<tr><td><code>claim build</code></td><td>Bind subjects + colo → claim payload</td></tr>
 <tr><td><code>sign</code></td><td>Attach signature with local key</td></tr>
 <tr><td><code>verify</code></td><td>Path or URL to attestation + content</td></tr>
 <tr><td><code>keygen</code> / <code>key publish-template</code></td><td>Key material + sample keys.json</td></tr>
@@ -292,11 +292,11 @@ bio: https://azgaard.net/innsigle
   </div>
   <footer class="site-footer">
     <div class="wrap">
-      <a class="innsigle-footer-seal" href="/use/mash-bill/">
+      <a class="innsigle-footer-seal" href="/use/colophon/">
         <img src="/assets/marks/innsigle-base.svg" width="28" height="28" alt="" />
         <span>
           <strong>Innsigle</strong>
-          <span class="cue">Mash bill · not a detector</span>
+          <span class="cue">Colo · not a detector</span>
         </span>
       </a>
       <p>

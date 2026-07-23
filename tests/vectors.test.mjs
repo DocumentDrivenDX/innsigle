@@ -69,7 +69,7 @@ describe("golden vectors", () => {
         "--attestation",
         join(vec, "attestation.json"),
         "--content",
-        join(vec, "bill-model-primary.json"),
+        join(vec, "colo-model-primary.json"),
         "--keys",
         join(vec, "keys.json"),
       ],

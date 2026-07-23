@@ -1,6 +1,4 @@
 import { test, expect, type Page } from "@playwright/test";
-import { readFileSync, existsSync } from "node:fs";
-import { join } from "node:path";
 
 /** Core leaves from docs/website/ia.yml (local SITE_BASE empty → root paths). */
 const CORE_LEAVES = [
@@ -8,7 +6,7 @@ const CORE_LEAVES = [
   "/why/",
   "/use/",
   "/use/cli/",
-  "/use/mash-bill/",
+  "/use/colophon/",
   "/use/verify/",
   "/use/marks/",
   "/use/walkthrough-docs/",

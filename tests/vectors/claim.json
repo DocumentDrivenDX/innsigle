@@ -1,11 +1,11 @@
 {
   "innsigle": "1",
-  "type": "https://innsigle.dev/claim/mash-bill/v1",
+  "type": "https://innsigle.dev/claim/colophon/v1",
   "issued_at": "2026-07-22T12:00:00Z",
   "issuer": {
     "id": "azgaard-test",
     "name": "Azgaard Test",
-    "key_id": "ed25519:faa4e6a43b430cfc54a27386f6b2e2ce",
+    "key_id": "ed25519:02ba9ce3c4c385cfae5f6bf75bfa3cb7",
     "key_url": "https://example.com/.well-known/innsigle/keys.json"
   },
   "subjects": [
@@ -17,7 +17,7 @@
       }
     }
   ],
-  "mash_bill": {
+  "colophon": {
     "schema_version": "1",
     "composition": "model-primary",
     "ingredients": [

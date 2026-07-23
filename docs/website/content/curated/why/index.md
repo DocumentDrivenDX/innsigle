@@ -24,7 +24,7 @@ layers do not cover dual-channel makers.
 
 One seal family for two real jobs:
 
-1. **UC-AI-docs** — Owned docs with a signed mash bill that can name models proudly.
+1. **UC-AI-docs** — Owned docs with a signed colophon that can name models proudly.
 2. **UC-human-social** — Human-authored mark that survives metadata death.
 
 Editorial tools such as **sloptimizer** clean prose; they do not rewrite composition

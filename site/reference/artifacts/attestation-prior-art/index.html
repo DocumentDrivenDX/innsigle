@@ -28,7 +28,7 @@
     <p class="crumbs" aria-label="Breadcrumb"><a href="/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/reference/">Reference</a> <span aria-hidden="true">/</span> <span>Attestation and Trust Prior Art</span></p>
     <div class="docs-grid">
       <aside class="docs-side" aria-label="Section">
-        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/dogfood/">Dogfood</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/mash-bill/">Mash bill</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/" aria-current="page">Reference home</a></li><li><a href="/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/dogfood/">Dogfood</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/colophon/">Colophon</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/" aria-current="page">Reference home</a></li><li><a href="/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
       </aside>
       <main class="docs-main prose">
         <p class="gen-banner note">Generated reference — edit sources under <code>docs/helix/</code>, then <code>npm run site:build</code>.</p>
@@ -59,7 +59,7 @@ created: 2026-07-22</code></pre>
 <tr><td><strong>Sigstore / cosign</strong></td><td>Optional keyless path later; transparency log ideas; cosign-style verify UX</td><td>Mandatory OIDC/cloud for v1 house keys</td></tr>
 <tr><td><strong>C2PA</strong></td><td>Signed assertions about content; tamper-evident; optional identity</td><td>Media-file embedding as only store; CA-heavy trust</td></tr>
 <tr><td><strong>Keyoxide / Keybase-class</strong></td><td>Proofs that bind keys to public profiles (domain, social)</td><td>Centralized identity product as v1 dependency</td></tr>
-<tr><td><strong>SBOM (SPDX/CycloneDX)</strong></td><td>Bill-of-materials metaphor and field discipline</td><td>Software-component graph as the only mash bill shape</td></tr>
+<tr><td><strong>SBOM (SPDX/CycloneDX)</strong></td><td>Bill-of-materials metaphor and field discipline</td><td>Software-component graph as the only colophon shape</td></tr>
 </table>
 <p><strong>Innsigle v1 posture:</strong> local long-lived keys (PGP/DKIM spirit) + claim shaped like a small in-toto predicate about <em>composition</em> + storage that works for HTML docs without media embedding + trust that starts as "I fetched this house pubkey from a URL I chose" (not full WoT). WoT-style cross-signatures are a later optional graph, not launch blockers.</p>
 <h2 id="pgp-web-of-trust">PGP web of trust</h2>
@@ -95,7 +95,7 @@ created: 2026-07-22</code></pre>
 <tr><td>Key certification</td><td>Later: house A signs house B's key (optional WoT)</td></tr>
 <tr><td>No claim of content truth</td><td>Same: seal is declaration + crypto, not oracle</td></tr>
 </table>
-<p>v1 does <strong>not</strong> require a working global WoT. v1 requires: generate key, publish pubkey, sign claim, verify claim. WoT is alignment for <em>identity</em> of signers over time, not for mash bill fields.</p>
+<p>v1 does <strong>not</strong> require a working global WoT. v1 requires: generate key, publish pubkey, sign claim, verify claim. WoT is alignment for <em>identity</em> of signers over time, not for colophon fields.</p>
 <h2 id="dkim-email">DKIM (email)</h2>
 <p>Already in product thesis. Domain publishes selector pubkey (DNS TXT); signature headers bind body hash to domain. Receivers verify authorization, not honesty of the email body.</p>
 <p><strong>Apply:</strong> Content hash + claim + signer key; discovery via HTTPS URL or well-known path first; DNS TXT as optional later discovery (DKIM-like for domains that want it).</p>
@@ -109,9 +109,9 @@ created: 2026-07-22</code></pre>
 </ul>
 <p>SLSA provenance is one predicate type: how software was built (source, builder, materials). Explicitly <em>not</em> "the binary is free of vulnerabilities."</p>
 <h3 id="apply-to-innsigle">Apply to Innsigle</h3>
-<p>Mash bill + composition fits a <strong>custom predicate type</strong>, e.g.:</p>
-<p><code>https://innsigle.dev/attestation/mash-bill/v1</code></p>
-<p>Subject = content digest(s). Predicate = mash bill fields. Envelope = signature by house/person key.</p>
+<p>Colophon + composition fits a <strong>custom predicate type</strong>, e.g.:</p>
+<p><code>https://innsigle.dev/attestation/colophon/v1</code></p>
+<p>Subject = content digest(s). Predicate = colophon fields. Envelope = signature by house/person key.</p>
 <p>Reuse the <em>shape</em> (subject/predicate/envelope) even if v1 ships a simpler JSON file before full DSSE/in-toto tooling.</p>
 <h2 id="slsa">SLSA</h2>
 <p>Framework of levels and provenance expectations for supply chains. Teaches: separate <strong>provenance</strong> (how produced) from <strong>trust policy</strong> (what the verifier accepts). Innsigle should keep the same split: crypto validity vs policy ("do I trust Azgaard's key for docs?").</p>
@@ -119,13 +119,13 @@ created: 2026-07-22</code></pre>
 <p>Cosign, Fulcio (OIDC short-lived certs), Rekor (transparency log). Strength: low key-management friction for CI. Risk for v1 craft house: dependency on public infrastructure and OIDC.</p>
 <p><strong>Apply:</strong> Document as P2 path for CI-signed releases of the Innsigle CLI or for users who refuse long-lived keys. Not the only path; long-lived house keys remain first-class (PGP/DKIM spirit).</p>
 <h2 id="c2pa-trust-model-note">C2PA (trust model note)</h2>
-<p>Signed manifests; trust often via certificate chains and trust lists, not PGP WoT. Assertions are richer than our mash bill. Privacy reviews stress identity and tracking risks.</p>
+<p>Signed manifests; trust often via certificate chains and trust lists, not PGP WoT. Assertions are richer than our colophon. Privacy reviews stress identity and tracking risks.</p>
 <p><strong>Apply:</strong> Optional export bridge later; do not make CA membership a v1 requirement for a personal house seal.</p>
 <h2 id="profile-bound-keys-keyoxide-and-kin">Profile-bound keys (Keyoxide and kin)</h2>
 <p>Projects that prove control of domain/social accounts and bind them to OpenPGP or similar keys. Useful mental model for "this key is Azgaard" without a CA.</p>
 <p><strong>Apply:</strong> v1 pubkey at <code>https://…/.well-known/innsigle/keys.json</code> or profile URL; later optional proofs that the same key controls a domain or forge.</p>
 <h2 id="sbom">SBOM</h2>
-<p>SPDX / CycloneDX list components of software. Mash bill is the narrative cousin: components of <em>making</em> (models, tools, human roles), not package graph.</p>
+<p>SPDX / CycloneDX list components of software. Colophon is the narrative cousin: components of <em>making</em> (models, tools, human roles), not package graph.</p>
 <p><strong>Apply:</strong> Field discipline (typed ingredients, versions when known); do not require full SBOM tooling for content seals.</p>
 <h2 id="trust-model-spectrum-design-choice">Trust model spectrum (design choice)</h2>
 <pre><code class="language-text">CA hierarchy (X.509)     Web of trust (PGP)     Trust-on-first-use / pin
@@ -138,7 +138,7 @@ created: 2026-07-22</code></pre>
 <li>Envelope: custom JSON + Ed25519 vs DSSE + in-toto from day one?</li>
 <li>Key format: raw Ed25519, JWK, or OpenPGP packets?</li>
 <li>Transparency log: none in v1, optional Rekor-like later?</li>
-<li>Cross-sign vocabulary: only keys, or also "I trust their mash bills"?</li>
+<li>Cross-sign vocabulary: only keys, or also "I trust their colophons"?</li>
 </ul>
 <h2 id="references-anchors">References (anchors)</h2>
 <ul>
@@ -154,11 +154,11 @@ created: 2026-07-22</code></pre>
   </div>
   <footer class="site-footer">
     <div class="wrap">
-      <a class="innsigle-footer-seal" href="/use/mash-bill/">
+      <a class="innsigle-footer-seal" href="/use/colophon/">
         <img src="/assets/marks/innsigle-base.svg" width="28" height="28" alt="" />
         <span>
           <strong>Innsigle</strong>
-          <span class="cue">Mash bill · not a detector</span>
+          <span class="cue">Colo · not a detector</span>
         </span>
       </a>
       <p>

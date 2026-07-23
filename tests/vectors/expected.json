@@ -1,8 +1,8 @@
 {
   "content_sha256": "29a52c20b5016aaac3c1be05fca72f572966f3ffbe1bd7156eb1fca50b73adbc",
-  "key_id": "ed25519:faa4e6a43b430cfc54a27386f6b2e2ce",
-  "public_key_b64url": "u3bpRRPXfezKJBvJbvFAPo3c25f2_7KU5HJ70Ih6Zs0",
-  "claim_jcs_sha256": "5ca20e719cc579b86ea53ae8c30032271fa89b8bed31f3da8dcc80d18c82c7ec",
-  "signature_b64url": "9FVt5Ig6kwSZXNacoVkcPXa3ENiBIXMfbv3265howHIAHrh9qE10L4GCw-cXevw8hfTLlOJtNmo4Qh-mVvYTAQ",
-  "note": "TEST KEY ONLY — regenerate with scripts/generate-vectors.mjs if crypto changes"
+  "key_id": "ed25519:02ba9ce3c4c385cfae5f6bf75bfa3cb7",
+  "public_key_b64url": "atbIGtWzMAwUHKArqhMPY77b_-v953DdR1mrRjcwLIU",
+  "claim_jcs_sha256": "415b1eb09dccd9f7b0407f27791d760e17334ab1cfc04686a653d0432e45e75f",
+  "signature_b64url": "UQuh9r9mYuvPI_QW149mveP_5fTj-UXWzhsikzk20MgYWGKhT_lPjq8AkeZ3U9RW88kC2ZI4wXCzW6gRP-xrBQ",
+  "note": "TEST KEY ONLY — regenerate with node scripts/generate-vectors.mjs if crypto changes"
 }

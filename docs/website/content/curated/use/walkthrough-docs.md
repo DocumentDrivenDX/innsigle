@@ -3,7 +3,7 @@ title: Walkthrough — seal a docs page
 nav: use
 weight: 25
 parent: use
-description: Step-by-step UC-AI-docs path from mash bill to verify.
+description: Step-by-step UC-AI-docs path from colophon to verify.
 ---
 
 # Walkthrough: seal a docs page
@@ -12,7 +12,7 @@ description: Step-by-step UC-AI-docs path from mash bill to verify.
 
 ## Goal
 
-Publish a static HTML page with a model-primary mash bill and a signed claim a
+Publish a static HTML page with a model-primary colophon and a signed claim a
 third party can verify offline.
 
 ## Prerequisites
@@ -27,10 +27,10 @@ third party can verify offline.
 Produce the page content (often model draft). Optionally run **sloptimizer** on
 prose. Do **not** change composition to human-authored because of that rewrite.
 
-### 2. Write the mash bill
+### 2. Write the colophon (colo)
 
 ```bash
-node src/cli.mjs bill example --kind model-primary > bill.json
+node src/cli.mjs colo example --kind model-primary > colo.json
 # edit ingredients: name Claude, sloptimizer, human roles
 ```
 
@@ -53,7 +53,7 @@ Publish `keys.json` over HTTPS (or ship beside content for dogfood).
 node src/cli.mjs claim build \
   --content ./page.html \
   --uri https://example.com/page/ \
-  --bill bill.json \
+  --colo colo.json \
   --issuer-id my-house --issuer-name "My House" \
   --key-id "$(cat keys/key-id.txt)" \
   --key-url https://example.com/.well-known/innsigle/keys.json \
@@ -70,7 +70,7 @@ Keep the private key offline (not in the site tree).
 ### 5. Place the seal
 
 Footer (see `docs/dogfood/snippets/footer.html`): glyph + link to the attestation
-or a bill page. Use the **A** mark for model-primary.
+or a colophon page. Use the **A** mark for model-primary.
 
 ### 6. Verify
 

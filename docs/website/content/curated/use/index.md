@@ -2,19 +2,19 @@
 title: Use
 nav: use
 weight: 20
-description: Try Innsigle — CLI, mash bill, verify, and marks.
+description: Try Innsigle — CLI, colophon, verify, and marks.
 ---
 
 # Use Innsigle
 
-Onboarding path: install CLI → write a mash bill → claim and sign a file → verify.
+Onboarding path: install CLI → write a colophon → claim and sign a file → verify.
 
 ## Core pages
 
 | Page | Question |
 |------|----------|
 | [CLI](cli/) | How do I run keygen, claim, sign, verify? |
-| [Mash bill](mash-bill/) | How do I declare composition? |
+| [Colophon](colophon/) | How do I declare composition? |
 | [Verify](verify/) | What does a valid seal mean? |
 | [Marks](marks/) | Which seal cue for which state? |
 

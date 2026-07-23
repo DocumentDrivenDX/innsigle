@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Feature Specification: FEAT-001 — Colophon and seal mark — Innsigle</title>
+  <meta name="description" content="Feature Specification: FEAT-001 — Colophon and seal mark" />
+  <link rel="stylesheet" href="/assets/css/site.css" />
+  <link rel="icon" href="/assets/marks/innsigle-base.svg" type="image/svg+xml" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/">
+        <img src="/assets/marks/innsigle-base.svg" width="32" height="32" alt="" />
+        Innsigle
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/">What it is</a>
+        <a href="/why/">Why</a>
+        <a href="/use/">Use</a>
+        <a href="/reference/" aria-current="page">Reference</a>
+        <a href="/dogfood/">Dogfood</a>
+      </nav>
+    </div>
+  </header>
+  <div class="wrap layout-docs">
+    <p class="crumbs" aria-label="Breadcrumb"><a href="/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/reference/">Reference</a> <span aria-hidden="true">/</span> <span>Feature Specification: FEAT-001 — Colophon and seal mark</span></p>
+    <div class="docs-grid">
+      <aside class="docs-side" aria-label="Section">
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/dogfood/">Dogfood</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/colophon/">Colophon</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/" aria-current="page">Reference home</a></li><li><a href="/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
+      </aside>
+      <main class="docs-main prose">
+        <p class="gen-banner note">Generated reference — edit sources under <code>docs/helix/</code>, then <code>npm run site:build</code>.</p>
+<blockquote><strong>Generated from HELIX docs.</strong> Source: <code>docs/helix/01-frame/features/FEAT-001-colophon-and-seal.md</code>. Edit the source, not this file or <code>site/</code> HTML.</blockquote>
+<details><summary>Source frontmatter</summary>
+<pre><code class="language-yaml">ddx:
+  id: aibadge.feat.001
+  type: feature-specification
+  links:
+    - target: aibadge.prd
+      kind: informed_by
+    - target: aibadge.design-system
+      kind: informs
+status: draft
+activity: 01-frame
+created: 2026-07-23</code></pre>
+</details>
+<h1 id="feature-specification-feat-001-colophon-and-seal-mark">Feature Specification: FEAT-001 — Colophon and seal mark</h1>
+<p><strong>Feature ID</strong>: FEAT-001   <strong>Status</strong>: Specified   <strong>Priority</strong>: P0   <strong>Owner</strong>: Operator   <strong>Covered PRD Subsystem(s)</strong>: Colophon Model; Visual Seal System   <strong>Covered PRD Requirements</strong>: FR-1, FR-2, FR-3, FR-4, FR-4a, FR-5, FR-6, FR-7   <strong>Cross-Subsystem Rationale</strong>: Composition language and mark family are one capability; the mark is the visual projection of the colophon.</p>
+<h2 id="overview">Overview</h2>
+<p>Makers need one composition vocabulary and one seal family for human-authored, mixed, and model-primary work—without purity coding or detector language.</p>
+<h2 id="ideal-future-state">Ideal Future State</h2>
+<p>A reader sees an Innsigle mark, opens the colophon, and understands how the work was made (ingredients and roles). Model names can appear as credit. Editorial tools appear as tools, not as proof of human authorship.</p>
+<h2 id="problem-statement">Problem Statement</h2>
+<ul>
+<li><strong>Current situation</strong>: Human-only badges and industrial media labels exist; dual composition under one brand does not.</li>
+<li><strong>Pain points</strong>: Mixed and model-primary work lack a peer mark language.</li>
+<li><strong>Desired outcome</strong>: Stable composition enum + ingredient list + H/M/A seal family ship with guidelines.</li>
+</ul>
+<h2 id="requirements">Requirements</h2>
+<h3 id="functional">Functional</h3>
+<p><strong>COLO-01.</strong> System defines composition values <code>human-authored</code>, <code>mixed</code>, <code>model-primary</code>.   <strong>COLO-02.</strong> Colophon lists ingredients with <code>kind</code> in <code>model|tool|human|other</code> and required <code>name</code>.   <strong>COLO-03.</strong> Guidelines forbid ranking compositions as better/worse in required fields.   <strong>COLO-04.</strong> Editorial rewrite alone MUST NOT change composition to <code>human-authored</code> (FR-4a).   <strong>SEAL-01.</strong> SVG seal family ships with base + H + M + A cues.   <strong>SEAL-02.</strong> Placement guidance covers docs footer and social mark/link patterns.   <strong>SEAL-03.</strong> Mark chrome forbids verified-true / purity traffic-light motifs.</p>
+<h3 id="non-functional">Non-Functional</h3>
+<ul>
+<li>Marks readable at 24–32px monochrome.</li>
+<li>State not communicated by color alone (a11y).</li>
+</ul>
+<h2 id="acceptance-sketches">Acceptance sketches</h2>
+<table>
+<tr><th>ID</th><th>Scenario</th><th>Expect</th></tr>
+<tr><td>COLO-04</td><td>Model draft + sloptimizer</td><td>Composition stays <code>model-primary</code>; tool listed</td></tr>
+<tr><td>SEAL-01</td><td>Open mark pack</td><td>Four SVGs same family, distinct cues</td></tr>
+</table>
+<h2 id="dependencies">Dependencies</h2>
+<ul>
+<li>CONTRACT-001 schema fields for colophon</li>
+<li>DESIGN.md mark anatomy</li>
+</ul>
+      </main>
+    </div>
+  </div>
+  <footer class="site-footer">
+    <div class="wrap">
+      <a class="innsigle-footer-seal" href="/use/colophon/">
+        <img src="/assets/marks/innsigle-base.svg" width="28" height="28" alt="" />
+        <span>
+          <strong>Innsigle</strong>
+          <span class="cue">Colo · not a detector</span>
+        </span>
+      </a>
+      <p>
+        <a href="https://github.com/DocumentDrivenDX/innsigle">Source</a>
+        · curated in <code>docs/website/</code>
+        · specs from <code>docs/helix/</code>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

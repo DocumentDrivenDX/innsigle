@@ -28,7 +28,7 @@
     <p class="crumbs" aria-label="Breadcrumb"><a href="/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/reference/">Reference</a> <span aria-hidden="true">/</span> <span>Product Vision</span></p>
     <div class="docs-grid">
       <aside class="docs-side" aria-label="Section">
-        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/dogfood/">Dogfood</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/mash-bill/">Mash bill</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/" aria-current="page">Reference home</a></li><li><a href="/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/dogfood/">Dogfood</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/colophon/">Colophon</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/" aria-current="page">Reference home</a></li><li><a href="/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
       </aside>
       <main class="docs-main prose">
         <p class="gen-banner note">Generated reference — edit sources under <code>docs/helix/</code>, then <code>npm run site:build</code>.</p>
@@ -49,7 +49,7 @@ naming: locked
 product_name: Innsigle
 etymon: innsigli
 concept: signet
-composition_metaphor: mash-bill
+composition_metaphor: colophon
 house_affinity: azgaard
 repo_slug: aibadge
 activity: 00-discover
@@ -57,17 +57,17 @@ created: 2026-07-22
 updated: 2026-07-22</code></pre>
 </details>
 <h1 id="product-vision">Product Vision</h1>
-<blockquote><strong>Innsigle</strong> (say <strong>INN-siggle</strong>, rhymes with <em>single</em>). Etymon ON/Icelandic <em>innsigli</em> (document seal). House: Azgaard. Repo slug: <code>aibadge</code>.  <strong>Thesis:</strong> One seal family for two jobs makers actually have: (1) sign long-lived docs with a mash bill that can <em>name models proudly</em>; (2) mark short social posts as human-authored when platforms strip metadata. Not a detector. Not a C2PA replacement. Visual seal first; optional house/person signature second.</blockquote>
+<blockquote><strong>Innsigle</strong> (say <strong>INN-siggle</strong>, rhymes with <em>single</em>). Etymon ON/Icelandic <em>innsigli</em> (document seal). House: Azgaard. Repo slug: <code>aibadge</code>.  <strong>Thesis:</strong> One seal family for two jobs makers actually have: (1) sign long-lived docs with a colophon that can <em>name models proudly</em>; (2) mark short social posts as human-authored when platforms strip metadata. Not a detector. Not a C2PA replacement. Visual seal first; optional house/person signature second.</blockquote>
 <h2 id="mission-statement">Mission Statement</h2>
 <p>Let makers seal how work was made (human, model-heavy, or mixed) and when they choose, bind that bill to a person or house others can verify.</p>
 <h2 id="positioning">Positioning</h2>
-<p>For operators who ship documentation sites and short social posts and need origin under <em>their</em> control, Innsigle is a content-origin seal: a visible mark plus a mash bill (recipe of making), with optional DKIM-style signing.</p>
+<p>For operators who ship documentation sites and short social posts and need origin under <em>their</em> control, Innsigle is a content-origin seal: a visible mark plus a colophon (recipe of making), with optional DKIM-style signing.</p>
 <p>Unlike Not By AI, model-generated work is first-class and can credit tools by name. Unlike C2PA Content Credentials and SynthID, the primary surface is maker brand and claims for web text and social, not vendor watermarks or media-pipeline manifests (those may interop later).</p>
 <h2 id="vision">Vision</h2>
-<p>Docs sites show an Innsigle that opens to a signed mash bill: e.g. mostly Claude (or other named models), human review, house key. Social posts show a sibling mark that reads as human-authored without implying AI is shameful elsewhere. Same system, different bills. Readers learn the seal by sight; verify (when signed) answers who sealed the claim for which content bytes.</p>
+<p>Docs sites show an Innsigle that opens to a signed colophon: e.g. mostly Claude (or other named models), human review, house key. Social posts show a sibling mark that reads as human-authored without implying AI is shameful elsewhere. Same system, different bills. Readers learn the seal by sight; verify (when signed) answers who sealed the claim for which content bytes.</p>
 <p><strong>North Star:</strong> Within 24 months of public launch, operator dogfood covers both primary use cases on real properties; ≥50% of surveyed readers in docs and social-adjacent samples describe the mark as composition / how-made; ≥25% of public sealed docs expose a working verify path to a named maker or house.</p>
 <h2 id="user-experience">User Experience</h2>
-<p><strong>UC-AI-docs (documentation site).</strong> Erik publishes a HELIX-style microsite mostly drafted by Claude, with human structure/edit and often a <strong>sloptimizer</strong> pass (Easel skill: tighten AI-shaped prose; it does not score authorship). He records a mash bill: composition <code>model-primary</code>, tools Claude + sloptimizer (if used) + human edit, then signs with an Azgaard house key over the canonical page. Footer carries the Innsigle. Reader opens it: named tools, fingerprint match, Azgaard as signer. No detection score. Prose that <em>reads</em> cleaner after sloptimizer stays model-primary on the bill.</p>
+<p><strong>UC-AI-docs (documentation site).</strong> Erik publishes a HELIX-style microsite mostly drafted by Claude, with human structure/edit and often a <strong>sloptimizer</strong> pass (Easel skill: tighten AI-shaped prose; it does not score authorship). He records a colophon: composition <code>model-primary</code>, tools Claude + sloptimizer (if used) + human edit, then signs with an Azgaard house key over the canonical page. Footer carries the Innsigle. Reader opens it: named tools, fingerprint match, Azgaard as signer. No detection score. Prose that <em>reads</em> cleaner after sloptimizer stays model-primary on the bill.</p>
 <p><strong>UC-human-social (X / similar).</strong> Erik posts a short thread he wrote himself. He attaches or includes the human-authored Innsigle mark (image or compact link pattern that survives platforms stripping file metadata). Viewers see human composition; optional verify URL is available but signing may be omitted when the post is ephemeral. Same seal family as the docs site, not a separate "purity brand."</p>
 <h2 id="target-market">Target Market</h2>
 <table>
@@ -81,7 +81,7 @@ updated: 2026-07-22</code></pre>
 <table>
 <tr><th>Value Proposition</th><th>Customer Benefit</th></tr>
 <tr><td>Dual-channel composition seal</td><td>Docs (AI-primary) and social (human-primary) share one mark language</td></tr>
-<tr><td>Mash bill with named tools (models and editorial tooling)</td><td>"Claude + sloptimizer + human edit" as credit, not confession or laundering</td></tr>
+<tr><td>Colophon with named tools (models and editorial tooling)</td><td>"Claude + sloptimizer + human edit" as credit, not confession or laundering</td></tr>
 <tr><td>Optional house/person signet</td><td>Verify who sealed the bill for durable content</td></tr>
 <tr><td>Social-safe mark pattern</td><td>Human claim remains visible when C2PA-style metadata is gone</td></tr>
 </table>
@@ -94,17 +94,17 @@ updated: 2026-07-22</code></pre>
 <tr><td>Category integrity</td><td>Zero product claims of AI detection accuracy</td></tr>
 </table>
 <h2 id="why-now">Why Now</h2>
-<p>Vendors stack C2PA (rich, fragile) and SynthID (durable, sparse) for <em>images</em>. Platforms label AI media. Human-only badges ignore model-heavy docs. Operators who build methodology sites with models and still post human writing on X fall between those stools. EU AI Act Art. 50 (from 2 Aug 2026) increases disclosure pressure without giving makers a dual-channel craft seal. Innsigle targets that gap: mash bill + mark + optional signature under maker control.</p>
+<p>Vendors stack C2PA (rich, fragile) and SynthID (durable, sparse) for <em>images</em>. Platforms label AI media. Human-only badges ignore model-heavy docs. Operators who build methodology sites with models and still post human writing on X fall between those stools. EU AI Act Art. 50 (from 2 Aug 2026) increases disclosure pressure without giving makers a dual-channel craft seal. Innsigle targets that gap: colophon + mark + optional signature under maker control.</p>
       </main>
     </div>
   </div>
   <footer class="site-footer">
     <div class="wrap">
-      <a class="innsigle-footer-seal" href="/use/mash-bill/">
+      <a class="innsigle-footer-seal" href="/use/colophon/">
         <img src="/assets/marks/innsigle-base.svg" width="28" height="28" alt="" />
         <span>
           <strong>Innsigle</strong>
-          <span class="cue">Mash bill · not a detector</span>
+          <span class="cue">Colo · not a detector</span>
         </span>
       </a>
       <p>

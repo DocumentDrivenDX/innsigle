@@ -21,7 +21,7 @@ attest how digital content was made, or who stands behind a claim about it.
 **Operator use cases under test:**
 
 1. **UC-AI-docs:** Long-lived documentation sites (e.g. HELIX microsite): mostly
-   model-generated; maker wants a signed mash bill that *proudly* names tools
+   model-generated; maker wants a signed colophon that *proudly* names tools
    (e.g. Claude) and binds the claim to a house or person.
 2. **UC-human-social:** Short posts on X/Twitter and similar: maker wants it
    clear the words are human-authored, under their control, not a platform
@@ -61,7 +61,7 @@ dogfood.
 
 | Dimension | Sloptimizer | Innsigle |
 |-----------|-------------|----------|
-| Job | Remove AI-isms, filler, unsupported claims; harden specs | Declare mash bill; optional sign who sealed it |
+| Job | Remove AI-isms, filler, unsupported claims; harden specs | Declare colophon; optional sign who sealed it |
 | Authorship score | Explicitly **does not** claim text was written by AI | Explicitly **is not** a detector |
 | Output | Cleaner prose / executable work items | Mark + bill + optional signature |
 | UC-AI-docs fit | Post-generate edit pass before publish | Seal names models (e.g. Claude) **and** can list editorial tools |
@@ -70,7 +70,7 @@ dogfood.
 **Pipeline (dogfood target for methodology docs):**
 
 ```text
-model draft (Claude, …) → sloptimizer detect|rewrite|validate → Innsigle mash bill
+model draft (Claude, …) → sloptimizer detect|rewrite|validate → Innsigle colophon
   (model-primary + named tools + human roles + optional "sloptimizer" tool line)
   → house sign → publish site
 ```
@@ -145,13 +145,13 @@ Claude BOM** on a docs site or a **human seal** on a tweet.
 | Differentiator | Why it matters for UCs | Defensibility |
 |----------------|------------------------|---------------|
 | Dual composition brand (human and AI equally first-class) | UC-human-social and UC-AI-docs share one mark family | Med (brand + guidelines) |
-| Mash bill with named tools (e.g. Claude) as pride, not confession | UC-AI-docs needs model credit without shame language | Med (vocabulary + UX) |
+| Colophon with named tools (e.g. Claude) as pride, not confession | UC-AI-docs needs model credit without shame language | Med (vocabulary + UX) |
 | Maker/house signet (DKIM-like), not only vendor watermark | UC-AI-docs: "Azgaard sealed this bill" | Med-High if key discovery is simple |
 | Social-safe pattern (mark + outlink; no metadata dependence) | UC-human-social on X | Med (design pattern, not a protocol monopoly) |
 | Explicit non-detector, non-C2PA-replacement stance | Avoids arms race and standards war | High (positioning discipline) |
 
 **Positioning (sharpened):** For operators who publish both model-heavy docs and
-human social posts, Innsigle is a content-origin seal and mash bill: one visual
+human social posts, Innsigle is a content-origin seal and colophon: one visual
 system for human-authored and AI-generated work, with optional personal/house
 signatures. Unlike Not By AI, AI is a first-class bill ingredient. Unlike C2PA
 and SynthID, the primary job is maker-facing brand and claim for web text and
@@ -161,10 +161,10 @@ social, not industry media pipelines or model-side watermarks.
 
 | Move | Action |
 |------|--------|
-| Attack | Owned documentation sites with signed AI mash bills (dogfood HELIX / Azgaard docs); optional sloptimizer pass recorded in the bill; human social mark packs for X-class platforms; CLI sign/verify for site content |
+| Attack | Owned documentation sites with signed AI colophons (dogfood HELIX / Azgaard docs); optional sloptimizer pass recorded in the bill; human social mark packs for X-class platforms; CLI sign/verify for site content |
 | Defend | Category integrity (not detection; not "sloptimized = human"); dual-state mark family; simple key custody for house signers |
 | Avoid | Competing as the C2PA implementation of record; building detectors; human-only purity as the only story; requiring C2PA survival on Twitter for P0; treating prose de-AI-ifying as composition change to human-authored |
-| Interop (later) | Map mash bill fields to IPTC `digitalSourceType` / C2PA assertions when exporting media files; keep Innsigle claim as the maker layer; optional skill/CLI hook after sloptimizer in easel-skills or agent workflows |
+| Interop (later) | Map colophon fields to IPTC `digitalSourceType` / C2PA assertions when exporting media files; keep Innsigle claim as the maker layer; optional skill/CLI hook after sloptimizer in easel-skills or agent workflows |
 
 ## Evidence anchors (survey)
 

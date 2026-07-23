@@ -12,8 +12,8 @@ Runnable distribution for the signed docs path (CONTRACT-001). Requires Node 20+
 
 ```bash
 node src/cli.mjs keygen --out-dir ./keys
-node src/cli.mjs bill example --kind model-primary > bill.json
-node src/cli.mjs claim build --content ./page.html --bill bill.json \
+node src/cli.mjs colo example --kind model-primary > colo.json
+node src/cli.mjs claim build --content ./page.html --colo colo.json \
   --issuer-id azgaard --issuer-name Azgaard \
   --key-id "$(cat keys/key-id.txt)" \
   --key-url https://example.com/.well-known/innsigle/keys.json \

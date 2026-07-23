@@ -14,7 +14,7 @@ const CORE_LEAVES = [
   "/why/",
   "/use/",
   "/use/cli/",
-  "/use/mash-bill/",
+  "/use/colophon/",
   "/use/verify/",
   "/use/marks/",
   "/use/walkthrough-docs/",

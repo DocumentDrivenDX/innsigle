@@ -1,12 +1,12 @@
 {
   "payload": {
     "innsigle": "1",
-    "type": "https://innsigle.dev/claim/mash-bill/v1",
+    "type": "https://innsigle.dev/claim/colophon/v1",
     "issued_at": "2026-07-22T12:00:00Z",
     "issuer": {
       "id": "azgaard-test",
       "name": "Azgaard Test",
-      "key_id": "ed25519:faa4e6a43b430cfc54a27386f6b2e2ce",
+      "key_id": "ed25519:02ba9ce3c4c385cfae5f6bf75bfa3cb7",
       "key_url": "https://example.com/.well-known/innsigle/keys.json"
     },
     "subjects": [
@@ -18,7 +18,7 @@
         }
       }
     ],
-    "mash_bill": {
+    "colophon": {
       "schema_version": "1",
       "composition": "model-primary",
       "ingredients": [
@@ -44,9 +44,9 @@
   "payload_encoding": "json",
   "signatures": [
     {
-      "key_id": "ed25519:faa4e6a43b430cfc54a27386f6b2e2ce",
+      "key_id": "ed25519:02ba9ce3c4c385cfae5f6bf75bfa3cb7",
       "alg": "ed25519",
-      "sig": "9FVt5Ig6kwSZXNacoVkcPXa3ENiBIXMfbv3265howHIAHrh9qE10L4GCw-cXevw8hfTLlOJtNmo4Qh-mVvYTAQ",
+      "sig": "UQuh9r9mYuvPI_QW149mveP_5fTj-UXWzhsikzk20MgYWGKhT_lPjq8AkeZ3U9RW88kC2ZI4wXCzW6gRP-xrBQ",
       "signed_at": "2026-07-22T12:00:01Z"
     }
   ]

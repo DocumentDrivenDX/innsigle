@@ -35,7 +35,7 @@ const content = `<!DOCTYPE html>
 writeFileSync(join(root, "content/sample.html"), content);
 const digest = sha256Hex(content);
 
-const bill = {
+const colo = {
   schema_version: "1",
   composition: "model-primary",
   ingredients: [
@@ -45,7 +45,7 @@ const bill = {
   ],
   notes: null,
 };
-writeFileSync(join(root, "bill-model-primary.json"), JSON.stringify(bill, null, 2) + "\n");
+writeFileSync(join(root, "colo-model-primary.json"), JSON.stringify(colo, null, 2) + "\n");
 
 const keys = {
   innsigle_keys: "1",
@@ -65,7 +65,7 @@ writeFileSync(join(root, "keys.json"), JSON.stringify(keys, null, 2) + "\n");
 
 const payload = {
   innsigle: "1",
-  type: "https://innsigle.dev/claim/mash-bill/v1",
+  type: "https://innsigle.dev/claim/colophon/v1",
   issued_at: "2026-07-22T12:00:00Z",
   issuer: {
     id: "azgaard-test",
@@ -79,7 +79,7 @@ const payload = {
       digest: { alg: "sha256", value: digest },
     },
   ],
-  mash_bill: bill,
+  colophon: colo,
 };
 writeFileSync(join(root, "claim.json"), JSON.stringify(payload, null, 2) + "\n");
 

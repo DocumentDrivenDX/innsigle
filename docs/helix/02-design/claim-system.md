@@ -14,7 +14,7 @@ activity: 02-design
 created: 2026-07-22
 ---
 
-# Claim System: Mash Bill, Storage, Signing
+# Claim System: Colophon, Storage, Signing
 
 Solution-level design for composition declaration and optional attestation.
 Normative field names here are design intent; freeze in a Contract before
@@ -28,7 +28,7 @@ Details: `attestation-prior-art.md`.
 
 | Goal | Source |
 |------|--------|
-| Typed mash bill with named tools (Claude, sloptimizer, …) | PRD FR-1–4, FR-4a |
+| Typed colophon with named tools (Claude, sloptimizer, …) | PRD FR-1–4, FR-4a |
 | Sign content hash + bill + issuer | PRD FR-9–12 |
 | Docs-friendly storage (no media embed required) | UC-AI-docs |
 | Social-safe mark without claim-in-file | UC-human-social |
@@ -38,10 +38,10 @@ Details: `attestation-prior-art.md`.
 
 | Term | Meaning |
 |------|---------|
-| **Mash bill** | Declared recipe of how the work was made (composition + ingredients) |
+| **Colophon (colo)** | Declared recipe of how the work was made (composition + ingredients); short form **colo** |
 | **Composition** | Coarse state: `human-authored` \| `mixed` \| `model-primary` |
 | **Ingredient** | One tool, model, or human role line item |
-| **Claim** | JSON document: subjects + mash bill + metadata (unsigned or to-be-signed body) |
+| **Claim** | JSON document: subjects + colophon + metadata (unsigned or to-be-signed body) |
 | **Attestation** | Claim body + signature by an issuer key |
 | **Issuer** | Person or house key that signs |
 | **Subject** | Content unit identified by digest (and optional URI) |
@@ -51,12 +51,12 @@ Details: `attestation-prior-art.md`.
 Avoid public "credentials" for the product object (C2PA collision). Internal
 type URIs may still say `attestation`.
 
-## Mash bill schema (draft v1)
+## Colophon schema (draft v1)
 
 ### Conceptual model
 
 ```text
-MashBill
+Colophon
   composition: enum
   ingredients[]: Ingredient
   notes?: string          # short free text; not a loophole for hiding models
@@ -87,7 +87,7 @@ itself change `model-primary` → `human-authored`. List sloptimizer as
 ```json
 {
   "innsigle": "1",
-  "type": "https://innsigle.dev/claim/mash-bill/v1",
+  "type": "https://innsigle.dev/claim/colophon/v1",
   "issued_at": "2026-07-22T18:00:00Z",
   "issuer": {
     "id": "azgaard",
@@ -104,7 +104,7 @@ itself change `model-primary` → `human-authored`. List sloptimizer as
       }
     }
   ],
-  "mash_bill": {
+  "colophon": {
     "schema_version": "1",
     "composition": "model-primary",
     "ingredients": [
@@ -131,7 +131,7 @@ itself change `model-primary` → `human-authored`. List sloptimizer as
 }
 ```
 
-Aligns with in-toto mentally: `subjects` ≈ subject digests; `mash_bill` ≈
+Aligns with in-toto mentally: `subjects` ≈ subject digests; `colophon` ≈
 predicate; `type` ≈ predicateType. v1 may ship this JSON without full DSSE.
 
 ### Canonical content hashing
@@ -160,7 +160,7 @@ operator points at; document foot-guns.
 | **A. Sidecar file** | `page.innsigle.json` next to content or in `/.well-known/innsigle/claims/…` | Docs |
 | **B. Embedded link** | Footer mark links to claim URL or `#innsigle` fragment page | Docs |
 | **C. Inline unsigned bill** | Human-readable bill in HTML (optional duplicate of JSON fields) | Docs |
-| **D. Mark asset only** | SVG/PNG + link to profile/bill explainer; no per-post signature | Social |
+| **D. Mark asset only** | SVG/PNG + link to profile/colo explainer; no per-post signature | Social |
 | **E. Key document** | `keys.json` (public keys, key_id, optional revoke) | Discovery |
 
 ### Not v1 (parked)
@@ -235,7 +235,7 @@ alignment.
 3. Verify signature over payload (canonical).
 4. Recompute digest of local/canonical content; match `subjects[].digest`.
 5. Report: `valid` | `bad_signature` | `content_mismatch` | `unknown_key` | `revoked`.
-6. Display mash bill fields regardless of validity, with clear banner if invalid.
+6. Display colophon fields regardless of validity, with clear banner if invalid.
 
 Never report "this is 80% AI."
 
@@ -263,8 +263,8 @@ SLSA lesson: separate crypto success from policy trust.
 
 | Command intent | Result |
 |----------------|--------|
-| `bill init` / edit | Write mash bill fields |
-| `claim build` | Bind subjects + bill → claim payload |
+| `colo example` / edit | Write colophon fields |
+| `claim build` | Bind subjects + colo → claim payload |
 | `sign` | Attach signature with local key |
 | `verify` | Path or URL to attestation + content |
 | `keygen` / `key publish-template` | Key material + sample keys.json |

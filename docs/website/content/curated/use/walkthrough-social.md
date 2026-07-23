@@ -41,7 +41,7 @@ Pick one or both:
 Example caption skeleton:
 
 ```text
-Human-authored. Innsigle mash bill: H.
+Human-authored. Innsigle colophon: H.
 How to read: https://documentdrivendx.github.io/innsigle/use/marks/
 ```
 

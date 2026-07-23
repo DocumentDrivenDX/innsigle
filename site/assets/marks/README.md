@@ -15,7 +15,7 @@ set ink via CSS. One glyph family; letter cues **H** / **M** / **A**.
 | Do | Don't |
 |----|--------|
 | Monochrome / high contrast | Green = human, red = AI |
-| Link mark to mash bill | Imply "content is true" |
+| Link mark to colophon | Imply "content is true" |
 | Use same family for all states | Separate purity brand for human only |
 
 ## Export sizes

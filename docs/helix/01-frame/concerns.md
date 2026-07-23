@@ -21,13 +21,13 @@ not principles, requirements, ADRs, test plans, or implementation tasks.
 
 | Concern | Source | Areas | Why Active | Key Practices |
 |---------|--------|-------|------------|---------------|
-| `scope-discipline` | library | `area:brand`, `area:cli`, `area:web`, `area:crypto` | Brand-first product; easy to gold-plate into C2PA, detectors, or full IdP | Ship mark + mash bill + optional sign/verify first; park industrial provenance and multi-tenant identity unless an FR demands them |
+| `scope-discipline` | library | `area:brand`, `area:cli`, `area:web`, `area:crypto` | Brand-first product; easy to gold-plate into C2PA, detectors, or full IdP | Ship mark + colophon + optional sign/verify first; park industrial provenance and multi-tenant identity unless an FR demands them |
 | `claim-not-oracle` | project-local | `area:brand`, `area:web`, `area:cli`, `area:docs` | Category integrity: not an AI detector | Copy, UI, and verify results never imply detection scores; always attribute claims to a principal when signed |
-| `visual-seal-system` | project-local | `area:brand`, `area:web` | Recognition is mark-first | One seal family for human / AI / mixed composition; readable mash-bill layout; no purity/shame color coding |
+| `visual-seal-system` | project-local | `area:brand`, `area:web` | Recognition is mark-first | One seal family for human / AI / mixed composition; readable colophon layout; no purity/shame color coding |
 | `key-custody` | project-local | `area:cli`, `area:crypto` | DKIM-like signing needs safe keys without enterprise IdP in v1 | Local key generation; never log private keys; clear compromise guidance; public key discovery via URL or well-known path |
 | `security-owasp` | library | `area:web`, `area:cli`, `area:crypto` | Verify pages and tooling handle untrusted input and keys | Input validation on claims; safe URL handling; no secret leakage in errors |
 | `typescript-bun` | library (shipped-default) | `area:cli`, `area:web` | Language/runtime slot for tooling | Prefer TypeScript + Bun for CLI and any app code unless an ADR overrides |
-| `testing` | library | `area:cli`, `area:web`, `area:crypto` | Assertions and verify paths must be falsifiable | Unit tests for hash/sign/verify; fixture mash bills; golden claim payloads |
+| `testing` | library | `area:cli`, `area:web`, `area:crypto` | Assertions and verify paths must be falsifiable | Unit tests for hash/sign/verify; fixture colophons; golden claim payloads |
 | `verification` | library | `area:cli`, `area:web` | Claims-vs-reality for product integrity | No phantom “we verify AI content” claims; demos exercise real sign→verify |
 | `product-microsite-ia` | library | `area:web`, `area:brand` | Brand site for evaluate/start/operate readers; generated reference from HELIX docs | Curated copy in `docs/website/content/curated/`; generate artifacts/glossary from `docs/helix/` via `npm run site:build`; nav by reader mode (ADR-002); `site/` is build output only |
 | `a11y-wcag-aa` | library | `area:web`, `area:brand` | Seal and verify UI must be readable beyond color | Text labels for composition states; contrast; keyboard access on verify views |

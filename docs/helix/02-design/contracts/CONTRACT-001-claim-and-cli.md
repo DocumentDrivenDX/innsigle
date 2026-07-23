@@ -24,7 +24,7 @@ created: 2026-07-22
 
 ## Purpose
 
-Define the mash-bill claim document, attestation envelope, public key document,
+Define the colophon claim document, attestation envelope, public key document,
 content hashing rules for v1, and CLI commands that produce and verify them.
 
 ## Scope and Boundaries
@@ -47,11 +47,11 @@ A claim payload MUST be a JSON object with:
 | Element | Type | Required | Rules |
 |---------|------|----------|-------|
 | `innsigle` | string | yes | MUST be `"1"` for this version |
-| `type` | string (URI) | yes | MUST be `https://innsigle.dev/claim/mash-bill/v1` until domain freeze changes it via version bump |
+| `type` | string (URI) | yes | MUST be `https://innsigle.dev/claim/colophon/v1` until domain freeze changes it via version bump |
 | `issued_at` | string | yes | MUST be RFC 3339 UTC timestamp |
 | `issuer` | object | yes | See issuer object |
 | `subjects` | array | yes | MUST contain ≥1 subject |
-| `mash_bill` | object | yes | See mash_bill object |
+| `colophon` | object | yes | See colophon object |
 
 #### issuer object
 
@@ -69,7 +69,7 @@ A claim payload MUST be a JSON object with:
 | `uri` | string | no | Content locator when known |
 | `digest` | object | yes | `alg` MUST be `"sha256"`; `value` MUST be lowercase hex of SHA-256 |
 
-#### mash_bill object
+#### colophon object
 
 | Element | Type | Required | Rules |
 |---------|------|----------|-------|
@@ -156,10 +156,10 @@ Binary name: `innsigle` (package may ship as such).
 |---------|-------------------------|----------|
 | `innsigle keygen` | `--out-dir <dir>` | MUST write private key (permissions 0600 when FS supports) and public material; MUST NOT print private key |
 | `innsigle keys template` | `--issuer-id` `--issuer-name` `--public-key` | MUST emit `keys.json` skeleton |
-| `innsigle claim build` | `--content <file>` `--uri <uri?>` `--bill <bill.json>` `--issuer <issuer fields>` | MUST emit claim payload JSON on stdout or `--out` |
+| `innsigle claim build` | `--content <file>` `--uri <uri?>` `--colo <colo.json>` `--issuer <issuer fields>` | MUST emit claim payload JSON on stdout or `--out`; MAY accept `--bill` as alias for `--colo` |
 | `innsigle sign` | `--claim <file>` `--key <private>` | MUST emit attestation envelope |
 | `innsigle verify` | `--attestation <file>` `--content <file>` `--keys <file\|url>` | MUST exit 0 iff signature valid, key not revoked, and content digest matches; MUST exit non-zero otherwise |
-| `innsigle bill example` | `--kind model-primary\|human-authored\|mixed` | MUST print example mash_bill JSON |
+| `innsigle colo example` | `--kind model-primary\|human-authored\|mixed` | MUST print example colophon JSON; MAY accept `bill example` as alias |
 
 #### verify exit codes
 
@@ -209,7 +209,7 @@ See:
 ```text
 innsigle keygen --out-dir ~/.config/innsigle/azgaard
 innsigle claim build --content ./site/index.html --uri https://example.com/ \
-  --bill ./bill.json --out claim.json
+  --colo ./colo.json --out claim.json
 innsigle sign --claim claim.json --key ~/.config/innsigle/azgaard/ed25519.priv \
   --out claim.attestation.json
 innsigle verify --attestation claim.attestation.json --content ./site/index.html \

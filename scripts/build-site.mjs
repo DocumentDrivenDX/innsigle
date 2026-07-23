@@ -111,11 +111,11 @@ function layout({ title, description, pageUrl, bodyHtml, crumbs }) {
   </div>
   <footer class="site-footer">
     <div class="wrap">
-      <a class="innsigle-footer-seal" href="${BASE}/use/mash-bill/">
+      <a class="innsigle-footer-seal" href="${BASE}/use/colophon/">
         <img src="${BASE}/assets/marks/innsigle-base.svg" width="28" height="28" alt="" />
         <span>
           <strong>Innsigle</strong>
-          <span class="cue">Mash bill · not a detector</span>
+          <span class="cue">Colo · not a detector</span>
         </span>
       </a>
       <p>
@@ -146,7 +146,7 @@ function sidebar(pageUrl) {
       links: [
         { t: "Use overview", h: `${BASE}/use/` },
         { t: "CLI", h: `${BASE}/use/cli/` },
-        { t: "Mash bill", h: `${BASE}/use/mash-bill/` },
+        { t: "Colophon", h: `${BASE}/use/colophon/` },
         { t: "Verify", h: `${BASE}/use/verify/` },
         { t: "Marks", h: `${BASE}/use/marks/` },
         { t: "Walkthrough: docs", h: `${BASE}/use/walkthrough-docs/` },

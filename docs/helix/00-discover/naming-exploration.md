@@ -24,19 +24,19 @@ updated: 2026-07-22
 |---|----------|--------|
 | 1 | Primary metaphor: **seal / signet** (not badge-first) | **Locked** |
 | 2 | Emotional tone: **craft pride first**, civic transparency second | **Locked** |
-| 3 | Origin states are **composition** (mash bill / BOM)—not good vs bad | **Locked** |
+| 3 | Origin states are **composition** (colophon / BOM)—not good vs bad | **Locked** |
 | 4 | Brand affinity: **Norse / Azgaard** | **Locked** |
 | 5 | **Signet** = internal concept (personal seal + optional signed claim) | **Locked** |
 | 6 | Public product name: **Innsigle** | **Locked** 2026-07-22 |
 
-### What “mash bill” means
+### What “colophon” means
 
 Composition of how the work was made (human, AI, tools, blend)—not a moral grade.  
-**Name = the seal. Payload = the mash bill.**
+**Name = the seal. Payload = the colophon.**
 
 ### Working brand line
 
-*Not a verdict. A mash bill for how it was made—sealed with Innsigle.*
+*Not a verdict. A colophon for how it was made—sealed with Innsigle.*
 
 ---
 
@@ -57,7 +57,7 @@ Composition of how the work was made (human, AI, tools, blend)—not a moral gra
 |-------|------|------|
 | House | Studio / operator trust root | **Azgaard** |
 | Product | Public seal system | **Innsigle** |
-| Concept words | Explainer vocabulary | signet, mash bill, seal, claim |
+| Concept words | Explainer vocabulary | signet, colophon, seal, claim |
 | Visual primary | Mark readers recognize | **Innsigle seal mark** (design system TBD) |
 | Repo / code | Engineering slug | `aibadge` until rename |
 
@@ -72,7 +72,7 @@ Operator note: **the key element is a visual branding element.** Wordmark and sp
 - Do **not** market as AI detection.
 - Do **not** use “Credentials” (C2PA collision).
 - Do **not** ship public brand as **Sigli** alone.
-- Always separate **declared mash bill** and **signed seal** from **detected fact**.
+- Always separate **declared colophon** and **signed seal** from **detected fact**.
 - Etymology honesty: Latin *sigillum* line via North Germanic legal vocabulary—not a pre-Christian pure root. Say “Norse/Icelandic for a document seal,” not “ancient pagan word for truth.”
 
 ### Domain (open, not blocking)
@@ -97,14 +97,14 @@ No other variants. Brand audio/video uses this once; the **mark** carries recogn
 
 - [ ] Domain / handle acquisition
 - [ ] Repo rename `aibadge` → `innsigle` (optional)
-- [ ] Visual seal mark + mash-bill layout system
+- [ ] Visual seal mark + colophon layout system
 - [ ] Trademark skim before public launch
 
 ## Decision log
 
 | Date | Decision |
 |------|----------|
-| 2026-07-22 | Metaphor, tone, mash bill, Azgaard affinity locked |
+| 2026-07-22 | Metaphor, tone, colophon, Azgaard affinity locked |
 | 2026-07-22 | Reviewed *sigli* / *innsigli*; bare Sigli rejected (AI firm collision) |
 | 2026-07-22 | **Public name locked: Innsigle**; visual seal primary recognition surface |
 

@@ -45,16 +45,16 @@ updated: 2026-07-22
 **Innsigle** is a content-origin seal for makers who publish in two channels:
 
 1. **UC-AI-docs:** Owned documentation (e.g. HELIX microsite): model-primary
-   content with a **signed mash bill** that can proudly name tools (e.g. Claude)
+   content with a **signed colophon** that can proudly name tools (e.g. Claude)
    and a house/person signer.
 2. **UC-human-social:** Short posts on X/Twitter and similar: a **human-authored**
    mark that stays visible when platforms strip file metadata.
 
-Same seal family; different mash bills. Optional DKIM-style signing for durable
+Same seal family; different colophons. Optional DKIM-style signing for durable
 content. Not an AI detector. Not a C2PA replacement (C2PA/SynthID serve media
 pipelines and vendor watermarks; social text and proud model BOM are the gap).
 
-**v1:** Mark system + mash bill model + docs sign/verify CLI + social placement
+**v1:** Mark system + colophon model + docs sign/verify CLI + social placement
 pattern (image/link). Dogfood on operator docs and social first. Editorial
 tooling such as **sloptimizer** (easel-skills) is a complementary pipeline step:
 list it on the bill when used; it does not change composition to human-authored.
@@ -78,7 +78,7 @@ UCs as one brand + claim system.
 
 ### Goals
 
-1. **UC-AI-docs:** Operator can publish docs with an Innsigle whose mash bill
+1. **UC-AI-docs:** Operator can publish docs with an Innsigle whose colophon
    names generative tools and is optionally signed so readers verify house/person
    sealed that bill for those content bytes.
 2. **UC-human-social:** Operator can mark a short social post as human-authored
@@ -90,7 +90,7 @@ UCs as one brand + claim system.
 
 | Metric | Target | Measurement Method |
 |--------|--------|--------------------|
-| UC-AI-docs dogfood | ≥1 real docs property (e.g. HELIX or Azgaard docs) shows Innsigle + mash bill with named model; signed path works for at least one canonical page | Checklist + verify CLI against live URL or published artifact |
+| UC-AI-docs dogfood | ≥1 real docs property (e.g. HELIX or Azgaard docs) shows Innsigle + colophon with named model; signed path works for at least one canonical page | Checklist + verify CLI against live URL or published artifact |
 | UC-human-social dogfood | ≥1 real X (or equivalent) post or profile asset uses human-authored Innsigle pattern | Screenshot + placement checklist |
 | Docs sign/verify | 100% P0 fixtures verify; mutation and wrong key fail closed | Automated CLI/crypto tests |
 | Unsigned social place | Human mark pack placeable in ≤15 minutes without account | Timed task n≥3 |
@@ -101,7 +101,7 @@ UCs as one brand + claim system.
 
 - AI content detection or decoding SynthID/Video Seal.
 - Replacing C2PA/CAI as the media industry standard or camera capture chain.
-- Guaranteeing mash bill factual truth (only declaration + optional signature).
+- Guaranteeing colophon factual truth (only declaration + optional signature).
 - Multi-tenant accounts, marketplace, or social network in v1.
 - Native X API integration or platform partnership as P0.
 - EU AI Act certification product.
@@ -135,10 +135,10 @@ UCs as one brand + claim system.
 
 ### Must Have (P0)
 
-1. Mash bill model: at least human-authored, model-primary (AI-generated), and
+1. Colophon model: at least human-authored, model-primary (AI-generated), and
    mixed; tools/models nameable (e.g. `Claude`).
 2. Visual seal family usable for both composition poles (not separate good/bad logos).
-3. **UC-AI-docs:** Embed mark + mash bill on a static/HTML docs page; optional
+3. **UC-AI-docs:** Embed mark + colophon on a static/HTML docs page; optional
    sign and verify for canonical content.
 4. **UC-human-social:** Placement pattern for human-authored posts when file
    metadata cannot be trusted (mark image and/or short verify/profile link).
@@ -157,20 +157,20 @@ UCs as one brand + claim system.
 ### Nice to Have (P2)
 
 1. C2PA export/bridge for image assets.
-2. IPTC `digitalSourceType` mapping from mash bill fields.
+2. IPTC `digitalSourceType` mapping from colophon fields.
 3. Hosted key directory.
 4. Native platform integrations.
-5. Quantitative percentages in mash bill.
-6. Optional agent/skill hook that proposes a mash bill after a sloptimizer pass
+5. Quantitative percentages in colophon.
+6. Optional agent/skill hook that proposes a colophon after a sloptimizer pass
    (still human-confirmed composition state).
 
 ## Functional Requirements
 
-### Subsystem: Mash Bill Model
+### Subsystem: Colophon Model
 
-- **FR-1** Mash bill includes composition states at least: `human-authored`,
+- **FR-1** Colophon includes composition states at least: `human-authored`,
   `model-primary` (AI-generated), `mixed`.
-- **FR-2** Mash bill can list named tools/models (e.g. Claude, other LLMs,
+- **FR-2** Colophon can list named tools/models (e.g. Claude, other LLMs,
   image models), editorial tools (e.g. sloptimizer), and human roles (edit,
   structure, review).
 - **FR-3** No required ranking of states as better/worse; AI-named bills are
@@ -191,10 +191,10 @@ UCs as one brand + claim system.
 
 ### Subsystem: UC-AI-docs (documentation)
 
-- **FR-8** Maker can publish an Innsigle on an HTML/static docs page with mash
-  bill inline or one link away, including named models.
+- **FR-8** Maker can publish an Innsigle on an HTML/static docs page with colo
+  inline or one link away, including named models.
 - **FR-9** Maker can sign a claim over a defined canonical content unit (page or
-  artifact) binding: content fingerprint, mash bill, issuer, time.
+  artifact) binding: content fingerprint, colophon, issuer, time.
 - **FR-10** Third party verifies claim + content + issuer public key; fails
   closed on mutation or key mismatch.
 - **FR-11** v1 signing uses maker-controlled local keys; no hosted account required.
@@ -211,7 +211,7 @@ UCs as one brand + claim system.
 
 ### Subsystem: Brand Site and Education
 
-- **FR-16** Public explainer documents both UCs, mash bill examples (Claude-named
+- **FR-16** Public explainer documents both UCs, colophon examples (Claude-named
   docs, optionally with sloptimizer on the bill; human social), verify when
   signed, non-goals, and the sloptimizer complement (edit vs seal; no authorship
   laundering).
@@ -221,13 +221,13 @@ UCs as one brand + claim system.
 
 - **FR-18** Assert/sign/verify tooling ships documented and runnable for UC-AI-docs
   P0 without a GUI.
-- **FR-19** Tooling accepts a mash bill that includes named generative tools.
+- **FR-19** Tooling accepts a colophon that includes named generative tools.
 
 ## Acceptance Test Sketches
 
 | Requirement | Scenario | Input | Expected Output |
 |-------------|----------|-------|-----------------|
-| FR-1–4, FR-4a, FR-8, FR-19 | HELIX-like docs page, model-primary | Mash bill: Claude draft, sloptimizer rewrite, human edit; footer seal | Reader sees named model and editorial tool; state remains model-primary |
+| FR-1–4, FR-4a, FR-8, FR-19 | HELIX-like docs page, model-primary | Colophon: Claude draft, sloptimizer rewrite, human edit; footer seal | Reader sees named model and editorial tool; state remains model-primary |
 | FR-9–12, FR-18 | Sign docs page | Canonical HTML or content bytes + house key | Verify succeeds; bit-flip fails; wrong key fails |
 | FR-5–7, FR-13–15 | Human X post | Human-authored mark asset or link pattern | Viewer can see human composition without file metadata |
 | FR-16–17 | New visitor | Brand site only | Explains both UCs; sloptimizer ≠ human authorship; not a detector; INN-siggle once |
@@ -295,12 +295,12 @@ Design drafts: `docs/helix/02-design/` (DESIGN.md, claim-system.md, attestation-
 - [ ] Signature algorithm + envelope freeze (ADR; draft proposes Ed25519)
 - [ ] Seal glyph geometry and state cues (DESIGN.md open list)
 - [ ] Product domain vs `*.azgaard.net` for type URIs and key_url
-- [ ] Model version pins in mash bill v1
+- [ ] Model version pins in colophon v1
 - [ ] Claim URL shape for social (profile well-known vs per-post)
 
 ## Success Criteria
 
-- UC-AI-docs live on at least one operator docs property with named-model mash bill;
+- UC-AI-docs live on at least one operator docs property with named-model colophon;
   signed verify path green on one canonical artifact.
 - UC-human-social live as at least one real human-authored social placement.
 - Automated sign/verify tests green; no detection claims in public materials.
@@ -312,6 +312,6 @@ Design drafts: `docs/helix/02-design/` (DESIGN.md, claim-system.md, attestation-
 - [x] Problem tied to competitive gaps
 - [x] Goals map to UC-AI-docs and UC-human-social
 - [x] Metrics cover dogfood both channels
-- [x] FR-n cover mash bill, docs sign, social pattern
+- [x] FR-n cover colophon, docs sign, social pattern
 - [x] Non-goals exclude C2PA war and detectors
 - [x] Acceptance sketches cover both UCs

@@ -1,15 +1,17 @@
 ---
-title: Mash bill
+title: Colophon
 nav: use
 weight: 22
 parent: use
 description: Composition states and ingredients for how work was made.
 ---
 
-# Mash bill
+# Colophon
 
-The **mash bill** is the recipe of making—not a moral grade. Like a distiller’s
-grain bill: ingredients and roles, not “good” vs “bad.”
+The **colophon** (short: **colo**) is the declared recipe of how work was
+made—composition plus ingredients. Not a moral grade. Not a detector score.
+Publishing tradition: a colophon lists how the piece was produced; Innsigle
+seals that declaration to content bytes.
 
 ## Composition
 
@@ -28,6 +30,12 @@ Each line is `kind` (`model` · `tool` · `human` · `other`) plus `name` and op
 
 Running sloptimizer (or similar) on model output does **not** flip
 `model-primary` to `human-authored`. List the tool as `kind: tool`.
+
+## CLI
+
+```bash
+node src/cli.mjs colo example --kind model-primary > colo.json
+```
 
 Full schema: [claim system design](../../reference/artifacts/claim-system/) and
 JSON Schema in the repo under `docs/helix/02-design/schemas/`.

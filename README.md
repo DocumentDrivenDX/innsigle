@@ -1,6 +1,6 @@
 # Innsigle
 
-Craft seal for content mash bills: declare how work was made (human / mixed /
+Craft seal for content colophons: declare how work was made (human / mixed /
 model-primary), optionally sign with a house or person key (DKIM-like), and
 verify. Not an AI detector. Not a C2PA replacement.
 
@@ -30,8 +30,8 @@ Requires Node 20+.
 ```bash
 node src/cli.mjs keygen --out-dir ./keys
 # create keys.json via: keys template …
-node src/cli.mjs bill example --kind model-primary > bill.json
-node src/cli.mjs claim build --content ./page.html --bill bill.json \
+node src/cli.mjs colo example --kind model-primary > colo.json
+node src/cli.mjs claim build --content ./page.html --colo colo.json \
   --issuer-id azgaard --issuer-name Azgaard \
   --key-id "$(cat keys/key-id.txt)" \
   --key-url https://example.com/.well-known/innsigle/keys.json \

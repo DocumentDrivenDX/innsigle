@@ -28,7 +28,7 @@
     <p class="crumbs" aria-label="Breadcrumb"><a href="/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/reference/">Reference</a> <span aria-hidden="true">/</span> <span>Product Requirements Document</span></p>
     <div class="docs-grid">
       <aside class="docs-side" aria-label="Section">
-        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/dogfood/">Dogfood</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/mash-bill/">Mash bill</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/" aria-current="page">Reference home</a></li><li><a href="/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/dogfood/">Dogfood</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/colophon/">Colophon</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/" aria-current="page">Reference home</a></li><li><a href="/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
       </aside>
       <main class="docs-main prose">
         <p class="gen-banner note">Generated reference — edit sources under <code>docs/helix/</code>, then <code>npm run site:build</code>.</p>
@@ -63,13 +63,13 @@ updated: 2026-07-22</code></pre>
 <ol>
 <li><strong>UC-AI-docs:</strong> Owned documentation (e.g. HELIX microsite): model-primary</li>
 </ol>
-<p>   content with a <strong>signed mash bill</strong> that can proudly name tools (e.g. Claude)    and a house/person signer.</p>
+<p>   content with a <strong>signed colophon</strong> that can proudly name tools (e.g. Claude)    and a house/person signer.</p>
 <ol>
 <li><strong>UC-human-social:</strong> Short posts on X/Twitter and similar: a <strong>human-authored</strong></li>
 </ol>
 <p>   mark that stays visible when platforms strip file metadata.</p>
-<p>Same seal family; different mash bills. Optional DKIM-style signing for durable content. Not an AI detector. Not a C2PA replacement (C2PA/SynthID serve media pipelines and vendor watermarks; social text and proud model BOM are the gap).</p>
-<p><strong>v1:</strong> Mark system + mash bill model + docs sign/verify CLI + social placement pattern (image/link). Dogfood on operator docs and social first. Editorial tooling such as <strong>sloptimizer</strong> (easel-skills) is a complementary pipeline step: list it on the bill when used; it does not change composition to human-authored.</p>
+<p>Same seal family; different colophons. Optional DKIM-style signing for durable content. Not an AI detector. Not a C2PA replacement (C2PA/SynthID serve media pipelines and vendor watermarks; social text and proud model BOM are the gap).</p>
+<p><strong>v1:</strong> Mark system + colophon model + docs sign/verify CLI + social placement pattern (image/link). Dogfood on operator docs and social first. Editorial tooling such as <strong>sloptimizer</strong> (easel-skills) is a complementary pipeline step: list it on the bill when used; it does not change composition to human-authored.</p>
 <p><strong>Name:</strong> Innsigle (<strong>INN-siggle</strong>, rhymes with <em>single</em>).</p>
 <h2 id="problem-and-goals">Problem and Goals</h2>
 <h3 id="problem">Problem</h3>
@@ -82,7 +82,7 @@ updated: 2026-07-22</code></pre>
 <p>Competitive layer map (see <code>competitive-analysis.md</code>): badges, C2PA, watermarks, IPTC codes, platform labels, and detectors each cover a slice; none cover both UCs as one brand + claim system.</p>
 <h3 id="goals">Goals</h3>
 <ol>
-<li><strong>UC-AI-docs:</strong> Operator can publish docs with an Innsigle whose mash bill</li>
+<li><strong>UC-AI-docs:</strong> Operator can publish docs with an Innsigle whose colophon</li>
 </ol>
 <p>   names generative tools and is optionally signed so readers verify house/person    sealed that bill for those content bytes.</p>
 <ol>
@@ -96,7 +96,7 @@ updated: 2026-07-22</code></pre>
 <h3 id="success-metrics">Success Metrics</h3>
 <table>
 <tr><th>Metric</th><th>Target</th><th>Measurement Method</th></tr>
-<tr><td>UC-AI-docs dogfood</td><td>≥1 real docs property (e.g. HELIX or Azgaard docs) shows Innsigle + mash bill with named model; signed path works for at least one canonical page</td><td>Checklist + verify CLI against live URL or published artifact</td></tr>
+<tr><td>UC-AI-docs dogfood</td><td>≥1 real docs property (e.g. HELIX or Azgaard docs) shows Innsigle + colophon with named model; signed path works for at least one canonical page</td><td>Checklist + verify CLI against live URL or published artifact</td></tr>
 <tr><td>UC-human-social dogfood</td><td>≥1 real X (or equivalent) post or profile asset uses human-authored Innsigle pattern</td><td>Screenshot + placement checklist</td></tr>
 <tr><td>Docs sign/verify</td><td>100% P0 fixtures verify; mutation and wrong key fail closed</td><td>Automated CLI/crypto tests</td></tr>
 <tr><td>Unsigned social place</td><td>Human mark pack placeable in ≤15 minutes without account</td><td>Timed task n≥3</td></tr>
@@ -107,7 +107,7 @@ updated: 2026-07-22</code></pre>
 <ul>
 <li>AI content detection or decoding SynthID/Video Seal.</li>
 <li>Replacing C2PA/CAI as the media industry standard or camera capture chain.</li>
-<li>Guaranteeing mash bill factual truth (only declaration + optional signature).</li>
+<li>Guaranteeing colophon factual truth (only declaration + optional signature).</li>
 <li>Multi-tenant accounts, marketplace, or social network in v1.</li>
 <li>Native X API integration or platform partnership as P0.</li>
 <li>EU AI Act certification product.</li>
@@ -129,12 +129,12 @@ updated: 2026-07-22</code></pre>
 <h2 id="requirements">Requirements</h2>
 <h3 id="must-have-p0">Must Have (P0)</h3>
 <ol>
-<li>Mash bill model: at least human-authored, model-primary (AI-generated), and</li>
+<li>Colophon model: at least human-authored, model-primary (AI-generated), and</li>
 </ol>
 <p>   mixed; tools/models nameable (e.g. <code>Claude</code>).</p>
 <ol>
 <li>Visual seal family usable for both composition poles (not separate good/bad logos).</li>
-<li><strong>UC-AI-docs:</strong> Embed mark + mash bill on a static/HTML docs page; optional</li>
+<li><strong>UC-AI-docs:</strong> Embed mark + colophon on a static/HTML docs page; optional</li>
 </ol>
 <p>   sign and verify for canonical content.</p>
 <ol>
@@ -157,21 +157,21 @@ updated: 2026-07-22</code></pre>
 <h3 id="nice-to-have-p2">Nice to Have (P2)</h3>
 <ol>
 <li>C2PA export/bridge for image assets.</li>
-<li>IPTC <code>digitalSourceType</code> mapping from mash bill fields.</li>
+<li>IPTC <code>digitalSourceType</code> mapping from colophon fields.</li>
 <li>Hosted key directory.</li>
 <li>Native platform integrations.</li>
-<li>Quantitative percentages in mash bill.</li>
-<li>Optional agent/skill hook that proposes a mash bill after a sloptimizer pass</li>
+<li>Quantitative percentages in colophon.</li>
+<li>Optional agent/skill hook that proposes a colophon after a sloptimizer pass</li>
 </ol>
 <p>   (still human-confirmed composition state).</p>
 <h2 id="functional-requirements">Functional Requirements</h2>
-<h3 id="subsystem-mash-bill-model">Subsystem: Mash Bill Model</h3>
+<h3 id="subsystem-colophon-model">Subsystem: Colophon Model</h3>
 <ul>
-<li><strong>FR-1</strong> Mash bill includes composition states at least: <code>human-authored</code>,</li>
+<li><strong>FR-1</strong> Colophon includes composition states at least: <code>human-authored</code>,</li>
 </ul>
 <p>  <code>model-primary</code> (AI-generated), <code>mixed</code>.</p>
 <ul>
-<li><strong>FR-2</strong> Mash bill can list named tools/models (e.g. Claude, other LLMs,</li>
+<li><strong>FR-2</strong> Colophon can list named tools/models (e.g. Claude, other LLMs,</li>
 </ul>
 <p>  image models), editorial tools (e.g. sloptimizer), and human roles (edit,   structure, review).</p>
 <ul>
@@ -200,13 +200,13 @@ updated: 2026-07-22</code></pre>
 </ul>
 <h3 id="subsystem-uc-ai-docs-documentation">Subsystem: UC-AI-docs (documentation)</h3>
 <ul>
-<li><strong>FR-8</strong> Maker can publish an Innsigle on an HTML/static docs page with mash</li>
+<li><strong>FR-8</strong> Maker can publish an Innsigle on an HTML/static docs page with colo</li>
 </ul>
-<p>  bill inline or one link away, including named models.</p>
+<p>  inline or one link away, including named models.</p>
 <ul>
 <li><strong>FR-9</strong> Maker can sign a claim over a defined canonical content unit (page or</li>
 </ul>
-<p>  artifact) binding: content fingerprint, mash bill, issuer, time.</p>
+<p>  artifact) binding: content fingerprint, colophon, issuer, time.</p>
 <ul>
 <li><strong>FR-10</strong> Third party verifies claim + content + issuer public key; fails</li>
 </ul>
@@ -230,7 +230,7 @@ updated: 2026-07-22</code></pre>
 <p>  human-only brand product).</p>
 <h3 id="subsystem-brand-site-and-education">Subsystem: Brand Site and Education</h3>
 <ul>
-<li><strong>FR-16</strong> Public explainer documents both UCs, mash bill examples (Claude-named</li>
+<li><strong>FR-16</strong> Public explainer documents both UCs, colophon examples (Claude-named</li>
 </ul>
 <p>  docs, optionally with sloptimizer on the bill; human social), verify when   signed, non-goals, and the sloptimizer complement (edit vs seal; no authorship   laundering).</p>
 <ul>
@@ -242,12 +242,12 @@ updated: 2026-07-22</code></pre>
 </ul>
 <p>  P0 without a GUI.</p>
 <ul>
-<li><strong>FR-19</strong> Tooling accepts a mash bill that includes named generative tools.</li>
+<li><strong>FR-19</strong> Tooling accepts a colophon that includes named generative tools.</li>
 </ul>
 <h2 id="acceptance-test-sketches">Acceptance Test Sketches</h2>
 <table>
 <tr><th>Requirement</th><th>Scenario</th><th>Input</th><th>Expected Output</th></tr>
-<tr><td>FR-1–4, FR-4a, FR-8, FR-19</td><td>HELIX-like docs page, model-primary</td><td>Mash bill: Claude draft, sloptimizer rewrite, human edit; footer seal</td><td>Reader sees named model and editorial tool; state remains model-primary</td></tr>
+<tr><td>FR-1–4, FR-4a, FR-8, FR-19</td><td>HELIX-like docs page, model-primary</td><td>Colophon: Claude draft, sloptimizer rewrite, human edit; footer seal</td><td>Reader sees named model and editorial tool; state remains model-primary</td></tr>
 <tr><td>FR-9–12, FR-18</td><td>Sign docs page</td><td>Canonical HTML or content bytes + house key</td><td>Verify succeeds; bit-flip fails; wrong key fails</td></tr>
 <tr><td>FR-5–7, FR-13–15</td><td>Human X post</td><td>Human-authored mark asset or link pattern</td><td>Viewer can see human composition without file metadata</td></tr>
 <tr><td>FR-16–17</td><td>New visitor</td><td>Brand site only</td><td>Explains both UCs; sloptimizer ≠ human authorship; not a detector; INN-siggle once</td></tr>
@@ -309,12 +309,12 @@ updated: 2026-07-22</code></pre>
 <li>[ ] Signature algorithm + envelope freeze (ADR; draft proposes Ed25519)</li>
 <li>[ ] Seal glyph geometry and state cues (DESIGN.md open list)</li>
 <li>[ ] Product domain vs <code>*.azgaard.net</code> for type URIs and key_url</li>
-<li>[ ] Model version pins in mash bill v1</li>
+<li>[ ] Model version pins in colophon v1</li>
 <li>[ ] Claim URL shape for social (profile well-known vs per-post)</li>
 </ul>
 <h2 id="success-criteria">Success Criteria</h2>
 <ul>
-<li>UC-AI-docs live on at least one operator docs property with named-model mash bill;</li>
+<li>UC-AI-docs live on at least one operator docs property with named-model colophon;</li>
 </ul>
 <p>  signed verify path green on one canonical artifact.</p>
 <ul>
@@ -328,7 +328,7 @@ updated: 2026-07-22</code></pre>
 <li>[x] Problem tied to competitive gaps</li>
 <li>[x] Goals map to UC-AI-docs and UC-human-social</li>
 <li>[x] Metrics cover dogfood both channels</li>
-<li>[x] FR-n cover mash bill, docs sign, social pattern</li>
+<li>[x] FR-n cover colophon, docs sign, social pattern</li>
 <li>[x] Non-goals exclude C2PA war and detectors</li>
 <li>[x] Acceptance sketches cover both UCs</li>
 </ul>
@@ -337,11 +337,11 @@ updated: 2026-07-22</code></pre>
   </div>
   <footer class="site-footer">
     <div class="wrap">
-      <a class="innsigle-footer-seal" href="/use/mash-bill/">
+      <a class="innsigle-footer-seal" href="/use/colophon/">
         <img src="/assets/marks/innsigle-base.svg" width="28" height="28" alt="" />
         <span>
           <strong>Innsigle</strong>
-          <span class="cue">Mash bill · not a detector</span>
+          <span class="cue">Colo · not a detector</span>
         </span>
       </a>
       <p>

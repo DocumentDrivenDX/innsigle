@@ -35,10 +35,10 @@ concerns, ADRs, or process rules. They are lenses when two valid options compete
 ## Principles
 
 1. **Composition, not verdict** — Origin language describes *how the work was made*
-   (mash bill), never moral grades of human vs AI. This changes decisions when
+   (colophon), never moral grades of human vs AI. This changes decisions when
    copy, UI, or defaults would shame one ingredient or saint another.
 
-2. **Claim is not oracle** — A sealed mash bill asserts what a maker declared and
+2. **Claim is not oracle** — A sealed colophon asserts what a maker declared and
    (when signed) who sealed it. It does not detect, score, or prove cosmic truth.
    This changes decisions when marketing or UX would imply AI detection.
 

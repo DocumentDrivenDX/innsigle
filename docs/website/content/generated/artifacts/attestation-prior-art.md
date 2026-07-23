@@ -46,7 +46,7 @@ graphs, and storage.
 | **Sigstore / cosign** | Optional keyless path later; transparency log ideas; cosign-style verify UX | Mandatory OIDC/cloud for v1 house keys |
 | **C2PA** | Signed assertions about content; tamper-evident; optional identity | Media-file embedding as only store; CA-heavy trust |
 | **Keyoxide / Keybase-class** | Proofs that bind keys to public profiles (domain, social) | Centralized identity product as v1 dependency |
-| **SBOM (SPDX/CycloneDX)** | Bill-of-materials metaphor and field discipline | Software-component graph as the only mash bill shape |
+| **SBOM (SPDX/CycloneDX)** | Bill-of-materials metaphor and field discipline | Software-component graph as the only colophon shape |
 
 **Innsigle v1 posture:** local long-lived keys (PGP/DKIM spirit) + claim shaped
 like a small in-toto predicate about *composition* + storage that works for
@@ -93,7 +93,7 @@ user can be a mini-CA for people they actually know.
 
 v1 does **not** require a working global WoT. v1 requires: generate key, publish
 pubkey, sign claim, verify claim. WoT is alignment for *identity* of signers
-over time, not for mash bill fields.
+over time, not for colophon fields.
 
 ## DKIM (email)
 
@@ -119,11 +119,11 @@ materials). Explicitly *not* "the binary is free of vulnerabilities."
 
 ### Apply to Innsigle
 
-Mash bill + composition fits a **custom predicate type**, e.g.:
+Colophon + composition fits a **custom predicate type**, e.g.:
 
-`https://innsigle.dev/attestation/mash-bill/v1`
+`https://innsigle.dev/attestation/colophon/v1`
 
-Subject = content digest(s). Predicate = mash bill fields. Envelope = signature
+Subject = content digest(s). Predicate = colophon fields. Envelope = signature
 by house/person key.
 
 Reuse the *shape* (subject/predicate/envelope) even if v1 ships a simpler JSON
@@ -149,7 +149,7 @@ remain first-class (PGP/DKIM spirit).
 ## C2PA (trust model note)
 
 Signed manifests; trust often via certificate chains and trust lists, not PGP
-WoT. Assertions are richer than our mash bill. Privacy reviews stress identity
+WoT. Assertions are richer than our colophon. Privacy reviews stress identity
 and tracking risks.
 
 **Apply:** Optional export bridge later; do not make CA membership a v1
@@ -165,7 +165,7 @@ URL; later optional proofs that the same key controls a domain or forge.
 
 ## SBOM
 
-SPDX / CycloneDX list components of software. Mash bill is the narrative cousin:
+SPDX / CycloneDX list components of software. Colophon is the narrative cousin:
 components of *making* (models, tools, human roles), not package graph.
 
 **Apply:** Field discipline (typed ingredients, versions when known); do not
@@ -189,7 +189,7 @@ CA hierarchy (X.509)     Web of trust (PGP)     Trust-on-first-use / pin
 - Envelope: custom JSON + Ed25519 vs DSSE + in-toto from day one?
 - Key format: raw Ed25519, JWK, or OpenPGP packets?
 - Transparency log: none in v1, optional Rekor-like later?
-- Cross-sign vocabulary: only keys, or also "I trust their mash bills"?
+- Cross-sign vocabulary: only keys, or also "I trust their colophons"?
 
 ## References (anchors)
 

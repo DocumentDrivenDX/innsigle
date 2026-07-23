@@ -169,8 +169,8 @@ function renderGlossary() {
   const designPath = join(SOURCE, "02-design/DESIGN.md");
   const terms = [
     {
-      term: "Mash bill",
-      def: "Declared recipe of how the work was made: composition plus ingredients.",
+      term: "Colophon (colo)",
+      def: "Declared recipe of how the work was made: composition plus ingredients. Short form: colo.",
     },
     {
       term: "Composition",
@@ -178,11 +178,11 @@ function renderGlossary() {
     },
     {
       term: "Ingredient",
-      def: "One model, tool, human role, or other line item on the mash bill.",
+      def: "One model, tool, human role, or other line item on the colophon.",
     },
     {
       term: "Claim",
-      def: "JSON document binding subjects (content digests) to a mash bill and issuer metadata.",
+      def: "JSON document binding subjects (content digests) to a colophon and issuer metadata.",
     },
     {
       term: "Attestation",

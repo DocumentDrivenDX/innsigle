@@ -28,7 +28,7 @@
     <p class="crumbs" aria-label="Breadcrumb"><a href="/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/reference/">Reference</a> <span aria-hidden="true">/</span> <span>Contract</span></p>
     <div class="docs-grid">
       <aside class="docs-side" aria-label="Section">
-        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/dogfood/">Dogfood</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/mash-bill/">Mash bill</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/" aria-current="page">Reference home</a></li><li><a href="/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/dogfood/">Dogfood</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/colophon/">Colophon</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/" aria-current="page">Reference home</a></li><li><a href="/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
       </aside>
       <main class="docs-main prose">
         <p class="gen-banner note">Generated reference — edit sources under <code>docs/helix/</code>, then <code>npm run site:build</code>.</p>
@@ -51,7 +51,7 @@ created: 2026-07-22</code></pre>
 <h1 id="contract">Contract</h1>
 <p><strong>Contract ID:</strong> CONTRACT-001   <strong>Type:</strong> schema + CLI   <strong>Version:</strong> v1   <strong>Status:</strong> draft (normative for implementers; bump version on breaking field changes)   <strong>Related:</strong> ADR-001; claim-system.md; PRD FR-1–4a, FR-8–12, FR-18–19</p>
 <h2 id="purpose">Purpose</h2>
-<p>Define the mash-bill claim document, attestation envelope, public key document, content hashing rules for v1, and CLI commands that produce and verify them.</p>
+<p>Define the colophon claim document, attestation envelope, public key document, content hashing rules for v1, and CLI commands that produce and verify them.</p>
 <h2 id="scope-and-boundaries">Scope and Boundaries</h2>
 <ul>
 <li><strong>In scope:</strong> JSON claim payload; attestation envelope; <code>keys.json</code>; SHA-256</li>
@@ -71,11 +71,11 @@ created: 2026-07-22</code></pre>
 <table>
 <tr><th>Element</th><th>Type</th><th>Required</th><th>Rules</th></tr>
 <tr><td><code>innsigle</code></td><td>string</td><td>yes</td><td>MUST be <code>"1"</code> for this version</td></tr>
-<tr><td><code>type</code></td><td>string (URI)</td><td>yes</td><td>MUST be <code>https://innsigle.dev/claim/mash-bill/v1</code> until domain freeze changes it via version bump</td></tr>
+<tr><td><code>type</code></td><td>string (URI)</td><td>yes</td><td>MUST be <code>https://innsigle.dev/claim/colophon/v1</code> until domain freeze changes it via version bump</td></tr>
 <tr><td><code>issued_at</code></td><td>string</td><td>yes</td><td>MUST be RFC 3339 UTC timestamp</td></tr>
 <tr><td><code>issuer</code></td><td>object</td><td>yes</td><td>See issuer object</td></tr>
 <tr><td><code>subjects</code></td><td>array</td><td>yes</td><td>MUST contain ≥1 subject</td></tr>
-<tr><td><code>mash_bill</code></td><td>object</td><td>yes</td><td>See mash_bill object</td></tr>
+<tr><td><code>colophon</code></td><td>object</td><td>yes</td><td>See colophon object</td></tr>
 </table>
 <h4 id="issuer-object">issuer object</h4>
 <table>
@@ -91,7 +91,7 @@ created: 2026-07-22</code></pre>
 <tr><td><code>uri</code></td><td>string</td><td>no</td><td>Content locator when known</td></tr>
 <tr><td><code>digest</code></td><td>object</td><td>yes</td><td><code>alg</code> MUST be <code>"sha256"</code>; <code>value</code> MUST be lowercase hex of SHA-256</td></tr>
 </table>
-<h4 id="mash_bill-object">mash_bill object</h4>
+<h4 id="colophon-object">colophon object</h4>
 <table>
 <tr><th>Element</th><th>Type</th><th>Required</th><th>Rules</th></tr>
 <tr><td><code>schema_version</code></td><td>string</td><td>yes</td><td>MUST be <code>"1"</code></td></tr>
@@ -160,10 +160,10 @@ created: 2026-07-22</code></pre>
 <tr><th>Command</th><th>Args (normative intent)</th><th>Behavior</th></tr>
 <tr><td><code>innsigle keygen</code></td><td><code>--out-dir &lt;dir&gt;</code></td><td>MUST write private key (permissions 0600 when FS supports) and public material; MUST NOT print private key</td></tr>
 <tr><td><code>innsigle keys template</code></td><td><code>--issuer-id</code> <code>--issuer-name</code> <code>--public-key</code></td><td>MUST emit <code>keys.json</code> skeleton</td></tr>
-<tr><td><code>innsigle claim build</code></td><td><code>--content &lt;file&gt;</code> <code>--uri &lt;uri?&gt;</code> <code>--bill &lt;bill.json&gt;</code> <code>--issuer &lt;issuer fields&gt;</code></td><td>MUST emit claim payload JSON on stdout or <code>--out</code></td></tr>
+<tr><td><code>innsigle claim build</code></td><td><code>--content &lt;file&gt;</code> <code>--uri &lt;uri?&gt;</code> <code>--colo &lt;colo.json&gt;</code> <code>--issuer &lt;issuer fields&gt;</code></td><td>MUST emit claim payload JSON on stdout or <code>--out</code>; MAY accept <code>--bill</code> as alias for <code>--colo</code></td></tr>
 <tr><td><code>innsigle sign</code></td><td><code>--claim &lt;file&gt;</code> <code>--key &lt;private&gt;</code></td><td>MUST emit attestation envelope</td></tr>
 <tr><td><code>innsigle verify</code></td><td><code>--attestation &lt;file&gt;</code> <code>--content &lt;file&gt;</code> `--keys &lt;file\</td><td>url&gt;`</td><td>MUST exit 0 iff signature valid, key not revoked, and content digest matches; MUST exit non-zero otherwise</td></tr>
-<tr><td><code>innsigle bill example</code></td><td>`--kind model-primary\</td><td>human-authored\</td><td>mixed`</td><td>MUST print example mash_bill JSON</td></tr>
+<tr><td><code>innsigle colo example</code></td><td>`--kind model-primary\</td><td>human-authored\</td><td>mixed`</td><td>MUST print example colophon JSON; MAY accept <code>bill example</code> as alias</td></tr>
 </table>
 <h4 id="verify-exit-codes">verify exit codes</h4>
 <table>
@@ -207,7 +207,7 @@ created: 2026-07-22</code></pre>
 </ul>
 <pre><code class="language-text">innsigle keygen --out-dir ~/.config/innsigle/azgaard
 innsigle claim build --content ./site/index.html --uri https://example.com/ \
-  --bill ./bill.json --out claim.json
+  --colo ./colo.json --out claim.json
 innsigle sign --claim claim.json --key ~/.config/innsigle/azgaard/ed25519.priv \
   --out claim.attestation.json
 innsigle verify --attestation claim.attestation.json --content ./site/index.html \
@@ -234,11 +234,11 @@ innsigle verify --attestation claim.attestation.json --content ./site/index.html
   </div>
   <footer class="site-footer">
     <div class="wrap">
-      <a class="innsigle-footer-seal" href="/use/mash-bill/">
+      <a class="innsigle-footer-seal" href="/use/colophon/">
         <img src="/assets/marks/innsigle-base.svg" width="28" height="28" alt="" />
         <span>
           <strong>Innsigle</strong>
-          <span class="cue">Mash bill · not a detector</span>
+          <span class="cue">Colo · not a detector</span>
         </span>
       </a>
       <p>

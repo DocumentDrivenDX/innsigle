@@ -28,7 +28,7 @@
     <p class="crumbs" aria-label="Breadcrumb"><a href="/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/reference/">Reference</a> <span aria-hidden="true">/</span> <span>DESIGN.md — Innsigle</span></p>
     <div class="docs-grid">
       <aside class="docs-side" aria-label="Section">
-        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/dogfood/">Dogfood</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/mash-bill/">Mash bill</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/" aria-current="page">Reference home</a></li><li><a href="/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/dogfood/">Dogfood</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/colophon/">Colophon</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/" aria-current="page">Reference home</a></li><li><a href="/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
       </aside>
       <main class="docs-main prose">
         <p class="gen-banner note">Generated reference — edit sources under <code>docs/helix/</code>, then <code>npm run site:build</code>.</p>
@@ -54,21 +54,21 @@ created: 2026-07-22</code></pre>
 <table>
 <tr><th>Axis</th><th>Choice</th></tr>
 <tr><td>Tone</td><td>Craft stamp, not compliance form; not panic "AI warning"</td></tr>
-<tr><td>Register</td><td>Short nouns; mash bill / seal / signet; avoid "credentials," "authentic real," "verified true content"</td></tr>
-<tr><td>Dual composition</td><td>Human and model-primary use the <strong>same seal family</strong>; state is in the bill and optional mark variant, never shame color</td></tr>
+<tr><td>Register</td><td>Short nouns; colophon / colo / seal / signet; avoid "credentials," "authentic real," "verified true content"</td></tr>
+<tr><td>Dual composition</td><td>Human and model-primary use the <strong>same seal family</strong>; state is in the colo and optional mark variant, never shame color</td></tr>
 <tr><td>Pride</td><td>Model names (e.g. Claude) and human roles both allowed as credit</td></tr>
-<tr><td>Trust copy</td><td>"Who sealed this bill for these bytes," not "this content is true"</td></tr>
+<tr><td>Trust copy</td><td>"Who sealed this colo for these bytes," not "this content is true"</td></tr>
 <tr><td>Spoken name</td><td><strong>INN-siggle</strong> (rhymes with <em>single</em>)</td></tr>
 </table>
 <p><strong>Do not use in UI or mark chrome:</strong> green check "verified authentic," red "AI danger," detector percentages, Not By AI clone language as the only path.</p>
-<p><strong>Pairing with sloptimizer:</strong> Editorial cleanup may be listed on the bill; it must not be presented as converting model-primary work into human-authored.</p>
+<p><strong>Pairing with sloptimizer:</strong> Editorial cleanup may be listed on the colophon; it must not be presented as converting model-primary work into human-authored.</p>
 <h2 id="brand-architecture">Brand architecture</h2>
 <table>
 <tr><th>Layer</th><th>Role</th></tr>
 <tr><td>House</td><td>Azgaard (or other issuer) — signer identity</td></tr>
 <tr><td>Product</td><td>Innsigle — seal system</td></tr>
 <tr><td>Mark</td><td>Visual seal glyph + optional state cue</td></tr>
-<tr><td>Bill</td><td>Mash bill (composition recipe)</td></tr>
+<tr><td>Colophon</td><td>Colo — declared composition recipe</td></tr>
 <tr><td>Signet</td><td>Optional cryptographic bind</td></tr>
 </table>
 <h2 id="the-badge-seal-mark">The badge (seal mark)</h2>
@@ -76,7 +76,7 @@ created: 2026-07-22</code></pre>
 <ol>
 <li>Recognizable at small size (footer ~24–32px; social avatar-adjacent ~48–96px).</li>
 <li>One family for all composition states.</li>
-<li>Opens or links to mash bill (and verify when signed).</li>
+<li>Opens or links to colophon (and verify when signed).</li>
 <li>Works as SVG/PNG without embedded C2PA (social-safe).</li>
 </ol>
 <h3 id="anatomy">Anatomy</h3>
@@ -102,31 +102,31 @@ created: 2026-07-22</code></pre>
 <h3 id="placement">Placement</h3>
 <table>
 <tr><th>Surface</th><th>Pattern</th></tr>
-<tr><td>Docs footer</td><td>Glyph (+ wordmark) left or right; link "Mash bill" / open panel</td></tr>
-<tr><td>Docs about</td><td>Larger seal + full bill table</td></tr>
+<tr><td>Docs footer</td><td>Glyph (+ wordmark) left or right; link "Colo" / open panel</td></tr>
+<tr><td>Docs about</td><td>Larger seal + full colophon table</td></tr>
 <tr><td>Social image</td><td>Glyph baked into image or attached still; caption optional short URL</td></tr>
 <tr><td>Social profile</td><td>Link in bio to house keys + "how to read Innsigle"</td></tr>
-<tr><td>Verify page</td><td>Glyph + validity line + bill + signer fingerprint</td></tr>
+<tr><td>Verify page</td><td>Glyph + validity line + colo + signer fingerprint</td></tr>
 </table>
 <h3 id="interaction-states-web">Interaction states (web)</h3>
 <table>
 <tr><th>State</th><th>Convention</th></tr>
 <tr><td>Default</td><td>High contrast glyph; focus ring on link/button wrapper</td></tr>
 <tr><td>Hover / <code>:focus-visible</code></td><td>Slight lift or ring; no color-only state change</td></tr>
-<tr><td>Open bill</td><td>Inline expand or dedicated <code>/bill</code> / hash route</td></tr>
+<tr><td>Open colo</td><td>Inline expand or dedicated <code>/use/colophon/</code> / hash route</td></tr>
 <tr><td>Verify OK</td><td>Text: "Signature valid for this content" + signer id; not a green truth badge alone</td></tr>
 <tr><td>Verify fail</td><td>Text: fail reason (mismatch, bad key, mutated content); no detector language</td></tr>
 </table>
 <h3 id="accessibility">Accessibility</h3>
 <ul>
-<li>State not by color alone (cue letter or pattern + text on bill).</li>
-<li>Link text not "click here"; prefer "Innsigle mash bill" / "Verify seal".</li>
+<li>State not by color alone (cue letter or pattern + text on colophon).</li>
+<li>Link text not "click here"; prefer "Innsigle colo" / "Verify seal".</li>
 <li>Contrast WCAG AA for glyph on light and dark footers (provide mono variants).</li>
 </ul>
-<h2 id="visual-hierarchy-verify-and-bill-pages">Visual hierarchy (verify and bill pages)</h2>
+<h2 id="visual-hierarchy-verify-and-colophon-pages">Visual hierarchy (verify and colophon pages)</h2>
 <ul>
 <li><strong>Primary:</strong> Validity + signer (if signed), or "Unsigned declaration" if not.</li>
-<li><strong>Secondary:</strong> Composition state and tool list (mash bill).</li>
+<li><strong>Secondary:</strong> Composition state and tool list (colophon).</li>
 <li><strong>Tertiary:</strong> Content fingerprint, timestamps, raw claim download.</li>
 </ul>
 <p>Layout: single column, dense craft manual, not dashboard chrome.</p>
@@ -154,7 +154,7 @@ created: 2026-07-22</code></pre>
 <h2 id="navigation-brand-site">Navigation (brand site)</h2>
 <table>
 <tr><th>Surface</th><th>Model</th></tr>
-<tr><td>Marketing / docs site</td><td>Top links: What it is, Mash bill, Verify, Mark pack, Non-goals, Dogfood</td></tr>
+<tr><td>Marketing / docs site</td><td>Top links: What it is, Colophon, Verify, Mark pack, Non-goals, Dogfood</td></tr>
 <tr><td>Active state</td><td>Underline or weight + <code>aria-current="page"</code></td></tr>
 </table>
 <p><strong>Live microsite:</strong> <code>site/</code> deployed by <code>.github/workflows/pages.yml</code> to GitHub Pages (<code>https://documentdrivendx.github.io/innsigle/</code>).</p>
@@ -189,11 +189,11 @@ created: 2026-07-22</code></pre>
   </div>
   <footer class="site-footer">
     <div class="wrap">
-      <a class="innsigle-footer-seal" href="/use/mash-bill/">
+      <a class="innsigle-footer-seal" href="/use/colophon/">
         <img src="/assets/marks/innsigle-base.svg" width="28" height="28" alt="" />
         <span>
           <strong>Innsigle</strong>
-          <span class="cue">Mash bill · not a detector</span>
+          <span class="cue">Colo · not a detector</span>
         </span>
       </a>
       <p>

@@ -10,7 +10,7 @@ const SHOT_PAGES: { name: string; path: string; mustSee: RegExp[] }[] = [
   {
     name: "home",
     path: "/",
-    mustSee: [/craft seal/i, /mash bill/i, /INN-siggle|Innsigle/i, /not a detector|Not a purity/i],
+    mustSee: [/craft seal/i, /colophon/i, /INN-siggle|Innsigle/i, /not a detector|Not a purity/i],
   },
   {
     name: "why",
@@ -23,9 +23,9 @@ const SHOT_PAGES: { name: string; path: string; mustSee: RegExp[] }[] = [
     mustSee: [/Use Innsigle/i, /Walkthrough/i, /CLI/i],
   },
   {
-    name: "mash-bill",
-    path: "/use/mash-bill/",
-    mustSee: [/mash bill/i, /model-primary|human-authored|mixed/i, /Edit is not origin/i],
+    name: "colophon",
+    path: "/use/colophon/",
+    mustSee: [/colophon/i, /model-primary|human-authored|mixed/i, /Edit is not origin/i],
   },
   {
     name: "verify",
