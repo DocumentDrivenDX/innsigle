@@ -1,0 +1,38 @@
+# Dependencies / build
+node_modules/
+dist/
+build/
+.out/
+.turbo/
+*.tsbuildinfo
+
+# Env and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+!*.key.pub
+secrets/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*~
+
+# HELIX / DDx local
+.helix-autonomy.yml
+.ddx/beads.local.*
+
+# Logs and coverage
+logs/
+*.log
+coverage/
+.nyc_output/
+
+# Package manager
+bun.lockb
+# keep lockfiles when we add a package manager intentionally
