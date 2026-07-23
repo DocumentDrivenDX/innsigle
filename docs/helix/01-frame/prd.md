@@ -18,236 +18,260 @@ status: draft
 product_name: Innsigle
 activity: 01-frame
 created: 2026-07-22
+updated: 2026-07-22
 ---
 
 # Product Requirements Document
 
 ## Summary
 
-**Innsigle** is a craft **seal** for digital work: a visual mark plus a **mash bill**
-(composition of how the work was made—human, AI, tools, blend—not a moral grade),
-with optional **DKIM-like signing** so a maker or house can bind that claim to a
-verifiable identity.
+**Innsigle** is a content-origin seal: a visual mark, a **mash bill** (how the work
+was made: human, AI, mixed, tools; not a moral grade), and optional **DKIM-style
+signing** that binds that declaration to a maker or house.
 
-**Who:** Independent makers, small publishers, and craft-led brands (including
-house brands like Azgaard) who publish on the open web.
+**Who:** Writers, designers, small publishers, and house brands (e.g. Azgaard) on
+the open web.
 
-**Problem:** Origin talk is either shame/purity badges, opaque platform labels, or
-heavy media-pipeline provenance—none of which give a proud, portable composition
-mark with optional personal standing.
+**Problem:** Origin signals today are human-only stickers, ignored footnotes,
+platform labels the maker does not control, or media-pipeline provenance (C2PA).
+None combine a portable composition mark with optional personal signing.
 
-**Approach (v1):** Brand-first seal system + declaration of mash bill + embeddable
-mark assets + CLI (or equivalent tooling) to assert and optionally sign/verify
-claims. Not an AI detector. Not a C2PA replacement.
+**v1 approach:** Seal assets + mash bill model + unsigned placement + CLI (or
+equivalent) to sign and verify claims. Not an AI detector. Not a C2PA replacement.
 
-**Top success metrics:** (1) readers interpret the mark as *composition*, not purity;
-(2) makers can place an Innsigle without a key; (3) signed seals verify to a named
-principal when keys are used.
+**Success bar (top):** (1) readers read the mark as composition, not purity;
+(2) unsigned place in ≤15 minutes, no account; (3) signed claims verify or fail
+closed with a named principal.
 
-**Say the name:** **INN-siggle** (rhymes with *single*).
+**Name:** Innsigle, said **INN-siggle** (rhymes with *single*).
 
 ## Problem and Goals
 
 ### Problem
 
-Makers who use any mix of human craft and AI tools lack a **single proud mark** that:
+Makers who combine human work and AI tools lack one mark that:
 
-1. States **how the work was made** without moralizing ingredients, and  
-2. Optionally lets a **person or house stand behind** that statement with something
-   stronger than a decorative SVG.
+1. States how the work was made without ranking ingredients, and
+2. Optionally lets a person or house cryptographically bind that statement to the
+   content (stronger than a decorative SVG alone).
 
-Today they improvise with human-only stickers (e.g. Not By AI), buried footnotes,
-platform “Made with AI” labels they do not control, or industrial provenance
-(C2PA) that does not feel like a craft brand. Audiences either get no signal or the
-wrong signal (shame, purity, or undetectable “AI score” theater).
+Workarounds: Not By AI-style human-only badges, footnotes, platform "Made with AI"
+labels, or C2PA stacks aimed at media supply chains. Readers get no signal, a
+purity signal, or an implied detection score.
 
 ### Goals
 
-1. Makers can declare a **mash bill** and show an **Innsigle** mark that readers
-   learn to read as composition of making.
-2. Makers can **optionally sign** a claim over content so others can verify
-   *who sealed this bill for this work*.
-3. The public brand stays **craft-first** and never markets detection or purity.
+1. Makers can declare a mash bill and display an Innsigle that readers treat as
+   composition of making.
+2. Makers can optionally sign a claim so others can verify who sealed that bill
+   for that content.
+3. Public product copy never markets AI detection or human-only purity as the
+   product.
 
 ### Success Metrics
 
 | Metric | Target | Measurement Method |
 |--------|--------|--------------------|
-| Composition literacy | ≥ 50% of surveyed readers in two launch niches describe the mark as how-it-was-made / composition (not “AI bad” / “human pure”) within 12–24 months of public launch | Structured reader survey (annual or post-campaign) |
-| Unsigned adoption friction | A new maker can obtain and place an unsigned Innsigle (mark + mash bill statement) in ≤ 15 minutes without creating an account | Timed task in dogfood / usability sessions (n≥5) |
-| Signed verify path | 100% of P0 signed fixtures verify successfully with published public key; forged or mutated content fails closed | Automated CLI/crypto test suite + one manual verify-page check |
-| Category integrity | Zero public pages claim AI detection accuracy | Checklist review of site, README, and mark guidelines each release |
+| Composition literacy | ≥50% of surveyed readers in two launch niches (independent blogs; small agency sites) describe the mark as how-made / composition (not "AI bad" / "human pure"), 12–24 months after public launch | Named survey instrument at launch; annual or post-campaign |
+| Unsigned placement | New maker places unsigned Innsigle (mark + mash bill) in ≤15 minutes without an account | Timed task, dogfood/usability, n≥5 |
+| Sign/verify | 100% of P0 signed fixtures verify with published pubkey; mutated content and wrong key fail closed | Automated CLI/crypto tests + one manual verify-page check |
+| Category integrity | Zero public pages claim AI detection accuracy | Release checklist: site, README, mark guidelines |
 
 ### Non-Goals
 
-- AI content **detection** or watermark decoding (SynthID-class).
-- Replacing **C2PA / Content Credentials** media pipelines or camera capture.
-- Multi-tenant **accounts**, social network, or marketplace of seals in v1.
-- Legal **compliance certification** product for EU AI Act (may inform copy; not a certification service).
-- Guaranteeing that a mash bill is “true”—only that it was **declared** and optionally **signed**.
-- Human-only purity branding as the primary product (multi-state composition is first-class).
+- AI content detection or watermark decoding (e.g. SynthID).
+- Replacing C2PA / Content Credentials pipelines or camera capture.
+- Multi-tenant accounts, social network, or seal marketplace in v1.
+- EU AI Act (or other) compliance certification as a product.
+- Guaranteeing a mash bill is factually true; product guarantees declaration and,
+  if used, signature validity only.
+- Human-only purity branding as the primary product.
 
-Deferred items may be tracked later in `docs/helix/01-frame/parking-lot.md`.
+Deferred items: `docs/helix/01-frame/parking-lot.md` when filed.
 
 ## Users and Scope
 
 ### Primary Persona: Craft Maker (Alex)
 
-**Role**: Independent writer, designer, or small-studio publisher  
-**Goals**: Show honest making process; keep craft pride; own the mark on their site  
-**Pain Points**: Human-only badges exclude mixed work; footnotes get ignored; do not want enterprise provenance tools or detector drama
+**Role:** Independent writer, designer, or small-studio publisher  
+**Goals:** Declare how work was made; own the mark on their site  
+**Pain:** Human-only badges exclude mixed work; footnotes ignored; no interest in
+enterprise provenance stacks or detector products
 
-### Secondary Persona: House Steward (Azgaard-class)
+### Secondary Persona: House Steward
 
-**Role**: Personal or small brand owner curating multiple works under one house  
-**Goals**: Consistent seal across properties; optional house key for signed claims  
-**Pain Points**: Platform labels are inconsistent; want Norse/craft identity without Marvel cosplay or compliance voice
+**Role:** Operator of a small house brand (e.g. Azgaard) across multiple works  
+**Goals:** One seal system across properties; optional house key for signed claims  
+**Pain:** Platform labels inconsistent; wants house identity without superhero
+branding or legal-disclaimer voice
 
 ### Tertiary Persona: Curious Reader
 
-**Role**: Client, fan, or peer who notices the mark  
-**Goals**: Understand composition quickly; optionally check who sealed a claim  
-**Pain Points**: Cannot tell what badges mean; distrust “verified authentic” theater
+**Role:** Client, peer, or visitor who notices the mark  
+**Goals:** Read composition in one glance; optionally check who sealed a claim  
+**Pain:** Unclear badge meanings; distrust of "verified authentic content" badges
 
 ## Requirements
 
 ### Must Have (P0)
 
-1. Defined **mash bill** model (composition ingredients / states for human, AI, mixed, and tools at a product level).
-2. **Visual Innsigle seal system** usable as a public mark (assets + placement guidance).
-3. Ability for a maker to **publish an unsigned** Innsigle with a mash bill on a web page or document.
-4. Ability for a maker to **sign** a claim over identified content and for a third party to **verify** signature + content binding offline or via a simple verify view.
-5. Public materials that state **what Innsigle is not** (not detection, not purity).
+1. Mash bill model: human, AI-generated, mixed/AI-assisted, plus tools/roles at
+   product-defined depth.
+2. Visual Innsigle seal system (assets + placement guidance).
+3. Publish unsigned Innsigle with mash bill on a web page or document.
+4. Sign a claim over identified content; third party verifies signature + content
+   binding offline or via a simple verify view.
+5. Public materials state what Innsigle is not (not detection; not purity product).
 
 ### Should Have (P1)
 
-1. Brand / docs site that teaches mark + mash bill + verify in under five minutes of reading.
-2. House-level identity (e.g. Azgaard) as a first-class signer profile pattern.
+1. Brand/docs site: mark, mash bill, and verify teachable in ≤5 minutes of reading.
+2. House signer profile pattern (e.g. Azgaard as issuer).
 3. Embed snippets or static assets for common site generators.
 
 ### Nice to Have (P2)
 
 1. C2PA interop bridge.
 2. Hosted key directory or account-based key recovery.
-3. Social-platform-specific card integrations.
-4. Quantitative mash bill (percentages) beyond categorical composition.
+3. Social-platform card integrations.
+4. Quantitative mash bill (percentages) beyond categories.
 
 ## Functional Requirements
 
 ### Subsystem: Mash Bill Model
 
-- **FR-1** — Makers can represent a work’s origin as a **composition** including at least: human-made, AI-generated, and mixed / AI-assisted states, without ranking those states as better or worse.
-- **FR-2** — A mash bill can name **tools or roles** involved in making (e.g. drafting model, image model, human edit) at a product-declared level of detail sufficient for a reader to understand the recipe.
-- **FR-3** — Product language and defaults never encode human = good or AI = bad in required fields or primary mark variants.
+- **FR-1** Makers can represent origin as composition with at least human-made,
+  AI-generated, and mixed/AI-assisted states, without a required better/worse
+  ranking among those states.
+- **FR-2** A mash bill can name tools or roles (e.g. drafting model, image model,
+  human edit) at a product-defined detail level a reader can use as a recipe.
+- **FR-3** Required fields and primary mark variants do not encode human = good
+  or AI = bad.
 
 ### Subsystem: Visual Seal System
 
-- **FR-4** — Innsigle provides a **visual seal mark** system that remains recognizable across composition states (one family, not separate “good/bad” logos).
-- **FR-5** — Placement guidelines describe how to present the seal with a readable mash bill (or link to one) on a typical web page.
-- **FR-6** — Mark design and guidelines avoid “platform truth / verified real content” tropes that imply oracle authenticity.
+- **FR-4** Seal mark assets form one family across composition states (not separate
+  good/bad logos).
+- **FR-5** Placement guidelines show how to present the seal with a readable mash
+  bill (or one link to it) on a typical web page.
+- **FR-6** Mark design and guidelines forbid "verified real content" / platform-truth
+  motifs that imply oracle authenticity of the file.
 
 ### Subsystem: Unsigned Declaration
 
-- **FR-7** — A maker can attach an Innsigle to a work **without** generating keys or creating an account.
-- **FR-8** — An unsigned Innsigle still exposes the mash bill (inline or one link away) so readers can read composition without verification tooling.
+- **FR-7** A maker can attach an Innsigle without generating keys or creating an
+  account.
+- **FR-8** An unsigned Innsigle exposes the mash bill inline or one link away
+  without verification tooling.
 
 ### Subsystem: Sign and Verify (Signet)
 
-- **FR-9** — A maker can produce a **signed claim** that binds: content identity (fingerprint of canonical content), mash bill, issuer identity reference, and timestamp (or equivalent freshness signal).
-- **FR-10** — A third party with the signed claim, content, and issuer public key can **verify** that the claim is intact and matches the content; verification fails closed on mutation or key mismatch.
-- **FR-11** — Private signing material stays under maker control in v1 (local keys); the product does not require a hosted account to sign.
-- **FR-12** — Verify results communicate **claim validity and signer**, not “this content is human/AI as detected.”
+- **FR-9** A maker can produce a signed claim binding: content fingerprint,
+  mash bill, issuer identity reference, and timestamp (or equivalent freshness).
+- **FR-10** A third party with claim, content, and issuer public key can verify
+  integrity and content match; mutation or key mismatch fails closed.
+- **FR-11** v1 private keys stay under maker control (local keys); signing does
+  not require a hosted account.
+- **FR-12** Verify output reports claim validity and signer identity, not a
+  detection verdict on human vs AI content.
 
 ### Subsystem: Brand Site and Education
 
-- **FR-13** — A public explainer states mission, mash bill idea, how to use the mark, how to verify when signed, and explicit non-goals (detection, C2PA replacement).
-- **FR-14** — Name pronunciation is documented once: **INN-siggle** (rhymes with *single*).
+- **FR-13** Public explainer covers: what Innsigle is, mash bill, how to use the
+  mark, how to verify when signed, and non-goals (detection, C2PA replacement).
+- **FR-14** Pronunciation documented once: **INN-siggle** (rhymes with *single*).
 
 ### Subsystem: Tooling Distribution
 
-- **FR-15** — Makers can obtain assert/sign/verify tooling as a documented, runnable distribution (CLI or equivalent) for P0 signed path without depending on a GUI.
+- **FR-15** Assert/sign/verify tooling ships as a documented runnable distribution
+  (CLI or equivalent) for the P0 signed path without requiring a GUI.
 
 ## Acceptance Test Sketches
 
 | Requirement | Scenario | Input | Expected Output |
 |-------------|----------|-------|-----------------|
-| FR-1–3, FR-7–8 | Maker publishes mixed essay | Mash bill: human draft+edit, model outline; seal in footer | Reader sees Innsigle + composition; no account/keys required |
-| FR-4–6 | Design review of mark set | Human / AI / mixed variants | Same seal family; no shame/purity coding; no truth-shield motif |
-| FR-9–12, FR-15 | Sign then verify | Canonical file + keypair + mash bill | Verify succeeds; bit-flip in file fails; wrong key fails; UI/CLI text does not claim detection |
-| FR-13–14 | New visitor skim | Brand site only | Can explain composition seal + optional sign; sees “not a detector”; hears/sees INN-siggle once |
+| FR-1–3, FR-7–8 | Maker publishes mixed essay | Mash bill: human draft+edit, model outline; seal in footer | Reader sees Innsigle + composition; no account or keys |
+| FR-4–6 | Design review of mark set | Human / AI / mixed variants | One seal family; no purity color coding; no truth-shield motif |
+| FR-9–12, FR-15 | Sign then verify | Canonical file + keypair + mash bill | Verify succeeds; bit-flip fails; wrong key fails; no detection copy |
+| FR-13–14 | New visitor skim | Brand site only | Explains composition seal + optional sign; "not a detector"; INN-siggle once |
 
 ## Technical Context
 
-Stack decisions below are **assumptions** until ADRs land.
+Assumptions until ADRs exist:
 
-- **Language/Runtime**: TypeScript + Bun (HELIX shipped default) for CLI/tooling
-- **Crypto**: Standard signatures over content hash + claim payload (algorithm choice in design/ADR)
-- **Key discovery (v1)**: Public key URL or well-known document path; no mandatory IdP
-- **Brand assets**: SVG/PNG (or similar) seal pack + guidelines markdown/HTML
-- **Site**: Static-first brand/docs site (framework ADR later if needed)
-- **Platform Targets**: Maker machines (macOS/Linux primary); readers on modern browsers
-- **Not in v1 platform**: Central claim database, multi-tenant auth
+| Area | Choice |
+|------|--------|
+| Language/runtime | TypeScript + Bun for CLI/tooling (HELIX default) |
+| Crypto | Signatures over content hash + claim payload (algorithm in ADR/contract) |
+| Key discovery (v1) | Public key URL or well-known path; no mandatory IdP |
+| Brand assets | SVG/PNG (or similar) seal pack + guidelines |
+| Site | Static-first brand/docs (framework ADR if needed) |
+| Platforms | Maker: macOS/Linux primary; readers: current browsers |
+| Out of v1 | Central claim database, multi-tenant auth |
 
 ## Constraints, Assumptions, Dependencies
 
 ### Constraints
 
-- **Technical**: v1 signing must work offline for verify given claim + content + pubkey
-- **Business**: Operator capacity is small; dogfood on Azgaard properties is the first adoption path
-- **Brand**: Visual seal is primary recognition; name is secondary
-- **Legal/Compliance**: Do not claim regulatory certification; disclosure laws may motivate adoption only
+| Kind | Constraint |
+|------|------------|
+| Technical | Offline verify given claim + content + pubkey |
+| Business | Small operator capacity; first adoption on Azgaard properties |
+| Brand | Visual seal primary; name secondary |
+| Legal | No regulatory certification claims; disclosure law is adoption context only |
 
 ### Assumptions
 
-- Makers will accept teaching one pronunciation and a foreign-looking name if the **mark** is strong
+- Makers will learn one pronunciation if the mark is strong
 - Local key management is acceptable for early signed users
-- Composition without percentages is enough for v1 mash bills
-- azgaard.net (or product domain later) can host keys and brand pages
+- Categorical mash bills (no percentages) suffice for v1
+- azgaard.net or a product domain can host keys and brand pages
 
 ### Dependencies
 
-- Product vision and naming lock (done)
-- Design work for seal mark (not yet)
-- Crypto/design ADRs before implement signed path
-- Domain choice for long-term product URL (open)
+- Product vision and naming (locked)
+- Seal mark design (open)
+- Crypto/claim ADRs and contracts before signed implementation
+- Product domain choice (open)
 
 ## Risks
 
 | Risk | Probability | Impact | Mitigation |
 |------|-------------|--------|------------|
-| Mark read as “AI bad” or “truth badge” | Med | High | Design principles + reader survey metric; guidelines forbid purity/truth tropes |
-| Name hard to say; mark ignored | Med | Med | Fixed pronunciation **INN-siggle**; invest in visual system; house co-brand Azgaard |
-| Key UX blocks adoption | Med | Med | Unsigned path P0; signing optional; docs for key gen |
-| Scope creep to C2PA/detector | Med | High | Non-goals + scope-discipline concern; parking lot for interop |
-| Sigli.com AI firm confusion | Low–Med | Med | Public name is **Innsigle**, never bare Sigli |
-| Claim misused as legal proof | Med | Med | Explicit “declaration not oracle” on verify and site |
+| Mark read as purity or truth badge | Med | High | Design rules (FR-6); composition literacy metric; guidelines forbid truth tropes |
+| Name hard to say; mark ignored | Med | Med | Fixed pronunciation; invest in visual system; Azgaard co-brand |
+| Key UX blocks adoption | Med | Med | Unsigned P0; signing optional; key-gen docs |
+| Scope creep to C2PA or detector | Med | High | Non-goals; `scope-discipline` concern; parking lot for interop |
+| Confusion with sigli.com AI firm | Low–Med | Med | Public name **Innsigle** only; never bare Sigli |
+| Claim treated as legal proof of facts | Med | Med | Verify and site copy: declaration and signature validity, not content truth |
 
 ## Open Questions
 
-- [ ] Final **domain** for product vs house (`innsigle.*` vs `*.azgaard.net`) — blocks public URLs; ask operator
-- [ ] **Canonical content** rules for HTML pages (what bytes get hashed) — blocks FR-9 precision; resolve in design
-- [ ] **Signature algorithm** and claim envelope format — blocks implementation; resolve in ADR/contract
-- [ ] **Seal mark** design direction (runic/craft/minimal) — blocks brand launch; ask operator + design pass
-- [ ] Whether **percentages** enter mash bill in v1 or stay P2 — product call; default P2 per this PRD
-- [ ] Repo rename `aibadge` → `innsigle` timing — non-blocking
+- [ ] Product domain vs house (`innsigle.*` vs `*.azgaard.net`): blocks public URLs; operator
+- [ ] Canonical content for HTML (which bytes hash): blocks FR-9 precision; design
+- [ ] Signature algorithm and claim envelope: blocks implementation; ADR/contract
+- [ ] Seal mark design direction: blocks brand launch; operator + design
+- [ ] Percentages in mash bill v1 vs P2: default P2 in this PRD; operator if change
+- [ ] Local folder rename `aibadge` → `innsigle`: non-blocking (remote is already `innsigle`)
 
 ## Success Criteria
 
-- P0 mash bill + visual seal + unsigned placement documented and usable on at least one real property (e.g. Azgaard).
-- P0 sign/verify path works on fixtures and one dogfood work with fail-closed checks.
-- Brand site (or equivalent README+pages) teaches composition seal and non-goals without detection claims.
-- Reader-facing materials consistently use **Innsigle** / **INN-siggle** and mash-bill language.
+- P0 mash bill, visual seal, and unsigned placement documented and used on at least
+  one real property (e.g. Azgaard).
+- P0 sign/verify works on fixtures and one dogfood work; fail-closed checks green.
+- Brand site or README+pages teach composition seal and non-goals; no detection claims.
+- Reader-facing materials use **Innsigle** / **INN-siggle** and mash-bill language.
 
 ## Review Checklist
 
-- [x] Summary works as a standalone 1-pager
-- [x] Problem states a specific failure mode
+- [x] Summary works as a 1-pager
+- [x] Problem names a concrete failure mode
 - [x] Goals are outcomes
-- [x] Success metrics have targets and methods
-- [x] Non-goals exclude reasonable false assumptions
+- [x] Metrics have targets and methods
+- [x] Non-goals exclude likely false assumptions
 - [x] Personas are specific
-- [x] P0 requirements are launch-necessary
-- [x] FR-n IDs under subsystems
-- [x] Acceptance sketches cover P0 themes
+- [x] P0 is launch-necessary
+- [x] FR-n under subsystems
+- [x] Acceptance sketches cover P0
 - [x] No detector or C2PA-replacement scope
 - [x] Open questions name blockers
