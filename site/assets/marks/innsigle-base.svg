@@ -1,10 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Innsigle seal">
   <title>Innsigle</title>
-  <!-- Outer stamp ring -->
-  <circle cx="32" cy="32" r="30" fill="none" stroke="currentColor" stroke-width="2"/>
-  <circle cx="32" cy="32" r="24" fill="none" stroke="currentColor" stroke-width="1.5"/>
-  <!-- Inner seal face -->
-  <circle cx="32" cy="32" r="18" fill="none" stroke="currentColor" stroke-width="1"/>
-  <!-- Stylized I rune-like stem (not a copy of any protected mark) -->
-  <path d="M32 18v20M26 18h12M26 38h12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"/>
+  <!-- Solid stamp disk — readable as <img> (no currentColor dependence) -->
+  <circle cx="32" cy="32" r="31" fill="#1c1916"/>
+  <!-- Outer bright rim so the disk pops on dark paper too -->
+  <circle cx="32" cy="32" r="30" fill="none" stroke="#e8e2d6" stroke-width="1.5"/>
+  <circle cx="32" cy="32" r="25" fill="none" stroke="#e8e2d6" stroke-width="1.75"/>
+  <circle cx="32" cy="32" r="20" fill="none" stroke="#e8e2d6" stroke-width="1"/>
+  <!-- I-stem post (craft seal face) -->
+  <path d="M32 16v22M24 16h16M24 38h16" fill="none" stroke="#e8e2d6" stroke-width="3.25" stroke-linecap="square"/>
 </svg>

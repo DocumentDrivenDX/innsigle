@@ -66,10 +66,11 @@ must not be presented as converting model-primary work into human-authored.
 
 ### Job
 
-1. Recognizable at small size (footer ~24–32px; social avatar-adjacent ~48–96px).
+1. Recognizable at small size (footer ~40–48px; social avatar-adjacent ~48–96px).
 2. One family for all composition states.
 3. Opens or links to colophon (and verify when signed).
 4. Works as SVG/PNG without embedded C2PA (social-safe).
+5. **Solid stamp disk** (opaque fill + light engravings)—not a transparent wireframe.
 
 ### Anatomy
 
@@ -172,7 +173,7 @@ GitHub Pages (`https://documentdrivendx.github.io/innsigle/`).
 
 ## Design deliverables checklist
 
-- [x] Glyph SVG (mono via `currentColor`) — `docs/dogfood/assets/marks/`
+- [x] Glyph SVG (solid stamp disk, fixed ink) — `docs/dogfood/assets/marks/`
 - [x] State cue variants H/M/A — human / mixed / model SVGs
 - [x] Footer embed snippet — `docs/dogfood/snippets/footer.html`
 - [ ] Social still template (PNG export pipeline)

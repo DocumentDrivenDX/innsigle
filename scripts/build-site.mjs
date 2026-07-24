@@ -90,7 +90,7 @@ function layout({ title, description, pageUrl, bodyHtml, crumbs }) {
   <header class="site-header">
     <div class="wrap">
       <a class="brand" href="${BASE}/">
-        <img src="${BASE}/assets/marks/innsigle-base.svg" width="32" height="32" alt="" />
+        <img class="brand-mark" src="${BASE}/assets/marks/innsigle-base.svg" width="40" height="40" alt="" />
         Innsigle
       </a>
       <nav class="nav" aria-label="Primary">
@@ -112,7 +112,7 @@ function layout({ title, description, pageUrl, bodyHtml, crumbs }) {
   <footer class="site-footer">
     <div class="wrap">
       <a class="innsigle-footer-seal" href="${BASE}/use/colophon/">
-        <img src="${BASE}/assets/marks/innsigle-base.svg" width="28" height="28" alt="" />
+        <img src="${BASE}/assets/marks/innsigle-base.svg" width="48" height="48" alt="Innsigle seal" />
         <span>
           <strong>Innsigle</strong>
           <span class="cue">Colo · not a detector</span>
@@ -184,6 +184,11 @@ function escapeHtml(s) {
 }
 
 function rewriteMdLinks(html, pageUrl) {
+  // Root-relative assets (/assets/…) under SITE_BASE
+  html = html.replace(
+    /(src|href)="(\/assets\/[^"]+)"/g,
+    (_, attr, path) => `${attr}="${BASE}${path}"`,
+  );
   // Convert relative .md links in curated content to site paths under BASE
   return html.replace(/href="([^"]+)"/g, (full, href) => {
     if (/^(https?:|mailto:|#|\/)/.test(href)) {
