@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DESIGN.md — Innsigle — Innsigle</title>
+  <meta name="description" content="DESIGN.md — Innsigle" />
+  <link rel="stylesheet" href="/innsigle/assets/css/site.css" />
+  <link rel="icon" href="/innsigle/assets/marks/innsigle-base.svg" type="image/svg+xml" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/innsigle/">
+        <img src="/innsigle/assets/marks/innsigle-base.svg" width="32" height="32" alt="" />
+        Innsigle
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/innsigle/">What it is</a>
+        <a href="/innsigle/why/">Why</a>
+        <a href="/innsigle/use/">Use</a>
+        <a href="/innsigle/reference/" aria-current="page">Reference</a>
+        <a href="/innsigle/dogfood/">Dogfood</a>
+      </nav>
+    </div>
+  </header>
+  <div class="wrap layout-docs">
+    <p class="crumbs" aria-label="Breadcrumb"><a href="/innsigle/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/innsigle/reference/">Reference</a> <span aria-hidden="true">/</span> <span>DESIGN.md — Innsigle</span></p>
+    <div class="docs-grid">
+      <aside class="docs-side" aria-label="Section">
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/innsigle/">Home</a></li><li><a href="/innsigle/why/">Why</a></li><li><a href="/innsigle/dogfood/">Dogfood</a></li><li><a href="/innsigle/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/innsigle/use/">Use overview</a></li><li><a href="/innsigle/use/cli/">CLI</a></li><li><a href="/innsigle/use/colophon/">Colophon</a></li><li><a href="/innsigle/use/verify/">Verify</a></li><li><a href="/innsigle/use/marks/">Marks</a></li><li><a href="/innsigle/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/innsigle/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/innsigle/reference/" aria-current="page">Reference home</a></li><li><a href="/innsigle/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/innsigle/reference/glossary/">Glossary</a></li></ul>
+      </aside>
+      <main class="docs-main prose">
+        <p class="gen-banner note">Generated reference — edit sources under <code>docs/helix/</code>, then <code>npm run site:build</code>.</p>
+<blockquote><strong>Generated from HELIX docs.</strong> Source: <code>docs/helix/02-design/DESIGN.md</code>. Edit the source, not this file or <code>site/</code> HTML.</blockquote>
+<details><summary>Source frontmatter</summary>
+<pre><code class="language-yaml">ddx:
+  id: aibadge.design-system
+  type: design-system
+  links:
+    - target: aibadge.product-vision
+      kind: informed_by
+    - target: aibadge.prd
+      kind: informed_by
+    - target: aibadge.design.claim-system
+      kind: informs
+status: draft
+activity: 02-design
+created: 2026-07-22</code></pre>
+</details>
+<h1 id="designmd-innsigle">DESIGN.md — Innsigle</h1>
+<p>Per-project interface and brand system for the seal, verify surfaces, and public mark language. Complements claim schema and signing in <code>claim-system.md</code>. Governing product docs: vision, PRD, principles.</p>
+<h2 id="design-voice">Design voice</h2>
+<table>
+<tr><th>Axis</th><th>Choice</th></tr>
+<tr><td>Tone</td><td>Craft stamp, not compliance form; not panic "AI warning"</td></tr>
+<tr><td>Register</td><td>Short nouns; colophon / colo / seal / signet; avoid "credentials," "authentic real," "verified true content"</td></tr>
+<tr><td>Dual composition</td><td>Human and model-primary use the <strong>same seal family</strong>; state is in the colo and optional mark variant, never shame color</td></tr>
+<tr><td>Pride</td><td>Model names (e.g. Claude) and human roles both allowed as credit</td></tr>
+<tr><td>Trust copy</td><td>"Who sealed this colo for these bytes," not "this content is true"</td></tr>
+<tr><td>Spoken name</td><td><strong>INN-siggle</strong> (rhymes with <em>single</em>)</td></tr>
+</table>
+<p><strong>Do not use in UI or mark chrome:</strong> green check "verified authentic," red "AI danger," detector percentages, Not By AI clone language as the only path.</p>
+<p><strong>Pairing with sloptimizer:</strong> Editorial cleanup may be listed on the colophon; it must not be presented as converting model-primary work into human-authored.</p>
+<h2 id="brand-architecture">Brand architecture</h2>
+<table>
+<tr><th>Layer</th><th>Role</th></tr>
+<tr><td>House</td><td>Azgaard (or other issuer) — signer identity</td></tr>
+<tr><td>Product</td><td>Innsigle — seal system</td></tr>
+<tr><td>Mark</td><td>Visual seal glyph + optional state cue</td></tr>
+<tr><td>Colophon</td><td>Colo — declared composition recipe</td></tr>
+<tr><td>Signet</td><td>Optional cryptographic bind</td></tr>
+</table>
+<h2 id="the-badge-seal-mark">The badge (seal mark)</h2>
+<h3 id="job">Job</h3>
+<ol>
+<li>Recognizable at small size (footer ~24–32px; social avatar-adjacent ~48–96px).</li>
+<li>One family for all composition states.</li>
+<li>Opens or links to colophon (and verify when signed).</li>
+<li>Works as SVG/PNG without embedded C2PA (social-safe).</li>
+</ol>
+<h3 id="anatomy">Anatomy</h3>
+<pre><code class="language-text">┌─────────────────────────────┐
+│  [glyph]  Innsigle          │  optional wordmark at larger sizes
+│           [state cue]       │  human | mixed | model (not purity)
+└─────────────────────────────┘</code></pre>
+<table>
+<tr><th>Part</th><th>Spec</th></tr>
+<tr><td>Glyph</td><td>Closed stamp / seal disk; geometric, high contrast; readable at 16px monochrome</td></tr>
+<tr><td>Wordmark</td><td>"Innsigle" only when width allows; glyph alone on social and tiny footers</td></tr>
+<tr><td>State cue</td><td>Small secondary mark or letter: <code>H</code> human-authored, <code>M</code> mixed, <code>A</code> model-primary (provisional); never traffic-light moral coding</td></tr>
+<tr><td>Link target</td><td>Bill page or fragment; signed claims add verify affordance</td></tr>
+</table>
+<h3 id="state-variants-provisional">State variants (provisional)</h3>
+<table>
+<tr><th>Composition</th><th>Glyph family</th><th>Cue</th><th>Notes</th></tr>
+<tr><td><code>human-authored</code></td><td>Same disk</td><td>H or solid inner mark</td><td>UC-human-social default</td></tr>
+<tr><td><code>mixed</code></td><td>Same disk</td><td>M or split inner</td><td>Human + model</td></tr>
+<tr><td><code>model-primary</code></td><td>Same disk</td><td>A or ring inner</td><td>UC-AI-docs default; proud, not scarlet</td></tr>
+</table>
+<p>Exact geometry TBD in mark exploration (runic/craft/minimal). Constraint: <strong>one family</strong>, three cues max for v1 states.</p>
+<h3 id="placement">Placement</h3>
+<table>
+<tr><th>Surface</th><th>Pattern</th></tr>
+<tr><td>Docs footer</td><td>Glyph (+ wordmark) left or right; link "Colo" / open panel</td></tr>
+<tr><td>Docs about</td><td>Larger seal + full colophon table</td></tr>
+<tr><td>Social image</td><td>Glyph baked into image or attached still; caption optional short URL</td></tr>
+<tr><td>Social profile</td><td>Link in bio to house keys + "how to read Innsigle"</td></tr>
+<tr><td>Verify page</td><td>Glyph + validity line + colo + signer fingerprint</td></tr>
+</table>
+<h3 id="interaction-states-web">Interaction states (web)</h3>
+<table>
+<tr><th>State</th><th>Convention</th></tr>
+<tr><td>Default</td><td>High contrast glyph; focus ring on link/button wrapper</td></tr>
+<tr><td>Hover / <code>:focus-visible</code></td><td>Slight lift or ring; no color-only state change</td></tr>
+<tr><td>Open colo</td><td>Inline expand or dedicated <code>/use/colophon/</code> / hash route</td></tr>
+<tr><td>Verify OK</td><td>Text: "Signature valid for this content" + signer id; not a green truth badge alone</td></tr>
+<tr><td>Verify fail</td><td>Text: fail reason (mismatch, bad key, mutated content); no detector language</td></tr>
+</table>
+<h3 id="accessibility">Accessibility</h3>
+<ul>
+<li>State not by color alone (cue letter or pattern + text on colophon).</li>
+<li>Link text not "click here"; prefer "Innsigle colo" / "Verify seal".</li>
+<li>Contrast WCAG AA for glyph on light and dark footers (provide mono variants).</li>
+</ul>
+<h2 id="visual-hierarchy-verify-and-colophon-pages">Visual hierarchy (verify and colophon pages)</h2>
+<ul>
+<li><strong>Primary:</strong> Validity + signer (if signed), or "Unsigned declaration" if not.</li>
+<li><strong>Secondary:</strong> Composition state and tool list (colophon).</li>
+<li><strong>Tertiary:</strong> Content fingerprint, timestamps, raw claim download.</li>
+</ul>
+<p>Layout: single column, dense craft manual, not dashboard chrome.</p>
+<h2 id="tokens-initial">Tokens (initial)</h2>
+<h3 id="color-draft">Color (draft)</h3>
+<table>
+<tr><th>Token</th><th>Role</th><th>Draft direction</th></tr>
+<tr><td><code>--seal-ink</code></td><td>Glyph and primary type</td><td>Near-black / near-white pair for themes</td></tr>
+<tr><td><code>--seal-paper</code></td><td>Page/footer surface</td><td>Neutral paper, not pure startup blue</td></tr>
+<tr><td><code>--seal-accent</code></td><td>Focus ring, links</td><td>Single accent; not green=good red=AI</td></tr>
+<tr><td><code>--seal-mute</code></td><td>Secondary meta</td><td>60% ink</td></tr>
+</table>
+<p>No semantic "success = human / danger = AI" mapping.</p>
+<h3 id="type">Type</h3>
+<table>
+<tr><th>Step</th><th>Use</th></tr>
+<tr><td>Display</td><td>Rare; brand site only</td></tr>
+<tr><td>Title</td><td>Bill page heading</td></tr>
+<tr><td>Body</td><td>Bill rows, verify prose</td></tr>
+<tr><td>Caption / mono</td><td>Fingerprints, digests, timestamps</td></tr>
+</table>
+<p>Prefer a readable grotesque + mono for digests. Final faces open.</p>
+<h3 id="spacing">Spacing</h3>
+<p>4px base rhythm; footer seal padded to not collide with license links.</p>
+<h2 id="navigation-brand-site">Navigation (brand site)</h2>
+<table>
+<tr><th>Surface</th><th>Model</th></tr>
+<tr><td>Marketing / docs site</td><td>Top links: What it is, Colophon, Verify, Mark pack, Non-goals, Dogfood</td></tr>
+<tr><td>Active state</td><td>Underline or weight + <code>aria-current="page"</code></td></tr>
+</table>
+<p><strong>Live microsite:</strong> <code>site/</code> deployed by <code>.github/workflows/pages.yml</code> to GitHub Pages (<code>https://documentdrivendx.github.io/innsigle/</code>).</p>
+<h2 id="design-deliverables-checklist">Design deliverables checklist</h2>
+<ul>
+<li>[x] Glyph SVG (mono via <code>currentColor</code>) — <code>docs/dogfood/assets/marks/</code></li>
+<li>[x] State cue variants H/M/A — human / mixed / model SVGs</li>
+<li>[x] Footer embed snippet — <code>docs/dogfood/snippets/footer.html</code></li>
+<li>[ ] Social still template (PNG export pipeline)</li>
+<li>[x] Bill + verify dogfood page — <code>docs/dogfood/index.html</code></li>
+<li>[x] Do/don't sheet — marks README</li>
+</ul>
+<h2 id="mark-exploration-2026-07-23">Mark exploration (2026-07-23)</h2>
+<p><strong>Direction chosen for exploration pack:</strong> geometric double-ring stamp with a simple vertical stem (letter-I / post mark), not a figurative Nordic cosplay mark. State is a <strong>caption letter</strong> under the disk (H/M/A), not a color code.</p>
+<table>
+<tr><th>Asset</th><th>Path</th></tr>
+<tr><td>Base</td><td><code>docs/dogfood/assets/marks/innsigle-base.svg</code></td></tr>
+<tr><td>Human</td><td><code>docs/dogfood/assets/marks/innsigle-human.svg</code></td></tr>
+<tr><td>Mixed</td><td><code>docs/dogfood/assets/marks/innsigle-mixed.svg</code></td></tr>
+<tr><td>Model</td><td><code>docs/dogfood/assets/marks/innsigle-model.svg</code></td></tr>
+</table>
+<p><strong>Still open for brand polish:</strong> custom wordmark, Azgaard palette accent, PNG renders, whether state letters stay Latin H/M/A or move to inner geometry only.</p>
+<h2 id="open-design-decisions">Open design decisions</h2>
+<ul>
+<li>[ ] Final glyph polish (stroke weights, optical balance at 16px)</li>
+<li>[ ] State cue: keep letters vs inner geometry only</li>
+<li>[ ] Wordmark custom lettering vs system font</li>
+<li>[ ] Accent color family under Azgaard house palette</li>
+</ul>
+      </main>
+    </div>
+  </div>
+  <footer class="site-footer">
+    <div class="wrap">
+      <a class="innsigle-footer-seal" href="/innsigle/use/colophon/">
+        <img src="/innsigle/assets/marks/innsigle-base.svg" width="28" height="28" alt="" />
+        <span>
+          <strong>Innsigle</strong>
+          <span class="cue">Colo · not a detector</span>
+        </span>
+      </a>
+      <p>
+        <a href="https://github.com/DocumentDrivenDX/innsigle">Source</a>
+        · curated in <code>docs/website/</code>
+        · specs from <code>docs/helix/</code>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

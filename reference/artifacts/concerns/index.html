@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Project Concerns — Innsigle</title>
+  <meta name="description" content="Project Concerns" />
+  <link rel="stylesheet" href="/innsigle/assets/css/site.css" />
+  <link rel="icon" href="/innsigle/assets/marks/innsigle-base.svg" type="image/svg+xml" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/innsigle/">
+        <img src="/innsigle/assets/marks/innsigle-base.svg" width="32" height="32" alt="" />
+        Innsigle
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/innsigle/">What it is</a>
+        <a href="/innsigle/why/">Why</a>
+        <a href="/innsigle/use/">Use</a>
+        <a href="/innsigle/reference/" aria-current="page">Reference</a>
+        <a href="/innsigle/dogfood/">Dogfood</a>
+      </nav>
+    </div>
+  </header>
+  <div class="wrap layout-docs">
+    <p class="crumbs" aria-label="Breadcrumb"><a href="/innsigle/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/innsigle/reference/">Reference</a> <span aria-hidden="true">/</span> <span>Project Concerns</span></p>
+    <div class="docs-grid">
+      <aside class="docs-side" aria-label="Section">
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/innsigle/">Home</a></li><li><a href="/innsigle/why/">Why</a></li><li><a href="/innsigle/dogfood/">Dogfood</a></li><li><a href="/innsigle/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/innsigle/use/">Use overview</a></li><li><a href="/innsigle/use/cli/">CLI</a></li><li><a href="/innsigle/use/colophon/">Colophon</a></li><li><a href="/innsigle/use/verify/">Verify</a></li><li><a href="/innsigle/use/marks/">Marks</a></li><li><a href="/innsigle/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/innsigle/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/innsigle/reference/" aria-current="page">Reference home</a></li><li><a href="/innsigle/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/innsigle/reference/glossary/">Glossary</a></li></ul>
+      </aside>
+      <main class="docs-main prose">
+        <p class="gen-banner note">Generated reference — edit sources under <code>docs/helix/</code>, then <code>npm run site:build</code>.</p>
+<blockquote><strong>Generated from HELIX docs.</strong> Source: <code>docs/helix/01-frame/concerns.md</code>. Edit the source, not this file or <code>site/</code> HTML.</blockquote>
+<details><summary>Source frontmatter</summary>
+<pre><code class="language-yaml">ddx:
+  id: aibadge.concerns
+  type: concerns
+  links:
+    - target: aibadge.product-vision
+      kind: informed_by
+    - target: aibadge.prd
+      kind: informed_by
+status: draft
+activity: 01-frame
+created: 2026-07-22</code></pre>
+</details>
+<h1 id="project-concerns">Project Concerns</h1>
+<p>Project Concerns declare active cross-cutting context for <strong>Innsigle</strong>. They are not principles, requirements, ADRs, test plans, or implementation tasks.</p>
+<h2 id="active-concerns">Active Concerns</h2>
+<table>
+<tr><th>Concern</th><th>Source</th><th>Areas</th><th>Why Active</th><th>Key Practices</th></tr>
+<tr><td><code>scope-discipline</code></td><td>library</td><td><code>area:brand</code>, <code>area:cli</code>, <code>area:web</code>, <code>area:crypto</code></td><td>Brand-first product; easy to gold-plate into C2PA, detectors, or full IdP</td><td>Ship mark + colophon + optional sign/verify first; park industrial provenance and multi-tenant identity unless an FR demands them</td></tr>
+<tr><td><code>claim-not-oracle</code></td><td>project-local</td><td><code>area:brand</code>, <code>area:web</code>, <code>area:cli</code>, <code>area:docs</code></td><td>Category integrity: not an AI detector</td><td>Copy, UI, and verify results never imply detection scores; always attribute claims to a principal when signed</td></tr>
+<tr><td><code>visual-seal-system</code></td><td>project-local</td><td><code>area:brand</code>, <code>area:web</code></td><td>Recognition is mark-first</td><td>One seal family for human / AI / mixed composition; readable colophon layout; no purity/shame color coding</td></tr>
+<tr><td><code>key-custody</code></td><td>project-local</td><td><code>area:cli</code>, <code>area:crypto</code></td><td>DKIM-like signing needs safe keys without enterprise IdP in v1</td><td>Local key generation; never log private keys; clear compromise guidance; public key discovery via URL or well-known path</td></tr>
+<tr><td><code>security-owasp</code></td><td>library</td><td><code>area:web</code>, <code>area:cli</code>, <code>area:crypto</code></td><td>Verify pages and tooling handle untrusted input and keys</td><td>Input validation on claims; safe URL handling; no secret leakage in errors</td></tr>
+<tr><td><code>typescript-bun</code></td><td>library (shipped-default)</td><td><code>area:cli</code>, <code>area:web</code></td><td>Language/runtime slot for tooling</td><td>Prefer TypeScript + Bun for CLI and any app code unless an ADR overrides</td></tr>
+<tr><td><code>testing</code></td><td>library</td><td><code>area:cli</code>, <code>area:web</code>, <code>area:crypto</code></td><td>Assertions and verify paths must be falsifiable</td><td>Unit tests for hash/sign/verify; fixture colophons; golden claim payloads</td></tr>
+<tr><td><code>verification</code></td><td>library</td><td><code>area:cli</code>, <code>area:web</code></td><td>Claims-vs-reality for product integrity</td><td>No phantom “we verify AI content” claims; demos exercise real sign→verify</td></tr>
+<tr><td><code>product-microsite-ia</code></td><td>library</td><td><code>area:web</code>, <code>area:brand</code></td><td>Brand site for evaluate/start/operate readers; generated reference from HELIX docs</td><td>Curated copy in <code>docs/website/content/curated/</code>; generate artifacts/glossary from <code>docs/helix/</code> via <code>npm run site:build</code>; nav by reader mode (ADR-002); <code>site/</code> is build output only</td></tr>
+<tr><td><code>a11y-wcag-aa</code></td><td>library</td><td><code>area:web</code>, <code>area:brand</code></td><td>Seal and verify UI must be readable beyond color</td><td>Text labels for composition states; contrast; keyboard access on verify views</td></tr>
+</table>
+<h2 id="slot-resolutions">Slot resolutions</h2>
+<table>
+<tr><th>Slot</th><th>Filler</th><th>Source</th></tr>
+<tr><td><code>language-runtime</code></td><td><code>typescript-bun</code> intended; <strong>v0 CLI is Node ESM (<code>.mjs</code>)</strong> until Bun is available in CI</td><td>assumption / interim</td></tr>
+<tr><td><code>frontend-framework</code></td><td>deferred / static-first</td><td>assumption — brand site may be static or light framework; lock in ADR when site builds</td></tr>
+<tr><td><code>e2e-framework</code></td><td><code>e2e-playwright</code></td><td>shipped-default — <code>e2e/*.spec.ts</code> against static microsite</td></tr>
+<tr><td><code>auth-provider</code></td><td>none in v1</td><td>assumption — no multi-tenant accounts; keys + public discovery only</td></tr>
+<tr><td><code>datastore</code></td><td>none required in v1</td><td>assumption — claims travel with content or sidecar; no central claim DB required for P0</td></tr>
+<tr><td><code>deploy-target</code></td><td>static host + npm/CLI distribute</td><td>assumption — lock when packaging</td></tr>
+<tr><td><code>architecture-style</code></td><td>modular library + CLI + assets</td><td>assumption — not a multi-service backend</td></tr>
+</table>
+<h2 id="project-overrides">Project Overrides</h2>
+<table>
+<tr><th>Concern</th><th>Practice</th><th>Override</th><th>Authority</th></tr>
+<tr><td><code>auth</code> / multi-tenancy</td><td>Default HELIX account products</td><td><strong>Not selected</strong> for v1</td><td>Vision + PRD non-goals</td></tr>
+<tr><td><code>frontend-framework</code></td><td>react-nextjs default</td><td>Static generated microsite (no SPA framework)</td><td>ADR-002</td></tr>
+<tr><td><code>product-microsite-ia</code></td><td>Generated reference from methodology sources</td><td>Curated Why/Use outside <code>docs/helix/</code>; generated Reference from HELIX tree</td><td>ADR-002 · <code>docs/website/ia.yml</code></td></tr>
+</table>
+<h2 id="area-labels">Area Labels</h2>
+<ul>
+<li><code>area:brand</code> — seal mark, visual system, wordmark, placement guidelines</li>
+<li><code>area:web</code> — brand site, verify view, embed snippets</li>
+<li><code>area:cli</code> — assert, sign, verify commands</li>
+<li><code>area:crypto</code> — hashing, keys, signatures, discovery</li>
+<li><code>area:docs</code> — human docs, “what this is not”</li>
+<li><code>area:testing</code> — fixtures, crypto tests, visual regression later</li>
+</ul>
+<h2 id="concern-conflicts">Concern Conflicts</h2>
+<table>
+<tr><th>Conflict</th><th>Resolution</th></tr>
+<tr><td><code>visual-seal-system</code> vs <code>claim-not-oracle</code></td><td>Mark may look authoritative as a <em>maker’s stamp</em>, not as a platform truth badge—no green check “authentic content” tropes</td></tr>
+<tr><td><code>key-custody</code> vs low-friction mark use</td><td>Unsigned seals require no keys; signing is a second step</td></tr>
+<tr><td><code>scope-discipline</code> vs future C2PA interop</td><td>Document as parking-lot / P2; do not shape v1 APIs solely for C2PA</td></tr>
+</table>
+      </main>
+    </div>
+  </div>
+  <footer class="site-footer">
+    <div class="wrap">
+      <a class="innsigle-footer-seal" href="/innsigle/use/colophon/">
+        <img src="/innsigle/assets/marks/innsigle-base.svg" width="28" height="28" alt="" />
+        <span>
+          <strong>Innsigle</strong>
+          <span class="cue">Colo · not a detector</span>
+        </span>
+      </a>
+      <p>
+        <a href="https://github.com/DocumentDrivenDX/innsigle">Source</a>
+        · curated in <code>docs/website/</code>
+        · specs from <code>docs/helix/</code>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

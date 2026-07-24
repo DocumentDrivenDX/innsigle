@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Prior Art Research: Content Origin Labeling &amp; Attributable Provenance — Innsigle</title>
+  <meta name="description" content="Prior Art Research: Content Origin Labeling &amp; Attributable Provenance" />
+  <link rel="stylesheet" href="/innsigle/assets/css/site.css" />
+  <link rel="icon" href="/innsigle/assets/marks/innsigle-base.svg" type="image/svg+xml" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/innsigle/">
+        <img src="/innsigle/assets/marks/innsigle-base.svg" width="32" height="32" alt="" />
+        Innsigle
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/innsigle/">What it is</a>
+        <a href="/innsigle/why/">Why</a>
+        <a href="/innsigle/use/">Use</a>
+        <a href="/innsigle/reference/" aria-current="page">Reference</a>
+        <a href="/innsigle/dogfood/">Dogfood</a>
+      </nav>
+    </div>
+  </header>
+  <div class="wrap layout-docs">
+    <p class="crumbs" aria-label="Breadcrumb"><a href="/innsigle/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/innsigle/reference/">Reference</a> <span aria-hidden="true">/</span> <span>Prior Art Research: Content Origin Labeling & Attributable Provenance</span></p>
+    <div class="docs-grid">
+      <aside class="docs-side" aria-label="Section">
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/innsigle/">Home</a></li><li><a href="/innsigle/why/">Why</a></li><li><a href="/innsigle/dogfood/">Dogfood</a></li><li><a href="/innsigle/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/innsigle/use/">Use overview</a></li><li><a href="/innsigle/use/cli/">CLI</a></li><li><a href="/innsigle/use/colophon/">Colophon</a></li><li><a href="/innsigle/use/verify/">Verify</a></li><li><a href="/innsigle/use/marks/">Marks</a></li><li><a href="/innsigle/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/innsigle/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/innsigle/reference/" aria-current="page">Reference home</a></li><li><a href="/innsigle/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/innsigle/reference/glossary/">Glossary</a></li></ul>
+      </aside>
+      <main class="docs-main prose">
+        <p class="gen-banner note">Generated reference — edit sources under <code>docs/helix/</code>, then <code>npm run site:build</code>.</p>
+<blockquote><strong>Generated from HELIX docs.</strong> Source: <code>docs/helix/00-discover/prior-art-research.md</code>. Edit the source, not this file or <code>site/</code> HTML.</blockquote>
+<details><summary>Source frontmatter</summary>
+<pre><code class="language-yaml">ddx:
+  id: aibadge.research.prior-art
+  type: research-note
+status: draft
+activity: 00-discover
+created: 2026-07-22</code></pre>
+</details>
+<h1 id="prior-art-research-content-origin-labeling-attributable-provenance">Prior Art Research: Content Origin Labeling &amp; Attributable Provenance</h1>
+<p><strong>Research disposition:</strong> done (time-boxed survey for genesis / vision)   <strong>Decisions this research enables:</strong> product gap, non-goals, and differentiation before PRD   <strong>Product name (locked):</strong> Innsigle (etymon <em>innsigli</em>; repo slug still <code>aibadge</code>)</p>
+<h2 id="research-questions">Research questions</h2>
+<ol>
+<li>What already exists for <em>labeling</em> AI vs human content (brand and UI)?</li>
+<li>What already exists for <em>verifiable provenance</em> (crypto, standards, pipelines)?</li>
+<li>Where does a <strong>brand-first</strong> product with <strong>DKIM-like individual attribution</strong> fit without colliding with C2PA or pure badge movements?</li>
+<li>What market/regulatory pressure makes “why now” concrete?</li>
+</ol>
+<h2 id="findings-summary">Findings summary</h2>
+<table>
+<tr><th>Layer</th><th>Incumbents</th><th>What they optimize for</th><th>Weakness for our intent</th></tr>
+<tr><td>Brand / social signal</td><td>Not By AI</td><td>Human-only advocacy badge; project pages; self-asserted 90% rule</td><td>No dual AI/human system; no cryptographic binding to a person; explicitly not a verifier</td></tr>
+<tr><td>Media provenance standard</td><td>C2PA / Content Credentials (CAI)</td><td>Tamper-evident manifests for media origin &amp; edit history; industry coalition</td><td>Heavy pipeline; metadata often stripped; identity optional; “nutrition label,” not a simple personal claim UX</td></tr>
+<tr><td>Model-side watermark</td><td>SynthID (Google); adopted in places by OpenAI for images</td><td>Robust signal when metadata dies</td><td>Vendor/model infrastructure; low semantic claim surface; not individual authorship branding</td></tr>
+<tr><td>Platform labels</td><td>Meta and peers</td><td>Platform-controlled “Made with AI” etc.</td><td>Not portable; creator does not own the mark or the identity bond</td></tr>
+<tr><td>Regulatory disclosure</td><td>EU AI Act Art. 50 (obligations apply from 2 Aug 2026)</td><td>Machine-readable marking + human-facing disclosure for synthetic content / deepfakes / some public-interest text</td><td>Creates demand for clear disclosure; does not define a creator brand or personal signing model</td></tr>
+</table>
+<p><strong>Gap this project can own:</strong> a <strong>recognizable brand system</strong> for origin states (at least human / AI / mixed) <strong>plus</strong> optional <strong>portable assertions</strong> that bind a claim to a <strong>person or organization</strong> the way DKIM binds a message to a domain—without becoming an AI detector or a full C2PA camera/edit stack.</p>
+<h2 id="competitive-detail">Competitive detail</h2>
+<h3 id="not-by-ai-notbyaifyi">Not By AI (notbyai.fyi)</h3>
+<ul>
+<li><strong>Offer:</strong> Downloadable badges (“Written/Painted/Produced by human, not by AI”); membership project pages; free non-commercial use.</li>
+<li><strong>Trust model:</strong> Voluntary self-assertion under a “90% human” rule. Site states it is <strong>not</strong> an AI detection tool; accountability stays with the badge user.</li>
+<li><strong>Strength:</strong> Clear brand, media recognition, low friction for humans who want to signal craft.</li>
+<li><strong>Implication for us:</strong> Owning “human-only decorative badge” alone is a crowded, already-branded niche. Differentiation requires <strong>multi-state labeling</strong> and/or <strong>verifiable attribution</strong>, not a second human-only sticker.</li>
+</ul>
+<h3 id="c2pa-and-content-credentials-cai">C2PA and Content Credentials (CAI)</h3>
+<ul>
+<li><strong>Offer:</strong> Open technical standard (C2PA) + CAI tooling for cryptographically signed manifests (“nutrition labels”) covering creation, edits, generative AI, and publishing. Hardware (e.g. cameras, chips) and major vendors participate.</li>
+<li><strong>Trust model:</strong> Hash + sign; tamper-evident; optional identity; inspection via verify UIs. Explicitly <strong>does not</strong> declare whether content is “real”—it records process claims that tools and creators choose to attach.</li>
+<li><strong>Strength:</strong> Correct industrial answer for media supply chains and interoperability.</li>
+<li><strong>Implication for us:</strong> Do <strong>not</strong> compete as “C2PA but smaller.” Align, interoperate later if needed, and own a <strong>simpler brand + personal assertion</strong> layer for web/text/publishing UX where C2PA is overkill or absent.</li>
+</ul>
+<h3 id="synthid-and-multi-layer-vendor-provenance">SynthID and multi-layer vendor provenance</h3>
+<ul>
+<li>OpenAI and Google public materials (2024–2026) push <strong>stacked</strong> approaches: Content Credentials for detailed context + SynthID when metadata does not survive.</li>
+<li><strong>Implication for us:</strong> Model vendors will keep closing “this file came from our model.” They will not own <strong>creator-facing brand language</strong> or <strong>“I personally attest this piece is human / AI-assisted / AI-generated”</strong> for arbitrary publishers.</li>
+</ul>
+<h3 id="platform-and-policy-layer">Platform and policy layer</h3>
+<ul>
+<li>Platforms apply their own labels; policy and media literacy remain separate from creator-owned marks.</li>
+<li><strong>EU AI Act Article 50:</strong> transparency duties for certain AI interactions and synthetic content; provider machine-readable marking; deployer disclosure for deepfakes and some AI text informing the public on matters of public interest (with human-review/editorial-responsibility exceptions). Code of Practice on transparency of AI-generated content supports compliance; obligations are legal even when the code is voluntary.</li>
+<li><strong>Implication for us:</strong> “Why now” is regulatory + social demand for <strong>clear origin language</strong>, not only enterprise media tooling. Opportunity: help publishers and individuals <strong>speak origin clearly</strong> and <strong>stand behind claims</strong>, without claiming to be a compliance product of record (assumption to validate in frame).</li>
+</ul>
+<h2 id="dkim-analogy-design-constraint-for-later-tooling">DKIM analogy (design constraint for later tooling)</h2>
+<table>
+<tr><th>DKIM concept</th><th>Mapping for this product</th></tr>
+<tr><td>Domain publishes a public key (DNS TXT)</td><td>Person/org publishes a verification key (profile URL, DNS, or key directory)</td></tr>
+<tr><td>Signature covers canonicalized message content</td><td>Signature covers content hash + claim payload (origin state, timestamp, optional scope)</td></tr>
+<tr><td>Receiver verifies “this domain authorized this mail”</td><td>Viewer verifies “this identity authorized this provenance claim”</td></tr>
+<tr><td>Does <strong>not</strong> prove the mail’s factual truth</td><td>Does <strong>not</strong> prove the content is human or AI—only that a <strong>named principal signed that claim</strong></td></tr>
+<tr><td>Spoof resistance via key control</td><td>Same: security is key custody + discovery, not badge graphics</td></tr>
+</table>
+<p><strong>Claim vs fact (critical product honesty):</strong>   Signed badges assert <strong>who said what about origin</strong>, not <strong>what an oracle detected</strong>. That keeps us out of the AI-detector arms race and aligned with C2PA’s “nutrition label, not reality oracle” posture.</p>
+<h2 id="positioning-options-supported-by-evidence">Positioning options supported by evidence</h2>
+<table>
+<tr><th>Option</th><th>Evidence fit</th><th>Risk</th></tr>
+<tr><td>A. Brand-only multi-state badges (human / AI / mixed)</td><td>Complements Not By AI’s human-only gap</td><td>Easy to copy; weak lock-in</td></tr>
+<tr><td>B. Brand + self-serve assert/verify (DKIM-like)</td><td>Unique vs Not By AI; lighter than C2PA for text/web</td><td>Crypto UX and key discovery are hard</td></tr>
+<tr><td>C. Full C2PA implementer / CA product</td><td>Crowded; wrong “branding first” priority</td><td>Dilutes brand mission; long pipeline</td></tr>
+<tr><td>D. AI detector + badge</td><td>Market demand exists</td><td>Arms race; false confidence; brand liability</td></tr>
+</table>
+<p><strong>Research recommendation for vision:</strong> lead with <strong>A+B</strong> (brand first, tooling that makes assertions attributable). Explicitly reject <strong>C</strong> and <strong>D</strong> as primary identity for v1.</p>
+<h2 id="assumptions-to-validate-in-frame-not-treated-as-facts">Assumptions to validate in <code>frame</code> (not treated as facts)</h2>
+<ol>
+<li>Creators will care about <strong>signed</strong> claims, not only graphics—worth testing with 5–10 target users.</li>
+<li>“Mixed / AI-assisted” is a useful public state, not just a legal hedge.</li>
+<li>Individual key discovery can be simple enough (profile URL or DNS) without a heavy identity provider in v0.</li>
+<li>Interop with C2PA is a later bridge, not a launch dependency.</li>
+<li>Regulatory disclosure demand increases badge adoption even if we are not a compliance suite.</li>
+</ol>
+<h2 id="open-research-parked-not-blocking-vision-draft">Open research (parked; not blocking vision draft)</h2>
+<ul>
+<li>Trademark / naming collisions for short marks (“Badge,” “Mark,” “Seal,” “Credentials”).</li>
+<li>Whether publishers want <strong>AI</strong> badges as pride/compliance signal or only <strong>human</strong> badges as craft signal.</li>
+<li>Threat model: badge stripping, claim replay, key compromise (belongs in threat model + security requirements later).</li>
+<li>Text vs image vs audio first surface (assumption in vision UX: start where brand is visible—sites, posts, bylines).</li>
+</ul>
+<h2 id="sources-survey-anchors">Sources (survey anchors)</h2>
+<ul>
+<li>Not By AI product site and 90% rule framing — https://notbyai.fyi/</li>
+<li>Content Authenticity Initiative / Content Credentials how-it-works — https://contentauthenticity.org/how-it-works</li>
+<li>C2PA coalition context (via CAI materials)</li>
+<li>OpenAI content provenance / SynthID + Content Credentials public posts (2026)</li>
+<li>Google DeepMind SynthID announcements</li>
+<li>EU AI Act Article 50 summaries and Code of Practice on transparency of AI-generated content (obligations from 2 Aug 2026)</li>
+</ul>
+<h2 id="decision-log">Decision log</h2>
+<table>
+<tr><th>Decision</th><th>Status</th><th>Notes</th></tr>
+<tr><td>Primary gap = brand-first multi-state label + optional attributable claims</td><td><strong>Proposed</strong></td><td>Backed by prior-art gap table</td></tr>
+<tr><td>Not an AI detector</td><td><strong>Proposed non-goal</strong></td><td>Confirmed in vision; formalize in PRD</td></tr>
+<tr><td>Not a C2PA replacement</td><td><strong>Proposed non-goal</strong></td><td>Interop later</td></tr>
+<tr><td>Product name</td><td><strong>Locked: Innsigle</strong></td><td>See <code>naming-exploration.md</code>; visual seal is primary recognition surface</td></tr>
+<tr><td>Competitive depth</td><td><strong>Done (this pass)</strong></td><td>See <code>competitive-analysis.md</code>; dual UCs (AI docs BOM + human social) drive thesis</td></tr>
+<tr><td>Primary use cases</td><td><strong>Locked</strong></td><td>UC-AI-docs (signed model-named BOM); UC-human-social (human mark, metadata-safe)</td></tr>
+</table>
+      </main>
+    </div>
+  </div>
+  <footer class="site-footer">
+    <div class="wrap">
+      <a class="innsigle-footer-seal" href="/innsigle/use/colophon/">
+        <img src="/innsigle/assets/marks/innsigle-base.svg" width="28" height="28" alt="" />
+        <span>
+          <strong>Innsigle</strong>
+          <span class="cue">Colo · not a detector</span>
+        </span>
+      </a>
+      <p>
+        <a href="https://github.com/DocumentDrivenDX/innsigle">Source</a>
+        · curated in <code>docs/website/</code>
+        · specs from <code>docs/helix/</code>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

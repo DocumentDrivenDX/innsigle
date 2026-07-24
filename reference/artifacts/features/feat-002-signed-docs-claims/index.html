@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Feature Specification: FEAT-002 — Signed documentation claims — Innsigle</title>
+  <meta name="description" content="Feature Specification: FEAT-002 — Signed documentation claims" />
+  <link rel="stylesheet" href="/innsigle/assets/css/site.css" />
+  <link rel="icon" href="/innsigle/assets/marks/innsigle-base.svg" type="image/svg+xml" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/innsigle/">
+        <img src="/innsigle/assets/marks/innsigle-base.svg" width="32" height="32" alt="" />
+        Innsigle
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/innsigle/">What it is</a>
+        <a href="/innsigle/why/">Why</a>
+        <a href="/innsigle/use/">Use</a>
+        <a href="/innsigle/reference/" aria-current="page">Reference</a>
+        <a href="/innsigle/dogfood/">Dogfood</a>
+      </nav>
+    </div>
+  </header>
+  <div class="wrap layout-docs">
+    <p class="crumbs" aria-label="Breadcrumb"><a href="/innsigle/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/innsigle/reference/">Reference</a> <span aria-hidden="true">/</span> <span>Feature Specification: FEAT-002 — Signed documentation claims</span></p>
+    <div class="docs-grid">
+      <aside class="docs-side" aria-label="Section">
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/innsigle/">Home</a></li><li><a href="/innsigle/why/">Why</a></li><li><a href="/innsigle/dogfood/">Dogfood</a></li><li><a href="/innsigle/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/innsigle/use/">Use overview</a></li><li><a href="/innsigle/use/cli/">CLI</a></li><li><a href="/innsigle/use/colophon/">Colophon</a></li><li><a href="/innsigle/use/verify/">Verify</a></li><li><a href="/innsigle/use/marks/">Marks</a></li><li><a href="/innsigle/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/innsigle/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/innsigle/reference/" aria-current="page">Reference home</a></li><li><a href="/innsigle/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/innsigle/reference/glossary/">Glossary</a></li></ul>
+      </aside>
+      <main class="docs-main prose">
+        <p class="gen-banner note">Generated reference — edit sources under <code>docs/helix/</code>, then <code>npm run site:build</code>.</p>
+<blockquote><strong>Generated from HELIX docs.</strong> Source: <code>docs/helix/01-frame/features/FEAT-002-signed-docs-claims.md</code>. Edit the source, not this file or <code>site/</code> HTML.</blockquote>
+<details><summary>Source frontmatter</summary>
+<pre><code class="language-yaml">ddx:
+  id: aibadge.feat.002
+  type: feature-specification
+  links:
+    - target: aibadge.prd
+      kind: informed_by
+    - target: aibadge.contract.001
+      kind: informed_by
+    - target: aibadge.adr.001
+      kind: informed_by
+status: draft
+activity: 01-frame
+created: 2026-07-23</code></pre>
+</details>
+<h1 id="feature-specification-feat-002-signed-documentation-claims">Feature Specification: FEAT-002 — Signed documentation claims</h1>
+<p><strong>Feature ID</strong>: FEAT-002   <strong>Status</strong>: Specified   <strong>Priority</strong>: P0   <strong>Owner</strong>: Operator   <strong>Covered PRD Subsystem(s)</strong>: UC-AI-docs; Sign and Verify; Tooling Distribution   <strong>Covered PRD Requirements</strong>: FR-8–12, FR-18–19   <strong>Cross-Subsystem Rationale</strong>: Docs placement, claim binding, and CLI verify are one vertical for UC-AI-docs.</p>
+<h2 id="overview">Overview</h2>
+<p>Operators publish static/HTML docs with an Innsigle, optional signed claim over file bytes, and offline verify (CONTRACT-001 / ADR-001).</p>
+<h2 id="ideal-future-state">Ideal Future State</h2>
+<p>Maker records colophon (named models/tools), places footer seal, signs with a local house key, publishes claim next to content. Third party verifies without an account. Tamper fails closed.</p>
+<h2 id="problem-statement">Problem Statement</h2>
+<ul>
+<li><strong>Current situation</strong>: CLI v0 + dogfood sample exist; need feature-level acceptance and walkthrough as product surface.</li>
+<li><strong>Pain points</strong>: Docs lack portable signed BOM under maker control.</li>
+<li><strong>Desired outcome</strong>: Documented happy path and automated tests for valid + mismatch.</li>
+</ul>
+<h2 id="requirements">Requirements</h2>
+<h3 id="functional">Functional</h3>
+<p><strong>DOC-01.</strong> Maker publishes seal + bill on HTML/static page (inline or linked).   <strong>DOC-02.</strong> Maker builds claim with content SHA-256 subject and colophon including named tools.   <strong>DOC-03.</strong> Maker signs with local Ed25519 key; private key never published.   <strong>DOC-04.</strong> Verify succeeds when sig valid, key active, content digest matches.   <strong>DOC-05.</strong> Verify fails closed on content mutation (exit 3) and bad signature (exit 2).   <strong>DOC-06.</strong> Verify output never includes detection scores.</p>
+<h3 id="non-functional">Non-Functional</h3>
+<ul>
+<li>Offline verify given claim + content + pubkey file.</li>
+<li>Golden vectors remain stable under ADR-001.</li>
+</ul>
+<h2 id="acceptance-sketches">Acceptance sketches</h2>
+<table>
+<tr><th>ID</th><th>Scenario</th><th>Expect</th></tr>
+<tr><td>DOC-04</td><td>Golden vectors CLI verify</td><td>exit 0, VALID</td></tr>
+<tr><td>DOC-05</td><td>Wrong content file</td><td>exit 3</td></tr>
+<tr><td>DOC-01</td><td>Dogfood page footer</td><td>Links to attestation; model-primary bill visible</td></tr>
+</table>
+<h2 id="dependencies">Dependencies</h2>
+<ul>
+<li>FEAT-001 composition language</li>
+<li>CONTRACT-001 CLI surface</li>
+</ul>
+      </main>
+    </div>
+  </div>
+  <footer class="site-footer">
+    <div class="wrap">
+      <a class="innsigle-footer-seal" href="/innsigle/use/colophon/">
+        <img src="/innsigle/assets/marks/innsigle-base.svg" width="28" height="28" alt="" />
+        <span>
+          <strong>Innsigle</strong>
+          <span class="cue">Colo · not a detector</span>
+        </span>
+      </a>
+      <p>
+        <a href="https://github.com/DocumentDrivenDX/innsigle">Source</a>
+        · curated in <code>docs/website/</code>
+        · specs from <code>docs/helix/</code>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>
