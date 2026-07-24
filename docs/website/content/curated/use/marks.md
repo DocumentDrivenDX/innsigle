@@ -8,9 +8,11 @@ description: Seal mark pack — solid stamp disks, H/M/A composition cues.
 
 # Marks
 
-One **solid stamp** family for all composition states. Opaque disk so the seal
-reads at a glance—not a wireframe on transparent. State is a letter badge on
-the face, never a traffic light.
+One **stamp-matrix** family for all composition states. Opaque disk like a
+pressed seal or guild touch—not a transparent wireframe. Central monogram
+borrows structure from merchant marks and pottery cartouches (stave, thryst,
+lozenge). Composition is a small **countermark** (H / M / A), like a hallmark
+punch—not a traffic light.
 
 <div class="mark-pack" role="list">
 <figure class="mark-card" role="listitem">

@@ -55,7 +55,9 @@ must not be presented as converting model-primary work into human-authored.
 2. One family for all composition states.
 3. Opens or links to colophon (and verify when signed).
 4. Works as SVG/PNG without embedded C2PA (social-safe).
-5. **Solid stamp disk** (opaque fill + light engravings)—not a transparent wireframe.
+5. **Solid stamp matrix** (opaque fill + light impression)—not a transparent wireframe.
+   Inspiration: ancient stamp seals, medieval merchant/guild marks, pottery cartouches,
+   hallmark countermarks (`docs/dogfood/assets/marks/RESEARCH.md`).
 
 ### Anatomy
 
@@ -68,9 +70,9 @@ must not be presented as converting model-primary work into human-authored.
 
 | Part | Spec |
 |------|------|
-| Glyph | Closed stamp / seal disk; geometric, high contrast; readable at 16px monochrome |
+| Glyph | Closed stamp matrix; beaded rim; angular monogram (stave + thryst + lozenge); high contrast; readable at 16–24px |
 | Wordmark | "Innsigle" only when width allows; glyph alone on social and tiny footers |
-| State cue | Small secondary mark or letter: `H` human-authored, `M` mixed, `A` model-primary (provisional); never traffic-light moral coding |
+| State cue | Hallmark-style **countermark** punch: `H` / `M` / `A`; never traffic-light moral coding |
 | Link target | Bill page or fragment; signed claims add verify affordance |
 
 ### State variants (provisional)
@@ -81,8 +83,8 @@ must not be presented as converting model-primary work into human-authored.
 | `mixed` | Same disk | M or split inner | Human + model |
 | `model-primary` | Same disk | A or ring inner | UC-AI-docs default; proud, not scarlet |
 
-Exact geometry TBD in mark exploration (runic/craft/minimal). Constraint:
-**one family**, three cues max for v1 states.
+Geometry locked in `docs/dogfood/assets/marks/` (craft-matrix exploration). Constraint:
+**one family**, three countermarks max for v1 states. No copied historic house marks.
 
 ### Placement
 
@@ -158,7 +160,7 @@ GitHub Pages (`https://documentdrivendx.github.io/innsigle/`).
 
 ## Design deliverables checklist
 
-- [x] Glyph SVG (solid stamp disk, fixed ink) — `docs/dogfood/assets/marks/`
+- [x] Glyph SVG (solid stamp matrix + monogram + countermarks) — `docs/dogfood/assets/marks/`
 - [x] State cue variants H/M/A — human / mixed / model SVGs
 - [x] Footer embed snippet — `docs/dogfood/snippets/footer.html`
 - [ ] Social still template (PNG export pipeline)

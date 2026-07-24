@@ -78,8 +78,9 @@ created: 2026-07-22</code></pre>
 <li>One family for all composition states.</li>
 <li>Opens or links to colophon (and verify when signed).</li>
 <li>Works as SVG/PNG without embedded C2PA (social-safe).</li>
-<li><strong>Solid stamp disk</strong> (opaque fill + light engravings)—not a transparent wireframe.</li>
+<li><strong>Solid stamp matrix</strong> (opaque fill + light impression)—not a transparent wireframe.</li>
 </ol>
+<p>   Inspiration: ancient stamp seals, medieval merchant/guild marks, pottery cartouches,    hallmark countermarks (<code>docs/dogfood/assets/marks/RESEARCH.md</code>).</p>
 <h3 id="anatomy">Anatomy</h3>
 <pre><code class="language-text">┌─────────────────────────────┐
 │  [glyph]  Innsigle          │  optional wordmark at larger sizes
@@ -87,9 +88,9 @@ created: 2026-07-22</code></pre>
 └─────────────────────────────┘</code></pre>
 <table>
 <tr><th>Part</th><th>Spec</th></tr>
-<tr><td>Glyph</td><td>Closed stamp / seal disk; geometric, high contrast; readable at 16px monochrome</td></tr>
+<tr><td>Glyph</td><td>Closed stamp matrix; beaded rim; angular monogram (stave + thryst + lozenge); high contrast; readable at 16–24px</td></tr>
 <tr><td>Wordmark</td><td>"Innsigle" only when width allows; glyph alone on social and tiny footers</td></tr>
-<tr><td>State cue</td><td>Small secondary mark or letter: <code>H</code> human-authored, <code>M</code> mixed, <code>A</code> model-primary (provisional); never traffic-light moral coding</td></tr>
+<tr><td>State cue</td><td>Hallmark-style <strong>countermark</strong> punch: <code>H</code> / <code>M</code> / <code>A</code>; never traffic-light moral coding</td></tr>
 <tr><td>Link target</td><td>Bill page or fragment; signed claims add verify affordance</td></tr>
 </table>
 <h3 id="state-variants-provisional">State variants (provisional)</h3>
@@ -99,7 +100,7 @@ created: 2026-07-22</code></pre>
 <tr><td><code>mixed</code></td><td>Same disk</td><td>M or split inner</td><td>Human + model</td></tr>
 <tr><td><code>model-primary</code></td><td>Same disk</td><td>A or ring inner</td><td>UC-AI-docs default; proud, not scarlet</td></tr>
 </table>
-<p>Exact geometry TBD in mark exploration (runic/craft/minimal). Constraint: <strong>one family</strong>, three cues max for v1 states.</p>
+<p>Geometry locked in <code>docs/dogfood/assets/marks/</code> (craft-matrix exploration). Constraint: <strong>one family</strong>, three countermarks max for v1 states. No copied historic house marks.</p>
 <h3 id="placement">Placement</h3>
 <table>
 <tr><th>Surface</th><th>Pattern</th></tr>
@@ -161,7 +162,7 @@ created: 2026-07-22</code></pre>
 <p><strong>Live microsite:</strong> <code>site/</code> deployed by <code>.github/workflows/pages.yml</code> to GitHub Pages (<code>https://documentdrivendx.github.io/innsigle/</code>).</p>
 <h2 id="design-deliverables-checklist">Design deliverables checklist</h2>
 <ul>
-<li>[x] Glyph SVG (solid stamp disk, fixed ink) — <code>docs/dogfood/assets/marks/</code></li>
+<li>[x] Glyph SVG (solid stamp matrix + monogram + countermarks) — <code>docs/dogfood/assets/marks/</code></li>
 <li>[x] State cue variants H/M/A — human / mixed / model SVGs</li>
 <li>[x] Footer embed snippet — <code>docs/dogfood/snippets/footer.html</code></li>
 <li>[ ] Social still template (PNG export pipeline)</li>
