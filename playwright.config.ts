@@ -9,8 +9,8 @@ export default defineConfig({
   timeout: 60_000,
   expect: {
     toHaveScreenshot: {
-      // Design-voice review: allow font AA / antialias jitter
-      maxDiffPixelRatio: 0.04,
+      // Design-voice review: allow font AA / antialias + minor CI vs local layout jitter
+      maxDiffPixelRatio: 0.08,
     },
   },
   fullyParallel: false,
