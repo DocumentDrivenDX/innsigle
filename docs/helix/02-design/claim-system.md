@@ -246,18 +246,21 @@ Never report "this is 80% AI."
 | Generate | CLI creates Ed25519 keypair; private key local file; never log |
 | Publish | Public key in `keys.json` at HTTPS URL |
 | Rotate | New key_id; old optional `revoked_at`; new claims use new key |
-| Discover | HTTPS `key_url` on claim; TOFU warn on first change of key material |
-| WoT | Not required; optional later cross-sign of keys (PGP inspiration) |
+| Discover | Absolute HTTPS `key_url` **inside signed claim** (ADR-003); fetch issuer document |
+| WoT | Optional key-endorsement attestations listed on issuer document (ADR-003) |
 
-### Trust policy (verifier)
+### Trust policy (verifier) — ADR-003
 
 | Level | Meaning |
 |-------|---------|
-| Crypto valid | Signature + content match |
-| Issuer recognized | key_url / key_id in user's trust list or first-seen pin |
-| Policy accept | User/org chooses to treat issuer as trusted for this class of content |
+| Crypto valid | Signature + content match; `key_url` integrity included in signed payload |
+| Issuer recognized | Pin of `key_id`, and/or path of crypto-valid **key-endorsements** from a pin (transitive WoT) |
+| Policy accept | User/org treats that recognized issuer as trusted for this class of content |
 
 SLSA lesson: separate crypto success from policy trust.
+
+**Identity fields:** `issuer.id` = non-unique display slug. Cryptographic identity =
+`key_id`. Discovery channel = absolute `key_url` (signed). See **ADR-003**.
 
 ## CLI surface (intent only; Contract later)
 
@@ -275,7 +278,7 @@ Exact flags belong in Contract, not here.
 
 | Prior art | Innsigle v1 choice |
 |-----------|-------------------|
-| PGP WoT | Deferred graph; steal fingerprint + user trust concept |
+| PGP WoT | ADR-003: signed key-endorsements published at issuer URL; transitive path optional |
 | DKIM | Steal domain/URL-published pubkey + sig over content |
 | in-toto | Steal subject + predicate typing |
 | SLSA | Steal provenance ≠ truth; policy separate |
@@ -296,6 +299,7 @@ Exact flags belong in Contract, not here.
 
 - [x] Freeze Ed25519 + canonicalization in ADR → **ADR-001 accepted**
 - [x] Claim/CLI normative surface → **CONTRACT-001** (+ JSON Schema)
+- [x] Absolute issuer `key_url` in every signature + WoT endorsements → **ADR-003**
 - [ ] Type URI host (`innsigle.dev` vs azgaard.net path) when domain bought
 - [ ] Multi-subject release claims for whole site versions (schema allows array)
 - [ ] Whether `mixed` needs sub-ratios (human-led vs model-led)
@@ -304,11 +308,11 @@ Exact flags belong in Contract, not here.
 ## Implementation sequence (suggested)
 
 1. ~~Schema JSON Schema + examples~~
-2. ~~ADR + Contract freeze~~ (ADR-001, CONTRACT-001)
+2. ~~ADR + Contract freeze~~ (ADR-001, CONTRACT-001, ADR-003)
 3. ~~Keygen + hash + sign + verify CLI~~ (`src/cli.mjs`, `npm test`)
 4. ~~Golden test vectors~~ (`tests/vectors/`, `tests/vectors.test.mjs`)
 5. ~~Docs footer + sample claim~~ (`docs/sample/`)
 6. ~~Mark exploration pack~~ (`docs/sample/assets/marks/`)
 7. ~~Brand explainer / public site~~ (docs-driven microsite + Pages)
 8. Feature specs FEAT-001–003 + walkthroughs
-9. Optional: in-toto/DSSE export; WoT cross-sign experiment
+9. CLI: HTTPS fetch keys + WoT path check; optional in-toto/DSSE export

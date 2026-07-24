@@ -72,9 +72,30 @@ function cmdKeygen(args) {
   console.error(`private=${privPath}`);
 }
 
+/** ADR-003: absolute key_url for signed claims (https production; http/file test). */
+function assertAbsoluteKeyUrl(keyUrl) {
+  let u;
+  try {
+    u = new URL(keyUrl);
+  } catch {
+    console.error("INVALID: key_url must be absolute URL (ADR-003)");
+    process.exit(EXIT.badSchema);
+  }
+  if (u.protocol !== "https:" && u.protocol !== "http:" && u.protocol !== "file:") {
+    console.error("INVALID: key_url scheme must be https (or http/file for tests)");
+    process.exit(EXIT.badSchema);
+  }
+  if (!u.protocol || !u.host && u.protocol !== "file:") {
+    console.error("INVALID: key_url incomplete");
+    process.exit(EXIT.badSchema);
+  }
+  return keyUrl;
+}
+
 function cmdKeysTemplate(args) {
+  // ADR-003 issuer document (preferred); still readable by verify as keys list
   const doc = {
-    innsigle_keys: "1",
+    innsigle_issuer: "1",
     issuer_id: requireArg(args, "--issuer-id"),
     issuer_name: requireArg(args, "--issuer-name"),
     keys: [
@@ -86,6 +107,7 @@ function cmdKeysTemplate(args) {
         revoked_at: null,
       },
     ],
+    endorsements: [],
   };
   writeOut(arg(args, "--out"), JSON.stringify(doc, null, 2));
 }
@@ -102,6 +124,7 @@ function cmdClaimBuild(args) {
   }
   colophon.schema_version = "1";
   const uri = arg(args, "--uri");
+  const keyUrl = assertAbsoluteKeyUrl(requireArg(args, "--key-url"));
   const payload = {
     innsigle: "1",
     type: "https://innsigle.dev/claim/colophon/v1",
@@ -110,7 +133,7 @@ function cmdClaimBuild(args) {
       id: requireArg(args, "--issuer-id"),
       name: requireArg(args, "--issuer-name"),
       key_id: requireArg(args, "--key-id"),
-      key_url: requireArg(args, "--key-url"),
+      key_url: keyUrl,
     },
     subjects: [
       {
@@ -125,6 +148,11 @@ function cmdClaimBuild(args) {
 
 function cmdSign(args) {
   const payload = JSON.parse(readFileSync(requireArg(args, "--claim"), "utf8"));
+  if (!payload?.issuer?.key_url) {
+    console.error("INVALID: claim missing issuer.key_url (ADR-003)");
+    process.exit(EXIT.badSchema);
+  }
+  assertAbsoluteKeyUrl(payload.issuer.key_url);
   const privateKeyPem = readFileSync(requireArg(args, "--key"), "utf8");
   const sig = signPayload(payload, privateKeyPem);
   const attestation = {
@@ -157,6 +185,21 @@ function cmdVerify(args) {
     console.error("INVALID: schema");
     process.exit(EXIT.badSchema);
   }
+  // ADR-003: signed payload must carry absolute key_url (integrity of discovery channel)
+  if (!payload.issuer?.key_url) {
+    console.error("INVALID: missing issuer.key_url in signed payload");
+    process.exit(EXIT.badSchema);
+  }
+  try {
+    assertAbsoluteKeyUrl(payload.issuer.key_url);
+  } catch {
+    /* assertAbsoluteKeyUrl already exits */
+  }
+  // Accept innsigle_issuer or legacy innsigle_keys documents
+  if (!keys.keys && !keys.innsigle_issuer && !keys.innsigle_keys) {
+    console.error("INVALID: issuer document schema");
+    process.exit(EXIT.badSchema);
+  }
   const sigBlock = attestation.signatures[0];
   const key = keys.keys?.find((k) => k.key_id === sigBlock.key_id);
   if (!key) {
@@ -181,6 +224,7 @@ function cmdVerify(args) {
   }
   console.log("VALID");
   console.log(`issuer=${payload.issuer.id}`);
+  console.log(`key_url=${payload.issuer.key_url}`);
   console.log(`composition=${payload.colophon.composition}`);
   console.log(`key_id=${sigBlock.key_id}`);
   process.exit(EXIT.ok);

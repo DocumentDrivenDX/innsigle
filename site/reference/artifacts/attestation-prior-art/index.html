@@ -91,11 +91,11 @@ created: 2026-07-22</code></pre>
 <tr><th>PGP idea</th><th>Innsigle mapping (v1 / later)</th></tr>
 <tr><td>Key fingerprint</td><td>House/person key id shown on verify</td></tr>
 <tr><td>Detached sig over data</td><td>Sign claim envelope + content hash</td></tr>
-<tr><td>Ownertrust</td><td>Later: user marks which house keys they trust</td></tr>
-<tr><td>Key certification</td><td>Later: house A signs house B's key (optional WoT)</td></tr>
+<tr><td>Ownertrust</td><td>Verifier pin set (local policy)</td></tr>
+<tr><td>Key certification</td><td><strong>ADR-003:</strong> house A signs key-endorsement of house B; listed at A's issuer URL</td></tr>
 <tr><td>No claim of content truth</td><td>Same: seal is declaration + crypto, not oracle</td></tr>
 </table>
-<p>v1 does <strong>not</strong> require a working global WoT. v1 requires: generate key, publish pubkey, sign claim, verify claim. WoT is alignment for <em>identity</em> of signers over time, not for colophon fields.</p>
+<p>v1 <strong>requires</strong> absolute <code>key_url</code> inside every signed claim (ADR-003). v1 <strong>allows</strong> optional key-endorsement lists for transitive recognition. v1 does <strong>not</strong> require a global keyserver or that every verifier enable WoT. WoT is for <em>identity of signers</em>, not for colophon field honesty.</p>
 <h2 id="dkim-email">DKIM (email)</h2>
 <p>Already in product thesis. Domain publishes selector pubkey (DNS TXT); signature headers bind body hash to domain. Receivers verify authorization, not honesty of the email body.</p>
 <p><strong>Apply:</strong> Content hash + claim + signer key; discovery via HTTPS URL or well-known path first; DNS TXT as optional later discovery (DKIM-like for domains that want it).</p>

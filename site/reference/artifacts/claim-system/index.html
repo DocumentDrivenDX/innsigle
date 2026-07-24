@@ -225,17 +225,18 @@ bio: https://azgaard.net/innsigle
 <tr><td>Generate</td><td>CLI creates Ed25519 keypair; private key local file; never log</td></tr>
 <tr><td>Publish</td><td>Public key in <code>keys.json</code> at HTTPS URL</td></tr>
 <tr><td>Rotate</td><td>New key_id; old optional <code>revoked_at</code>; new claims use new key</td></tr>
-<tr><td>Discover</td><td>HTTPS <code>key_url</code> on claim; TOFU warn on first change of key material</td></tr>
-<tr><td>WoT</td><td>Not required; optional later cross-sign of keys (PGP inspiration)</td></tr>
+<tr><td>Discover</td><td>Absolute HTTPS <code>key_url</code> <strong>inside signed claim</strong> (ADR-003); fetch issuer document</td></tr>
+<tr><td>WoT</td><td>Optional key-endorsement attestations listed on issuer document (ADR-003)</td></tr>
 </table>
-<h3 id="trust-policy-verifier">Trust policy (verifier)</h3>
+<h3 id="trust-policy-verifier-adr-003">Trust policy (verifier) — ADR-003</h3>
 <table>
 <tr><th>Level</th><th>Meaning</th></tr>
-<tr><td>Crypto valid</td><td>Signature + content match</td></tr>
-<tr><td>Issuer recognized</td><td>key_url / key_id in user's trust list or first-seen pin</td></tr>
-<tr><td>Policy accept</td><td>User/org chooses to treat issuer as trusted for this class of content</td></tr>
+<tr><td>Crypto valid</td><td>Signature + content match; <code>key_url</code> integrity included in signed payload</td></tr>
+<tr><td>Issuer recognized</td><td>Pin of <code>key_id</code>, and/or path of crypto-valid <strong>key-endorsements</strong> from a pin (transitive WoT)</td></tr>
+<tr><td>Policy accept</td><td>User/org treats that recognized issuer as trusted for this class of content</td></tr>
 </table>
 <p>SLSA lesson: separate crypto success from policy trust.</p>
+<p><strong>Identity fields:</strong> <code>issuer.id</code> = non-unique display slug. Cryptographic identity = <code>key_id</code>. Discovery channel = absolute <code>key_url</code> (signed). See <strong>ADR-003</strong>.</p>
 <h2 id="cli-surface-intent-only-contract-later">CLI surface (intent only; Contract later)</h2>
 <table>
 <tr><th>Command intent</th><th>Result</th></tr>
@@ -249,7 +250,7 @@ bio: https://azgaard.net/innsigle
 <h2 id="alignment-matrix">Alignment matrix</h2>
 <table>
 <tr><th>Prior art</th><th>Innsigle v1 choice</th></tr>
-<tr><td>PGP WoT</td><td>Deferred graph; steal fingerprint + user trust concept</td></tr>
+<tr><td>PGP WoT</td><td>ADR-003: signed key-endorsements published at issuer URL; transitive path optional</td></tr>
 <tr><td>DKIM</td><td>Steal domain/URL-published pubkey + sig over content</td></tr>
 <tr><td>in-toto</td><td>Steal subject + predicate typing</td></tr>
 <tr><td>SLSA</td><td>Steal provenance ≠ truth; policy separate</td></tr>
@@ -270,6 +271,7 @@ bio: https://azgaard.net/innsigle
 <ul>
 <li>[x] Freeze Ed25519 + canonicalization in ADR → <strong>ADR-001 accepted</strong></li>
 <li>[x] Claim/CLI normative surface → <strong>CONTRACT-001</strong> (+ JSON Schema)</li>
+<li>[x] Absolute issuer <code>key_url</code> in every signature + WoT endorsements → <strong>ADR-003</strong></li>
 <li>[ ] Type URI host (<code>innsigle.dev</code> vs azgaard.net path) when domain bought</li>
 <li>[ ] Multi-subject release claims for whole site versions (schema allows array)</li>
 <li>[ ] Whether <code>mixed</code> needs sub-ratios (human-led vs model-led)</li>
@@ -278,14 +280,14 @@ bio: https://azgaard.net/innsigle
 <h2 id="implementation-sequence-suggested">Implementation sequence (suggested)</h2>
 <ol>
 <li>~~Schema JSON Schema + examples~~</li>
-<li>~~ADR + Contract freeze~~ (ADR-001, CONTRACT-001)</li>
+<li>~~ADR + Contract freeze~~ (ADR-001, CONTRACT-001, ADR-003)</li>
 <li>~~Keygen + hash + sign + verify CLI~~ (<code>src/cli.mjs</code>, <code>npm test</code>)</li>
 <li>~~Golden test vectors~~ (<code>tests/vectors/</code>, <code>tests/vectors.test.mjs</code>)</li>
 <li>~~Docs footer + sample claim~~ (<code>docs/sample/</code>)</li>
 <li>~~Mark exploration pack~~ (<code>docs/sample/assets/marks/</code>)</li>
 <li>~~Brand explainer / public site~~ (docs-driven microsite + Pages)</li>
 <li>Feature specs FEAT-001–003 + walkthroughs</li>
-<li>Optional: in-toto/DSSE export; WoT cross-sign experiment</li>
+<li>CLI: HTTPS fetch keys + WoT path check; optional in-toto/DSSE export</li>
 </ol>
       </main>
     </div>

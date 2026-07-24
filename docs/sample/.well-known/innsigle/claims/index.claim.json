@@ -1,12 +1,12 @@
 {
   "innsigle": "1",
   "type": "https://innsigle.dev/claim/colophon/v1",
-  "issued_at": "2026-07-24T01:18:17Z",
+  "issued_at": "2026-07-24T02:05:50Z",
   "issuer": {
     "id": "azgaard-dogfood",
     "name": "Azgaard Sample",
     "key_id": "ed25519:56a6f2f799318d5153b3ba9b5e955d3b",
-    "key_url": "./keys.json"
+    "key_url": "https://documentdrivendx.github.io/innsigle/sample/.well-known/innsigle/keys.json"
   },
   "subjects": [
     {

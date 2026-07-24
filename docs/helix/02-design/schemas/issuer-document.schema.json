@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://innsigle.dev/schema/issuer-document/v1.json",
+  "title": "Innsigle issuer document v1 (ADR-003)",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["issuer_id", "issuer_name", "keys"],
+  "properties": {
+    "innsigle_issuer": { "const": "1" },
+    "innsigle_keys": { "const": "1" },
+    "issuer_id": { "type": "string", "minLength": 1 },
+    "issuer_name": { "type": "string", "minLength": 1 },
+    "keys": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["key_id", "alg", "public_key", "created_at", "revoked_at"],
+        "properties": {
+          "key_id": { "type": "string", "pattern": "^ed25519:[0-9a-f]{32}$" },
+          "alg": { "const": "ed25519" },
+          "public_key": { "type": "string", "minLength": 1 },
+          "created_at": { "type": "string", "minLength": 1 },
+          "revoked_at": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "endorsements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["attestation_url", "subject_key_id", "subject_key_url"],
+        "properties": {
+          "attestation_url": { "type": "string", "minLength": 1 },
+          "subject_key_id": { "type": "string", "pattern": "^ed25519:[0-9a-f]{32}$" },
+          "subject_key_url": { "type": "string", "minLength": 1 },
+          "issued_at": { "type": "string" }
+        }
+      }
+    }
+  },
+  "anyOf": [
+    { "required": ["innsigle_issuer"] },
+    { "required": ["innsigle_keys"] }
+  ]
+}

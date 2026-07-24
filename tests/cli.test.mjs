@@ -94,4 +94,33 @@ describe("innsigle CLI CONTRACT-001", () => {
     r = run(["verify", "--attestation", attPath, "--content", content, "--keys", keysPath]);
     assert.equal(r.status, 3, r.stderr);
   });
+
+  it("claim build rejects relative key_url (ADR-003)", () => {
+    rmSync(tmp, { recursive: true, force: true });
+    mkdirSync(tmp, { recursive: true });
+    const content = join(tmp, "page.html");
+    writeFileSync(content, "<html>x</html>\n");
+    const coloPath = join(tmp, "colo.json");
+    let r = run(["colo", "example", "--kind", "human-authored"]);
+    assert.equal(r.status, 0, r.stderr);
+    writeFileSync(coloPath, r.stdout);
+    r = run([
+      "claim",
+      "build",
+      "--content",
+      content,
+      "--colo",
+      coloPath,
+      "--issuer-id",
+      "x",
+      "--issuer-name",
+      "X",
+      "--key-id",
+      "ed25519:0123456789abcdef0123456789abcdef",
+      "--key-url",
+      "/.well-known/innsigle/keys.json",
+    ]);
+    assert.equal(r.status, 5, r.stderr);
+    assert.match(r.stderr, /key_url|absolute/i);
+  });
 });

@@ -20,7 +20,7 @@ created: 2026-07-22
 **Type:** schema + CLI  
 **Version:** v1  
 **Status:** draft (normative for implementers; bump version on breaking field changes)  
-**Related:** ADR-001; claim-system.md; PRD FR-1–4a, FR-8–12, FR-18–19
+**Related:** ADR-001; ADR-003; claim-system.md; PRD FR-1–4a, FR-8–12, FR-18–19
 
 ## Purpose
 
@@ -57,10 +57,10 @@ A claim payload MUST be a JSON object with:
 
 | Element | Type | Required | Rules |
 |---------|------|----------|-------|
-| `id` | string | yes | Stable issuer slug (e.g. `azgaard`) |
+| `id` | string | yes | Display slug (e.g. `azgaard`); **not** globally unique; not a crypto identifier (ADR-003) |
 | `name` | string | yes | Display name |
-| `key_id` | string | yes | MUST match a key in the issuer key document; format `ed25519:<fingerprint>` |
-| `key_url` | string | yes | HTTPS URL of `keys.json` (or local `file:` only for tests) |
+| `key_id` | string | yes | MUST match a key in the issuer document; format `ed25519:<fingerprint>` |
+| `key_url` | string | yes | **Absolute** URL of the issuer document (ADR-003). Production MUST use `https:`. Relative URLs are invalid. `http:` only for loopback/tests. `file:` only for offline tests. **Covered by the claim signature** via ADR-001 JCS of the full payload. |
 
 #### subject object
 
@@ -118,14 +118,30 @@ Let `h = SHA-256(canonical)` (raw 32 bytes).
 Unsigned claims MAY be distributed as payload-only JSON for display; they MUST
 NOT be labeled as signed in UI or CLI success paths.
 
-### Key document (`keys.json`)
+### Issuer document (at `key_url`)
+
+Canonical document for key discovery and optional web-of-trust edges (**ADR-003**).
+
+#### Preferred form (`innsigle_issuer`)
 
 | Element | Type | Required | Rules |
 |---------|------|----------|-------|
-| `innsigle_keys` | string | yes | MUST be `"1"` |
-| `issuer_id` | string | yes | Matches claim `issuer.id` |
+| `innsigle_issuer` | string | yes | MUST be `"1"` |
+| `issuer_id` | string | yes | Display slug; SHOULD match claim `issuer.id` |
 | `issuer_name` | string | yes | Display |
 | `keys` | array | yes | ≥0 keys (empty means no active keys) |
+| `endorsements` | array | no | Default `[]`. Index of key-endorsement attestations published by this issuer |
+
+#### Legacy form (`innsigle_keys`)
+
+| Element | Type | Required | Rules |
+|---------|------|----------|-------|
+| `innsigle_keys` | string | yes | MUST be `"1"` (pre-ADR-003) |
+| `issuer_id` | string | yes | Display slug |
+| `issuer_name` | string | yes | Display |
+| `keys` | array | yes | Same as preferred form |
+
+Verifiers MUST accept either form. Legacy form implies `endorsements: []`.
 
 #### key object
 
@@ -139,6 +155,48 @@ NOT be labeled as signed in UI or CLI success paths.
 
 **Fingerprint:** lowercase hex of SHA-256 over the 32-byte public key, truncated
 to first 16 bytes (32 hex chars), prefixed as `ed25519:<hex>`.
+
+#### endorsements[] index entry
+
+| Element | Type | Required | Rules |
+|---------|------|----------|-------|
+| `attestation_url` | string | yes | Absolute URL of a key-endorsement attestation JSON |
+| `subject_key_id` | string | yes | Endorsee `key_id` |
+| `subject_key_url` | string | yes | Absolute URL of endorsee issuer document |
+| `issued_at` | string | no | Hint only; attestation payload is authoritative |
+
+### Key-endorsement claim (ADR-003)
+
+Optional claim type for web-of-trust edges. **Type** MUST be
+`https://innsigle.dev/claim/key-endorsement/v1`.
+
+| Element | Type | Required | Rules |
+|---------|------|----------|-------|
+| `innsigle` | string | yes | `"1"` |
+| `type` | string | yes | Key-endorsement type URI above |
+| `issued_at` | string | yes | RFC 3339 UTC |
+| `issuer` | object | yes | **Endorser** — same rules as colophon claims, including absolute `key_url` |
+| `endorsement` | object | yes | See below |
+
+#### endorsement object
+
+| Element | Type | Required | Rules |
+|---------|------|----------|-------|
+| `subject_key_id` | string | yes | Endorsee key fingerprint id |
+| `subject_key_url` | string | yes | Absolute URL of endorsee issuer document |
+| `subject_issuer_id` | string | no | Display slug of endorsee (non-unique) |
+| `level` | string | no | One of `full`, `marginal`, `unknown` (PGP-inspired; default `full` if omitted) |
+| `purpose` | string | no | MUST NOT claim content truth; default `identity` — trust for recognizing seals |
+
+Key-endorsement attestations use the same envelope and ADR-001 crypto as colophon
+claims. They do **not** authenticate content honesty.
+
+### Signed `key_url` rules (normative)
+
+1. Producers of **signed** claims MUST set `issuer.key_url` to an absolute URL.
+2. The signature (ADR-001) covers the full payload including `issuer.key_url`.
+3. Verifiers MUST discover keys using the **signed** `issuer.key_url` unless applying an explicit local pin/override.
+4. `issuer.id` MUST NOT be treated as a globally unique or cryptographic identifier.
 
 ### Content hashing (v1)
 
@@ -155,10 +213,10 @@ Binary name: `innsigle` (package may ship as such).
 | Command | Args (normative intent) | Behavior |
 |---------|-------------------------|----------|
 | `innsigle keygen` | `--out-dir <dir>` | MUST write private key (permissions 0600 when FS supports) and public material; MUST NOT print private key |
-| `innsigle keys template` | `--issuer-id` `--issuer-name` `--public-key` | MUST emit `keys.json` skeleton |
-| `innsigle claim build` | `--content <file>` `--uri <uri?>` `--colo <colo.json>` `--issuer <issuer fields>` | MUST emit claim payload JSON on stdout or `--out`; MAY accept `--bill` as alias for `--colo` |
-| `innsigle sign` | `--claim <file>` `--key <private>` | MUST emit attestation envelope |
-| `innsigle verify` | `--attestation <file>` `--content <file>` `--keys <file\|url>` | MUST exit 0 iff signature valid, key not revoked, and content digest matches; MUST exit non-zero otherwise |
+| `innsigle keys template` | `--issuer-id` `--issuer-name` `--public-key` `--key-id` | MUST emit issuer document skeleton (`innsigle_issuer` preferred; includes `endorsements: []`) |
+| `innsigle claim build` | `--content <file>` `--uri <uri?>` `--colo <colo.json>` `--issuer-*` `--key-url` | MUST emit claim payload JSON; MUST reject non-absolute `key_url` (exit 5); MAY accept `--bill` as alias for `--colo` |
+| `innsigle sign` | `--claim <file>` `--key <private>` | MUST emit attestation envelope; SHOULD refuse unsigned path if claim lacks absolute `key_url` |
+| `innsigle verify` | `--attestation <file>` `--content <file>` `--keys <file\|url>` | MUST exit 0 iff signature valid, key not revoked, and content digest matches; MUST exit non-zero otherwise. Identity/WoT recognition is separate (ADR-003) |
 | `innsigle colo example` | `--kind model-primary\|human-authored\|mixed` | MUST print example colophon JSON; MAY accept `bill example` as alias |
 
 #### verify exit codes
@@ -180,9 +238,10 @@ detection scores.
 
 ## Precedence and Compatibility
 
-- Versioning: `innsigle` field and `schema_version` / `innsigle_keys` govern
-  payload compatibility. Breaking changes MUST bump these and the contract
-  version.
+- Versioning: `innsigle` field and `schema_version` / `innsigle_keys` /
+  `innsigle_issuer` govern payload and issuer-document compatibility. Breaking
+  changes MUST bump these and the contract version.
+- Related decision records: **ADR-001** (crypto), **ADR-003** (issuer URL + WoT).
 - Unknown JSON fields in payload: verifiers MUST ignore unknown fields when
   verifying signatures (signature covers canonical form of known payload as
   signed; producers SHOULD avoid unknown fields in v1).
@@ -204,7 +263,9 @@ detection scores.
 See:
 
 - `docs/helix/02-design/examples/claim-model-primary-docs.json`
-- `docs/helix/02-design/examples/keys.json`
+- `docs/helix/02-design/examples/keys.json` (legacy keys-only)
+- `docs/helix/02-design/examples/issuer-document.json` (ADR-003 issuer + endorsements index)
+- `docs/helix/02-design/examples/key-endorsement-claim.json`
 
 ```text
 innsigle keygen --out-dir ~/.config/innsigle/azgaard

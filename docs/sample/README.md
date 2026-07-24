@@ -20,7 +20,7 @@ node src/cli.mjs claim build --content docs/sample/index.html \
   --colo docs/sample/colo.json \
   --issuer-id azgaard-dogfood --issuer-name "Azgaard Sample" \
   --key-id "$(cat .dogfood-secrets/dogfood-key/key-id.txt)" \
-  --key-url ./keys.json \
+  --key-url "https://documentdrivendx.github.io/innsigle/sample/.well-known/innsigle/keys.json" \
   --out docs/sample/.well-known/innsigle/claims/index.claim.json
 node src/cli.mjs sign \
   --claim docs/sample/.well-known/innsigle/claims/index.claim.json \

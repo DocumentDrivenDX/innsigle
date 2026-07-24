@@ -25,5 +25,17 @@ scores.
 4. Ed25519 over SHA-256(JCS(payload))  
 
 Trust policy (whether you accept the issuer) is separate from crypto validity
-(SLSA / PGP lesson). See
-[ADR-001](../../reference/artifacts/adrs/adr-001-signing-and-canonicalization/).
+(SLSA / PGP lesson).
+
+| Layer | What it answers |
+|-------|-----------------|
+| Crypto valid | Did this `key_id` seal this colo for these bytes? |
+| Discovery | Absolute `key_url` is **inside the signed claim** (ADR-003) |
+| Recognized | Pin that fingerprint, and/or follow **key-endorsements** listed on issuer documents (transitive WoT) |
+
+`issuer.id` is a display slug and may collide. Share and pin **fingerprints**, not
+slugs alone.
+
+See [ADR-001](../../reference/artifacts/adrs/adr-001-signing-and-canonicalization/)
+(crypto) and [ADR-003](../../reference/artifacts/adrs/adr-003-issuer-url-and-web-of-trust/)
+(issuer URL + web of trust).

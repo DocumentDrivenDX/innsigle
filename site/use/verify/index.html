@@ -46,7 +46,15 @@
 <li>SHA-256 of content matches subject digest  </li>
 <li>Ed25519 over SHA-256(JCS(payload))  </li>
 </ol>
-<p>Trust policy (whether you accept the issuer) is separate from crypto validity (SLSA / PGP lesson). See <a href="/reference/artifacts/adrs/adr-001-signing-and-canonicalization/">ADR-001</a>.</p>
+<p>Trust policy (whether you accept the issuer) is separate from crypto validity (SLSA / PGP lesson).</p>
+<table>
+<tr><th>Layer</th><th>What it answers</th></tr>
+<tr><td>Crypto valid</td><td>Did this <code>key_id</code> seal this colo for these bytes?</td></tr>
+<tr><td>Discovery</td><td>Absolute <code>key_url</code> is <strong>inside the signed claim</strong> (ADR-003)</td></tr>
+<tr><td>Recognized</td><td>Pin that fingerprint, and/or follow <strong>key-endorsements</strong> listed on issuer documents (transitive WoT)</td></tr>
+</table>
+<p><code>issuer.id</code> is a display slug and may collide. Share and pin <strong>fingerprints</strong>, not slugs alone.</p>
+<p>See <a href="/reference/artifacts/adrs/adr-001-signing-and-canonicalization/">ADR-001</a> (crypto) and <a href="/reference/artifacts/adrs/adr-003-issuer-url-and-web-of-trust/">ADR-003</a> (issuer URL + web of trust).</p>
       </main>
     </div>
   </div>

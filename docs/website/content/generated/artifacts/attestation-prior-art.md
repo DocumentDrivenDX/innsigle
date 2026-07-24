@@ -87,13 +87,14 @@ user can be a mini-CA for people they actually know.
 |----------|--------------------------------|
 | Key fingerprint | House/person key id shown on verify |
 | Detached sig over data | Sign claim envelope + content hash |
-| Ownertrust | Later: user marks which house keys they trust |
-| Key certification | Later: house A signs house B's key (optional WoT) |
+| Ownertrust | Verifier pin set (local policy) |
+| Key certification | **ADR-003:** house A signs key-endorsement of house B; listed at A's issuer URL |
 | No claim of content truth | Same: seal is declaration + crypto, not oracle |
 
-v1 does **not** require a working global WoT. v1 requires: generate key, publish
-pubkey, sign claim, verify claim. WoT is alignment for *identity* of signers
-over time, not for colophon fields.
+v1 **requires** absolute `key_url` inside every signed claim (ADR-003). v1
+**allows** optional key-endorsement lists for transitive recognition. v1 does
+**not** require a global keyserver or that every verifier enable WoT. WoT is for
+*identity of signers*, not for colophon field honesty.
 
 ## DKIM (email)
 

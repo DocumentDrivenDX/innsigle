@@ -1,0 +1,22 @@
+{
+  "innsigle_issuer": "1",
+  "issuer_id": "azgaard",
+  "issuer_name": "Azgaard",
+  "keys": [
+    {
+      "key_id": "ed25519:0123456789abcdef0123456789abcdef",
+      "alg": "ed25519",
+      "public_key": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "created_at": "2026-07-24T00:00:00Z",
+      "revoked_at": null
+    }
+  ],
+  "endorsements": [
+    {
+      "attestation_url": "https://azgaard.net/.well-known/innsigle/endorsements/bob-key.json",
+      "subject_key_id": "ed25519:fedcba9876543210fedcba9876543210",
+      "subject_key_url": "https://bob.example/.well-known/innsigle/issuer.json",
+      "issued_at": "2026-07-24T12:00:00Z"
+    }
+  ]
+}

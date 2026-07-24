@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://innsigle.dev/schema/key-endorsement-claim/v1.json",
+  "title": "Innsigle key-endorsement claim payload v1 (ADR-003)",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["innsigle", "type", "issued_at", "issuer", "endorsement"],
+  "properties": {
+    "innsigle": { "const": "1" },
+    "type": { "const": "https://innsigle.dev/claim/key-endorsement/v1" },
+    "issued_at": { "type": "string", "minLength": 1 },
+    "issuer": {
+      "type": "object",
+      "required": ["id", "name", "key_id", "key_url"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "key_id": { "type": "string", "pattern": "^ed25519:[0-9a-f]{32}$" },
+        "key_url": { "type": "string", "minLength": 8 }
+      }
+    },
+    "endorsement": {
+      "type": "object",
+      "required": ["subject_key_id", "subject_key_url"],
+      "properties": {
+        "subject_key_id": { "type": "string", "pattern": "^ed25519:[0-9a-f]{32}$" },
+        "subject_key_url": { "type": "string", "minLength": 8 },
+        "subject_issuer_id": { "type": "string" },
+        "level": { "enum": ["full", "marginal", "unknown"] },
+        "purpose": { "type": "string" }
+      }
+    }
+  }
+}

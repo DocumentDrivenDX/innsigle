@@ -1,0 +1,18 @@
+{
+  "innsigle": "1",
+  "type": "https://innsigle.dev/claim/key-endorsement/v1",
+  "issued_at": "2026-07-24T12:00:00Z",
+  "issuer": {
+    "id": "azgaard",
+    "name": "Azgaard",
+    "key_id": "ed25519:0123456789abcdef0123456789abcdef",
+    "key_url": "https://azgaard.net/.well-known/innsigle/issuer.json"
+  },
+  "endorsement": {
+    "subject_key_id": "ed25519:fedcba9876543210fedcba9876543210",
+    "subject_key_url": "https://bob.example/.well-known/innsigle/issuer.json",
+    "subject_issuer_id": "bob",
+    "level": "full",
+    "purpose": "identity"
+  }
+}

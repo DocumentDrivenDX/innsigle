@@ -16,7 +16,11 @@
         "id": { "type": "string", "minLength": 1 },
         "name": { "type": "string", "minLength": 1 },
         "key_id": { "type": "string", "pattern": "^ed25519:[0-9a-f]{32}$" },
-        "key_url": { "type": "string", "minLength": 1 }
+        "key_url": {
+          "type": "string",
+          "minLength": 8,
+          "description": "Absolute issuer document URL (ADR-003); covered by claim signature"
+        }
       }
     },
     "subjects": {

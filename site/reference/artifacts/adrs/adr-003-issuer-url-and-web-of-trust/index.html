@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ADR-003: Issuer URL binding and web of trust — Innsigle</title>
+  <meta name="description" content="ADR-003: Issuer URL binding and web of trust" />
+  <link rel="stylesheet" href="/assets/css/site.css" />
+  <link rel="icon" href="/assets/marks/innsigle-base.svg" type="image/svg+xml" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/">
+        <img class="brand-mark" src="/assets/marks/innsigle-base.svg" width="40" height="40" alt="" />
+        Innsigle
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/">What it is</a>
+        <a href="/why/">Why</a>
+        <a href="/use/">Use</a>
+        <a href="/reference/" aria-current="page">Reference</a>
+        <a href="/sample/">Sample</a>
+      </nav>
+    </div>
+  </header>
+  <div class="wrap layout-docs">
+    <p class="crumbs" aria-label="Breadcrumb"><a href="/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/reference/">Reference</a> <span aria-hidden="true">/</span> <span>ADR-003: Issuer URL binding and web of trust</span></p>
+    <div class="docs-grid">
+      <aside class="docs-side" aria-label="Section">
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/sample/">Sample</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/colophon/">Colophon</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/" aria-current="page">Reference home</a></li><li><a href="/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
+      </aside>
+      <main class="docs-main prose">
+        <p class="gen-banner note">Generated reference — edit sources under <code>docs/helix/</code>, then <code>npm run site:build</code>.</p>
+<blockquote><strong>Generated from HELIX docs.</strong> Source: <code>docs/helix/02-design/adrs/ADR-003-issuer-url-and-web-of-trust.md</code>. Edit the source, not this file or <code>site/</code> HTML.</blockquote>
+<details><summary>Source frontmatter</summary>
+<pre><code class="language-yaml">ddx:
+  id: aibadge.adr.003
+  type: adr
+  links:
+    - target: aibadge.adr.001
+      kind: informed_by
+    - target: aibadge.design.claim-system
+      kind: informed_by
+    - target: aibadge.design.attestation-prior-art
+      kind: informed_by
+    - target: aibadge.contract.001
+      kind: informs
+    - target: aibadge.prd
+      kind: informed_by
+status: accepted
+activity: 02-design
+created: 2026-07-24</code></pre>
+</details>
+<h1 id="adr-003-issuer-url-binding-and-web-of-trust">ADR-003: Issuer URL binding and web of trust</h1>
+<table>
+<tr><th>Date</th><th>Status</th><th>Deciders</th><th>Related</th><th>Confidence</th></tr>
+<tr><td>2026-07-24</td><td>Accepted</td><td>Operator</td><td>ADR-001; CONTRACT-001; claim-system; prior-art (PGP/DKIM)</td><td>High</td></tr>
+</table>
+<h2 id="context">Context</h2>
+<table>
+<tr><th>Aspect</th><th>Description</th></tr>
+<tr><td>Problem</td><td>Seals need a clear issuer identity story: every signature must permanently record <strong>where</strong> the verifier should fetch the issuer’s public keys; peers need a way to <strong>endorse</strong> each other’s keys without a central CA</td></tr>
+<tr><td>Current State</td><td>Claims include <code>issuer.key_url</code>, but rules for absolute URL, signature binding, and trust beyond crypto-valid were underspecified; <code>keys.json</code> had no endorsement list; WoT was “later” in prior art</td></tr>
+<tr><td>Requirements</td><td>Offline-capable verify; no mandatory CA; DKIM-like publish channel; optional transitive trust; fail closed on key mismatch; do not claim content truth</td></tr>
+<tr><td>Decision Drivers</td><td>Hijacked host must not rewrite history for pinned keys; slug collisions must not be security; endorsements must themselves be signed; discovery URL must be inside the signed payload</td></tr>
+</table>
+<h3 id="threats-this-adr-addresses">Threats this ADR addresses</h3>
+<table>
+<tr><th>Threat</th><th>Without this decision</th><th>With this decision</th></tr>
+<tr><td>Claim omits or uses relative <code>key_url</code></td><td>Verifier guesses discovery; easy to strip or swap channel</td><td><strong>Full absolute <code>key_url</code> is inside signed bytes</strong></td></tr>
+<tr><td>Verifier uses attacker-supplied key file while claim pointed elsewhere</td><td>Confused deputy</td><td>Verifier <strong>MUST</strong> use <code>issuer.key_url</code> from the <strong>signed</strong> claim (or a pin derived from it)</td></tr>
+<tr><td>Webserver hijack replaces <code>keys.json</code></td><td>Live fetchers trust new key</td><td>Pins / prior endorsements still bind old <code>key_id</code>; new key needs new trust path</td></tr>
+<tr><td>Duplicate <code>issuer.id</code> slugs</td><td>Users think slug is unique identity</td><td>Identity is <strong><code>key_id</code> + published document URL</strong>, not the slug</td></tr>
+<tr><td>“I trust Bob” is unsigned blog text</td><td>No crypto weight</td><td><strong>Key-endorsement attestations</strong> signed by endorser’s key, listed at endorser’s issuer URL</td></tr>
+</table>
+<h2 id="decision">Decision</h2>
+<h3 id="d1-full-issuer-url-in-every-signature">D1 — Full issuer URL in every signature</h3>
+<ol>
+<li>Every <strong>signed</strong> claim payload MUST include <code>issuer.key_url</code> as an <strong>absolute</strong> URL with scheme <code>https:</code> (production) or <code>http:</code> only for loopback/test.</li>
+<li>Relative paths, bare hostnames, and missing <code>key_url</code> are <strong>invalid</strong> for signed claims.</li>
+<li>Because the claim payload is what ADR-001 signs (JCS → SHA-256 → Ed25519), <strong><code>key_url</code> is covered by the signature</strong>. A verifier that checks the signature has integrity over the discovery URL the signer asserted at seal time.</li>
+<li><code>issuer.id</code> remains a <strong>non-unique display slug</strong>. Cryptographic identity is <code>issuer.key_id</code>. Discovery channel is <code>issuer.key_url</code>.</li>
+</ol>
+<h3 id="d2-how-verifiers-load-keys">D2 — How verifiers load keys</h3>
+<ol>
+<li>Default discovery: fetch the issuer document from the <strong>signed</strong> <code>issuer.key_url</code>.</li>
+<li>Match <code>issuer.key_id</code> to a non-revoked key in that document; <code>issuer_id</code> in the document SHOULD equal <code>issuer.id</code> (warn if not; do not treat slug alone as trust).</li>
+<li>Implementations MAY accept a local file only when it is a <strong>pin</strong> of a previously observed document for that <code>key_url</code> / <code>key_id</code>, or for offline tests.</li>
+<li>Implementations MUST NOT silently substitute an unrelated keys file without recording that policy override.</li>
+</ol>
+<h3 id="d3-issuer-document-at-key_url">D3 — Issuer document at <code>key_url</code></h3>
+<p>The resource at <code>key_url</code> is an <strong>issuer document</strong> (evolved from minimal <code>keys.json</code>):</p>
+<table>
+<tr><th>Field</th><th>Required</th><th>Meaning</th></tr>
+<tr><td><code>innsigle_issuer</code></td><td>yes (v1 doc)</td><td><code>"1"</code> — document type version</td></tr>
+<tr><td><code>issuer_id</code></td><td>yes</td><td>Display slug (may collide globally)</td></tr>
+<tr><td><code>issuer_name</code></td><td>yes</td><td>Human label</td></tr>
+<tr><td><code>keys</code></td><td>yes</td><td>Public keys (<code>key_id</code>, <code>alg</code>, <code>public_key</code>, <code>created_at</code>, <code>revoked_at</code>)</td></tr>
+<tr><td><code>endorsements</code></td><td>no (default <code>[]</code>)</td><td>Index of <strong>key-endorsement</strong> attestations this issuer has published</td></tr>
+</table>
+<p><strong>Backward compatibility:</strong> Documents that only set <code>innsigle_keys: "1"</code> (pre-ADR-003) remain valid as a <strong>keys-only</strong> issuer document with empty endorsements. New producers SHOULD emit <code>innsigle_issuer: "1"</code>.</p>
+<h3 id="d4-key-endorsement-attestations-web-of-trust-edges">D4 — Key-endorsement attestations (web of trust edges)</h3>
+<p>An issuer may publish <strong>key-endorsement</strong> claims: signed statements that <strong>this key trusts another Innsigle key</strong> for <strong>identity / seal recognition</strong>, not for content truth.</p>
+<ol>
+<li><strong>Type URI:</strong> <code>https://innsigle.dev/claim/key-endorsement/v1</code></li>
+<li><strong>Signed payload</strong> MUST include the endorser’s full <code>issuer</code> object (<strong>including absolute <code>key_url</code></strong>), same as colophon claims.</li>
+<li><strong>Subject of endorsement</strong> MUST include the endorsee’s absolute <code>key_url</code> and <code>key_id</code> (and MAY include <code>issuer_id</code> as display only).</li>
+<li>Each endorsement is a normal Innsigle <strong>attestation envelope</strong> (ADR-001 crypto).</li>
+<li>The endorser’s issuer document lists endorsements in <code>endorsements[]</code> with at least:</li>
+</ol>
+<p>   - <code>attestation_url</code> — absolute URL of the endorsement attestation JSON      - <code>subject_key_id</code>      - <code>subject_key_url</code> — absolute      - <code>issued_at</code> (optional cache hint; the attestation is authoritative)</p>
+<h3 id="d5-transitive-web-of-trust-verifier-policy">D5 — Transitive web of trust (verifier policy)</h3>
+<p>Trust is a <strong>policy graph</strong>, not a crypto boolean alone.</p>
+<table>
+<tr><th>Layer</th><th>Meaning</th></tr>
+<tr><td><strong>Crypto valid</strong></td><td>Signature + content/subject rules for that attestation type</td></tr>
+<tr><td><strong>Direct trust</strong></td><td>Verifier pins endorsee key, or accepts a <strong>direct</strong> endorsement from a pinned root</td></tr>
+<tr><td><strong>Transitive trust</strong></td><td>Path of crypto-valid key-endorsements from a pinned root to the content sealer’s <code>key_id</code>, with depth/cycle limits</td></tr>
+</table>
+<p><strong>Normative verifier algorithm (WoT path check):</strong></p>
+<ol>
+<li>Verify the <strong>content</strong> attestation (colophon claim) under sealer <code>key_id</code> / keys from sealer’s <strong>signed</strong> <code>key_url</code>.</li>
+<li>If sealer <code>key_id</code> is in the verifier’s <strong>pin set</strong> → identity accepted (for policy).</li>
+<li>Else, BFS/DFS from pin set over endorsement edges:</li>
+</ol>
+<p>   - Load endorser’s issuer document from the <strong>endorsement attestation’s signed</strong> <code>issuer.key_url</code>.    - Verify endorsement attestation signature.    - Confirm endorsement subject matches next hop <code>key_id</code> + <code>key_url</code>.    - Enforce <code>max_depth</code> (default <strong>3</strong>), reject cycles, optional <code>level</code> policy (e.g. only <code>full</code>).</p>
+<ol>
+<li>If a path exists → <strong>transitively recognized</strong>; else → crypto may still be VALID but <strong>issuer not recognized</strong>.</li>
+</ol>
+<p><strong>Non-goals of the WoT:</strong></p>
+<ul>
+<li>Does <strong>not</strong> validate colophon honesty or content truth.</li>
+<li>Does <strong>not</strong> replace offline private-key custody.</li>
+<li>Does <strong>not</strong> make <code>issuer.id</code> globally unique.</li>
+<li>Does <strong>not</strong> require a global keyserver (each issuer publishes their own edge list).</li>
+</ul>
+<h3 id="d6-host-compromise-design-honesty">D6 — Host compromise (design honesty)</h3>
+<table>
+<tr><th>Event</th><th>Effect</th></tr>
+<tr><td>Attacker replaces issuer document at <code>key_url</code></td><td>Live-only verifiers may accept <strong>new</strong> keys; <strong>pinned</strong> <code>key_id</code>s still define historical identity</td></tr>
+<tr><td>Attacker lacks private key</td><td>Cannot forge under old <code>key_id</code></td></tr>
+<tr><td>Attacker has private key</td><td>Full forge — operational failure</td></tr>
+<tr><td>Attacker publishes fake endorsements under their key</td><td>Only helps if some pin trusts the attacker’s key</td></tr>
+</table>
+<p>Publishing keys at a URL is <strong>DKIM-class discovery</strong>, not a CA. ADR-003 makes the <strong>asserted discovery URL immutable inside the seal</strong> and adds <strong>signed peer edges</strong> for transitive recognition.</p>
+<h2 id="alternatives">Alternatives</h2>
+<table>
+<tr><th>Option</th><th>Pros</th><th>Cons</th><th>Evaluation</th></tr>
+<tr><td>Slug-only identity</td><td>Simple</td><td>Collisions; no crypto</td><td>Rejected</td></tr>
+<tr><td>CA / mTLS issuer certs</td><td>Familiar enterprise</td><td>Ops burden; not craft-first</td><td>Rejected for v1</td></tr>
+<tr><td>Sigstore keyless only</td><td>No long-lived keys</td><td>OIDC; weak house narrative</td><td>Optional later, not sole</td></tr>
+<tr><td>key_url outside signature</td><td>Smaller payload</td><td>Channel swap after sign</td><td><strong>Rejected</strong></td></tr>
+<tr><td>Central Innsigle trust registry</td><td>Easy UX</td><td>We become CA; single point</td><td>Rejected</td></tr>
+<tr><td><strong>Signed absolute key_url + local endorsement lists</strong></td><td>No central party; PGP-like</td><td>Path UX complexity</td><td><strong>Selected</strong></td></tr>
+<tr><td>Blockchain transparency log</td><td>Strong history</td><td>Scope / cost</td><td>Optional later</td></tr>
+</table>
+<h2 id="consequences">Consequences</h2>
+<table>
+<tr><th>Type</th><th>Impact</th></tr>
+<tr><td>Positive</td><td>Every seal freezes discovery URL; WoT edges are fetchable from issuer URLs; transitive trust is defineable; aligns with PGP certification + DKIM publish</td></tr>
+<tr><td>Negative</td><td>Issuer documents and endorsement URLs must stay available; verifiers need pin/depth policy; more fetch steps</td></tr>
+<tr><td>Neutral</td><td><code>issuer.id</code> remains cosmetic; fingerprints remain the shareable handle</td></tr>
+</table>
+<h2 id="risks">Risks</h2>
+<table>
+<tr><th>Risk</th><th>Prob</th><th>Impact</th><th>Mitigation</th></tr>
+<tr><td>Broken absolute URL rules in CLI</td><td>M</td><td>H</td><td>Contract + CLI reject relative <code>key_url</code> on sign path</td></tr>
+<tr><td>Infinite / hostile endorsement graphs</td><td>M</td><td>M</td><td><code>max_depth</code>, cycle detection, pin roots only</td></tr>
+<tr><td>Stale endorsement index vs attestation</td><td>M</td><td>M</td><td>Attestation is source of truth; index is discovery</td></tr>
+<tr><td>Users trust slug in UI</td><td>H</td><td>H</td><td>Verify UX shows fingerprint + key_url; docs stress pin</td></tr>
+<tr><td>Host hijack still confuses live-only users</td><td>M</td><td>H</td><td>Document TOFU/pin; optional multi-mirror later</td></tr>
+</table>
+<h2 id="validation">Validation</h2>
+<table>
+<tr><th>Success Metric</th><th>Review Trigger</th></tr>
+<tr><td>Signed golden claim includes absolute <code>https://…</code> <code>key_url</code> under JCS</td><td>Any claim schema change</td></tr>
+<tr><td>Relative <code>key_url</code> rejected by claim build / contract tests</td><td>Softening of URL rules</td></tr>
+<tr><td>Example endorsement attestation verifies; path of length 2 accepted under pin</td><td>WoT algorithm change</td></tr>
+<tr><td>Content seal still fails closed on content mutation</td><td>Softening fail-closed</td></tr>
+</table>
+<h2 id="supersession">Supersession</h2>
+<ul>
+<li><strong>Supersedes:</strong> None (extends ADR-001 envelope usage; does not change algorithms)</li>
+<li><strong>Superseded by:</strong> None</li>
+<li><strong>Amends guidance in:</strong> claim-system.md (TOFU/WoT); CONTRACT-001 (issuer URL + endorsements)</li>
+</ul>
+<h2 id="concern-impact">Concern Impact</h2>
+<ul>
+<li>Strengthens <code>key-custody</code>, issuer discovery, and future <code>area:crypto</code> trust policy.</li>
+<li>WoT is <strong>opt-in policy</strong> for verifiers; unsigned seals and keys-only issuers remain valid.</li>
+</ul>
+<h2 id="normative-summary-implementers">Normative summary (implementers)</h2>
+<ol>
+<li><strong>Sign:</strong> payload.issuer.key_url = absolute URL; covered by ADR-001 signature.  </li>
+<li><strong>Publish:</strong> issuer document at that URL with keys; optional endorsements index.  </li>
+<li><strong>Endorse:</strong> sign key-endorsement attestations; list them on your issuer document.  </li>
+<li><strong>Verify content:</strong> crypto under sealer key from signed key_url.  </li>
+<li><strong>Verify identity (optional):</strong> pin roots + walk endorsement edges with depth limits.</li>
+</ol>
+<h2 id="references">References</h2>
+<ul>
+<li>ADR-001 Signing and canonicalization  </li>
+<li>CONTRACT-001 Claim and CLI  </li>
+<li><code>docs/helix/02-design/claim-system.md</code>  </li>
+<li><code>docs/helix/02-design/attestation-prior-art.md</code> (PGP WoT, DKIM)  </li>
+<li>RFC 8785 JCS  </li>
+<li>PRD FR-9–12  </li>
+</ul>
+      </main>
+    </div>
+  </div>
+  <footer class="site-footer">
+    <div class="wrap">
+      <a class="innsigle-footer-seal" href="/use/colophon/">
+        <img src="/assets/marks/innsigle-base.svg" width="48" height="48" alt="Innsigle seal" />
+        <span>
+          <strong>Innsigle</strong>
+          <span class="cue">Colo · not a detector</span>
+        </span>
+      </a>
+      <p>
+        <a href="https://github.com/DocumentDrivenDX/innsigle">Source</a>
+        · curated in <code>docs/website/</code>
+        · specs from <code>docs/helix/</code>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>
