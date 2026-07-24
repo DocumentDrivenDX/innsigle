@@ -26,7 +26,7 @@ mark model-primary text as human because it was sloptimized.
 
 Use the H-cue SVG from the mark pack:
 
-- Repo: `docs/dogfood/assets/marks/innsigle-human.svg`
+- Repo: `docs/sample/assets/marks/innsigle-human.svg`
 - Site: [Marks](../marks/)
 
 Render to PNG at 128×128 if the platform prefers raster attachments.

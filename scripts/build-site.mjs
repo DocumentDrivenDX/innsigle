@@ -3,7 +3,7 @@
  * Build deployable HTML under site/ from:
  *   - curated: docs/website/content/curated/
  *   - generated: docs/website/content/generated/  (run publish-artifacts first)
- *   - static: marks, captures, dogfood claims
+ *   - static: marks, captures, sample claims
  *
  * site/ is output-only for content pages (CSS/layout live in templates here).
  */
@@ -33,7 +33,7 @@ const NAV = [
   { title: "Why", href: `${BASE}/why/` },
   { title: "Use", href: `${BASE}/use/` },
   { title: "Reference", href: `${BASE}/reference/` },
-  { title: "Dogfood", href: `${BASE}/dogfood/` },
+  { title: "Sample", href: `${BASE}/sample/` },
 ];
 
 function walkMd(dir, base = dir, acc = []) {
@@ -137,7 +137,7 @@ function sidebar(pageUrl) {
       links: [
         { t: "Home", h: `${BASE}/` },
         { t: "Why", h: `${BASE}/why/` },
-        { t: "Dogfood", h: `${BASE}/dogfood/` },
+        { t: "Sample", h: `${BASE}/sample/` },
         { t: "Non-goals", h: `${BASE}/non-goals/` },
       ],
     },
@@ -291,7 +291,7 @@ function copyStatic() {
   else if (existsSync(cssLegacy)) {
     // keep design CSS; will re-copy after wipe carefully
   }
-  cpSync(join(ROOT, "docs/dogfood/assets/marks"), join(OUT, "assets/marks"), {
+  cpSync(join(ROOT, "docs/sample/assets/marks"), join(OUT, "assets/marks"), {
     recursive: true,
   });
   // captures
@@ -300,22 +300,22 @@ function copyStatic() {
     mkdirSync(join(OUT, "captures"), { recursive: true });
     cpSync(cap, join(OUT, "captures"), { recursive: true });
   }
-  // dogfood HTML + claims
-  mkdirSync(join(OUT, "dogfood/.well-known/innsigle/claims"), { recursive: true });
+  // sample HTML + claims
+  mkdirSync(join(OUT, "sample/.well-known/innsigle/claims"), { recursive: true });
   cpSync(
-    join(ROOT, "docs/dogfood/.well-known/innsigle/keys.json"),
-    join(OUT, "dogfood/.well-known/innsigle/keys.json"),
+    join(ROOT, "docs/sample/.well-known/innsigle/keys.json"),
+    join(OUT, "sample/.well-known/innsigle/keys.json"),
   );
   cpSync(
-    join(ROOT, "docs/dogfood/.well-known/innsigle/claims"),
-    join(OUT, "dogfood/.well-known/innsigle/claims"),
+    join(ROOT, "docs/sample/.well-known/innsigle/claims"),
+    join(OUT, "sample/.well-known/innsigle/claims"),
     { recursive: true },
   );
-  // dogfood page: wrap or copy with path fix — use dedicated built page from curated note
-  // Keep a static dogfood index that matches UC sample
-  let dog = readFileSync(join(ROOT, "docs/dogfood/index.html"), "utf8");
+  // sample page: wrap or copy with path fix — use dedicated built page from curated note
+  // Keep a static sample index that matches UC sample
+  let dog = readFileSync(join(ROOT, "docs/sample/index.html"), "utf8");
   dog = dog
-    .replace(/href="\.well-known\//g, `href="${BASE}/dogfood/.well-known/`)
+    .replace(/href="\.well-known\//g, `href="${BASE}/sample/.well-known/`)
     .replace(/src="assets\/marks\//g, `src="${BASE}/assets/marks/`)
     .replace(/src="\.\.\/assets\/marks\//g, `src="${BASE}/assets/marks/`);
   // inject base-aware styles link if missing absolute base
@@ -325,7 +325,7 @@ function copyStatic() {
       `  <link rel="stylesheet" href="${BASE}/assets/css/site.css" />\n</head>`,
     );
   }
-  writeFileSync(join(OUT, "dogfood/index.html"), dog);
+  writeFileSync(join(OUT, "sample/index.html"), dog);
 
   writeFileSync(
     join(OUT, "404.html"),

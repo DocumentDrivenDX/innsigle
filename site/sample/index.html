@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Innsigle dogfood — model-primary docs sample</title>
+  <title>Innsigle sample — model-primary</title>
   <style>
     :root { color-scheme: light dark; --ink: #121212; --muted: #555; --line: #ccc; }
     @media (prefers-color-scheme: dark) {
@@ -24,7 +24,7 @@
 </head>
 <body>
   <main>
-  <h1>Innsigle dogfood page</h1>
+  <h1>Sealed sample page</h1>
   <p class="meta">UC-AI-docs sample. Composition: <strong>model-primary</strong>. Say the product name <strong>INN-siggle</strong> (rhymes with <em>single</em>).</p>
 
   <p>This page is a real subject for an Innsigle claim: a short documentation-style
@@ -44,15 +44,15 @@
   <p class="cue">Editorial tools do not flip composition to human-authored.</p>
 
   <h2>Verify</h2>
-  <p>Attestation: <a href="/dogfood/.well-known/innsigle/claims/index.attestation.json"><code>claims/index.attestation.json</code></a>.
-  Keys: <a href="/dogfood/.well-known/innsigle/keys.json"><code>keys.json</code></a>.</p>
+  <p>Attestation: <a href="/sample/.well-known/innsigle/claims/index.attestation.json"><code>claims/index.attestation.json</code></a>.
+  Keys: <a href="/sample/.well-known/innsigle/keys.json"><code>keys.json</code></a>.</p>
   <pre><code>node src/cli.mjs verify \
-  --attestation docs/dogfood/.well-known/innsigle/claims/index.attestation.json \
-  --content docs/dogfood/index.html \
-  --keys docs/dogfood/.well-known/innsigle/keys.json</code></pre>
+  --attestation docs/sample/.well-known/innsigle/claims/index.attestation.json \
+  --content docs/sample/index.html \
+  --keys docs/sample/.well-known/innsigle/keys.json</code></pre>
 
   <footer class="innsigle-footer">
-    <a class="innsigle-seal" href="/dogfood/.well-known/innsigle/claims/index.attestation.json">
+    <a class="innsigle-seal" href="/sample/.well-known/innsigle/claims/index.attestation.json">
       <img src="/assets/marks/innsigle-model.svg" width="48" height="48" alt="Innsigle seal, model-primary" />
       <span>
         <strong>Innsigle</strong>

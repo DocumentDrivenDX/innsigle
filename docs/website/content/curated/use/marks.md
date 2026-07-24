@@ -156,5 +156,5 @@ Concentric bezel rings; smaller monogram field. Quieter on dense footers.
 | Same family for all composition states | A human-only purity fork of the product |
 | Let makers pick a family | Force one glyph when another reads better |
 
-Source: `docs/dogfood/assets/marks/` (synced to site assets at build). Research notes in
+Source: `docs/sample/assets/marks/` (synced to site assets at build). Research notes in
 `RESEARCH.md`.

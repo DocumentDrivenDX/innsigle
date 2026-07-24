@@ -23,7 +23,7 @@ const CORE_LEAVES = [
   "/reference/artifacts/",
   "/reference/glossary/",
   "/non-goals/",
-  "/dogfood/",
+  "/sample/",
 ];
 
 function urlToFile(urlPath) {

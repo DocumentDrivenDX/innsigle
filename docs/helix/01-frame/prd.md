@@ -40,7 +40,7 @@ content. Not an AI detector. Not a C2PA replacement (C2PA/SynthID serve media
 pipelines and vendor watermarks; social text and proud model BOM are the gap).
 
 **v1:** Mark system + colophon model + docs sign/verify CLI + social placement
-pattern (image/link). Dogfood on operator docs and social first. Editorial
+pattern (image/link). Sample on operator docs and social first. Editorial
 tooling such as **sloptimizer** (easel-skills) is a complementary pipeline step:
 list it on the bill when used; it does not change composition to human-authored.
 
@@ -75,8 +75,8 @@ UCs as one brand + claim system.
 
 | Metric | Target | Measurement Method |
 |--------|--------|--------------------|
-| UC-AI-docs dogfood | ≥1 real docs property (e.g. HELIX or Azgaard docs) shows Innsigle + colophon with named model; signed path works for at least one canonical page | Checklist + verify CLI against live URL or published artifact |
-| UC-human-social dogfood | ≥1 real X (or equivalent) post or profile asset uses human-authored Innsigle pattern | Screenshot + placement checklist |
+| UC-AI-docs live sample | ≥1 real docs property (e.g. HELIX or Azgaard docs) shows Innsigle + colophon with named model; signed path works for at least one canonical page | Checklist + verify CLI against live URL or published artifact |
+| UC-human-social live sample | ≥1 real X (or equivalent) post or profile asset uses human-authored Innsigle pattern | Screenshot + placement checklist |
 | Docs sign/verify | 100% P0 fixtures verify; mutation and wrong key fail closed | Automated CLI/crypto tests |
 | Unsigned social place | Human mark pack placeable in ≤15 minutes without account | Timed task n≥3 |
 | Composition literacy | ≥50% surveyed readers describe mark as how-made / composition | Survey at launch; separate docs vs social samples if possible |
@@ -133,10 +133,10 @@ UCs as one brand + claim system.
 ### Should Have (P1)
 
 1. Brand/docs site teaching both use cases in ≤5 minutes.
-2. House signer profile (Azgaard) as default dogfood issuer.
+2. House signer profile (Azgaard) as default sample issuer.
 3. Site-generator notes (e.g. Hugo/static footer partial).
 4. Social asset pack (avatar-adjacent mark, post image template, caption templates).
-5. Documented dogfood recipe: model draft → sloptimizer → Innsigle bill/sign for
+5. Documented sample recipe: model draft → sloptimizer → Innsigle bill/sign for
    methodology docs (links to easel-skills sloptimizer; no merge of codebases).
 
 ### Nice to Have (P2)
@@ -238,7 +238,7 @@ Assumptions until ADRs:
 |------|------------|
 | Channel | Social platforms strip or ignore signed media metadata; design UC-human-social accordingly |
 | Technical | Docs verify offline given claim + content + pubkey |
-| Business | Operator dogfood first (Azgaard / HELIX docs + social) |
+| Business | Operator live samples first (Azgaard / HELIX docs + social) |
 | Brand | Visual seal primary |
 | Competitive | Do not market as C2PA or SynthID replacement |
 | Integrity | Editorial tools that reduce AI-tell patterns do not redefine composition state |
@@ -258,17 +258,17 @@ Assumptions until ADRs:
 - Seal mark design (open)
 - Claim format ADR/contract (open)
 - Domain for verify URLs (open)
-- Optional: easel-skills sloptimizer available in operator agent environment for dogfood recipe
+- Optional: easel-skills sloptimizer available in operator agent environment for sample recipe
 
 ## Risks
 
 | Risk | Probability | Impact | Mitigation |
 |------|-------------|--------|------------|
 | Docs path collapses into "just use C2PA" | Med | High | Scope: maker BOM + house sign for HTML; C2PA bridge is P2 |
-| Social mark ignored as random SVG | Med | High | Strong mark design; profile/about education; dogfood consistency |
+| Social mark ignored as random SVG | Med | High | Strong mark design; profile/about education; sample consistency |
 | Proud AI bill read as greenwashing | Med | Med | Exact tool names + human roles in bill; no "authentic" oracle language |
 | Human mark forks into Not By AI clone | Med | Med | Dual-UC brand rules; same family as model-primary seals |
-| Scope creep to detectors or platform deals | Med | High | Non-goals; P0 = dogfood UCs only |
+| Scope creep to detectors or platform deals | Med | High | Non-goals; P0 = live-sample UCs only |
 | "Sloptimized = human" laundering | Med | High | FR-4a; guidelines; brand explainer; non-goal |
 
 ## Open Questions
@@ -296,7 +296,7 @@ Design drafts: `docs/helix/02-design/` (DESIGN.md, claim-system.md, attestation-
 - [x] Summary is a 1-pager including both UCs
 - [x] Problem tied to competitive gaps
 - [x] Goals map to UC-AI-docs and UC-human-social
-- [x] Metrics cover dogfood both channels
+- [x] Metrics cover live samples on both channels
 - [x] FR-n cover colophon, docs sign, social pattern
 - [x] Non-goals exclude C2PA war and detectors
 - [x] Acceptance sketches cover both UCs

@@ -57,7 +57,7 @@ must not be presented as converting model-primary work into human-authored.
 4. Works as SVG/PNG without embedded C2PA (social-safe).
 5. **Solid stamp matrix** (opaque fill + light impression)—not a transparent wireframe.
    Inspiration: ancient stamp seals, medieval merchant/guild marks, pottery cartouches,
-   hallmark countermarks (`docs/dogfood/assets/marks/RESEARCH.md`).
+   hallmark countermarks (`docs/sample/assets/marks/RESEARCH.md`).
 
 ### Anatomy
 
@@ -83,7 +83,7 @@ must not be presented as converting model-primary work into human-authored.
 | `mixed` | Same disk | M or split inner | Human + model |
 | `model-primary` | Same disk | A or ring inner | UC-AI-docs default; proud, not scarlet |
 
-Geometry locked in `docs/dogfood/assets/marks/` (craft-matrix exploration). Constraint:
+Geometry locked in `docs/sample/assets/marks/` (craft-matrix exploration). Constraint:
 **one family**, three countermarks max for v1 states. No copied historic house marks.
 
 ### Placement
@@ -152,7 +152,7 @@ Prefer a readable grotesque + mono for digests. Final faces open.
 
 | Surface | Model |
 |---------|-------|
-| Marketing / docs site | Top links: What it is, Colophon, Verify, Mark pack, Non-goals, Dogfood |
+| Marketing / docs site | Top links: What it is, Colophon, Verify, Mark pack, Non-goals, Sample |
 | Active state | Underline or weight + `aria-current="page"` |
 
 **Live microsite:** `site/` deployed by `.github/workflows/pages.yml` to
@@ -160,11 +160,11 @@ GitHub Pages (`https://documentdrivendx.github.io/innsigle/`).
 
 ## Design deliverables checklist
 
-- [x] Glyph SVG (solid stamp matrix + monogram + countermarks) — `docs/dogfood/assets/marks/`
+- [x] Glyph SVG (solid stamp matrix + monogram + countermarks) — `docs/sample/assets/marks/`
 - [x] State cue variants H/M/A — human / mixed / model SVGs
-- [x] Footer embed snippet — `docs/dogfood/snippets/footer.html`
+- [x] Footer embed snippet — `docs/sample/snippets/footer.html`
 - [ ] Social still template (PNG export pipeline)
-- [x] Bill + verify dogfood page — `docs/dogfood/index.html`
+- [x] Bill + verify sample page — `docs/sample/index.html`
 - [x] Do/don't sheet — marks README
 
 ## Mark exploration (2026-07-23)
@@ -175,10 +175,10 @@ mark. State is a **caption letter** under the disk (H/M/A), not a color code.
 
 | Asset | Path |
 |-------|------|
-| Base | `docs/dogfood/assets/marks/innsigle-base.svg` |
-| Human | `docs/dogfood/assets/marks/innsigle-human.svg` |
-| Mixed | `docs/dogfood/assets/marks/innsigle-mixed.svg` |
-| Model | `docs/dogfood/assets/marks/innsigle-model.svg` |
+| Base | `docs/sample/assets/marks/innsigle-base.svg` |
+| Human | `docs/sample/assets/marks/innsigle-human.svg` |
+| Mixed | `docs/sample/assets/marks/innsigle-mixed.svg` |
+| Model | `docs/sample/assets/marks/innsigle-model.svg` |
 
 **Still open for brand polish:** custom wordmark, Azgaard palette accent, PNG
 renders, whether state letters stay Latin H/M/A or move to inner geometry only.

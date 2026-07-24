@@ -1,7 +1,7 @@
 {
   "innsigle_keys": "1",
   "issuer_id": "azgaard-dogfood",
-  "issuer_name": "Azgaard Dogfood",
+  "issuer_name": "Azgaard Sample",
   "keys": [
     {
       "key_id": "ed25519:56a6f2f799318d5153b3ba9b5e955d3b",

@@ -20,7 +20,7 @@
         <a href="/why/">Why</a>
         <a href="/use/" aria-current="page">Use</a>
         <a href="/reference/">Reference</a>
-        <a href="/dogfood/">Dogfood</a>
+        <a href="/sample/">Sample</a>
       </nav>
     </div>
   </header>
@@ -28,7 +28,7 @@
     <p class="crumbs" aria-label="Breadcrumb"><a href="/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/use/">Use</a> <span aria-hidden="true">/</span> <span>Walkthrough — seal a docs page</span></p>
     <div class="docs-grid">
       <aside class="docs-side" aria-label="Section">
-        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/dogfood/">Dogfood</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/" aria-current="page">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/colophon/">Colophon</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-docs/" aria-current="page">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/">Reference home</a></li><li><a href="/reference/artifacts/">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/sample/">Sample</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/" aria-current="page">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/colophon/">Colophon</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-docs/" aria-current="page">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/">Reference home</a></li><li><a href="/reference/artifacts/">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
       </aside>
       <main class="docs-main prose">
         <h1 id="walkthrough-seal-a-docs-page">Walkthrough: seal a docs page</h1>
@@ -53,7 +53,7 @@ node src/cli.mjs keys template \
   --public-key "$(cat keys/ed25519.pub.raw.b64url)" \
   --key-id "$(cat keys/key-id.txt)" \
   --out keys.json</code></pre>
-<p>Publish <code>keys.json</code> over HTTPS (or ship beside content for dogfood).</p>
+<p>Publish <code>keys.json</code> over HTTPS (or ship beside content for the sample).</p>
 <h3 id="4-build-claim-and-sign">4. Build claim and sign</h3>
 <pre><code class="language-bash">node src/cli.mjs claim build \
   --content ./page.html \
@@ -70,7 +70,7 @@ node src/cli.mjs sign \
   --out claim.attestation.json</code></pre>
 <p>Keep the private key offline (not in the site tree).</p>
 <h3 id="5-place-the-seal">5. Place the seal</h3>
-<p>Footer (see <code>docs/dogfood/snippets/footer.html</code>): glyph + link to the attestation or a colophon page. Use the <strong>A</strong> mark for model-primary.</p>
+<p>Footer (see <code>docs/sample/snippets/footer.html</code>): glyph + link to the attestation or a colophon page. Use the <strong>A</strong> mark for model-primary.</p>
 <h3 id="6-verify">6. Verify</h3>
 <pre><code class="language-bash">node src/cli.mjs verify \
   --attestation claim.attestation.json \
@@ -80,7 +80,7 @@ node src/cli.mjs sign \
 <p>Mutate the HTML and re-run: expect content mismatch (exit 3).</p>
 <h2 id="proof-in-this-repo">Proof in this repo</h2>
 <ul>
-<li>Dogfood: <a href="/dogfood/">Dogfood sample</a></li>
+<li>Sample: <a href="/sample/">Sample</a></li>
 <li>Vectors: <code>tests/vectors/</code> on GitHub</li>
 </ul>
 <h2 id="captures">Captures</h2>

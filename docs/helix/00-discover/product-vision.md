@@ -57,7 +57,7 @@ sibling mark that reads as human-authored without implying AI is shameful
 elsewhere. Same system, different bills. Readers learn the seal by sight;
 verify (when signed) answers who sealed the claim for which content bytes.
 
-**North Star:** Within 24 months of public launch, operator dogfood covers both
+**North Star:** Within 24 months of public launch, operator live samples covers both
 primary use cases on real properties; ≥50% of surveyed readers in docs and
 social-adjacent samples describe the mark as composition / how-made; ≥25% of
 public sealed docs expose a working verify path to a named maker or house.
@@ -102,7 +102,7 @@ when the post is ephemeral. Same seal family as the docs site, not a separate
 
 | Metric | Target |
 |--------|--------|
-| Dual-use dogfood | Both UC-AI-docs and UC-human-social live on operator properties within first public release cycle |
+| Dual-use live samples | Both UC-AI-docs and UC-human-social live on operator properties within first public release cycle |
 | Composition literacy | ≥50% surveyed readers describe mark as how-made / composition (niches: docs visitors; social viewers of marked posts) |
 | Docs verify depth | ≥25% of public sealed *documentation* pages offer working verify to a named house or person |
 | Category integrity | Zero product claims of AI detection accuracy |

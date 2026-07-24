@@ -34,5 +34,5 @@ bytes?** It does not answer whether the prose is true, pure, or free of AI.
 - [Why Innsigle](why/) — thesis and audience
 - [Use](use/) — CLI, colophon, verify, marks
 - [Reference](reference/) — generated specs from `docs/helix/`
-- [Dogfood sample](dogfood/) — signed model-primary page
+- [Sample](sample/) — signed model-primary page
 - [Non-goals](non-goals/) — category boundaries

@@ -54,7 +54,7 @@ We will use a **two-layer content model**:
    `scripts/publish-artifacts.mjs`.
 3. **Build** HTML into `site/` via `scripts/build-site.mjs` using DESIGN.md tokens
    and IA from `docs/website/ia.yml`.
-4. **Top-level nav** separates: What it is (home) · Why · Use · Reference · Dogfood.
+4. **Top-level nav** separates: What it is (home) · Why · Use · Reference · Sample.
 
 **Key points:** Curated ≠ generated | `site/` is output only | HELIX sources remain
 authoritative for specs
@@ -73,7 +73,7 @@ authoritative for specs
 |------|--------|
 | Positive | Specs stay in `docs/helix/`; site always regenerable; IA named by reader mode |
 | Negative | Must run publish+build before deploy |
-| Neutral | Dogfood and marks still synced as static assets |
+| Neutral | Sample and marks still synced as static assets |
 
 ## Risks
 

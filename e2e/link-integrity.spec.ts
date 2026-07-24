@@ -15,7 +15,7 @@ const CORE_LEAVES = [
   "/reference/artifacts/",
   "/reference/glossary/",
   "/non-goals/",
-  "/dogfood/",
+  "/sample/",
 ];
 
 async function collectSameOriginHrefs(page: Page): Promise<string[]> {
@@ -87,7 +87,7 @@ test.describe("Link integrity", () => {
         const normalized = href.endsWith("/") || href.includes(".") ? href : href + "/";
         if (!seen.has(normalized) && !seen.has(href)) {
           // BFS one hop from core for HTML pages
-          if (href.startsWith("/reference/") || href.startsWith("/use/") || href.startsWith("/why/") || href === "/" || href.startsWith("/dogfood") || href.startsWith("/non-goals")) {
+          if (href.startsWith("/reference/") || href.startsWith("/use/") || href.startsWith("/why/") || href === "/" || href.startsWith("/sample") || href.startsWith("/non-goals")) {
             queue.push(href.endsWith("/") || href.includes(".") ? href : href + "/");
           }
         }

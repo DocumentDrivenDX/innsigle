@@ -53,7 +53,7 @@ an account. Tamper fails closed.
 
 ## Problem Statement
 
-- **Current situation**: CLI v0 + dogfood sample exist; need feature-level acceptance and walkthrough as product surface.
+- **Current situation**: CLI v0 + sample exist; need feature-level acceptance and walkthrough as product surface.
 - **Pain points**: Docs lack portable signed BOM under maker control.
 - **Desired outcome**: Documented happy path and automated tests for valid + mismatch.
 
@@ -79,7 +79,7 @@ an account. Tamper fails closed.
 |----|----------|--------|
 | DOC-04 | Golden vectors CLI verify | exit 0, VALID |
 | DOC-05 | Wrong content file | exit 3 |
-| DOC-01 | Dogfood page footer | Links to attestation; model-primary bill visible |
+| DOC-01 | Sample page footer | Links to attestation; model-primary bill visible |
 
 ## Dependencies
 

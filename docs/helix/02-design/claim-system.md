@@ -307,8 +307,8 @@ Exact flags belong in Contract, not here.
 2. ~~ADR + Contract freeze~~ (ADR-001, CONTRACT-001)
 3. ~~Keygen + hash + sign + verify CLI~~ (`src/cli.mjs`, `npm test`)
 4. ~~Golden test vectors~~ (`tests/vectors/`, `tests/vectors.test.mjs`)
-5. ~~Docs footer + dogfood claim~~ (`docs/dogfood/`)
-6. ~~Mark exploration pack~~ (`docs/dogfood/assets/marks/`)
+5. ~~Docs footer + sample claim~~ (`docs/sample/`)
+6. ~~Mark exploration pack~~ (`docs/sample/assets/marks/`)
 7. ~~Brand explainer / public site~~ (docs-driven microsite + Pages)
 8. Feature specs FEAT-001–003 + walkthroughs
 9. Optional: in-toto/DSSE export; WoT cross-sign experiment

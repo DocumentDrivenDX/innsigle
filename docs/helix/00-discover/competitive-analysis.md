@@ -57,7 +57,7 @@ No incumbent owns both as one brand system.
 
 Source: `/home/erik/Projects/easel-skills/skills/sloptimizer` (Easel skill;
 Vale-backed detect / rewrite / validate). Shared house context with HELIX/DDx
-dogfood.
+sample.
 
 | Dimension | Sloptimizer | Innsigle |
 |-----------|-------------|----------|
@@ -67,7 +67,7 @@ dogfood.
 | UC-AI-docs fit | Post-generate edit pass before publish | Seal names models (e.g. Claude) **and** can list editorial tools |
 | UC-human-social fit | Optional polish if human draft has AI-tell patterns | Human-authored mark only when composition is actually human |
 
-**Pipeline (dogfood target for methodology docs):**
+**Pipeline (sample target for methodology docs):**
 
 ```text
 model draft (Claude, …) → sloptimizer detect|rewrite|validate → Innsigle colophon
@@ -93,8 +93,8 @@ category story than "make it look human so no one notices."
 | Direct rivalry (badges) | Med | Not By AI has recognition and media coverage | Do not compete as human-only sticker clone |
 | Direct rivalry (standards) | High in media | C2PA / CAI backed by Adobe, camera OEMs, major AI labs | Do not position as C2PA replacement; optional bridge later |
 | Substitutes | High | Footnotes, README lines, platform labels, silence | Product must be faster/clearer than a sentence in a footer *or* add verify depth footnotes lack |
-| New entrants | High | Low cost to ship SVG + docs | Defensibility = mark recognition + claim format + dogfood on real properties |
-| Buyer power | High | Makers switch costs near zero | Dogfood (Azgaard, HELIX docs, social) is the adoption path |
+| New entrants | High | Low cost to ship SVG + docs | Defensibility = mark recognition + claim format + sample on real properties |
+| Buyer power | High | Makers switch costs near zero | Sample (Azgaard, HELIX docs, social) is the adoption path |
 
 ## Competitor Profiles
 
@@ -161,7 +161,7 @@ social, not industry media pipelines or model-side watermarks.
 
 | Move | Action |
 |------|--------|
-| Attack | Owned documentation sites with signed AI colophons (dogfood HELIX / Azgaard docs); optional sloptimizer pass recorded in the bill; human social mark packs for X-class platforms; CLI sign/verify for site content |
+| Attack | Owned documentation sites with signed AI colophons (sample HELIX / Azgaard docs); optional sloptimizer pass recorded in the bill; human social mark packs for X-class platforms; CLI sign/verify for site content |
 | Defend | Category integrity (not detection; not "sloptimized = human"); dual-state mark family; simple key custody for house signers |
 | Avoid | Competing as the C2PA implementation of record; building detectors; human-only purity as the only story; requiring C2PA survival on Twitter for P0; treating prose de-AI-ifying as composition change to human-authored |
 | Interop (later) | Map colophon fields to IPTC `digitalSourceType` / C2PA assertions when exporting media files; keep Innsigle claim as the maker layer; optional skill/CLI hook after sloptimizer in easel-skills or agent workflows |

@@ -6,5 +6,5 @@
     { "kind": "tool", "name": "sloptimizer", "role": "rewrite" },
     { "kind": "human", "name": "operator", "role": "structure-edit" }
   ],
-  "notes": "Dogfood page for Innsigle UC-AI-docs"
+  "notes": "Sample page for Innsigle UC-AI-docs"
 }

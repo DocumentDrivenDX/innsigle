@@ -29,7 +29,7 @@ Screenshots go in `docs/website/static/captures/` and link from those pages.
 
 ## Proof
 
-- [Dogfood sample](../dogfood/) — live signed model-primary page in this site tree
+- [Sample](../sample/) — live signed model-primary page in this site tree
 - [Golden vectors](https://github.com/DocumentDrivenDX/innsigle/tree/main/tests/vectors) — reproducible crypto fixtures
 
 Spec-backed detail is generated from `docs/helix/` under [Reference](../reference/).

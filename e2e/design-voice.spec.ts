@@ -58,9 +58,9 @@ const SHOT_PAGES: { name: string; path: string; mustSee: RegExp[] }[] = [
     mustSee: [/Not an AI detector/i, /Not a C2PA replacement/i],
   },
   {
-    name: "dogfood",
-    path: "/dogfood/",
-    mustSee: [/dogfood|model-primary|Innsigle/i],
+    name: "sample",
+    path: "/sample/",
+    mustSee: [/sample|model-primary|Innsigle/i],
   },
 ];
 

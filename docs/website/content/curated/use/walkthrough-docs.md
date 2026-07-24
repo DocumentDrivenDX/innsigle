@@ -45,7 +45,7 @@ node src/cli.mjs keys template \
   --out keys.json
 ```
 
-Publish `keys.json` over HTTPS (or ship beside content for dogfood).
+Publish `keys.json` over HTTPS (or ship beside content for the sample).
 
 ### 4. Build claim and sign
 
@@ -69,7 +69,7 @@ Keep the private key offline (not in the site tree).
 
 ### 5. Place the seal
 
-Footer (see `docs/dogfood/snippets/footer.html`): glyph + link to the attestation
+Footer (see `docs/sample/snippets/footer.html`): glyph + link to the attestation
 or a colophon page. Use the **A** mark for model-primary.
 
 ### 6. Verify
@@ -86,7 +86,7 @@ Mutate the HTML and re-run: expect content mismatch (exit 3).
 
 ## Proof in this repo
 
-- Dogfood: [Dogfood sample](../../dogfood/)
+- Sample: [Sample](../../sample/)
 - Vectors: `tests/vectors/` on GitHub
 
 ## Captures

@@ -48,20 +48,20 @@ node src/cli.mjs verify --attestation att.json --content ./page.html --keys keys
 npm test
 ```
 
-## Dogfood
+## Sample
 
 Static sample page with footer seal and signed claim:
 
-- Page: [`docs/dogfood/index.html`](docs/dogfood/index.html)
-- Attestation: `docs/dogfood/.well-known/innsigle/claims/index.attestation.json`
-- Marks: `docs/dogfood/assets/marks/`
-- Footer snippet: `docs/dogfood/snippets/footer.html`
+- Page: [`docs/sample/index.html`](docs/sample/index.html)
+- Attestation: `docs/sample/.well-known/innsigle/claims/index.attestation.json`
+- Marks: `docs/sample/assets/marks/`
+- Footer snippet: `docs/sample/snippets/footer.html`
 
 ```bash
 node src/cli.mjs verify \
-  --attestation docs/dogfood/.well-known/innsigle/claims/index.attestation.json \
-  --content docs/dogfood/index.html \
-  --keys docs/dogfood/.well-known/innsigle/keys.json
+  --attestation docs/sample/.well-known/innsigle/claims/index.attestation.json \
+  --content docs/sample/index.html \
+  --keys docs/sample/.well-known/innsigle/keys.json
 ```
 
 ## Golden vectors

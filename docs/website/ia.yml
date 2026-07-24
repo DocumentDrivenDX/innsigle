@@ -1,6 +1,6 @@
 # Product microsite IA (product-microsite-ia concern)
 # Curated copy: docs/website/content/curated/
-# Generated from docs/helix (+ dogfood, schemas): docs/website/content/generated/
+# Generated from docs/helix (+ sample, schemas): docs/website/content/generated/
 
 project: Innsigle
 base_path: /innsigle/  # GitHub project pages; empty for local root preview
@@ -8,10 +8,10 @@ base_path: /innsigle/  # GitHub project pages; empty for local root preview
 reader_modes:
   evaluate:
     question: What is this, and is it worth my time?
-    path: [home, why, dogfood]
+    path: [home, why, sample]
   start:
     question: How do I try it correctly?
-    path: [use, use/cli, dogfood]
+    path: [use, use/cli, sample]
   decide:
     question: What concept do I need next?
     path: [use/colophon, use/verify, use/marks]
@@ -36,9 +36,9 @@ nav:
     title: Reference
     href: /reference/
     role: operate
-  - id: dogfood
-    title: Dogfood
-    href: /dogfood/
+  - id: sample
+    title: Sample
+    href: /sample/
     role: evaluate
 
 # Core pages visible without drilldown
@@ -54,7 +54,7 @@ core_leaves:
   - /reference/artifacts/
   - /reference/glossary/
   - /non-goals/
-  - /dogfood/
+  - /sample/
 
 generated:
   helix_source: docs/helix
@@ -73,7 +73,7 @@ curated:
   root: docs/website/content/curated
 
 static:
-  - docs/dogfood/assets/marks
+  - docs/sample/assets/marks
   - docs/website/static
 
 build:
