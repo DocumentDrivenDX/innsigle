@@ -28,7 +28,7 @@
     <p class="crumbs" aria-label="Breadcrumb"><a href="/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/reference/">Reference</a> <span aria-hidden="true">/</span> <span>ADR-003: Issuer URL binding and web of trust</span></p>
     <div class="docs-grid">
       <aside class="docs-side" aria-label="Section">
-        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/sample/">Sample</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/colophon/">Colophon</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/" aria-current="page">Reference home</a></li><li><a href="/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/sample/">Sample</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/issuer/">Issuer</a></li><li><a href="/use/colophon/">Colophon</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/" aria-current="page">Reference home</a></li><li><a href="/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
       </aside>
       <main class="docs-main prose">
         <p class="gen-banner note">Generated reference — edit sources under <code>docs/helix/</code>, then <code>npm run site:build</code>.</p>
@@ -55,7 +55,8 @@ created: 2026-07-24</code></pre>
 <h1 id="adr-003-issuer-url-binding-and-web-of-trust">ADR-003: Issuer URL binding and web of trust</h1>
 <table>
 <tr><th>Date</th><th>Status</th><th>Deciders</th><th>Related</th><th>Confidence</th></tr>
-<tr><td>2026-07-24</td><td>Accepted</td><td>Operator</td><td>ADR-001; CONTRACT-001; claim-system; prior-art (PGP/DKIM)</td><td>High</td></tr>
+<tr><td>2026-07-24</td><td>Accepted</td><td>Operator</td><td>ADR-001; CONTRACT-001; claim-system; prior-art (PGP/DKIM); FEAT-003</td><td>High</td></tr>
+<tr><td>2026-07-24</td><td>Amended</td><td>Operator</td><td><strong>D7</strong> social/profile discovery; no webserver required</td><td>High</td></tr>
 </table>
 <h2 id="context">Context</h2>
 <table>
@@ -144,6 +145,66 @@ created: 2026-07-24</code></pre>
 <tr><td>Attacker publishes fake endorsements under their key</td><td>Only helps if some pin trusts the attacker’s key</td></tr>
 </table>
 <p>Publishing keys at a URL is <strong>DKIM-class discovery</strong>, not a CA. ADR-003 makes the <strong>asserted discovery URL immutable inside the seal</strong> and adds <strong>signed peer edges</strong> for transitive recognition.</p>
+<h3 id="d7-social-and-profile-discovery-no-webserver-required">D7 — Social and profile discovery (no webserver required)</h3>
+<p><strong>Problem:</strong> Requiring every maker to run or configure a webserver excludes UC-human-social and casual house signers.</p>
+<p><strong>Decision:</strong> Self-hosted HTTP is <strong>not</strong> required. What is required is a <strong>durable absolute HTTPS URL</strong> for the issuer document (the signed <code>key_url</code>). That URL MAY be hosted by any operator the issuer trusts enough to publish <strong>public</strong> material, including free platforms. Social profiles carry <strong>corroborating embeds</strong> of issuer metadata so humans can bootstrap without knowing DNS or servers.</p>
+<h4 id="d71-hosting-the-issuer-document-key_url-targets">D7.1 — Hosting the issuer document (key_url targets)</h4>
+<p>Any stable HTTPS origin that serves raw JSON (or HTML with a linked JSON) is valid, including but not limited to:</p>
+<table>
+<tr><th>Host class</th><th>Example</th><th>Notes</th></tr>
+<tr><td>Free git forge raw/Pages</td><td>GitHub raw/Gist, Codeberg, GitLab Pages</td><td>No classic webserver admin</td></tr>
+<tr><td>Static free hosts</td><td>Neocities, Cloudflare Pages, Netlify Drop</td><td>Drop folder of public files</td></tr>
+<tr><td>Project / org site</td><td>Existing marketing site path</td><td>Optional, not required</td></tr>
+<tr><td>Self-hosted</td><td><code>/.well-known/innsigle/issuer.json</code></td><td>Still fine when available</td></tr>
+</table>
+<p><strong>Private keys MUST NOT</strong> be uploaded to these hosts. Only the issuer document (public keys + endorsement index) and public attestations.</p>
+<h4 id="d72-social-profile-embeds-bootstrap-not-substitute-for-key_url">D7.2 — Social / profile <strong>embeds</strong> (bootstrap, not substitute for key_url)</h4>
+<p>Platforms that strip file metadata still allow <strong>profile fields</strong> and <strong>posts</strong>. Issuers SHOULD embed a compact <strong>issuer card</strong> so viewers can find keys without already knowing <code>key_url</code>.</p>
+<p><strong>Issuer card (profile-safe text):</strong></p>
+<pre><code class="language-text">Innsigle · {short_name}
+key {key_id}
+keys {absolute_key_url}</code></pre>
+<p>Rules:</p>
+<ol>
+<li><strong><code>key_id</code></strong> is mandatory in the card when space allows (cryptographic handle).  </li>
+<li><strong><code>keys {url}</code></strong> MUST be the same absolute URL used as signed <code>issuer.key_url</code> on claims (or a short redirect that <strong>302/200</strong> resolves to that document).  </li>
+<li>Optional one-liner: <code>how https://…/use/marks/</code> or house meaning page.  </li>
+<li>Card text is <strong>unsigned marketing/discovery</strong>. Crypto trust still comes from verifying seals + pin/WoT.  </li>
+<li>Platforms that allow a single link field: put <strong><code>key_url</code></strong> (or shortlink to it) as the profile URL; put fingerprint in bio text.</li>
+</ol>
+<h4 id="d73-recommended-profile-placements">D7.3 — Recommended profile placements</h4>
+<table>
+<tr><th>Surface</th><th>Embed pattern</th></tr>
+<tr><td>X / Twitter bio</td><td>Issuer card truncated; link field → <code>key_url</code> or shortlink</td></tr>
+<tr><td>GitHub profile</td><td><code>README</code> or pinned gist with full issuer card + raw JSON link</td></tr>
+<tr><td>Bluesky / AT Proto</td><td>Bio + website field; optional later DID document mapping</td></tr>
+<tr><td>LinkedIn / mastodon / etc.</td><td>Website field → <code>key_url</code>; about text → fingerprint</td></tr>
+<tr><td>Avatar-adjacent image</td><td>Seal PNG (mark family) linking out; card text in profile</td></tr>
+</table>
+<h4 id="d74-relationship-to-signed-claims">D7.4 — Relationship to signed claims</h4>
+<table>
+<tr><th>Layer</th><th>Role</th></tr>
+<tr><td>Social / profile embed</td><td>Human discovery and <strong>corroboration</strong> (“this account claims this fingerprint”)</td></tr>
+<tr><td>Signed <code>issuer.key_url</code></td><td><strong>Authoritative</strong> discovery channel frozen in each seal</td></tr>
+<tr><td>Pin / WoT</td><td>Whether the verifier <strong>recognizes</strong> that key</td></tr>
+</table>
+<p>A profile that shows fingerprint <strong>F</strong> but seals that use a different <code>key_id</code> is a <strong>mismatch warning</strong> for humans and tools—not automatic invalid crypto.</p>
+<h4 id="d75-multiple-discovery-urls">D7.5 — Multiple discovery URLs</h4>
+<ul>
+<li>Exactly one <code>key_url</code> is signed per claim (D1).  </li>
+<li>Issuers MAY publish the <strong>same</strong> issuer document bytes (or identical keys) at multiple HTTPS locations.  </li>
+<li>Optional later: <code>mirrors[]</code> on the issuer document; not required for v1.  </li>
+<li>Shortlinks allowed only if they resolve to the absolute document URL used in seals (document the final URL in seals when practical).</li>
+</ul>
+<h4 id="d76-platform-risk-honesty">D7.6 — Platform risk (honesty)</h4>
+<table>
+<tr><th>Risk</th><th>Mitigation</th></tr>
+<tr><td>Bio edited by attacker who took the account</td><td>Same class as host hijack for live discovery; pin fingerprint out-of-band</td></tr>
+<tr><td>Platform deletes gist/raw file</td><td>Keep a second free host; re-issue claims only if <code>key_url</code> must change</td></tr>
+<tr><td>Metadata stripped from images</td><td>Never rely on EXIF for keys; use profile text + link</td></tr>
+<tr><td>Character limits</td><td>Fingerprint + short URL minimum; drop prose first</td></tr>
+</table>
+<p><strong>Non-goal:</strong> Innsigle does not require partnership with social platforms or in-app key APIs for v1.</p>
 <h2 id="alternatives">Alternatives</h2>
 <table>
 <tr><th>Option</th><th>Pros</th><th>Cons</th><th>Evaluation</th></tr>
@@ -158,8 +219,8 @@ created: 2026-07-24</code></pre>
 <h2 id="consequences">Consequences</h2>
 <table>
 <tr><th>Type</th><th>Impact</th></tr>
-<tr><td>Positive</td><td>Every seal freezes discovery URL; WoT edges are fetchable from issuer URLs; transitive trust is defineable; aligns with PGP certification + DKIM publish</td></tr>
-<tr><td>Negative</td><td>Issuer documents and endorsement URLs must stay available; verifiers need pin/depth policy; more fetch steps</td></tr>
+<tr><td>Positive</td><td>Every seal freezes discovery URL; WoT edges are fetchable from issuer URLs; transitive trust is defineable; aligns with PGP certification + DKIM publish; <strong>no webserver admin required</strong> (D7 free hosts + social cards)</td></tr>
+<tr><td>Negative</td><td>Issuer documents and endorsement URLs must stay available; verifiers need pin/depth policy; more fetch steps; social embeds are spoofable text</td></tr>
 <tr><td>Neutral</td><td><code>issuer.id</code> remains cosmetic; fingerprints remain the shareable handle</td></tr>
 </table>
 <h2 id="risks">Risks</h2>
@@ -170,6 +231,9 @@ created: 2026-07-24</code></pre>
 <tr><td>Stale endorsement index vs attestation</td><td>M</td><td>M</td><td>Attestation is source of truth; index is discovery</td></tr>
 <tr><td>Users trust slug in UI</td><td>H</td><td>H</td><td>Verify UX shows fingerprint + key_url; docs stress pin</td></tr>
 <tr><td>Host hijack still confuses live-only users</td><td>M</td><td>H</td><td>Document TOFU/pin; optional multi-mirror later</td></tr>
+<tr><td>Social bio spoof / account takeover</td><td>M</td><td>H</td><td>Fingerprint pin; treat profile text as discovery only</td></tr>
+<tr><td>Free host deletes raw JSON</td><td>M</td><td>M</td><td>Second host; document re-publish; prefer durable forges</td></tr>
+<tr><td>Users think profile embed is a signature</td><td>H</td><td>M</td><td>UX copy: card is not a seal; verify still required</td></tr>
 </table>
 <h2 id="validation">Validation</h2>
 <table>
@@ -193,7 +257,8 @@ created: 2026-07-24</code></pre>
 <h2 id="normative-summary-implementers">Normative summary (implementers)</h2>
 <ol>
 <li><strong>Sign:</strong> payload.issuer.key_url = absolute URL; covered by ADR-001 signature.  </li>
-<li><strong>Publish:</strong> issuer document at that URL with keys; optional endorsements index.  </li>
+<li><strong>Publish:</strong> issuer document at that URL with keys; optional endorsements index — <strong>any durable HTTPS host</strong>, not only self-hosted servers (D7).  </li>
+<li><strong>Embed:</strong> put issuer card (fingerprint + keys URL) on social/profiles for human discovery (D7).  </li>
 <li><strong>Endorse:</strong> sign key-endorsement attestations; list them on your issuer document.  </li>
 <li><strong>Verify content:</strong> crypto under sealer key from signed key_url.  </li>
 <li><strong>Verify identity (optional):</strong> pin roots + walk endorsement edges with depth limits.</li>

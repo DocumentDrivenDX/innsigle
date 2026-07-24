@@ -6,6 +6,7 @@ const CORE_LEAVES = [
   "/why/",
   "/use/",
   "/use/cli/",
+  "/use/issuer/",
   "/use/colophon/",
   "/use/verify/",
   "/use/marks/",

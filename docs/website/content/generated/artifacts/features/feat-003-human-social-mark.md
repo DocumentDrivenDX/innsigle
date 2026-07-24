@@ -63,11 +63,14 @@ can open a short explanation URL. Unsigned is valid. Mark is not a separate
 **SOC-02.** Placement pattern does not require surviving C2PA/EXIF on the platform.  
 **SOC-03.** Pattern includes viewer path to meaning (profile/site/short URL).  
 **SOC-04.** Per-post signature is optional; unsigned human marks allowed.  
-**SOC-05.** Social mark uses same seal family as docs (not a fork brand).
+**SOC-05.** Social mark uses same seal family as docs (not a fork brand).  
+**SOC-06.** Issuer identity MUST be publishable without a self-operated webserver: durable HTTPS host for issuer document (gist/Pages/static host) plus **issuer card** embed on social profiles (fingerprint + absolute keys URL) per ADR-003 D7.  
+**SOC-07.** Profile embeds are discovery/corroboration only; they MUST NOT be presented as cryptographic seals.
 
 ### Non-Functional
 
 - Caption/template text stays under ~280 chars for X when including URL.
+- Issuer card fits common bio limits when shortened to fingerprint + keys URL.
 
 ## Acceptance sketches
 
@@ -75,7 +78,9 @@ can open a short explanation URL. Unsigned is valid. Mark is not a separate
 |----|----------|--------|
 | SOC-02 | Platform strips metadata | Mark still visible as image/link |
 | SOC-05 | Compare H and A assets | Shared outer geometry; cue differs |
+| SOC-06 | Maker has only GitHub + X | Can publish issuer.json via gist/raw and put card in bio |
 
 ## Dependencies
 
-- FEAT-001 seal family
+- FEAT-001 seal family  
+- ADR-003 D7 social / profile discovery  

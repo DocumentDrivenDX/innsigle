@@ -14,6 +14,7 @@ Onboarding path: install CLI → write a colophon → claim and sign a file → 
 | Page | Question |
 |------|----------|
 | [CLI](cli/) | How do I run keygen, claim, sign, verify? |
+| [Issuer](issuer/) | How do I get a key and publish it without a server? |
 | [Colophon](colophon/) | How do I declare composition? |
 | [Verify](verify/) | What does a valid seal mean? |
 | [Marks](marks/) | Which seal cue for which state? |

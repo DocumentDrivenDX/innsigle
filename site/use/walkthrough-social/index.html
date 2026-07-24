@@ -28,39 +28,53 @@
     <p class="crumbs" aria-label="Breadcrumb"><a href="/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/use/">Use</a> <span aria-hidden="true">/</span> <span>Walkthrough — human social mark</span></p>
     <div class="docs-grid">
       <aside class="docs-side" aria-label="Section">
-        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/sample/">Sample</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/" aria-current="page">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/colophon/">Colophon</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/" aria-current="page">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/">Reference home</a></li><li><a href="/reference/artifacts/">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/sample/">Sample</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/" aria-current="page">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/issuer/">Issuer</a></li><li><a href="/use/colophon/">Colophon</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/" aria-current="page">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/">Reference home</a></li><li><a href="/reference/artifacts/">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
       </aside>
       <main class="docs-main prose">
         <h1 id="walkthrough-human-social-mark">Walkthrough: human social mark</h1>
 <p><strong>Reader mode:</strong> Start. <strong>Feature:</strong> FEAT-003. <strong>Use case:</strong> UC-human-social.</p>
 <h2 id="goal">Goal</h2>
-<p>Mark a short post as human-authored with the Innsigle seal family, without depending on platform-preserved file metadata.</p>
+<p>Mark a short post as human-authored with the Innsigle seal family, without depending on platform-preserved file metadata—and without running a webserver.</p>
 <h2 id="steps">Steps</h2>
 <h3 id="1-confirm-composition">1. Confirm composition</h3>
 <p>Only use <code>human-authored</code> when humans produced the substantive words. Do not mark model-primary text as human because it was sloptimized.</p>
-<h3 id="2-export-the-mark">2. Export the mark</h3>
+<h3 id="2-publish-issuer-metadata-no-server">2. Publish issuer metadata (no server)</h3>
+<p>If you sign anything (optional for social v1, required when you do sign):</p>
+<ol>
+<li><code>keygen</code> + <code>keys template</code> → <code>issuer.json</code>  </li>
+<li>Host the <strong>public</strong> file on a free HTTPS host (GitHub Gist raw, Codeberg, Pages, …)  </li>
+<li>That absolute URL is your <code>key_url</code></li>
+</ol>
+<p>See <a href="/use/issuer/">Issuer identity</a>.</p>
+<h3 id="3-embed-an-issuer-card-on-your-profile">3. Embed an issuer card on your profile</h3>
+<p>Bio / about + website field:</p>
+<pre><code class="language-text">Innsigle · Your Name
+key ed25519:YOUR_FINGERPRINT_HERE
+keys https://gist.githubusercontent.com/you/…/raw/issuer.json</code></pre>
+<p>Link field → the same <code>keys</code> URL. This is <strong>discovery</strong>, not a seal.</p>
+<h3 id="4-export-the-mark">4. Export the mark</h3>
 <p>Use the H-cue SVG from the mark pack:</p>
 <ul>
 <li>Repo: <code>docs/sample/assets/marks/innsigle-human.svg</code></li>
 <li>Site: <a href="/use/marks/">Marks</a></li>
 </ul>
 <p>Render to PNG at 128×128 if the platform prefers raster attachments.</p>
-<h3 id="3-place-on-the-post">3. Place on the post</h3>
+<h3 id="5-place-on-the-post">5. Place on the post</h3>
 <p>Pick one or both:</p>
 <ol>
-<li><strong>Image:</strong> attach the mark still (or composite into a card).</li>
-<li><strong>Link:</strong> include a short URL to how-to-read (e.g. site Use → Marks or house profile).</li>
+<li><strong>Image:</strong> attach the mark still (or composite into a card).  </li>
+<li><strong>Link:</strong> short URL to how-to-read (e.g. site Use → Marks) and/or your keys URL.</li>
 </ol>
 <p>Example caption skeleton:</p>
-<pre><code class="language-text">Human-authored. Innsigle colophon: H.
+<pre><code class="language-text">Human-authored. Innsigle colo: H.
+key ed25519:… · keys https://…
 How to read: https://documentdrivendx.github.io/innsigle/use/marks/</code></pre>
-<h3 id="4-optional-profile-anchor">4. Optional: profile anchor</h3>
-<p>Put a stable link in bio to keys + meaning page so individual posts can stay unsigned.</p>
-<h3 id="5-what-not-to-do">5. What not to do</h3>
+<h3 id="6-what-not-to-do">6. What not to do</h3>
 <ul>
-<li>Do not rely on C2PA in the image surviving upload.</li>
-<li>Do not use a different “purity” logo for human posts only.</li>
-<li>Do not claim the platform verified authenticity.</li>
+<li>Do not rely on C2PA in the image surviving upload.  </li>
+<li>Do not use a different “purity” logo for human posts only.  </li>
+<li>Do not claim the platform verified authenticity.  </li>
+<li>Do not upload your private key anywhere.</li>
 </ul>
 <h2 id="captures">Captures</h2>
 <p>Add before/after post screenshots under <code>docs/website/static/captures/</code> when available (e.g. <code>walkthrough-social-x.png</code>).</p>

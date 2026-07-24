@@ -213,6 +213,8 @@ claims. They do **not** authenticate content honesty.
 2. The signature (ADR-001) covers the full payload including `issuer.key_url`.
 3. Verifiers MUST discover keys using the **signed** `issuer.key_url` unless applying an explicit local pin/override.
 4. `issuer.id` MUST NOT be treated as a globally unique or cryptographic identifier.
+5. `key_url` MAY be any durable HTTPS origin that serves the issuer document (self-hosted, git forge raw/Pages, static free host, etc.). **Self-operated webserver is not required** (ADR-003 D7).
+6. Social profile text and “link in bio” fields MAY embed an **issuer card** (fingerprint + keys URL) for human discovery. Profile embeds are **not** signatures and MUST NOT be treated as cryptographic proof by themselves.
 
 ### Content hashing (v1)
 

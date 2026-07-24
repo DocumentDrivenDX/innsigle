@@ -246,7 +246,8 @@ Never report "this is 80% AI."
 | Generate | CLI creates Ed25519 keypair; private key local file; never log |
 | Publish | Public key in `keys.json` at HTTPS URL |
 | Rotate | New key_id; old optional `revoked_at`; new claims use new key |
-| Discover | Absolute HTTPS `key_url` **inside signed claim** (ADR-003); fetch issuer document |
+| Discover | Absolute HTTPS `key_url` **inside signed claim** (ADR-003); fetch issuer document from any durable host (not only self-hosted) |
+| Social bootstrap | Issuer card on profiles (fingerprint + keys URL); corroboration only (ADR-003 D7) |
 | WoT | Optional key-endorsement attestations listed on issuer document (ADR-003) |
 
 ### Trust policy (verifier) — ADR-003

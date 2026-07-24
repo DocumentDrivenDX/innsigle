@@ -146,6 +146,7 @@ function sidebar(pageUrl) {
       links: [
         { t: "Use overview", h: `${BASE}/use/` },
         { t: "CLI", h: `${BASE}/use/cli/` },
+        { t: "Issuer", h: `${BASE}/use/issuer/` },
         { t: "Colophon", h: `${BASE}/use/colophon/` },
         { t: "Verify", h: `${BASE}/use/verify/` },
         { t: "Marks", h: `${BASE}/use/marks/` },

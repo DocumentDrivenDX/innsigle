@@ -22,7 +22,8 @@ created: 2026-07-24
 
 | Date | Status | Deciders | Related | Confidence |
 |------|--------|----------|---------|------------|
-| 2026-07-24 | Accepted | Operator | ADR-001; CONTRACT-001; claim-system; prior-art (PGP/DKIM) | High |
+| 2026-07-24 | Accepted | Operator | ADR-001; CONTRACT-001; claim-system; prior-art (PGP/DKIM); FEAT-003 | High |
+| 2026-07-24 | Amended | Operator | **D7** social/profile discovery; no webserver required | High |
 
 ## Context
 
@@ -126,6 +127,83 @@ Trust is a **policy graph**, not a crypto boolean alone.
 
 Publishing keys at a URL is **DKIM-class discovery**, not a CA. ADR-003 makes the **asserted discovery URL immutable inside the seal** and adds **signed peer edges** for transitive recognition.
 
+### D7 — Social and profile discovery (no webserver required)
+
+**Problem:** Requiring every maker to run or configure a webserver excludes UC-human-social and casual house signers.
+
+**Decision:** Self-hosted HTTP is **not** required. What is required is a **durable absolute HTTPS URL** for the issuer document (the signed `key_url`). That URL MAY be hosted by any operator the issuer trusts enough to publish **public** material, including free platforms. Social profiles carry **corroborating embeds** of issuer metadata so humans can bootstrap without knowing DNS or servers.
+
+#### D7.1 — Hosting the issuer document (key_url targets)
+
+Any stable HTTPS origin that serves raw JSON (or HTML with a linked JSON) is valid, including but not limited to:
+
+| Host class | Example | Notes |
+|------------|---------|--------|
+| Free git forge raw/Pages | GitHub raw/Gist, Codeberg, GitLab Pages | No classic webserver admin |
+| Static free hosts | Neocities, Cloudflare Pages, Netlify Drop | Drop folder of public files |
+| Project / org site | Existing marketing site path | Optional, not required |
+| Self-hosted | `/.well-known/innsigle/issuer.json` | Still fine when available |
+
+**Private keys MUST NOT** be uploaded to these hosts. Only the issuer document (public keys + endorsement index) and public attestations.
+
+#### D7.2 — Social / profile **embeds** (bootstrap, not substitute for key_url)
+
+Platforms that strip file metadata still allow **profile fields** and **posts**. Issuers SHOULD embed a compact **issuer card** so viewers can find keys without already knowing `key_url`.
+
+**Issuer card (profile-safe text):**
+
+```text
+Innsigle · {short_name}
+key {key_id}
+keys {absolute_key_url}
+```
+
+Rules:
+
+1. **`key_id`** is mandatory in the card when space allows (cryptographic handle).  
+2. **`keys {url}`** MUST be the same absolute URL used as signed `issuer.key_url` on claims (or a short redirect that **302/200** resolves to that document).  
+3. Optional one-liner: `how https://…/use/marks/` or house meaning page.  
+4. Card text is **unsigned marketing/discovery**. Crypto trust still comes from verifying seals + pin/WoT.  
+5. Platforms that allow a single link field: put **`key_url`** (or shortlink to it) as the profile URL; put fingerprint in bio text.
+
+#### D7.3 — Recommended profile placements
+
+| Surface | Embed pattern |
+|---------|----------------|
+| X / Twitter bio | Issuer card truncated; link field → `key_url` or shortlink |
+| GitHub profile | `README` or pinned gist with full issuer card + raw JSON link |
+| Bluesky / AT Proto | Bio + website field; optional later DID document mapping |
+| LinkedIn / mastodon / etc. | Website field → `key_url`; about text → fingerprint |
+| Avatar-adjacent image | Seal PNG (mark family) linking out; card text in profile |
+
+#### D7.4 — Relationship to signed claims
+
+| Layer | Role |
+|-------|------|
+| Social / profile embed | Human discovery and **corroboration** (“this account claims this fingerprint”) |
+| Signed `issuer.key_url` | **Authoritative** discovery channel frozen in each seal |
+| Pin / WoT | Whether the verifier **recognizes** that key |
+
+A profile that shows fingerprint **F** but seals that use a different `key_id` is a **mismatch warning** for humans and tools—not automatic invalid crypto.
+
+#### D7.5 — Multiple discovery URLs
+
+- Exactly one `key_url` is signed per claim (D1).  
+- Issuers MAY publish the **same** issuer document bytes (or identical keys) at multiple HTTPS locations.  
+- Optional later: `mirrors[]` on the issuer document; not required for v1.  
+- Shortlinks allowed only if they resolve to the absolute document URL used in seals (document the final URL in seals when practical).
+
+#### D7.6 — Platform risk (honesty)
+
+| Risk | Mitigation |
+|------|------------|
+| Bio edited by attacker who took the account | Same class as host hijack for live discovery; pin fingerprint out-of-band |
+| Platform deletes gist/raw file | Keep a second free host; re-issue claims only if `key_url` must change |
+| Metadata stripped from images | Never rely on EXIF for keys; use profile text + link |
+| Character limits | Fingerprint + short URL minimum; drop prose first |
+
+**Non-goal:** Innsigle does not require partnership with social platforms or in-app key APIs for v1.
+
 ## Alternatives
 
 | Option | Pros | Cons | Evaluation |
@@ -142,8 +220,8 @@ Publishing keys at a URL is **DKIM-class discovery**, not a CA. ADR-003 makes th
 
 | Type | Impact |
 |------|--------|
-| Positive | Every seal freezes discovery URL; WoT edges are fetchable from issuer URLs; transitive trust is defineable; aligns with PGP certification + DKIM publish |
-| Negative | Issuer documents and endorsement URLs must stay available; verifiers need pin/depth policy; more fetch steps |
+| Positive | Every seal freezes discovery URL; WoT edges are fetchable from issuer URLs; transitive trust is defineable; aligns with PGP certification + DKIM publish; **no webserver admin required** (D7 free hosts + social cards) |
+| Negative | Issuer documents and endorsement URLs must stay available; verifiers need pin/depth policy; more fetch steps; social embeds are spoofable text |
 | Neutral | `issuer.id` remains cosmetic; fingerprints remain the shareable handle |
 
 ## Risks
@@ -155,6 +233,9 @@ Publishing keys at a URL is **DKIM-class discovery**, not a CA. ADR-003 makes th
 | Stale endorsement index vs attestation | M | M | Attestation is source of truth; index is discovery |
 | Users trust slug in UI | H | H | Verify UX shows fingerprint + key_url; docs stress pin |
 | Host hijack still confuses live-only users | M | H | Document TOFU/pin; optional multi-mirror later |
+| Social bio spoof / account takeover | M | H | Fingerprint pin; treat profile text as discovery only |
+| Free host deletes raw JSON | M | M | Second host; document re-publish; prefer durable forges |
+| Users think profile embed is a signature | H | M | UX copy: card is not a seal; verify still required |
 
 ## Validation
 
@@ -179,10 +260,11 @@ Publishing keys at a URL is **DKIM-class discovery**, not a CA. ADR-003 makes th
 ## Normative summary (implementers)
 
 1. **Sign:** payload.issuer.key_url = absolute URL; covered by ADR-001 signature.  
-2. **Publish:** issuer document at that URL with keys; optional endorsements index.  
-3. **Endorse:** sign key-endorsement attestations; list them on your issuer document.  
-4. **Verify content:** crypto under sealer key from signed key_url.  
-5. **Verify identity (optional):** pin roots + walk endorsement edges with depth limits.
+2. **Publish:** issuer document at that URL with keys; optional endorsements index — **any durable HTTPS host**, not only self-hosted servers (D7).  
+3. **Embed:** put issuer card (fingerprint + keys URL) on social/profiles for human discovery (D7).  
+4. **Endorse:** sign key-endorsement attestations; list them on your issuer document.  
+5. **Verify content:** crypto under sealer key from signed key_url.  
+6. **Verify identity (optional):** pin roots + walk endorsement edges with depth limits.
 
 ## References
 

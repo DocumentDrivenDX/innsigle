@@ -36,6 +36,10 @@ Trust policy (whether you accept the issuer) is separate from crypto validity
 `issuer.id` is a display slug and may collide. Share and pin **fingerprints**, not
 slugs alone.
 
+Issuer documents live at any durable HTTPS URL (gist, Pages, free host)—not only
+your own server. Social bios can embed an **issuer card** for discovery; that is
+not a signature. See [Issuer identity](../issuer/).
+
 See [ADR-001](../../reference/artifacts/adrs/adr-001-signing-and-canonicalization/)
 (crypto) and [ADR-003](../../reference/artifacts/adrs/adr-003-issuer-url-and-web-of-trust/)
-(issuer URL + web of trust).
+(issuer URL + web of trust + social discovery).
