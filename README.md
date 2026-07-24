@@ -7,7 +7,7 @@ verify. Not an AI detector. Not a C2PA replacement.
 **Say:** INN-siggle (rhymes with *single*).
 
 **Site:** [documentdrivendx.github.io/innsigle](https://documentdrivendx.github.io/innsigle/)
-(GitHub Pages via `gh-pages`).
+(GitHub Pages via **Actions** — workflow `Deploy microsite`).
 
 Content pipeline (HELIX **product-microsite-ia**):
 
@@ -15,13 +15,17 @@ Content pipeline (HELIX **product-microsite-ia**):
 |-------|------|
 | Curated copy | `docs/website/content/curated/` |
 | Generated from HELIX | `docs/website/content/generated/` ← `docs/helix/` |
-| Build output | `site/` |
+| Build output | `site/` (artifact; CI deploys it) |
 
 ```bash
-npm run site:build          # publish artifacts + HTML
+npm run site:build          # publish artifacts + HTML (local)
 npm run test:e2e            # Playwright: links + design-voice screenshots
-bash scripts/publish-site.sh
+git push origin main        # primary publish: Actions tests + deploys Pages
+# gh workflow run "Deploy microsite"   # manual re-run
 ```
+
+Do **not** use `scripts/publish-site.sh` for normal deploys (emergency legacy
+`gh-pages` only; requires `FORCE_LEGACY_GH_PAGES=1`).
 
 ## CLI (v0)
 

@@ -11,11 +11,26 @@
 ## Commands
 
 ```bash
-npm run site:publish   # docs/helix → content/generated
-npm run site:build     # publish + render HTML → site/ (SITE_BASE=/innsigle)
+npm run site:publish      # docs/helix → content/generated
+npm run site:build        # publish + render HTML → site/ (SITE_BASE=/innsigle)
 npm run site:build:local  # SITE_BASE= for file:// or localhost root
-bash scripts/publish-site.sh  # build + force-push gh-pages
+npm run test:e2e          # Playwright against local site/
 ```
+
+## Deploy (GitHub Actions)
+
+**Primary:** push to `main` (or **Actions → Deploy microsite → Run workflow**).
+
+Workflow: `.github/workflows/pages.yml`
+
+1. Unit tests + Playwright e2e  
+2. Build with `SITE_BASE=/innsigle`  
+3. `actions/upload-pages-artifact` + `actions/deploy-pages`  
+
+Repo Pages source must be **GitHub Actions** (not the `gh-pages` branch).
+
+**Emergency only:** `FORCE_LEGACY_GH_PAGES=1 bash scripts/publish-site.sh`  
+force-pushes the old `gh-pages` branch. Prefer fixing CI instead.
 
 ## Rules
 
