@@ -9,6 +9,7 @@ import {
   signPayload,
   verifyPayload,
 } from "./crypto.mjs";
+import { loadJournal, mergeJournals, buildProvenance, proposeColo } from "./provenance/index.mjs";
 
 const EXIT = { ok: 0, usage: 1, badSig: 2, contentMismatch: 3, badKey: 4, badSchema: 5 };
 
@@ -23,6 +24,8 @@ Usage:
   innsigle sign --claim <file> --key <private.pem> [--out file]
   innsigle verify --attestation <file> --content <file> --keys <file>
   innsigle colo example --kind model-primary|human-authored|mixed
+  innsigle provenance build --journal <jsonl> [--artifact <path>]... --generated-at <iso> [--out file]
+  innsigle provenance propose-colo --provenance <l2.json> [--uri <url>] [--force-composition] [--notes t] [--out file]
 `);
   process.exit(EXIT.usage);
 }
@@ -230,6 +233,73 @@ function cmdVerify(args) {
   process.exit(EXIT.ok);
 }
 
+function multiArg(args, name) {
+  const out = [];
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === name && args[i + 1]) out.push(args[++i]);
+  }
+  return out;
+}
+
+function cmdProvenanceBuild(args) {
+  const journalPaths = multiArg(args, "--journal");
+  if (!journalPaths.length) usage("missing --journal <jsonl>");
+  const artifacts = multiArg(args, "--artifact");
+  const generatedAt = requireArg(args, "--generated-at");
+  const out = arg(args, "--out");
+  const sessionId = arg(args, "--session-id");
+  const cwd = arg(args, "--cwd") || process.cwd();
+  try {
+    const lists = journalPaths.map((p) => loadJournal(p));
+    const events = lists.length === 1 ? lists[0] : mergeJournals(lists);
+    const l2 = buildProvenance(events, {
+      generatedAt,
+      sessionId,
+      artifactPaths: artifacts.length ? artifacts : undefined,
+      cwd,
+      generator: {
+        name: "innsigle-provenance",
+        version: "0.1.0",
+        uri: null,
+      },
+      harness: { name: arg(args, "--harness") || "cli", version: null },
+    });
+    const body = JSON.stringify(l2, null, 2) + "\n";
+    writeOut(out, body);
+    if (out) {
+      console.error(`sha256=${sha256Hex(body)}`);
+    }
+  } catch (e) {
+    console.error(`INVALID: ${e.message}`);
+    process.exit(EXIT.badSchema);
+  }
+}
+
+function cmdProvenanceProposeColo(args) {
+  const provPath = requireArg(args, "--provenance");
+  if (!existsSync(provPath)) usage("provenance file missing");
+  const out = arg(args, "--out");
+  const force = args.includes("--force-composition");
+  const notes = arg(args, "--notes");
+  const uri = arg(args, "--uri");
+  try {
+    const raw = readFileSync(provPath);
+    const l2 = JSON.parse(raw.toString("utf8"));
+    const digestHex = sha256Hex(raw);
+    const colo = proposeColo(l2, {
+      provenanceDigestHex: digestHex,
+      provenanceUri: uri || null,
+      forceComposition: force,
+      notes: notes || null,
+      composition: arg(args, "--composition") || undefined,
+    });
+    writeOut(out, JSON.stringify(colo, null, 2) + "\n");
+  } catch (e) {
+    console.error(`INVALID: ${e.message}`);
+    process.exit(EXIT.badSchema);
+  }
+}
+
 function cmdColoExample(args) {
   const kind = requireArg(args, "--kind");
   const colos = {
@@ -290,6 +360,11 @@ switch (cmd) {
   case "bill": // transitional alias
     if (rest[0] !== "example") usage();
     cmdColoExample(rest.slice(1));
+    break;
+  case "provenance":
+    if (rest[0] === "build") cmdProvenanceBuild(rest.slice(1));
+    else if (rest[0] === "propose-colo") cmdProvenanceProposeColo(rest.slice(1));
+    else usage("provenance build|propose-colo");
     break;
   default:
     usage();

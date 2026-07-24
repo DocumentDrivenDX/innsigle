@@ -64,7 +64,23 @@
             }
           }
         },
-        "notes": { "type": ["string", "null"] }
+        "notes": { "type": ["string", "null"] },
+        "provenance": {
+          "type": "object",
+          "required": ["kind", "digest"],
+          "properties": {
+            "kind": { "const": "session" },
+            "digest": {
+              "type": "object",
+              "required": ["alg", "value"],
+              "properties": {
+                "alg": { "const": "sha256" },
+                "value": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+              }
+            },
+            "uri": { "type": ["string", "null"] }
+          }
+        }
       }
     }
   }

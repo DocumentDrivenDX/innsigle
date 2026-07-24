@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://innsigle.dev/schema/session-journal-event/v1.json",
+  "title": "Innsigle session journal event (JSONL line) v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["v", "session_id", "event_id", "sequence", "t", "type", "actor"],
+  "properties": {
+    "v": { "const": 1 },
+    "session_id": { "type": "string", "minLength": 1 },
+    "event_id": { "type": "string", "minLength": 1 },
+    "sequence": { "type": "integer", "minimum": 0 },
+    "t": { "type": "string", "minLength": 1 },
+    "type": {
+      "enum": [
+        "session_start",
+        "session_end",
+        "user_prompt",
+        "assistant_turn",
+        "tool_call",
+        "skill_call",
+        "file_write",
+        "file_read",
+        "model_switch",
+        "note"
+      ]
+    },
+    "actor": {
+      "type": "object",
+      "required": ["kind"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": { "enum": ["human", "model", "tool", "skill", "system"] },
+        "name": { "type": "string" },
+        "agent_id": { "type": "string" }
+      }
+    },
+    "model": { "type": "string" },
+    "turn_id": { "type": "string" },
+    "summary": { "type": "string" },
+    "path": { "type": "string" },
+    "bytes": { "type": "integer", "minimum": 0 },
+    "by": { "enum": ["human", "model", "mixed", "unknown"] },
+    "tool": { "type": "string" },
+    "skill": { "type": "string" },
+    "role": { "type": "string" },
+    "status": { "enum": ["ok", "error", "skipped"] },
+    "content_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "type": { "const": "file_write" } } },
+      "then": { "required": ["path", "by"] }
+    },
+    {
+      "if": { "properties": { "type": { "const": "user_prompt" } } },
+      "then": { "required": ["summary"] }
+    },
+    {
+      "if": { "properties": { "type": { "const": "assistant_turn" } } },
+      "then": { "required": ["model"] }
+    }
+  ]
+}

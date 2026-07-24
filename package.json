@@ -8,9 +8,11 @@
   },
   "scripts": {
     "innsigle": "node src/cli.mjs",
-    "test": "node --test tests/cli.test.mjs tests/vectors.test.mjs tests/site-build.test.mjs",
+    "test": "node --test tests/cli.test.mjs tests/vectors.test.mjs tests/site-build.test.mjs tests/provenance.test.mjs",
     "test:e2e": "playwright test",
     "test:e2e:update": "playwright test --update-snapshots",
+    "test:provenance-driver": "node scripts/agent-provenance-driver.mjs",
+    "test:provenance-driver:live": "INNSIGLE_LIVE_AGENTS=1 node scripts/agent-provenance-driver.mjs --live",
     "vectors": "node scripts/generate-vectors.mjs",
     "site:publish": "node scripts/publish-artifacts.mjs",
     "site:build": "node scripts/build-site.mjs",
