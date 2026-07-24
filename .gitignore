@@ -45,3 +45,10 @@ playwright-report/
 test-results/
 blob-report/
 
+
+# Local agent session state
+.fizeau/
+.tmp-review/
+.tmp-prov-run/
+.tmp-test-*
+
