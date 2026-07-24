@@ -35,7 +35,7 @@ const SHOT_PAGES: { name: string; path: string; mustSee: RegExp[] }[] = [
   {
     name: "marks",
     path: "/use/marks/",
-    mustSee: [/Marks/i, /human-authored|model-primary/i],
+    mustSee: [/Marks/i, /Matrix|Brand|Cartouche|Ring/i, /human-authored|model-primary/i],
   },
   {
     name: "walkthrough-docs",

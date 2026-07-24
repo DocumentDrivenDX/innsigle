@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Innsigle ring seal">
+  <title>Innsigle ring / signet</title>
+  <!-- Signet bezel: concentric rings, small field monogram -->
+  <circle cx="32" cy="32" r="31.5" fill="#141210"/>
+  <circle cx="32" cy="32" r="29" fill="none" stroke="#e4dccf" stroke-width="2"/>
+  <circle cx="32" cy="32" r="24" fill="none" stroke="#e4dccf" stroke-width="1.2"/>
+  <circle cx="32" cy="32" r="19" fill="none" stroke="#e4dccf" stroke-width="2.4"/>
+  <g fill="none" stroke="#e4dccf" stroke-width="2.3" stroke-linecap="square" stroke-linejoin="miter">
+    <path d="M32 18 V42"/>
+    <path d="M25 25 L32 18 L39 25"/>
+    <path d="M26 31 H38"/>
+    <path d="M32 27.5 L35.2 31 L32 34.5 L28.8 31 Z" stroke-width="1.9"/>
+  </g>
+</svg>
