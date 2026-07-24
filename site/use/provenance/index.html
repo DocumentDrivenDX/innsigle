@@ -33,7 +33,6 @@
       <main class="docs-main prose">
         <h1 id="session-provenance">Session provenance</h1>
 <p>Innsigle can seal more than a short colo. When an agent skill captures a session, it can build a <strong>session provenance</strong> record (metrics, models, skills, file digests) and <strong>propose</strong> a colophon—then you review, optionally publish, and sign.</p>
-<p>This is design + schema today; CLI/skill automation is phased (FEAT-004).</p>
 <h2 id="layers">Layers</h2>
 <table>
 <tr><th>Layer</th><th>What</th><th>Public?</th></tr>
@@ -42,16 +41,64 @@
 <tr><td>Session provenance</td><td>Prompt counts, tools, compact timeline</td><td>Optional URL</td></tr>
 <tr><td>Raw transcript</td><td>Full chat log</td><td>Local by default</td></tr>
 </table>
-<h2 id="example-metrics">Example metrics</h2>
-<p>From a session that wrote a docs page:</p>
-<ul>
-<li><code>user_prompts</code>: 12  </li>
-<li><code>assistant_turns</code>: 15  </li>
-<li>models: Claude (primary)  </li>
-<li>tools: sloptimizer (rewrite)  </li>
-<li>skills: innsigle-session (capture)  </li>
-<li>composition suggestion: <strong>model-primary</strong> (not human-authored after polish)</li>
-</ul>
+<h2 id="worked-example-multi-agent-fixture">Worked example (multi-agent fixture)</h2>
+<p>The site ships a <strong>real driver run</strong>: three scripted human prompts fed into <strong>Claude</strong> and <strong>Codex</strong> journals, then merged into L2 provenance and a proposed colo.</p>
+<table>
+<tr><th>Result</th><th>Value</th></tr>
+<tr><td>Human prompts (total across agents)</td><td><strong>6</strong> (3 × 2)</td></tr>
+<tr><td>Models</td><td>Claude, Codex</td></tr>
+<tr><td>Composition</td><td><strong>model-primary</strong></td></tr>
+<tr><td>Tools</td><td>innsigle-session, sloptimizer</td></tr>
+</table>
+<h3 id="human-inputs-scripted">Human inputs (scripted)</h3>
+<ol>
+<li>Draft a short markdown page titled Sealed Notes explaining what an Innsigle colophon is in two paragraphs.  </li>
+<li>Add a bullet list of three non-goals: not a detector, not purity score, not content truth.  </li>
+<li>Tighten the opening sentence; keep model-primary honesty.</li>
+</ol>
+<h3 id="proposed-colophon">Proposed colophon</h3>
+<pre><code class="language-json">{
+  "schema_version": "1",
+  "composition": "model-primary",
+  "ingredients": [
+    { "kind": "model", "name": "Claude", "role": "primary" },
+    { "kind": "model", "name": "Codex", "role": "primary" },
+    { "kind": "tool", "name": "innsigle-session", "role": "provenance-capture" },
+    { "kind": "tool", "name": "sloptimizer", "role": "rewrite" },
+    { "kind": "human", "name": "operator", "role": "prompter" }
+  ],
+  "notes": "session metrics: user_prompts=6; assistant_turns=5"
+}</code></pre>
+<h3 id="download-the-pack">Download the pack</h3>
+<table>
+<tr><th>File</th><th>Description</th></tr>
+<tr><td><a href="/innsigle/examples/provenance/human-inputs.json">human-inputs.json</a></td><td>Scripted human prompts</td></tr>
+<tr><td><a href="/innsigle/examples/provenance/session-claude.jsonl">session-claude.jsonl</a></td><td>Claude agent journal</td></tr>
+<tr><td><a href="/innsigle/examples/provenance/session-codex.jsonl">session-codex.jsonl</a></td><td>Codex agent journal</td></tr>
+<tr><td><a href="/innsigle/examples/provenance/session-provenance.json">session-provenance.json</a></td><td>L2 merged provenance</td></tr>
+<tr><td><a href="/innsigle/examples/provenance/colo.json">colo.json</a></td><td>Proposed colophon (L1)</td></tr>
+<tr><td><a href="/innsigle/examples/provenance/summary.json">summary.json</a></td><td>Driver summary</td></tr>
+<tr><td><a href="/innsigle/examples/provenance/artifacts/sealed-notes-claude.md">sealed-notes-claude.md</a></td><td>Artifact from Claude session</td></tr>
+<tr><td><a href="/innsigle/examples/provenance/artifacts/sealed-notes-codex.md">sealed-notes-codex.md</a></td><td>Artifact from Codex session</td></tr>
+<tr><td><a href="/innsigle/examples/provenance/session-sloptimizer-only.jsonl">session-sloptimizer-only.jsonl</a></td><td>FR-4a fixture (rewrite does not launder)</td></tr>
+</table>
+<h3 id="reproduce">Reproduce</h3>
+<pre><code class="language-bash">npm run test:provenance-driver
+# or regenerate into the site static tree:
+node scripts/agent-provenance-driver.mjs --out-dir docs/website/static/examples/provenance</code></pre>
+<p>Optional live agents (non-deterministic, not used in CI):</p>
+<pre><code class="language-bash">npm run test:provenance-driver:live</code></pre>
+<h3 id="cli-path-used-by-the-skill">CLI path used by the skill</h3>
+<pre><code class="language-bash">node src/cli.mjs provenance build \
+  --journal session-claude.jsonl \
+  --journal session-codex.jsonl \
+  --generated-at 2026-07-24T18:00:00Z \
+  --out session-provenance.json
+
+node src/cli.mjs provenance propose-colo \
+  --provenance session-provenance.json \
+  --uri https://example.com/session-provenance.json \
+  --out colo.json</code></pre>
 <h2 id="rules-that-stay">Rules that stay</h2>
 <ul>
 <li>Editorial tools do <strong>not</strong> launder model work into <code>human-authored</code>.  </li>
@@ -60,10 +107,11 @@
 </ul>
 <h2 id="specs">Specs</h2>
 <ul>
-<li>Design: HELIX <code>session-provenance.md</code>  </li>
-<li>Feature: FEAT-004  </li>
-<li>Schema: <code>session-provenance.schema.json</code>  </li>
-<li>Example: <code>examples/session-provenance.json</code>  </li>
+<li>Design: <a href="/innsigle/reference/artifacts/session-provenance/">session-provenance</a>  </li>
+<li>Convergence: <a href="/innsigle/reference/artifacts/session-provenance-convergence/">session-provenance-convergence</a>  </li>
+<li>Feature: <a href="/innsigle/reference/artifacts/features/feat-004-session-provenance/">FEAT-004</a>  </li>
+<li>Schema: repo <code>docs/helix/02-design/schemas/session-provenance.schema.json</code>  </li>
+<li>HELIX design example: repo <code>docs/helix/02-design/examples/session-provenance.json</code>  </li>
 </ul>
       </main>
     </div>

@@ -1,0 +1,40 @@
+{
+  "schema_version": "1",
+  "composition": "model-primary",
+  "ingredients": [
+    {
+      "kind": "model",
+      "name": "Claude",
+      "role": "primary"
+    },
+    {
+      "kind": "model",
+      "name": "Codex",
+      "role": "primary"
+    },
+    {
+      "kind": "tool",
+      "name": "innsigle-session",
+      "role": "provenance-capture"
+    },
+    {
+      "kind": "tool",
+      "name": "sloptimizer",
+      "role": "rewrite"
+    },
+    {
+      "kind": "human",
+      "name": "operator",
+      "role": "prompter"
+    }
+  ],
+  "notes": "session metrics: user_prompts=6; assistant_turns=5",
+  "provenance": {
+    "kind": "session",
+    "digest": {
+      "alg": "sha256",
+      "value": "92547f67b9c6e410a50cb66c703e991d84804c8065d8d9664a5ff53ab466cb12"
+    },
+    "uri": "/examples/provenance/session-provenance.json"
+  }
+}

@@ -1,0 +1,222 @@
+{
+  "innsigle_provenance": "1",
+  "kind": "session",
+  "schema_version": "1",
+  "generated_at": "2026-07-24T18:00:00Z",
+  "generator": {
+    "name": "innsigle-provenance",
+    "version": "0.1.0",
+    "uri": null
+  },
+  "session": {
+    "id": "sess-claude",
+    "started_at": "2026-07-24T17:00:00Z",
+    "ended_at": "2026-07-24T17:12:09Z",
+    "harness": {
+      "name": "fixture-driver",
+      "version": null
+    }
+  },
+  "composition_suggestion": "model-primary",
+  "metrics": {
+    "user_prompts": 6,
+    "assistant_turns": 5,
+    "tool_calls": 1,
+    "skill_invocations": 2,
+    "files_touched": 2,
+    "approx_input_tokens": null,
+    "approx_output_tokens": null
+  },
+  "models": [
+    {
+      "name": "Claude",
+      "version": null,
+      "role": "primary",
+      "uri": null
+    },
+    {
+      "name": "Codex",
+      "version": null,
+      "role": "primary",
+      "uri": null
+    }
+  ],
+  "skills": [
+    {
+      "name": "innsigle-session",
+      "version": null,
+      "role": "provenance-capture",
+      "uri": null
+    }
+  ],
+  "tools": [
+    {
+      "name": "sloptimizer",
+      "role": "rewrite",
+      "uri": null
+    }
+  ],
+  "humans": [
+    {
+      "name": "operator",
+      "role": "prompter",
+      "prompt_count": 6
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/sealed-notes-claude.md",
+      "digest": {
+        "alg": "sha256",
+        "value": "345814c04cad681c2a3a20de79fa81393d7e61b49624b6e503f774e071b6e41f"
+      },
+      "role": "primary-output",
+      "by": "model"
+    },
+    {
+      "path": "artifacts/sealed-notes-codex.md",
+      "digest": {
+        "alg": "sha256",
+        "value": "7bdfcaaa17c19e9565a5c9275621c5ce4605023ca77dc2adb160db14fec333b2"
+      },
+      "role": "primary-output",
+      "by": "model"
+    }
+  ],
+  "timeline": [
+    {
+      "t": "2026-07-24T17:00:01Z",
+      "type": "user_prompt",
+      "summary": "Draft a short markdown page titled Sealed Notes explaining what an Innsigle colophon is in two paragraphs."
+    },
+    {
+      "t": "2026-07-24T17:00:10Z",
+      "type": "assistant_turn",
+      "summary": "Drafted Sealed Notes body",
+      "model": "Claude",
+      "agent_id": "claude"
+    },
+    {
+      "t": "2026-07-24T17:00:11Z",
+      "type": "file_write",
+      "summary": "Wrote draft markdown",
+      "path": "artifacts/sealed-notes-claude.md",
+      "model": "Claude",
+      "agent_id": "claude"
+    },
+    {
+      "t": "2026-07-24T17:01:00Z",
+      "type": "user_prompt",
+      "summary": "Add a bullet list of three non-goals: not a detector, not purity score, not content truth."
+    },
+    {
+      "t": "2026-07-24T17:01:08Z",
+      "type": "assistant_turn",
+      "summary": "Added non-goals list",
+      "model": "Claude",
+      "agent_id": "claude"
+    },
+    {
+      "t": "2026-07-24T17:01:09Z",
+      "type": "file_write",
+      "summary": "Updated markdown",
+      "path": "artifacts/sealed-notes-claude.md",
+      "model": "Claude",
+      "agent_id": "claude"
+    },
+    {
+      "t": "2026-07-24T17:02:00Z",
+      "type": "user_prompt",
+      "summary": "Tighten the opening sentence; keep model-primary honesty."
+    },
+    {
+      "t": "2026-07-24T17:02:05Z",
+      "type": "tool_call",
+      "summary": "Editorial rewrite pass"
+    },
+    {
+      "t": "2026-07-24T17:02:06Z",
+      "type": "skill_call",
+      "summary": "Capture session journal"
+    },
+    {
+      "t": "2026-07-24T17:02:07Z",
+      "type": "file_write",
+      "summary": "Final model write after edit",
+      "path": "artifacts/sealed-notes-claude.md",
+      "model": "Claude",
+      "agent_id": "claude"
+    },
+    {
+      "t": "2026-07-24T17:10:01Z",
+      "type": "user_prompt",
+      "summary": "Draft a short markdown page titled Sealed Notes explaining what an Innsigle colophon is in two paragraphs."
+    },
+    {
+      "t": "2026-07-24T17:10:12Z",
+      "type": "assistant_turn",
+      "summary": "Drafted Sealed Notes",
+      "model": "Codex",
+      "agent_id": "codex"
+    },
+    {
+      "t": "2026-07-24T17:10:13Z",
+      "type": "file_write",
+      "summary": "Wrote draft",
+      "path": "artifacts/sealed-notes-codex.md",
+      "model": "Codex",
+      "agent_id": "codex"
+    },
+    {
+      "t": "2026-07-24T17:11:00Z",
+      "type": "user_prompt",
+      "summary": "Add a bullet list of three non-goals: not a detector, not purity score, not content truth."
+    },
+    {
+      "t": "2026-07-24T17:11:10Z",
+      "type": "assistant_turn",
+      "summary": "Added non-goals",
+      "model": "Codex",
+      "agent_id": "codex"
+    },
+    {
+      "t": "2026-07-24T17:11:11Z",
+      "type": "file_write",
+      "summary": "Updated",
+      "path": "artifacts/sealed-notes-codex.md",
+      "model": "Codex",
+      "agent_id": "codex"
+    },
+    {
+      "t": "2026-07-24T17:12:00Z",
+      "type": "user_prompt",
+      "summary": "Tighten the opening sentence; keep model-primary honesty."
+    },
+    {
+      "t": "2026-07-24T17:12:06Z",
+      "type": "assistant_turn",
+      "summary": "Tightened opening",
+      "model": "Codex",
+      "agent_id": "codex"
+    },
+    {
+      "t": "2026-07-24T17:12:07Z",
+      "type": "skill_call",
+      "summary": "Capture session"
+    },
+    {
+      "t": "2026-07-24T17:12:08Z",
+      "type": "file_write",
+      "summary": "Final write",
+      "path": "artifacts/sealed-notes-codex.md",
+      "model": "Codex",
+      "agent_id": "codex"
+    }
+  ],
+  "transcript": null,
+  "privacy": {
+    "redacted": true,
+    "raw_retained_locally": true,
+    "notes": "Summaries only; full transcript not included"
+  }
+}

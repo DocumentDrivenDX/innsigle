@@ -16,7 +16,7 @@ Onboarding path: install CLI → write a colophon → claim and sign a file → 
 | [CLI](cli/) | How do I run keygen, claim, sign, verify? |
 | [Issuer](issuer/) | How do I get a key and publish it without a server? |
 | [Colophon](colophon/) | How do I declare composition? |
-| [Provenance](provenance/) | Automatic session metrics into a detailed colo? |
+| [Provenance](provenance/) | Auto colo from agent sessions (+ worked multi-agent examples) |
 | [Verify](verify/) | What does a valid seal mean? |
 | [Marks](marks/) | Which seal cue for which state? |
 

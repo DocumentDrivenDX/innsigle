@@ -302,6 +302,12 @@ function copyStatic() {
     mkdirSync(join(OUT, "captures"), { recursive: true });
     cpSync(cap, join(OUT, "captures"), { recursive: true });
   }
+  // worked examples (provenance fixtures, etc.)
+  const examples = join(ROOT, "docs/website/static/examples");
+  if (existsSync(examples)) {
+    mkdirSync(join(OUT, "examples"), { recursive: true });
+    cpSync(examples, join(OUT, "examples"), { recursive: true });
+  }
   // sample HTML + claims
   mkdirSync(join(OUT, "sample/.well-known/innsigle/claims"), { recursive: true });
   cpSync(

@@ -1,0 +1,24 @@
+{
+  "mode": "fixture",
+  "agents": [
+    "claude",
+    "codex"
+  ],
+  "human_inputs": 3,
+  "composition": "model-primary",
+  "user_prompts": 6,
+  "models": [
+    "Claude",
+    "Codex"
+  ],
+  "ingredients": [
+    "model:Claude",
+    "model:Codex",
+    "tool:innsigle-session",
+    "tool:sloptimizer",
+    "human:operator"
+  ],
+  "l2": "/examples/provenance/session-provenance.json",
+  "colo": "/examples/provenance/colo.json",
+  "l2_sha256": "92547f67b9c6e410a50cb66c703e991d84804c8065d8d9664a5ff53ab466cb12"
+}

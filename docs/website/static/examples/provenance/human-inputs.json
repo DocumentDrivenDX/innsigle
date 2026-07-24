@@ -1,0 +1,17 @@
+{
+  "description": "Scripted human prompts for multi-agent provenance driver",
+  "inputs": [
+    {
+      "id": "h1",
+      "text": "Draft a short markdown page titled Sealed Notes explaining what an Innsigle colophon is in two paragraphs."
+    },
+    {
+      "id": "h2",
+      "text": "Add a bullet list of three non-goals: not a detector, not purity score, not content truth."
+    },
+    {
+      "id": "h3",
+      "text": "Tighten the opening sentence; keep model-primary honesty."
+    }
+  ]
+}

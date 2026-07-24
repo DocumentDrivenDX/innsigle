@@ -39,7 +39,7 @@ created: 2026-07-24
 # Feature Specification: FEAT-004 — Automatic session provenance
 
 **Feature ID**: FEAT-004  
-**Status**: Specified  
+**Status**: Specified (P1 implemented: CLI + fixture multi-agent driver)  
 **Priority**: P1 (after FEAT-001–003 core path)  
 **Owner**: Operator  
 **Covered PRD Subsystem(s)**: UC-AI-docs; Tooling; Sign and Verify  
