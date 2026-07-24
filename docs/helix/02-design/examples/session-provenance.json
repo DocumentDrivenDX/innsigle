@@ -1,0 +1,78 @@
+{
+  "innsigle_provenance": "1",
+  "kind": "session",
+  "schema_version": "1",
+  "generated_at": "2026-07-24T18:00:00Z",
+  "generator": {
+    "name": "innsigle-session-skill",
+    "version": "0.1.0",
+    "uri": null
+  },
+  "session": {
+    "id": "example-session-1",
+    "started_at": "2026-07-24T17:00:00Z",
+    "ended_at": "2026-07-24T17:45:00Z",
+    "harness": { "name": "claude-code", "version": null }
+  },
+  "composition_suggestion": "model-primary",
+  "metrics": {
+    "user_prompts": 12,
+    "assistant_turns": 15,
+    "tool_calls": 40,
+    "skill_invocations": 3,
+    "files_touched": 2,
+    "approx_input_tokens": null,
+    "approx_output_tokens": null
+  },
+  "models": [
+    { "name": "Claude", "version": null, "role": "primary", "uri": null }
+  ],
+  "skills": [
+    {
+      "name": "innsigle-session",
+      "version": "0.1.0",
+      "role": "provenance-capture",
+      "uri": null
+    }
+  ],
+  "tools": [
+    { "name": "sloptimizer", "role": "rewrite", "uri": null }
+  ],
+  "humans": [
+    { "name": "operator", "role": "prompter", "prompt_count": 12 }
+  ],
+  "artifacts": [
+    {
+      "path": "docs/page.md",
+      "digest": {
+        "alg": "sha256",
+        "value": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "role": "primary-output"
+    }
+  ],
+  "timeline": [
+    {
+      "t": "2026-07-24T17:01:00Z",
+      "type": "user_prompt",
+      "summary": "Asked to draft page structure"
+    },
+    {
+      "t": "2026-07-24T17:10:00Z",
+      "type": "file_write",
+      "path": "docs/page.md",
+      "summary": "Initial draft written"
+    },
+    {
+      "t": "2026-07-24T17:40:00Z",
+      "type": "tool_call",
+      "summary": "sloptimizer rewrite pass"
+    }
+  ],
+  "transcript": null,
+  "privacy": {
+    "redacted": true,
+    "raw_retained_locally": true,
+    "notes": "Full transcript not published"
+  }
+}

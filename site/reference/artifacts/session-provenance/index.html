@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Session provenance — automatic machine-readable production history — Innsigle</title>
+  <meta name="description" content="Session provenance — automatic machine-readable production history" />
+  <link rel="stylesheet" href="/assets/css/site.css" />
+  <link rel="icon" href="/assets/marks/innsigle-base.svg" type="image/svg+xml" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/">
+        <img class="brand-mark" src="/assets/marks/innsigle-base.svg" width="40" height="40" alt="" />
+        Innsigle
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/">What it is</a>
+        <a href="/why/">Why</a>
+        <a href="/use/">Use</a>
+        <a href="/reference/" aria-current="page">Reference</a>
+        <a href="/sample/">Sample</a>
+      </nav>
+    </div>
+  </header>
+  <div class="wrap layout-docs">
+    <p class="crumbs" aria-label="Breadcrumb"><a href="/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/reference/">Reference</a> <span aria-hidden="true">/</span> <span>Session provenance — automatic machine-readable production history</span></p>
+    <div class="docs-grid">
+      <aside class="docs-side" aria-label="Section">
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/sample/">Sample</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/issuer/">Issuer</a></li><li><a href="/use/colophon/">Colophon</a></li><li><a href="/use/provenance/">Provenance</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/" aria-current="page">Reference home</a></li><li><a href="/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
+      </aside>
+      <main class="docs-main prose">
+        <p class="gen-banner note">Generated reference — edit sources under <code>docs/helix/</code>, then <code>npm run site:build</code>.</p>
+<blockquote><strong>Generated from HELIX docs.</strong> Source: <code>docs/helix/02-design/session-provenance.md</code>. Edit the source, not this file or <code>site/</code> HTML.</blockquote>
+<details><summary>Source frontmatter</summary>
+<pre><code class="language-yaml">ddx:
+  id: aibadge.design.session-provenance
+  type: solution-design
+  links:
+    - target: aibadge.design.claim-system
+      kind: informed_by
+    - target: aibadge.adr.001
+      kind: informed_by
+    - target: aibadge.adr.003
+      kind: informed_by
+    - target: aibadge.contract.001
+      kind: informs
+    - target: aibadge.feat.004
+      kind: informs
+    - target: aibadge.prd
+      kind: informed_by
+status: draft
+activity: 02-design
+created: 2026-07-24</code></pre>
+</details>
+<h1 id="session-provenance-automatic-machine-readable-production-history">Session provenance — automatic machine-readable production history</h1>
+<h2 id="problem">Problem</h2>
+<p>Manual colophons under-specify how agent work actually happened. Operators using Claude (or other agents) with skills that write files should be able to:</p>
+<ol>
+<li><strong>Capture</strong> interaction history machine-side (prompts, tools, models, skills).  </li>
+<li><strong>Summarize</strong> into a durable provenance record.  </li>
+<li><strong>Propose</strong> a detailed colophon (composition + ingredients + metrics).  </li>
+<li><strong>Optionally publish</strong> the record (HTTPS, same constraints as issuer docs).  </li>
+<li><strong>Sign</strong> content + provenance under the operator’s issuer key (ADR-001/003).</li>
+</ol>
+<p>Without this, the colo is a short declaration only; verifiers cannot see <em>how</em> many human prompts drove a model-primary doc, which skill wrote the file, etc.</p>
+<h2 id="non-goals">Non-goals</h2>
+<table>
+<tr><th>Out</th><th>Why</th></tr>
+<tr><td>Auto-flip composition to <code>human-authored</code> after polish</td><td>FR-4a / no authorship laundering</td></tr>
+<tr><td>Require full raw transcript publication</td><td>Privacy; size; platform ToS</td></tr>
+<tr><td>Central Innsigle session cloud</td><td>Craft keys stay local; optional self-publish only</td></tr>
+<tr><td>Replace sloptimizer</td><td>sloptimizer = edit quality; this = seal provenance</td></tr>
+<tr><td>Claim content truth or “safe AI”</td><td>Same as core product</td></tr>
+</table>
+<h2 id="layered-model">Layered model</h2>
+<p>Keep three layers distinct (SLSA lesson: provenance ≠ policy ≠ truth).</p>
+<pre><code class="language-text">┌─────────────────────────────────────────────────────────┐
+│  L0 Content artifact (markdown, HTML, …)                │
+│      SHA-256 subject of the seal                        │
+├─────────────────────────────────────────────────────────┤
+│  L1 Colophon (colo) — short human + machine summary     │
+│      composition + ingredients [+ optional provenance   │
+│      pointer]                                           │
+├─────────────────────────────────────────────────────────┤
+│  L2 Session provenance document — detailed machine BOM  │
+│      metrics, skill/model list, compact timeline,       │
+│      optional transcript digest                         │
+├─────────────────────────────────────────────────────────┤
+│  L3 Optional raw session log (local only by default)    │
+│      never required for verify                          │
+└─────────────────────────────────────────────────────────┘</code></pre>
+<table>
+<tr><th>Layer</th><th>Audience</th><th>In signature?</th></tr>
+<tr><td>L0 content</td><td>Everyone</td><td>Subject digest</td></tr>
+<tr><td>L1 colo</td><td>Footer / claim payload</td><td>Inside colophon claim</td></tr>
+<tr><td>L2 session provenance</td><td>Machines + curious humans</td><td>Linked by URI + digest (and/or second subject)</td></tr>
+<tr><td>L3 raw log</td><td>Operator only</td><td>No (default)</td></tr>
+</table>
+<p><strong>Verify L0+L1</strong> remains the default path. <strong>Verify L2</strong> is optional: if a pointer is present, re-fetch/hash the provenance document and match digest.</p>
+<h2 id="actors-and-flow">Actors and flow</h2>
+<h3 id="happy-path-claude-skill-agent-hook">Happy path (Claude skill / agent hook)</h3>
+<pre><code class="language-text">  human prompts agent
+        │
+        ▼
+  skill / harness observes session events
+        │
+        ▼
+  SessionJournal (local, structured)
+        │
+        ▼
+  provenance build  →  session-provenance.json  (L2)
+        │
+        ├──► colo propose  →  colo.json  (L1, operator-editable)
+        │
+        ▼
+  operator review (required for publish/sign)
+        │
+        ├── optional: publish L2 to HTTPS (gist/Pages/…)
+        │
+        ▼
+  claim build (content + colo [+ L2 as subject or pointer])
+        │
+        ▼
+  sign with house key  →  attestation</code></pre>
+<p><strong>Operator review is mandatory</strong> before publish/sign of anything public. Auto-capture is automatic; <strong>auto-publish is opt-in</strong> and off by default.</p>
+<h3 id="skill-responsibilities">Skill responsibilities</h3>
+<table>
+<tr><th>Duty</th><th>Behavior</th></tr>
+<tr><td>Observe</td><td>Record structured events: user message, assistant message, tool/skill call, file write, model id if known</td></tr>
+<tr><td>Redact</td><td>Strip secrets (API keys, <code>.env</code>, private paths) before any proposed publish</td></tr>
+<tr><td>Summarize</td><td>Produce L2 metrics + compact timeline; <strong>not</strong> a novel marketing blurb</td></tr>
+<tr><td>Propose colo</td><td>Map journal → composition + ingredients (defaults conservative: prefer <code>model-primary</code> / <code>mixed</code> over <code>human-authored</code>)</td></tr>
+<tr><td>Never launder</td><td>Must not set <code>human-authored</code> solely because of rewrite/sloptimizer/skill cleanup</td></tr>
+<tr><td>List self</td><td>The capturing skill appears as <code>kind: tool</code> (or <code>skill</code>) on the colo</td></tr>
+</table>
+<h2 id="l2-schema-session-provenance-draft-v1">L2 schema — session provenance (draft v1)</h2>
+<p><strong>Type URI (when claimed alone):</strong>   <code>https://innsigle.dev/claim/session-provenance/v1</code>  </p>
+<p>Or embed as a <strong>document</strong> referenced from a colophon claim (preferred for docs):</p>
+<pre><code class="language-json">{
+  "innsigle_provenance": "1",
+  "kind": "session",
+  "schema_version": "1",
+  "generated_at": "2026-07-24T18:00:00Z",
+  "generator": {
+    "name": "innsigle-session-skill",
+    "version": "0.1.0",
+    "uri": "https://example.com/skills/innsigle-session"
+  },
+  "session": {
+    "id": "local-opaque-id",
+    "started_at": "2026-07-24T17:00:00Z",
+    "ended_at": "2026-07-24T17:45:00Z",
+    "harness": { "name": "claude-code", "version": null }
+  },
+  "composition_suggestion": "model-primary",
+  "metrics": {
+    "user_prompts": 12,
+    "assistant_turns": 15,
+    "tool_calls": 40,
+    "skill_invocations": 3,
+    "files_touched": 2,
+    "approx_input_tokens": null,
+    "approx_output_tokens": null
+  },
+  "models": [
+    { "name": "Claude", "version": null, "role": "primary", "uri": null }
+  ],
+  "skills": [
+    {
+      "name": "innsigle-session",
+      "version": "0.1.0",
+      "role": "provenance-capture",
+      "uri": null
+    }
+  ],
+  "tools": [
+    { "name": "sloptimizer", "role": "rewrite", "uri": null }
+  ],
+  "humans": [
+    { "name": "operator", "role": "prompter", "prompt_count": 12 }
+  ],
+  "artifacts": [
+    {
+      "path": "docs/page.md",
+      "digest": { "alg": "sha256", "value": "…" },
+      "role": "primary-output"
+    }
+  ],
+  "timeline": [
+    {
+      "t": "2026-07-24T17:01:00Z",
+      "type": "user_prompt",
+      "summary": "Asked to draft page structure"
+    },
+    {
+      "t": "2026-07-24T17:10:00Z",
+      "type": "file_write",
+      "path": "docs/page.md",
+      "summary": "Initial draft written"
+    }
+  ],
+  "transcript": null,
+  "privacy": {
+    "redacted": true,
+    "raw_retained_locally": true,
+    "notes": "Full transcript not published"
+  }
+}</code></pre>
+<h3 id="timeline-rules">Timeline rules</h3>
+<ul>
+<li>Entries are <strong>summaries</strong>, not full message bodies (default).  </li>
+<li><code>type</code> enum (open set with documented core):  </li>
+</ul>
+<p>  <code>user_prompt</code> | <code>assistant_turn</code> | <code>tool_call</code> | <code>skill_call</code> | <code>file_write</code> | <code>file_read</code> | <code>model_switch</code> | <code>note</code>  </p>
+<ul>
+<li>Max recommended published timeline length: <strong>50</strong> events (truncate with <code>metrics</code> still full).  </li>
+<li>Optional <code>transcript</code>: <code>{ "digest", "uri" }</code> only if operator explicitly publishes raw/redacted log.</li>
+</ul>
+<h3 id="metrics-semantics">Metrics semantics</h3>
+<table>
+<tr><th>Field</th><th>Meaning</th></tr>
+<tr><td><code>user_prompts</code></td><td>Count of human→agent messages (or equivalent turns) in session scope</td></tr>
+<tr><td><code>assistant_turns</code></td><td>Agent responses in scope</td></tr>
+<tr><td><code>tool_calls</code></td><td>Tool/function invocations</td></tr>
+<tr><td><code>skill_invocations</code></td><td>Distinct skill runs if the harness exposes them</td></tr>
+<tr><td>Token fields</td><td>Optional; null if unknown — never invent</td></tr>
+</table>
+<p><strong>Honesty:</strong> Counts are best-effort from the harness. Document generator limits in <code>generator</code> / <code>privacy.notes</code>. Do not claim forensic completeness.</p>
+<h2 id="l1-colo-extension-pointer-to-l2">L1 colo extension — pointer to L2</h2>
+<p>Additive fields on colophon (schema_version stays <code>"1"</code> with optional object; or bump to <code>"1.1"</code>):</p>
+<pre><code class="language-json">"colophon": {
+  "schema_version": "1",
+  "composition": "model-primary",
+  "ingredients": [ /* derived from L2 */ ],
+  "notes": null,
+  "provenance": {
+    "kind": "session",
+    "digest": { "alg": "sha256", "value": "hex of L2 JSON canonical bytes" },
+    "uri": "https://…/session-provenance.json"
+  }
+}</code></pre>
+<p><strong>Canonicalization for L2 digest:</strong> JCS (RFC 8785) of the provenance document, same spirit as ADR-001, so independent verifiers agree.</p>
+<h3 id="binding-strategies-both-allowed">Binding strategies (both allowed)</h3>
+<table>
+<tr><th>Strategy</th><th>How</th><th>When</th></tr>
+<tr><td><strong>A. Pointer only</strong></td><td>Colo claim subjects = [content]; <code>colophon.provenance</code> = uri+digest</td><td>Default for docs footers</td></tr>
+<tr><td><strong>B. Multi-subject</strong></td><td>Claim subjects = [content, provenance file]</td><td>Stronger offline bundle</td></tr>
+</table>
+<h2 id="mapping-l2-ingredients-proposal-rules">Mapping L2 → ingredients (proposal rules)</h2>
+<table>
+<tr><th>L2 source</th><th>Ingredient</th></tr>
+<tr><td><code>models[]</code></td><td><code>kind: model</code>, name/version/role</td></tr>
+<tr><td><code>skills[]</code> / <code>tools[]</code></td><td><code>kind: tool</code> (or later <code>kind: skill</code> if enum extended)</td></tr>
+<tr><td><code>humans[]</code></td><td><code>kind: human</code></td></tr>
+<tr><td>Capturing skill</td><td>Always listed</td></tr>
+</table>
+<p><strong>Composition suggestion algorithm (conservative):</strong></p>
+<ol>
+<li>If any model produced substantive artifact content → not <code>human-authored</code>.  </li>
+<li>If human prompts <strong>and</strong> model both material → prefer <code>mixed</code> when human structural authorship is clear; else <code>model-primary</code>.  </li>
+<li>If only human typed final bytes with no model → <code>human-authored</code>.  </li>
+<li>Editorial tools (sloptimizer, formatters) never alone upgrade to <code>human-authored</code>.</li>
+</ol>
+<p>Operator may override suggestion before sign; override SHOULD be noted in <code>privacy.notes</code> or colo <code>notes</code> if composition was downgraded toward human.</p>
+<h2 id="skill-harness-integration-contract">Skill / harness integration contract</h2>
+<h3 id="event-journal-local">Event journal (local)</h3>
+<p>Minimal append-only JSONL (implementation sketch):</p>
+<pre><code class="language-json">{"t":"…","type":"user_prompt","bytes":120}
+{"t":"…","type":"skill_call","name":"innsigle-session","action":"capture"}
+{"t":"…","type":"file_write","path":"docs/page.md"}</code></pre>
+<h3 id="cli-skill-verbs-intent">CLI / skill verbs (intent)</h3>
+<table>
+<tr><th>Verb</th><th>Result</th></tr>
+<tr><td><code>innsigle provenance capture</code></td><td>Attach to session / import journal</td></tr>
+<tr><td><code>innsigle provenance build</code></td><td>Journal → L2 JSON</td></tr>
+<tr><td><code>innsigle provenance propose-colo</code></td><td>L2 → colo.json draft</td></tr>
+<tr><td><code>innsigle claim build …</code></td><td>Existing; supports provenance pointer / multi-subject</td></tr>
+</table>
+<p>Skill wrappers (Claude Code, Cursor, etc.) call these or embed equivalent logic.</p>
+<h3 id="operator-gates">Operator gates</h3>
+<table>
+<tr><th>Gate</th><th>Default</th></tr>
+<tr><td>Write L2 to disk</td><td>On when skill enabled</td></tr>
+<tr><td>Publish L2 URL</td><td><strong>Off</strong></td></tr>
+<tr><td>Sign</td><td><strong>Off</strong> until explicit</td></tr>
+<tr><td>Include transcript URI</td><td><strong>Off</strong></td></tr>
+</table>
+<h2 id="privacy-and-safety">Privacy and safety</h2>
+<ol>
+<li><strong>Redact</strong> secrets before propose/publish (key material, tokens, home paths optional).  </li>
+<li><strong>Do not</strong> put private keys in provenance.  </li>
+<li><strong>Do not</strong> auto-post to social.  </li>
+<li>Prompt <strong>bodies</strong> are optional and off by default in published L2.  </li>
+<li>Metrics (counts) are preferred over content for public records.  </li>
+<li>GDPR/workplace: operators own retention of L3 raw logs.</li>
+</ol>
+<h2 id="trust-interpretation">Trust interpretation</h2>
+<table>
+<tr><th>Statement</th><th>True?</th></tr>
+<tr><td>“This L2 was signed by issuer K for these digests”</td><td>Yes, if claim verifies</td></tr>
+<tr><td>“The metrics are complete and ungameable”</td><td>No — harness-mediated</td></tr>
+<tr><td>“The model is named honestly”</td><td>Declaration + optional automation, not oracle</td></tr>
+<tr><td>“Therefore content is true”</td><td><strong>No</strong></td></tr>
+</table>
+<h2 id="relationship-to-product-surfaces">Relationship to product surfaces</h2>
+<table>
+<tr><th>Surface</th><th>Use of L2</th></tr>
+<tr><td>Docs footer</td><td>Link “session provenance” next to colo when published</td></tr>
+<tr><td>Sample site</td><td>Optional demo provenance file</td></tr>
+<tr><td>Social</td><td>Rarely attach full L2; card may say “model-primary · N prompts” if desired</td></tr>
+<tr><td>Verify CLI</td><td>Optional <code>--provenance</code> check digest match</td></tr>
+</table>
+<h2 id="phased-delivery">Phased delivery</h2>
+<table>
+<tr><th>Phase</th><th>Deliverable</th></tr>
+<tr><td><strong>P0 design</strong></td><td>This doc + FEAT-004 + schema stubs</td></tr>
+<tr><td><strong>P1</strong></td><td>JSON Schema; <code>provenance build</code> / <code>propose-colo</code> from fixture journal; tests</td></tr>
+<tr><td><strong>P2</strong></td><td>Reference skill for one harness (e.g. Claude Code)</td></tr>
+<tr><td><strong>P3</strong></td><td>Multi-subject claim CLI; verify provenance pointer; site “how to auto-colo”</td></tr>
+<tr><td><strong>P4</strong></td><td>Optional transcript digest publish helpers</td></tr>
+</table>
+<h2 id="open-questions">Open questions</h2>
+<ul>
+<li>[ ] Extend ingredient <code>kind</code> with <code>skill</code> vs overload <code>tool</code>  </li>
+<li>[ ] Token metrics: require harness API or always optional  </li>
+<li>[ ] Multi-session merge for long-running docs  </li>
+<li>[ ] Whether L2 should be a separate claim type vs document-only  </li>
+<li>[ ] Alignment with OpenTelemetry / gen-AI trace standards later  </li>
+</ul>
+<h2 id="references">References</h2>
+<ul>
+<li>claim-system.md, CONTRACT-001, ADR-001, ADR-003  </li>
+<li>FEAT-002 signed docs; FEAT-004 (auto provenance)  </li>
+<li>Prior art: SLSA provenance, in-toto predicates, SBOM field discipline  </li>
+</ul>
+      </main>
+    </div>
+  </div>
+  <footer class="site-footer">
+    <div class="wrap">
+      <a class="innsigle-footer-seal" href="/use/colophon/">
+        <img src="/assets/marks/innsigle-base.svg" width="48" height="48" alt="Innsigle seal" />
+        <span>
+          <strong>Innsigle</strong>
+          <span class="cue">Colo · not a detector</span>
+        </span>
+      </a>
+      <p>
+        <a href="https://github.com/DocumentDrivenDX/innsigle">Source</a>
+        · curated in <code>docs/website/</code>
+        · specs from <code>docs/helix/</code>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

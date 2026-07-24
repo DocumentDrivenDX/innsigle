@@ -28,7 +28,7 @@
     <p class="crumbs" aria-label="Breadcrumb"><a href="/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/reference/">Reference</a> <span aria-hidden="true">/</span> <span>Claim System: Colophon, Storage, Signing</span></p>
     <div class="docs-grid">
       <aside class="docs-side" aria-label="Section">
-        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/sample/">Sample</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/issuer/">Issuer</a></li><li><a href="/use/colophon/">Colophon</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/" aria-current="page">Reference home</a></li><li><a href="/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/sample/">Sample</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/issuer/">Issuer</a></li><li><a href="/use/colophon/">Colophon</a></li><li><a href="/use/provenance/">Provenance</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/" aria-current="page">Reference home</a></li><li><a href="/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
       </aside>
       <main class="docs-main prose">
         <p class="gen-banner note">Generated reference — edit sources under <code>docs/helix/</code>, then <code>npm run site:build</code>.</p>
@@ -80,6 +80,11 @@ created: 2026-07-22</code></pre>
   composition: enum
   ingredients[]: Ingredient
   notes?: string          # short free text; not a loophole for hiding models
+  provenance?: {          # optional pointer to session provenance (L2)
+    kind: "session"
+    digest: { alg, value }
+    uri?: string
+  }
   schema_version: "1"
 
 Ingredient
@@ -88,6 +93,7 @@ Ingredient
   role?: string           # "draft", "edit", "structure", "rewrite"
   version?: string        # model id or tool version when known
   uri?: string            # optional link to product/docs</code></pre>
+<p>Detailed machine history (prompt counts, skill runs, compact timeline) lives in a <strong>session provenance</strong> document—see <code>session-provenance.md</code> and FEAT-004. The colo stays short; L2 is optional and linked by digest.</p>
 <h3 id="composition-enum">Composition enum</h3>
 <table>
 <tr><th>Value</th><th>When to use</th></tr>
@@ -289,6 +295,7 @@ bio: https://azgaard.net/innsigle
 <li>~~Brand explainer / public site~~ (docs-driven microsite + Pages)</li>
 <li>Feature specs FEAT-001–003 + walkthroughs</li>
 <li>CLI: HTTPS fetch keys + WoT path check; optional in-toto/DSSE export</li>
+<li>Session provenance capture skill + <code>provenance build</code> / propose-colo (FEAT-004)</li>
 </ol>
       </main>
     </div>

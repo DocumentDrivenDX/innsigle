@@ -60,6 +60,11 @@ Colophon
   composition: enum
   ingredients[]: Ingredient
   notes?: string          # short free text; not a loophole for hiding models
+  provenance?: {          # optional pointer to session provenance (L2)
+    kind: "session"
+    digest: { alg, value }
+    uri?: string
+  }
   schema_version: "1"
 
 Ingredient
@@ -69,6 +74,10 @@ Ingredient
   version?: string        # model id or tool version when known
   uri?: string            # optional link to product/docs
 ```
+
+Detailed machine history (prompt counts, skill runs, compact timeline) lives in a
+**session provenance** document—see `session-provenance.md` and FEAT-004. The colo
+stays short; L2 is optional and linked by digest.
 
 ### Composition enum
 
@@ -317,3 +326,4 @@ Exact flags belong in Contract, not here.
 7. ~~Brand explainer / public site~~ (docs-driven microsite + Pages)
 8. Feature specs FEAT-001–003 + walkthroughs
 9. CLI: HTTPS fetch keys + WoT path check; optional in-toto/DSSE export
+10. Session provenance capture skill + `provenance build` / propose-colo (FEAT-004)

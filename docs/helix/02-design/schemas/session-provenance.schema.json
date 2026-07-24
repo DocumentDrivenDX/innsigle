@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://innsigle.dev/schema/session-provenance/v1.json",
+  "title": "Innsigle session provenance document v1",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "innsigle_provenance",
+    "kind",
+    "schema_version",
+    "generated_at",
+    "generator",
+    "metrics",
+    "composition_suggestion",
+    "artifacts",
+    "privacy"
+  ],
+  "properties": {
+    "innsigle_provenance": { "const": "1" },
+    "kind": { "const": "session" },
+    "schema_version": { "const": "1" },
+    "generated_at": { "type": "string", "minLength": 1 },
+    "generator": {
+      "type": "object",
+      "required": ["name", "version"],
+      "properties": {
+        "name": { "type": "string" },
+        "version": { "type": "string" },
+        "uri": { "type": ["string", "null"] }
+      }
+    },
+    "session": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "started_at": { "type": "string" },
+        "ended_at": { "type": "string" },
+        "harness": { "type": "object" }
+      }
+    },
+    "composition_suggestion": {
+      "enum": ["human-authored", "mixed", "model-primary"]
+    },
+    "metrics": {
+      "type": "object",
+      "required": ["user_prompts", "assistant_turns"],
+      "properties": {
+        "user_prompts": { "type": "integer", "minimum": 0 },
+        "assistant_turns": { "type": "integer", "minimum": 0 },
+        "tool_calls": { "type": "integer", "minimum": 0 },
+        "skill_invocations": { "type": "integer", "minimum": 0 },
+        "files_touched": { "type": "integer", "minimum": 0 },
+        "approx_input_tokens": { "type": ["integer", "null"] },
+        "approx_output_tokens": { "type": ["integer", "null"] }
+      }
+    },
+    "models": { "type": "array" },
+    "skills": { "type": "array" },
+    "tools": { "type": "array" },
+    "humans": { "type": "array" },
+    "artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["digest"],
+        "properties": {
+          "path": { "type": "string" },
+          "digest": {
+            "type": "object",
+            "required": ["alg", "value"],
+            "properties": {
+              "alg": { "const": "sha256" },
+              "value": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+            }
+          },
+          "role": { "type": "string" }
+        }
+      }
+    },
+    "timeline": { "type": "array" },
+    "transcript": {
+      "type": ["object", "null"],
+      "properties": {
+        "digest": { "type": "object" },
+        "uri": { "type": "string" }
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "required": ["redacted"],
+      "properties": {
+        "redacted": { "type": "boolean" },
+        "raw_retained_locally": { "type": "boolean" },
+        "notes": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

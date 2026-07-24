@@ -148,6 +148,7 @@ function sidebar(pageUrl) {
         { t: "CLI", h: `${BASE}/use/cli/` },
         { t: "Issuer", h: `${BASE}/use/issuer/` },
         { t: "Colophon", h: `${BASE}/use/colophon/` },
+        { t: "Provenance", h: `${BASE}/use/provenance/` },
         { t: "Verify", h: `${BASE}/use/verify/` },
         { t: "Marks", h: `${BASE}/use/marks/` },
         { t: "Walkthrough: docs", h: `${BASE}/use/walkthrough-docs/` },

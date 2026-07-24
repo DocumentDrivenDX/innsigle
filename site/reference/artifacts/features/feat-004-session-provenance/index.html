@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Feature Specification: FEAT-004 — Automatic session provenance — Innsigle</title>
+  <meta name="description" content="Feature Specification: FEAT-004 — Automatic session provenance" />
+  <link rel="stylesheet" href="/assets/css/site.css" />
+  <link rel="icon" href="/assets/marks/innsigle-base.svg" type="image/svg+xml" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/">
+        <img class="brand-mark" src="/assets/marks/innsigle-base.svg" width="40" height="40" alt="" />
+        Innsigle
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/">What it is</a>
+        <a href="/why/">Why</a>
+        <a href="/use/">Use</a>
+        <a href="/reference/" aria-current="page">Reference</a>
+        <a href="/sample/">Sample</a>
+      </nav>
+    </div>
+  </header>
+  <div class="wrap layout-docs">
+    <p class="crumbs" aria-label="Breadcrumb"><a href="/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/reference/">Reference</a> <span aria-hidden="true">/</span> <span>Feature Specification: FEAT-004 — Automatic session provenance</span></p>
+    <div class="docs-grid">
+      <aside class="docs-side" aria-label="Section">
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/sample/">Sample</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/issuer/">Issuer</a></li><li><a href="/use/colophon/">Colophon</a></li><li><a href="/use/provenance/">Provenance</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/" aria-current="page">Reference home</a></li><li><a href="/reference/artifacts/" aria-current="page">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
+      </aside>
+      <main class="docs-main prose">
+        <p class="gen-banner note">Generated reference — edit sources under <code>docs/helix/</code>, then <code>npm run site:build</code>.</p>
+<blockquote><strong>Generated from HELIX docs.</strong> Source: <code>docs/helix/01-frame/features/FEAT-004-session-provenance.md</code>. Edit the source, not this file or <code>site/</code> HTML.</blockquote>
+<details><summary>Source frontmatter</summary>
+<pre><code class="language-yaml">ddx:
+  id: aibadge.feat.004
+  type: feature-specification
+  links:
+    - target: aibadge.prd
+      kind: informed_by
+    - target: aibadge.feat.002
+      kind: informed_by
+    - target: aibadge.design.session-provenance
+      kind: informed_by
+    - target: aibadge.contract.001
+      kind: informs
+    - target: aibadge.adr.001
+      kind: informed_by
+    - target: aibadge.adr.003
+      kind: informed_by
+status: draft
+activity: 01-frame
+created: 2026-07-24</code></pre>
+</details>
+<h1 id="feature-specification-feat-004-automatic-session-provenance">Feature Specification: FEAT-004 — Automatic session provenance</h1>
+<p><strong>Feature ID</strong>: FEAT-004   <strong>Status</strong>: Specified   <strong>Priority</strong>: P1 (after FEAT-001–003 core path)   <strong>Owner</strong>: Operator   <strong>Covered PRD Subsystem(s)</strong>: UC-AI-docs; Tooling; Sign and Verify   <strong>Covered PRD Requirements</strong>: FR-1–4a, FR-8–12, FR-18–19 (extends with automation)   <strong>Cross-Subsystem Rationale</strong>: Agent/skill capture feeds colo + optional signed claim without laundering authorship.</p>
+<h2 id="overview">Overview</h2>
+<p>When an agent (e.g. Claude) with an Innsigle-aware skill produces a file, the system can <strong>automatically capture</strong> session metrics and tool/model/skill use, <strong>propose</strong> a detailed colophon, and <strong>optionally</strong> publish + sign provenance bound to the content digest.</p>
+<h2 id="ideal-future-state">Ideal Future State</h2>
+<p>Operator enables a skill. After a session that writes <code>page.md</code>, they run (or the skill offers) “build provenance → propose colo → review → sign.” Public claim includes composition, named tools, prompt counts, and a link/digest to a session provenance document. Verify still fails closed on content tamper. Transcripts stay local unless explicitly published.</p>
+<h2 id="problem-statement">Problem Statement</h2>
+<ul>
+<li><strong>Current situation</strong>: Colo is hand-authored; sample is static; no harness integration.  </li>
+<li><strong>Pain points</strong>: Detailed “how many prompts / which skill” is lost; manual bills under-specify agent work.  </li>
+<li><strong>Desired outcome</strong>: Spec + schemas + phased CLI/skill path for automatic L2 provenance and L1 colo proposal.</li>
+</ul>
+<h2 id="requirements">Requirements</h2>
+<h3 id="functional">Functional</h3>
+<p><strong>PROV-01.</strong> System defines a <strong>session provenance</strong> document (L2) with metrics including at least <code>user_prompts</code>, models, skills/tools, and primary artifact digests.   <strong>PROV-02.</strong> Capturing skill/harness records a local structured journal of session events.   <strong>PROV-03.</strong> Tooling builds L2 from journal with redaction of secrets before any publish path.   <strong>PROV-04.</strong> Tooling proposes colo (L1) from L2 including named models/tools and capturing skill; composition suggestion is conservative (FR-4a).   <strong>PROV-05.</strong> Operator review is required before publish or sign.   <strong>PROV-06.</strong> Colo MAY reference L2 via <code>provenance.uri</code> + <code>provenance.digest</code> (JCS+SHA-256).   <strong>PROV-07.</strong> Claim/sign/verify of content remains ADR-001/CONTRACT-001; L2 optional to verify.   <strong>PROV-08.</strong> Auto-publish of L2 and auto-sign are <strong>off</strong> by default.   <strong>PROV-09.</strong> Published L2 MUST NOT require raw transcript bodies; transcript URI is opt-in.   <strong>PROV-10.</strong> Skill MUST NOT set <code>human-authored</code> solely due to rewrite/cleanup tools.</p>
+<h3 id="non-functional">Non-Functional</h3>
+<ul>
+<li>Works without Innsigle-hosted cloud.  </li>
+<li>L2 publish uses same host classes as ADR-003 D7 (gist/Pages/free HTTPS).  </li>
+<li>Golden tests for propose-colo from fixture journal.</li>
+</ul>
+<h2 id="acceptance-sketches">Acceptance sketches</h2>
+<table>
+<tr><th>ID</th><th>Scenario</th><th>Expect</th></tr>
+<tr><td>PROV-04</td><td>Fixture journal: 5 user prompts, Claude, file write</td><td>Colo lists model + skill; <code>user_prompts</code> reflected in L2; composition ≠ human-authored if model wrote content</td></tr>
+<tr><td>PROV-05</td><td>Skill offers sign without review</td><td>Blocked / requires confirm</td></tr>
+<tr><td>PROV-06</td><td>L2 bytes changed after claim</td><td>Provenance digest mismatch when checked</td></tr>
+<tr><td>PROV-10</td><td>Journal includes sloptimizer only</td><td>Composition not upgraded to human-authored</td></tr>
+</table>
+<h2 id="dependencies">Dependencies</h2>
+<ul>
+<li>FEAT-001 colo language  </li>
+<li>FEAT-002 claim/sign/verify  </li>
+<li>ADR-001 / ADR-003  </li>
+<li><code>docs/helix/02-design/session-provenance.md</code>  </li>
+</ul>
+<h2 id="out-of-scope-this-feat">Out of scope (this FEAT)</h2>
+<ul>
+<li>Full multi-harness support day one (one reference harness is enough for P2)  </li>
+<li>Real-time streaming provenance UI  </li>
+<li>Court-grade forensic logs  </li>
+</ul>
+      </main>
+    </div>
+  </div>
+  <footer class="site-footer">
+    <div class="wrap">
+      <a class="innsigle-footer-seal" href="/use/colophon/">
+        <img src="/assets/marks/innsigle-base.svg" width="48" height="48" alt="Innsigle seal" />
+        <span>
+          <strong>Innsigle</strong>
+          <span class="cue">Colo · not a detector</span>
+        </span>
+      </a>
+      <p>
+        <a href="https://github.com/DocumentDrivenDX/innsigle">Source</a>
+        · curated in <code>docs/website/</code>
+        · specs from <code>docs/helix/</code>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>
