@@ -19,10 +19,15 @@ Content pipeline (HELIX **product-microsite-ia**):
 
 ```bash
 npm run site:build          # publish artifacts + HTML (local)
-npm run test:e2e            # Playwright: links + design-voice screenshots
+npm run test:agent          # local agent gate: unit + Playwright e2e (CI mode)
+npm run test:agent:update   # same + refresh screenshot baselines after UI changes
 git push origin main        # primary publish: Actions tests + deploys Pages
 # gh workflow run "Deploy microsite"   # manual re-run
 ```
+
+**Agents:** run `npm run test:agent` (or `test:agent:update` after layout/nav/content
+changes that affect screenshots) **before** push. Stale e2e baselines fail Deploy
+and leave the live site on the last green commit.
 
 Do **not** use `scripts/publish-site.sh` for normal deploys (emergency legacy
 `gh-pages` only; requires `FORCE_LEGACY_GH_PAGES=1`).
