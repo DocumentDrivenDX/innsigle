@@ -7,7 +7,7 @@ description: Try Innsigle — CLI, colophon, verify, and marks.
 
 # Use Innsigle
 
-Onboarding path: install CLI → write a colophon → claim and sign a file → verify.
+Onboarding: install the CLI → write a colophon → claim and sign a file → verify.
 
 ## Core pages
 
@@ -16,7 +16,7 @@ Onboarding path: install CLI → write a colophon → claim and sign a file → 
 | [CLI](cli/) | How do I run keygen, claim, sign, verify? |
 | [Issuer](issuer/) | How do I get a key and publish it without a server? |
 | [Colophon](colophon/) | How do I declare composition? |
-| [Provenance](provenance/) | Auto colo from agent sessions (+ worked multi-agent examples) |
+| [Provenance](provenance/) | Auto colophon from agent sessions (+ examples) |
 | [Verify](verify/) | What does a valid seal mean? |
 | [Marks](marks/) | Which seal cue for which state? |
 
@@ -24,7 +24,7 @@ Onboarding path: install CLI → write a colophon → claim and sign a file → 
 
 | Walkthrough | Use case |
 |-------------|----------|
-| [Conversation → colophon](walkthrough-provenance/) | FEAT-004 — agent session to sealed colo |
+| [Conversation → colophon](walkthrough-provenance/) | FEAT-004 — agent session to sealed colophon |
 | [Seal a docs page](walkthrough-docs/) | UC-AI-docs (FEAT-002) |
 | [Human social mark](walkthrough-social/) | UC-human-social (FEAT-003) |
 
@@ -32,7 +32,7 @@ Screenshots go in `docs/website/static/captures/` and link from those pages.
 
 ## Proof
 
-- [Sample](../sample/) — live signed model-primary page in this site tree
-- [Golden vectors](https://github.com/DocumentDrivenDX/innsigle/tree/main/tests/vectors) — reproducible crypto fixtures
+- [Sample](../sample/) — signed model-primary page in this site tree
+- [Golden vectors](https://github.com/DocumentDrivenDX/innsigle/tree/main/tests/vectors) — crypto fixtures
 
-Spec-backed detail is generated from `docs/helix/` under [Reference](../reference/).
+Spec detail is generated from `docs/helix/` under [Reference](../reference/).

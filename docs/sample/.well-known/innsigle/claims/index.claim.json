@@ -1,7 +1,7 @@
 {
   "innsigle": "1",
   "type": "https://innsigle.dev/claim/colophon/v1",
-  "issued_at": "2026-07-24T02:05:50Z",
+  "issued_at": "2026-07-25T18:48:39Z",
   "issuer": {
     "id": "azgaard-dogfood",
     "name": "Azgaard Sample",
@@ -12,7 +12,7 @@
     {
       "digest": {
         "alg": "sha256",
-        "value": "9d9971dd54d202ac51225fbf68121c88b6b065c17ae421625295115144daa48c"
+        "value": "dc7fa113c5cda9502f1f0d8950344a7b13011c0fecc16539b46abbfd7e488e12"
       }
     }
   ],

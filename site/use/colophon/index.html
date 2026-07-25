@@ -28,11 +28,12 @@
     <p class="crumbs" aria-label="Breadcrumb"><a href="/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/use/">Use</a> <span aria-hidden="true">/</span> <span>Colophon</span></p>
     <div class="docs-grid">
       <aside class="docs-side" aria-label="Section">
-        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/sample/">Sample</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/" aria-current="page">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/issuer/">Issuer</a></li><li><a href="/use/colophon/" aria-current="page">Colophon</a></li><li><a href="/use/provenance/">Provenance</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-provenance/">Walkthrough: conversation → colo</a></li><li><a href="/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/">Reference home</a></li><li><a href="/reference/artifacts/">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/sample/">Sample</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/" aria-current="page">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/issuer/">Issuer</a></li><li><a href="/use/colophon/" aria-current="page">Colophon</a></li><li><a href="/use/provenance/">Provenance</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-provenance/">Walkthrough: conversation → colophon</a></li><li><a href="/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/">Reference home</a></li><li><a href="/reference/artifacts/">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
       </aside>
       <main class="docs-main prose">
         <h1 id="colophon">Colophon</h1>
-<p>The <strong>colophon</strong> (short: <strong>colo</strong>) is the declared recipe of how work was made—composition plus ingredients. Not a moral grade. Not a detector score. Publishing tradition: a colophon lists how the piece was produced; Innsigle seals that declaration to content bytes.</p>
+<p>In publishing, a <strong>colophon</strong> lists how a work was produced. In Innsigle, it is the short machine-readable recipe bound to content bytes: composition plus ingredients. Not a moral grade.</p>
+<p>CLI short name for the object and commands: <strong><code>colo</code></strong>.</p>
 <h2 id="composition">Composition</h2>
 <table>
 <tr><th>Value</th><th>When</th><th>Mark cue</th></tr>
@@ -46,7 +47,7 @@
 <p>Running sloptimizer (or similar) on model output does <strong>not</strong> flip <code>model-primary</code> to <code>human-authored</code>. List the tool as <code>kind: tool</code>.</p>
 <h2 id="cli">CLI</h2>
 <pre><code class="language-bash">node src/cli.mjs colo example --kind model-primary &gt; colo.json</code></pre>
-<p>Full schema: <a href="/reference/artifacts/claim-system/">claim system design</a> and JSON Schema in the repo under <code>docs/helix/02-design/schemas/</code>.</p>
+<p>Full schema: <a href="/reference/artifacts/claim-system/">claim system design</a> and JSON Schema under <code>docs/helix/02-design/schemas/</code>.</p>
       </main>
     </div>
   </div>
@@ -56,7 +57,7 @@
         <img src="/assets/marks/innsigle-base.svg" width="48" height="48" alt="Innsigle seal" />
         <span>
           <strong>Innsigle</strong>
-          <span class="cue">Colo · not a detector</span>
+          <span class="cue">Content provenance in the time of AI</span>
         </span>
       </a>
       <p>

@@ -2,36 +2,32 @@
 title: Why Innsigle
 nav: why
 weight: 10
-description: The gap between human-only badges, media provenance, and maker-controlled composition seals.
+description: Why content provenance matters when models draft and platforms strip metadata.
 ---
 
 # Why Innsigle
 
-This page is for evaluators: what problem Innsigle attacks, and why existing
-layers do not cover dual-channel makers.
+For evaluators: what problem this attacks, and why existing tools leave a gap.
 
 ## The gap
 
-| Layer | Examples | Miss |
-|-------|----------|------|
-| Craft badge | Not By AI | Human-only; no proud AI bill; no crypto |
-| Media provenance | C2PA Content Credentials | File/media-first; social strips metadata |
-| Vendor watermark | SynthID | Sparse signal; not a maker BOM |
-| Platform labels | Meta “Made with AI” | Not portable; not your brand |
-| Detectors | Classifiers | Wrong job; arms race |
+| Approach | Example | Miss for makers |
+|----------|---------|-----------------|
+| Human-only badges | Not By AI | No proud path for model-primary docs |
+| Media credentials | C2PA | Social uploads strip metadata; docs/HTML are not the center |
+| Vendor watermark | SynthID | Not a maker-authored bill of production |
+| Free-text footer | “Written with AI” | No mark system, no verify, easy to ignore |
 
-## Thesis
+Makers need one language for **how work was made**, usable in:
 
-One seal family for two real jobs:
-
-1. **UC-AI-docs** — Owned docs with a signed colophon that can name models proudly.
+1. **UC-AI-docs** — Owned docs with a signed colophon that can name models.  
 2. **UC-human-social** — Human-authored mark that survives metadata death.
 
-Editorial tools such as **sloptimizer** clean prose; they do not rewrite composition
-to human-authored. List them on the bill.
+**Innsigle** is that language: content provenance under maker control, across
+docs and social, with an optional signature over content bytes. Industrial
+media pipelines (C2PA) stay in their lane—see [Non-goals](../non-goals/).
 
 ## Next
 
-- [How to use Innsigle](../use/)
-- [Product vision (generated)](../reference/artifacts/product-vision/)
-- [Competitive analysis (generated)](../reference/artifacts/competitive-analysis/)
+- [How to use Innsigle](../use/)  
+- [Non-goals](../non-goals/)  

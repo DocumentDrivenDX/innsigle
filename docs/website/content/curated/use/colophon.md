@@ -8,10 +8,11 @@ description: Composition states and ingredients for how work was made.
 
 # Colophon
 
-The **colophon** (short: **colo**) is the declared recipe of how work was
-made—composition plus ingredients. Not a moral grade. Not a detector score.
-Publishing tradition: a colophon lists how the piece was produced; Innsigle
-seals that declaration to content bytes.
+In publishing, a **colophon** lists how a work was produced. In Innsigle, it is
+the short machine-readable recipe bound to content bytes: composition plus
+ingredients. Not a moral grade.
+
+CLI short name for the object and commands: **`colo`**.
 
 ## Composition
 
@@ -38,4 +39,4 @@ node src/cli.mjs colo example --kind model-primary > colo.json
 ```
 
 Full schema: [claim system design](../../reference/artifacts/claim-system/) and
-JSON Schema in the repo under `docs/helix/02-design/schemas/`.
+JSON Schema under `docs/helix/02-design/schemas/`.

@@ -34,7 +34,7 @@ The operator types these (same sequence for each agent in the fixture):
 </div>
 <div class="story-bubble human" role="listitem">
 <span class="story-who">You</span>
-<p>Add a bullet list of three non-goals: not a detector, not purity score, not content truth.</p>
+<p>Add a bullet list of three non-goals: no AI detection, no purity score, no claim of content truth.</p>
 </div>
 <div class="story-bubble human" role="listitem">
 <span class="story-who">You</span>
@@ -60,12 +60,12 @@ The model produces a markdown file (model-primary: the agent wrote the bytes).
 <div class="story-doc">
 <p class="story-doc-title">Sealed Notes</p>
 <p>An Innsigle colophon declares how a piece of work was made—composition and ingredients—not whether the prose is true or pure.</p>
-<p>It lists models, tools, and human roles so readers can see production, not a detector score.</p>
+<p>It lists models, tools, and human roles so readers can see how the piece was produced.</p>
 <p class="story-doc-h">Non-goals</p>
 <ul>
-<li>Not an AI detector</li>
-<li>Not a purity score</li>
-<li>Not a claim of content truth</li>
+<li>No AI detection</li>
+<li>No purity score</li>
+<li>No claim of content truth</li>
 </ul>
 </div>
 
@@ -138,7 +138,7 @@ Footer pattern (same idea as the [Sample](../../sample/) signed page):
 <img src="/assets/marks/innsigle-model.svg" width="48" height="48" alt="Innsigle model-primary seal" />
 <span>
 <strong>Innsigle</strong>
-<span class="cue">Colo · model-primary · Claude + Codex · not a detector</span>
+<span class="cue">Content provenance · model-primary · Claude + Codex</span>
 </span>
 </div>
 

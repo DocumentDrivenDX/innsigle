@@ -5,20 +5,30 @@ pages under `docs/website/content/curated/`.
 
 ## Reader
 
-Smart maker who publishes docs and social posts. May know C2PA, badges, or
-DKIM. Does not need HELIX vocabulary. Each page should stand alone: name the
-thing, why it matters, next action.
+Makers who publish docs and social posts. May know C2PA or DKIM. Does not need
+HELIX jargon. Each page stands alone: what Innsigle is, why it matters, what to
+do next.
+
+## Branding
+
+| Do | Don't |
+|----|--------|
+| Lead with **Innsigle** as the product | Lead every chrome line with “Colo” |
+| Tagline: **Content provenance in the time of AI** | Footer: “not a detector” as the product pitch |
+| Use **colophon** on first mention; CLI verb can stay `colo` | Repeat **colo** as brand shorthand in UI chrome |
+| Put category boundaries on Non-goals | Defend against detectors on every page |
+
+Spoken product name: **INN-siggle** (rhymes with *single*). Once per page max.
 
 ## Contracts
 
-1. **First paragraph** answers what the page covers and what the reader can do.
-2. **First-use terms** get a short local definition (colophon/colo, signet, seal).
+1. **First paragraph** says what the page covers and what the reader can do.
+2. **First-use terms** get a short definition (colophon, seal, claim).
 3. **Cards** name the destination and what the click gives the reader.
-4. **No detector theater**, no purity traffic lights, no “verified true content.”
+4. No purity theater, no “verified true content,” no AI-score language.
+5. Prefer short sentences, concrete nouns, named actors.
 
 ## Register
 
-Short craft nouns: seal, colophon, colo, signet, composition, claim. Avoid
-“credentials,” “authentic real,” AI-score language.
-
-Spoken product name: **INN-siggle** (rhymes with *single*).
+Craft manual, not compliance form. Seal, mark, claim, composition, ingredients.
+Avoid “credentials,” “authentic real,” “unlock,” “empower,” “seamless.”

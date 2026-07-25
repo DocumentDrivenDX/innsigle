@@ -3,11 +3,11 @@
 An Innsigle colophon is a short production recipe: how the work was composed and
 which tools or people participated.
 
-It is sealed to content bytes when signed; verification checks the seal, not
-truthfulness of the text.
+When signed, it is bound to content bytes; verification checks the seal, not
+whether the text is true.
 
 ## Non-goals
 
-- Not an AI detector
-- Not a purity score
-- Not a claim of content truth
+- No AI detection
+- No purity score
+- No claim of content truth

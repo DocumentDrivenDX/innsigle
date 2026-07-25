@@ -63,7 +63,7 @@ Pick one or both:
 Example caption skeleton:
 
 ```text
-Human-authored. Innsigle colo: H.
+Human-authored. Innsigle mark: H.
 key ed25519:… · keys https://…
 How to read: https://documentdrivendx.github.io/innsigle/use/marks/
 ```

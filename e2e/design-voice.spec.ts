@@ -10,7 +10,7 @@ const SHOT_PAGES: { name: string; path: string; mustSee: RegExp[] }[] = [
   {
     name: "home",
     path: "/",
-    mustSee: [/craft seal/i, /colophon/i, /INN-siggle|Innsigle/i, /not a detector|Not a purity/i],
+    mustSee: [/Content provenance|time of AI/i, /colophon|Innsigle/i, /INN-siggle|Innsigle/i],
   },
   {
     name: "why",
@@ -55,7 +55,7 @@ const SHOT_PAGES: { name: string; path: string; mustSee: RegExp[] }[] = [
   {
     name: "non-goals",
     path: "/non-goals/",
-    mustSee: [/Not an AI detector/i, /Not a C2PA replacement/i],
+    mustSee: [/AI detector/i, /C2PA replacement/i, /content provenance/i],
   },
   {
     name: "sample",
@@ -71,8 +71,8 @@ const SHOT_PAGES: { name: string; path: string; mustSee: RegExp[] }[] = [
 
 /**
  * Soft design-voice anti-patterns (promoting detection / purity theater).
- * Negated educational copy ("not a purity score", "not a detector") is allowed —
- * only flag affirmative product claims.
+ * Category boundaries live on Non-goals; product chrome should not pitch
+ * "not a detector". Negated educational copy in body text is fine.
  */
 const FORBIDDEN_VOICE = [
   /verified authentic content/i,

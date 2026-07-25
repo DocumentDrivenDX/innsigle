@@ -9,8 +9,7 @@ description: Seal mark pack — choosable families, H/M/A composition cues.
 # Marks
 
 Pick a **seal family**, then a **composition countermark**. Opaque stamp matrices
-inspired by craft seals, merchant marks, pottery cartouches, and hallmarks—not
-detectors or purity badges.
+inspired by craft seals, merchant marks, pottery cartouches, and hallmarks.
 
 This site’s header and footer use the **matrix** family (`innsigle-*.svg`). Use
 any family in your own footers and social posts.
