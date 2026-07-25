@@ -151,6 +151,7 @@ function sidebar(pageUrl) {
         { t: "Provenance", h: `${BASE}/use/provenance/` },
         { t: "Verify", h: `${BASE}/use/verify/` },
         { t: "Marks", h: `${BASE}/use/marks/` },
+        { t: "Walkthrough: conversation → colo", h: `${BASE}/use/walkthrough-provenance/` },
         { t: "Walkthrough: docs", h: `${BASE}/use/walkthrough-docs/` },
         { t: "Walkthrough: social", h: `${BASE}/use/walkthrough-social/` },
       ],

@@ -24,6 +24,7 @@ Onboarding path: install CLI → write a colophon → claim and sign a file → 
 
 | Walkthrough | Use case |
 |-------------|----------|
+| [Conversation → colophon](walkthrough-provenance/) | FEAT-004 — agent session to sealed colo |
 | [Seal a docs page](walkthrough-docs/) | UC-AI-docs (FEAT-002) |
 | [Human social mark](walkthrough-social/) | UC-human-social (FEAT-003) |
 

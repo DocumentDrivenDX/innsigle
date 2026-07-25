@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Walkthrough — conversation to colophon — Innsigle</title>
+  <meta name="description" content="How agent prompts become a document with an Innsigle colophon." />
+  <link rel="stylesheet" href="/assets/css/site.css" />
+  <link rel="icon" href="/assets/marks/innsigle-base.svg" type="image/svg+xml" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/">
+        <img class="brand-mark" src="/assets/marks/innsigle-base.svg" width="40" height="40" alt="" />
+        Innsigle
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="/">What it is</a>
+        <a href="/why/">Why</a>
+        <a href="/use/" aria-current="page">Use</a>
+        <a href="/reference/">Reference</a>
+        <a href="/sample/">Sample</a>
+      </nav>
+    </div>
+  </header>
+  <div class="wrap layout-docs">
+    <p class="crumbs" aria-label="Breadcrumb"><a href="/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/use/">Use</a> <span aria-hidden="true">/</span> <span>Walkthrough — conversation to colophon</span></p>
+    <div class="docs-grid">
+      <aside class="docs-side" aria-label="Section">
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/sample/">Sample</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/" aria-current="page">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/issuer/">Issuer</a></li><li><a href="/use/colophon/">Colophon</a></li><li><a href="/use/provenance/">Provenance</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-provenance/" aria-current="page">Walkthrough: conversation → colo</a></li><li><a href="/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/">Reference home</a></li><li><a href="/reference/artifacts/">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
+      </aside>
+      <main class="docs-main prose">
+        <h1 id="walkthrough-conversation-document-colophon">Walkthrough: conversation → document → colophon</h1>
+<p><strong>Reader mode:</strong> Start. <strong>Feature:</strong> FEAT-004.</p>
+<p>This page is the story—not the raw JSON. Three human prompts go into agent sessions (Claude and Codex in the fixture). Each session produces a markdown page. The Innsigle skill builds <strong>session provenance</strong> and <strong>proposes a colophon</strong> you can seal to the file bytes.</p>
+<pre><code class="language-text">Human prompts  →  agent writes markdown  →  journal + L2 provenance  →  colo.json
+                                                              ↓
+                                                    review · optional sign</code></pre>
+<hr />
+<h2 id="step-1-human-prompts">Step 1 — Human prompts</h2>
+<p>The operator types these (same sequence for each agent in the fixture):</p>
+<div class="story-convo" role="list">
+<div class="story-bubble human" role="listitem">
+<span class="story-who">You</span>
+<p>Draft a short markdown page titled <strong>Sealed Notes</strong> explaining what an Innsigle colophon is in two paragraphs.</p>
+</div>
+<div class="story-bubble human" role="listitem">
+<span class="story-who">You</span>
+<p>Add a bullet list of three non-goals: not a detector, not purity score, not content truth.</p>
+</div>
+<div class="story-bubble human" role="listitem">
+<span class="story-who">You</span>
+<p>Tighten the opening sentence; keep model-primary honesty.</p>
+</div>
+</div>
+<p>Full list: <a href="/examples/provenance/human-inputs.json">human-inputs.json</a>.</p>
+<hr />
+<h2 id="step-2-agent-writes-the-document">Step 2 — Agent writes the document</h2>
+<p>The model produces a markdown file (model-primary: the agent wrote the bytes).</p>
+<div class="story-bubble agent" role="listitem">
+<span class="story-who">Claude (fixture)</span>
+<p>Writes <code>sealed-notes-claude.md</code> — two paragraphs on the colophon, then the non-goals list.</p>
+</div>
+<h3 id="the-document-claude-session">The document (Claude session)</h3>
+<div class="story-doc">
+<p class="story-doc-title">Sealed Notes</p>
+<p>An Innsigle colophon declares how a piece of work was made—composition and ingredients—not whether the prose is true or pure.</p>
+<p>It lists models, tools, and human roles so readers can see production, not a detector score.</p>
+<p class="story-doc-h">Non-goals</p>
+<ul>
+<li>Not an AI detector</li>
+<li>Not a purity score</li>
+<li>Not a claim of content truth</li>
+</ul>
+</div>
+<p>Codex produces a parallel page: <a href="/examples/provenance/artifacts/sealed-notes-codex.md">sealed-notes-codex.md</a>.   Claude artifact: <a href="/examples/provenance/artifacts/sealed-notes-claude.md">sealed-notes-claude.md</a>.</p>
+<hr />
+<h2 id="step-3-skill-captures-the-session">Step 3 — Skill captures the session</h2>
+<p>The harness records a <strong>journal</strong> (JSONL): each human prompt, assistant turn, file write (<code>by: model</code>), tool/skill calls. That is not the colo yet—it is the raw machine log.</p>
+<div class="story-flow" aria-hidden="true">
+<span>journal.jsonl</span>
+<span class="story-arrow">→</span>
+<span>provenance build</span>
+<span class="story-arrow">→</span>
+<span>session-provenance.json (L2)</span>
+<span class="story-arrow">→</span>
+<span>propose-colo</span>
+<span class="story-arrow">→</span>
+<span>colo.json (L1)</span>
+</div>
+<p>From the <strong>merged</strong> Claude + Codex journals the driver reports:</p>
+<table>
+<tr><th>Metric</th><th>Value</th></tr>
+<tr><td>User prompts</td><td>6 (3 per agent)</td></tr>
+<tr><td>Assistant turns</td><td>5</td></tr>
+<tr><td>Models</td><td>Claude, Codex</td></tr>
+<tr><td>Composition suggestion</td><td><strong>model-primary</strong></td></tr>
+</table>
+<p>Rewrite tools (e.g. sloptimizer) appear as ingredients. They do <strong>not</strong> turn the work into <code>human-authored</code>.</p>
+<hr />
+<h2 id="step-4-proposed-colophon">Step 4 — Proposed colophon</h2>
+<p>This is what a reader (or claim) should show next to the document:</p>
+<div class="story-colo">
+<p class="story-colo-head">Colophon · model-primary</p>
+<table>
+<thead><tr><th>Kind</th><th>Name</th><th>Role</th></tr></thead>
+<tbody>
+<tr><td>model</td><td>Claude</td><td>primary</td></tr>
+<tr><td>model</td><td>Codex</td><td>primary</td></tr>
+<tr><td>tool</td><td>innsigle-session</td><td>provenance-capture</td></tr>
+<tr><td>tool</td><td>sloptimizer</td><td>rewrite</td></tr>
+<tr><td>human</td><td>operator</td><td>prompter</td></tr>
+</tbody>
+</table>
+<p class="note">session metrics: user_prompts=6; assistant_turns=5</p>
+<p class="note">Linked provenance: <a href="/examples/provenance/session-provenance.json">session-provenance.json</a></p>
+</div>
+<p>Machine form: <a href="/examples/provenance/colo.json">colo.json</a>.</p>
+<hr />
+<h2 id="step-5-how-it-looks-on-a-sealed-page">Step 5 — How it looks on a sealed page</h2>
+<p>Footer pattern (same idea as the <a href="/sample/">Sample</a> signed page):</p>
+<div class="story-footer-demo">
+<img src="/assets/marks/innsigle-model.svg" width="48" height="48" alt="Innsigle model-primary seal" />
+<span>
+<strong>Innsigle</strong>
+<span class="cue">Colo · model-primary · Claude + Codex · not a detector</span>
+</span>
+</div>
+<p>When you <strong>sign</strong>, the claim binds <strong>content SHA-256</strong> + this colo + absolute issuer <code>key_url</code>. Verification checks the seal—not whether the prose is true.</p>
+<hr />
+<h2 id="reproduce">Reproduce</h2>
+<pre><code class="language-bash">npm run test:provenance-driver</code></pre>
+<p>More on layers, CLI, and FR-4a: <a href="/use/provenance/">Session provenance</a>.   Issuer without a server: <a href="/use/issuer/">Issuer identity</a>.</p>
+<h2 id="machine-pack">Machine pack</h2>
+<table>
+<tr><th>File</th><th>Role</th></tr>
+<tr><td><a href="/examples/provenance/human-inputs.json">human-inputs.json</a></td><td>Prompts</td></tr>
+<tr><td><a href="/examples/provenance/session-claude.jsonl">session-claude.jsonl</a></td><td>Claude journal</td></tr>
+<tr><td><a href="/examples/provenance/session-codex.jsonl">session-codex.jsonl</a></td><td>Codex journal</td></tr>
+<tr><td><a href="/examples/provenance/session-provenance.json">session-provenance.json</a></td><td>L2</td></tr>
+<tr><td><a href="/examples/provenance/colo.json">colo.json</a></td><td>L1 colo</td></tr>
+</table>
+      </main>
+    </div>
+  </div>
+  <footer class="site-footer">
+    <div class="wrap">
+      <a class="innsigle-footer-seal" href="/use/colophon/">
+        <img src="/assets/marks/innsigle-base.svg" width="48" height="48" alt="Innsigle seal" />
+        <span>
+          <strong>Innsigle</strong>
+          <span class="cue">Colo · not a detector</span>
+        </span>
+      </a>
+      <p>
+        <a href="https://github.com/DocumentDrivenDX/innsigle">Source</a>
+        · curated in <code>docs/website/</code>
+        · specs from <code>docs/helix/</code>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

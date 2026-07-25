@@ -21,6 +21,7 @@ const CORE_LEAVES = [
   "/use/marks/",
   "/use/walkthrough-docs/",
   "/use/walkthrough-social/",
+  "/use/walkthrough-provenance/",
   "/reference/",
   "/reference/artifacts/",
   "/reference/glossary/",

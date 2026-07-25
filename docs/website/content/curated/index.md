@@ -32,7 +32,8 @@ bytes?** It does not answer whether the prose is true, pure, or free of AI.
 ## Start
 
 - [Why Innsigle](why/) — thesis and audience
-- [Use](use/) — CLI, colophon, verify, marks
-- [Reference](reference/) — generated specs from `docs/helix/`
+- [Conversation → colophon](use/walkthrough-provenance/) — prompts become a sealed document
+- [Use](use/) — CLI, issuer, colo, verify, marks
 - [Sample](sample/) — signed model-primary page
+- [Reference](reference/) — generated specs from `docs/helix/`
 - [Non-goals](non-goals/) — category boundaries

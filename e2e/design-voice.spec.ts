@@ -60,7 +60,12 @@ const SHOT_PAGES: { name: string; path: string; mustSee: RegExp[] }[] = [
   {
     name: "sample",
     path: "/sample/",
-    mustSee: [/sample|model-primary|Innsigle/i],
+    mustSee: [/sample|model-primary|Innsigle|Sealed sample/i],
+  },
+  {
+    name: "walkthrough-provenance",
+    path: "/use/walkthrough-provenance/",
+    mustSee: [/conversation|colophon/i, /Human prompts|You/i, /Sealed Notes|model-primary/i],
   },
 ];
 
