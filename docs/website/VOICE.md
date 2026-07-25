@@ -11,14 +11,30 @@ do next.
 
 ## Branding
 
+Apostrophe in chrome/H1: straight ASCII `'` only.
+
+| Slot | Exact string | Surfaces |
+|------|--------------|----------|
+| **A — category** | `Content provenance for the AI era` | Meta category clause, Non-goals opener, evaluator tables |
+| **B — chrome** | `The maker's seal for published work` | Footer `.cue`, sample snippet default |
+| **H1 — home** | `The maker's seal for published work` | Home H1 (same as B) |
+
 | Do | Don't |
 |----|--------|
-| Lead with **Innsigle** as the product | Lead every chrome line with “Colo” |
-| Tagline: **Content provenance in the time of AI** | Footer: “not a detector” as the product pitch |
-| Use **colophon** on first mention; CLI verb can stay `colo` | Repeat **colo** as brand shorthand in UI chrome |
-| Put category boundaries on Non-goals | Defend against detectors on every page |
+| Lead with **Innsigle** as the product | Lead chrome with “Colo” |
+| Use B4 as footer cue | Footer: category paper-title or “not a detector” |
+| **Maker** = publisher/operator | Maker = human author only |
+| **Seal / mark** for recognition | Imply footer means cryptographically signed |
+| **Colophon** on first mention; `colo` = CLI | “Colo · …” as brand badge |
+| Category boundaries on Non-goals | Detector pitch on every page |
+| **Sigil** ≤1 body use (home *or* Marks) + glossary | Occult/spell language; sigil in footer/H1 |
+| Plain surroundings | Fantasy runes, Viking cosplay, “ancient Norse for truth” |
 
 Spoken product name: **INN-siggle** (rhymes with *single*). Once per page max.
+Do not put pronunciation and “sigil” in the same sentence.
+
+Sample specialized cue (signed page only):  
+`The maker's seal · model-primary · signed`
 
 ## Contracts
 
@@ -27,8 +43,10 @@ Spoken product name: **INN-siggle** (rhymes with *single*). Once per page max.
 3. **Cards** name the destination and what the click gives the reader.
 4. No purity theater, no “verified true content,” no AI-score language.
 5. Prefer short sentences, concrete nouns, named actors.
+6. Dual UC (docs + social) lives in **body** copy, not footer chrome.
 
 ## Register
 
 Craft manual, not compliance form. Seal, mark, claim, composition, ingredients.
-Avoid “credentials,” “authentic real,” “unlock,” “empower,” “seamless.”
+Avoid “credentials” as product objects, “authentic real,” “unlock,” “empower,”
+“seamless.” Factual “C2PA Content Credentials” as competitor name is fine.

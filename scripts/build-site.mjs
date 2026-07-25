@@ -115,7 +115,7 @@ function layout({ title, description, pageUrl, bodyHtml, crumbs }) {
         <img src="${BASE}/assets/marks/innsigle-base.svg" width="48" height="48" alt="Innsigle seal" />
         <span>
           <strong>Innsigle</strong>
-          <span class="cue">Content provenance in the time of AI</span>
+          <span class="cue">The maker's seal for published work</span>
         </span>
       </a>
       <p>

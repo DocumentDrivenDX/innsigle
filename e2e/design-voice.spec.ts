@@ -6,11 +6,15 @@ import { test, expect, type Page } from "@playwright/test";
  * - Assertions that copy is visible, not clipped, and voice rules hold
  */
 
+/** Locked brand lines (VOICE.md / naming-exploration). Straight apostrophe. */
+const CHROME_B4 = /The maker's seal for published work/;
+const CATEGORY_A1 = /Content provenance for the AI era/i;
+
 const SHOT_PAGES: { name: string; path: string; mustSee: RegExp[] }[] = [
   {
     name: "home",
     path: "/",
-    mustSee: [/Content provenance|time of AI/i, /colophon|Innsigle/i, /INN-siggle|Innsigle/i],
+    mustSee: [CHROME_B4, /colophon|composition/i, /INN-siggle|Innsigle/i],
   },
   {
     name: "why",
@@ -55,12 +59,12 @@ const SHOT_PAGES: { name: string; path: string; mustSee: RegExp[] }[] = [
   {
     name: "non-goals",
     path: "/non-goals/",
-    mustSee: [/AI detector/i, /C2PA replacement/i, /content provenance/i],
+    mustSee: [/AI detector/i, /C2PA replacement/i, CATEGORY_A1],
   },
   {
     name: "sample",
     path: "/sample/",
-    mustSee: [/sample|model-primary|Innsigle|Sealed sample/i],
+    mustSee: [/sample|model-primary|Innsigle|Sealed sample/i, /maker's seal/i],
   },
   {
     name: "walkthrough-provenance",
@@ -147,6 +151,21 @@ test.describe("Design voice — desktop", () => {
       await test.step("key copy visible", async () => {
         for (const re of shot.mustSee) {
           await expect(page.getByText(re).first()).toBeVisible();
+        }
+      });
+
+      await test.step("footer chrome B4 (not Colo· / not a detector cue)", async () => {
+        // Sample page uses specialized cue; others use generic B4.
+        if (shot.path === "/sample/") {
+          await expect(page.locator(".cue, .innsigle-seal .cue").filter({ hasText: /maker's seal/i }).first()).toBeVisible();
+          return;
+        }
+        const footerCue = page.locator("footer .cue, .site-footer .cue, .innsigle-footer-seal .cue");
+        if ((await footerCue.count()) > 0) {
+          const text = await footerCue.first().innerText();
+          expect(text).toMatch(CHROME_B4);
+          expect(text).not.toMatch(/Colo\s*·/i);
+          expect(text).not.toMatch(/not a detector/i);
         }
       });
 

@@ -2,18 +2,19 @@
 title: Innsigle
 nav: home
 weight: 0
-description: Content provenance in the time of AI — Innsigle seals how work was made.
+description: The maker's seal for published work — Innsigle, content provenance for the AI era.
 ---
 
-# Content provenance in the time of AI
+# The maker's seal for published work
 
 **Innsigle** (say **INN-siggle**, rhymes with *single*) is a craft seal for
 published work: a visible mark, a short **colophon** of how the piece was made
 (human-authored, mixed, or model-primary), and an optional house or person
 signature over the content bytes.
 
-Same seal family for model-heavy docs and human social posts. The seal does not
-score purity or detect AI.
+Readers can learn the mark by sight—a **sigil** of care: the publisher put how
+the work was made on the record. Same seal family for model-heavy docs and
+human social posts. Not a purity score.
 
 ## Two jobs, one system
 
@@ -30,7 +31,8 @@ link out. Visibility first; per-post crypto optional.
 ## What verification answers
 
 When a claim is signed: **did this issuer seal this colophon for these content
-bytes?** It does not say whether the prose is true.
+bytes?** It does not say whether the prose is true. An unsigned mark is still a
+valid Innsigle—signature is optional depth.
 
 ## Start
 

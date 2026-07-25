@@ -48,16 +48,27 @@ concerns, ADRs, or process rules. They are lenses when two valid options compete
    would tempt a `human-authored` mark on model-primary work.
 
 3. **Mark first, string second** — Recognition lives in the Innsigle visual seal.
-   Names, URLs, and CLI strings support the mark; they do not replace it. This
-   changes decisions when wordmark polish crowds out glyph system work.
+   Names, URLs, and CLI strings support the mark; they do not replace it. Readers
+   may learn the mark as a **sigil of care** (how-made on the record)—never as
+   purity or occult power. This changes decisions when wordmark polish crowds
+   out glyph system work.
+
+3a. **Maker means publisher** — In brand copy, **maker** is the operator/publisher
+   who seals work, not “human author only.” Model-primary and human-authored both
+   use the same seal family under a maker. This changes decisions when “maker’s
+   seal” would be read as a human-only purity claim.
 
 4. **Craft pride before compliance theater** — Lead with maker dignity and house
-   stamp; civic transparency is a consequence, not the primary voice. This changes
-   decisions when legal-disclaimer tone would flatten brand.
+   stamp; civic transparency is a consequence, not the primary voice. Plain
+   surroundings, slightly off-beat product name. This changes decisions when
+   legal-disclaimer tone or category jargon would flatten brand chrome.
 
 5. **Signet is optional depth** — Unsigned composition marks are valid Innsigles.
-   Cryptographic standing is opt-in power, not a tax on using the mark. This changes
-   decisions when flows would force key setup before a maker can show a seal.
+   Cryptographic standing is opt-in power, not a tax on using the mark. **Seal /
+   mark** (visible product) is not **signet** (optional signing act). Chrome
+   “maker’s seal” does not assert a signature. This changes decisions when flows
+   would force key setup before a maker can show a seal, or when footer copy would
+   imply every page is signed.
 
 6. **Design for simplicity** — Start with the minimal viable approach. Extra
    complexity (C2PA pipelines, identity providers, multi-tenant accounts) needs a

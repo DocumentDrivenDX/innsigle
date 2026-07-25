@@ -1,6 +1,6 @@
 # Sample site (UC-AI-docs)
 
-Live signed example of Innsigle on a static docs page (content provenance).
+Live signed example of Innsigle on a static docs page (the maker's seal).
 
 | Path | Role |
 |------|------|

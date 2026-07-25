@@ -138,7 +138,7 @@ Footer pattern (same idea as the [Sample](../../sample/) signed page):
 <img src="/assets/marks/innsigle-model.svg" width="48" height="48" alt="Innsigle model-primary seal" />
 <span>
 <strong>Innsigle</strong>
-<span class="cue">Content provenance · model-primary · Claude + Codex</span>
+<span class="cue">The maker's seal · model-primary · Claude + Codex</span>
 </span>
 </div>
 

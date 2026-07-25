@@ -60,8 +60,10 @@ Details: `attestation-prior-art.md`.
 | **Attestation** | Claim body + signature by an issuer key |
 | **Issuer** | Person or house key that signs |
 | **Subject** | Content unit identified by digest (and optional URI) |
-| **Seal / mark** | Visual Innsigle badge (see DESIGN.md) |
-| **Signet** | Act of signing; optional depth |
+| **Seal / mark** | Visual Innsigle badge; valid signed or unsigned (see DESIGN.md) |
+| **Maker** | Publisher/operator who applies the seal (not human-author-only) |
+| **Sigil** | Bounded synonym for the mark as recognition surface; not occult |
+| **Signet** | Optional act of cryptographically signing; not always-on chrome |
 
 Avoid public "credentials" for the product object (C2PA collision). Internal
 type URIs may still say `attestation`.

@@ -43,24 +43,43 @@
 status: decided
 activity: 00-discover
 created: 2026-07-22
-updated: 2026-07-22</code></pre>
+updated: 2026-07-25</code></pre>
 </details>
 <h1 id="naming-exploration">Naming Exploration</h1>
-<p><strong>Goal:</strong> Choose a durable public name before PRD / frame.   <strong>Status:</strong> <strong>Decided</strong> — public product name is <strong>Innsigle</strong>.   <strong>Repo slug:</strong> <code>aibadge</code> (legacy code name; rename optional later).   <strong>House:</strong> Azgaard (<code>azgaard.net</code>).</p>
+<p><strong>Goal:</strong> Choose a durable public name before PRD / frame.   <strong>Status:</strong> <strong>Decided</strong> — public product name is <strong>Innsigle</strong>. Brand lines A1/B4/H1 locked 2026-07-25.   <strong>Repo slug:</strong> <code>aibadge</code> (legacy code name; rename optional later).   <strong>House:</strong> Azgaard (<code>azgaard.net</code>).</p>
 <h2 id="locked-decisions">Locked decisions</h2>
 <table>
 <tr><th>#</th><th>Decision</th><th>Status</th></tr>
-<tr><td>1</td><td>Primary metaphor: <strong>seal / signet</strong> (not badge-first)</td><td><strong>Locked</strong></td></tr>
+<tr><td>1</td><td>Primary metaphor: <strong>seal / mark</strong> (not badge-first); <strong>signet</strong> = optional crypto depth only</td><td><strong>Locked</strong></td></tr>
 <tr><td>2</td><td>Emotional tone: <strong>craft pride first</strong>, civic transparency second</td><td><strong>Locked</strong></td></tr>
 <tr><td>3</td><td>Origin states are <strong>composition</strong> (colophon / BOM)—not good vs bad</td><td><strong>Locked</strong></td></tr>
-<tr><td>4</td><td>Brand affinity: <strong>Norse / Azgaard</strong></td><td><strong>Locked</strong></td></tr>
-<tr><td>5</td><td><strong>Signet</strong> = internal concept (personal seal + optional signed claim)</td><td><strong>Locked</strong></td></tr>
+<tr><td>4</td><td>Brand affinity: <strong>Norse / Azgaard</strong> (etymon + glyph geometry; no runic cosplay)</td><td><strong>Locked</strong></td></tr>
+<tr><td>5</td><td><strong>Signet</strong> = internal concept (optional signed claim)—not always-on chrome</td><td><strong>Locked</strong></td></tr>
 <tr><td>6</td><td>Public product name: <strong>Innsigle</strong></td><td><strong>Locked</strong> 2026-07-22</td></tr>
+<tr><td>7</td><td>Brand lines Slot A1 / B4 / H1 (byte-exact; straight apostrophe)</td><td><strong>Locked</strong> 2026-07-25</td></tr>
 </table>
 <h3 id="what-colophon-means">What “colophon” means</h3>
 <p>Composition of how the work was made (human, AI, tools, blend)—not a moral grade.   <strong>Name = the seal. Payload = the colophon.</strong></p>
-<h3 id="working-brand-line">Working brand line</h3>
-<p><em>Not a verdict. A colophon for how it was made—sealed with Innsigle.</em></p>
+<h3 id="public-brand-lines-locked">Public brand lines (locked)</h3>
+<p>Apostrophe in chrome/H1: straight ASCII <code>'</code> only.</p>
+<table>
+<tr><th>Slot</th><th>Exact string</th><th>Surfaces</th></tr>
+<tr><td><strong>A — category</strong></td><td><code>Content provenance for the AI era</code></td><td>Meta category clause, Non-goals opener, evaluator tables. Not footer. Not sole H1.</td></tr>
+<tr><td><strong>B — chrome</strong></td><td><code>The maker's seal for published work</code></td><td>Footer cue, sample snippet default, DESIGN chrome</td></tr>
+<tr><td><strong>H1 — home</strong></td><td><code>The maker's seal for published work</code></td><td>Home H1 (same as B; lead paragraph teaches)</td></tr>
+<tr><td><strong>D — interior</strong></td><td><code>Not a verdict. A colophon for how it was made—sealed with Innsigle.</code></td><td>Specs only; not site footer</td></tr>
+</table>
+<p><strong>Maker</strong> = publisher/operator who puts the seal on work—not “human author only.”   <strong>Seal / mark</strong> = visible Innsigle (valid signed or unsigned). <strong>Signet</strong> = optional cryptographic bind—not what B4 claims on every page.</p>
+<h3 id="sigil-bounded">Sigil (bounded)</h3>
+<p>English <em>sigil</em> is a cousin of seal / Latin <em>sigillum</em> / ON <em>innsigli</em>: an identifying mark.   Public use: glossary + <strong>at most one</strong> body sentence on home <em>or</em> Marks—not footer, not H1, not occult register.</p>
+<h3 id="not-chosen-brand-lines">Not chosen (brand lines)</h3>
+<table>
+<tr><th>ID</th><th>String</th><th>Why not</th></tr>
+<tr><td>A2</td><td>Content provenance in the time of AI</td><td>Superseded by shorter A1</td></tr>
+<tr><td>B1</td><td>A seal for how work was made</td><td>Operator preferred B4</td></tr>
+<tr><td>B2</td><td>How it was made, sealed</td><td>Operator preferred B4</td></tr>
+<tr><td>B3</td><td>Sealed with care for how it was made</td><td>Operator preferred B4</td></tr>
+</table>
 <hr />
 <h2 id="name-decision-innsigle">Name decision: Innsigle</h2>
 <table>
@@ -77,8 +96,9 @@ updated: 2026-07-22</code></pre>
 <tr><th>Layer</th><th>Role</th><th>Name</th></tr>
 <tr><td>House</td><td>Studio / operator trust root</td><td><strong>Azgaard</strong></td></tr>
 <tr><td>Product</td><td>Public seal system</td><td><strong>Innsigle</strong></td></tr>
-<tr><td>Concept words</td><td>Explainer vocabulary</td><td>signet, colophon, seal, claim</td></tr>
-<tr><td>Visual primary</td><td>Mark readers recognize</td><td><strong>Innsigle seal mark</strong> (design system TBD)</td></tr>
+<tr><td>Maker</td><td>Publisher/operator who seals work</td><td>Any house or person issuer</td></tr>
+<tr><td>Concept words</td><td>Explainer vocabulary</td><td>seal, mark, colophon, claim; signet (crypto); sigil (bounded)</td></tr>
+<tr><td>Visual primary</td><td>Mark readers recognize</td><td><strong>Innsigle seal mark</strong></td></tr>
 <tr><td>Repo / code</td><td>Engineering slug</td><td><code>aibadge</code> until rename</td></tr>
 </table>
 <p>Ship pattern: <em>“Innsigle by Azgaard”</em> or seal.azgaard.net / innsigle.* when domains settle.</p>
@@ -87,10 +107,13 @@ updated: 2026-07-22</code></pre>
 <h3 id="guardrails">Guardrails</h3>
 <ul>
 <li>Do <strong>not</strong> market as AI detection.</li>
-<li>Do <strong>not</strong> use “Credentials” (C2PA collision).</li>
+<li>Do <strong>not</strong> use “Credentials” as an Innsigle object name (C2PA Content Credentials as competitor proper noun is fine).</li>
 <li>Do <strong>not</strong> ship public brand as <strong>Sigli</strong> alone.</li>
 <li>Always separate <strong>declared colophon</strong> and <strong>signed seal</strong> from <strong>detected fact</strong>.</li>
 <li>Etymology honesty: Latin <em>sigillum</em> line via North Germanic legal vocabulary—not a pre-Christian pure root. Say “Norse/Icelandic for a document seal,” not “ancient pagan word for truth.”</li>
+<li>Do <strong>not</strong> use occult/spell language for <strong>sigil</strong>; plain “identifying mark.”</li>
+<li>Do <strong>not</strong> imply chrome B4 means the page is cryptographically signed.</li>
+<li>No fantasy runes / Vegvísir / Viking cosplay in public copy.</li>
 </ul>
 <h3 id="domain-open-not-blocking">Domain (open, not blocking)</h3>
 <table>
@@ -119,6 +142,7 @@ updated: 2026-07-22</code></pre>
 <tr><td>2026-07-22</td><td>Metaphor, tone, colophon, Azgaard affinity locked</td></tr>
 <tr><td>2026-07-22</td><td>Reviewed <em>sigli</em> / <em>innsigli</em>; bare Sigli rejected (AI firm collision)</td></tr>
 <tr><td>2026-07-22</td><td><strong>Public name locked: Innsigle</strong>; visual seal primary recognition surface</td></tr>
+<tr><td>2026-07-25</td><td>Brand lines <strong>A1 / B4 / H1</strong> locked; seal ≠ signet in chrome; sigil bounded</td></tr>
 </table>
 <h2 id="status">Status</h2>
 <ul>
@@ -138,7 +162,7 @@ updated: 2026-07-22</code></pre>
         <img src="/assets/marks/innsigle-base.svg" width="48" height="48" alt="Innsigle seal" />
         <span>
           <strong>Innsigle</strong>
-          <span class="cue">Content provenance in the time of AI</span>
+          <span class="cue">The maker's seal for published work</span>
         </span>
       </a>
       <p>

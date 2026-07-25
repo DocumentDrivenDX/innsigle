@@ -16,9 +16,13 @@ JSON document binding subjects (content digests) to a colophon and issuer metada
 ## Attestation
 Claim payload plus cryptographic signature by an issuer key.
 ## Seal / mark
-Visual Innsigle badge; one family for all composition states.
+Visual Innsigle badge; one family for all composition states. Valid signed or unsigned. Not the same as signet.
+## Sigil
+Identifying mark readers learn by sight—a plain synonym for the seal as recognition surface. Not occult; use sparingly in public copy.
+## Maker
+Publisher or operator who puts an Innsigle on work—not restricted to human-authored composition.
 ## Signet
-Act of signing; optional cryptographic depth over an unsigned declaration.
+Optional act of cryptographically signing a claim. Interior operator term; not always-on chrome.
 ## Issuer
 Person or house whose key signs the claim.
 ## Sources

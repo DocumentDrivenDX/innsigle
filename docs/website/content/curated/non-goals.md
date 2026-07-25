@@ -8,7 +8,7 @@ description: What Innsigle is not — category integrity.
 # Non-goals
 
 Category integrity matters as much as features. Innsigle is **content provenance
-in the time of AI**. It is not:
+for the AI era**—the maker's seal for published work. It is not:
 
 - **An AI detector** — no scores, no SynthID decode, no authorship percentages.
 - **A C2PA replacement** — media-pipeline Content Credentials stay in their lane.

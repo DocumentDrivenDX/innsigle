@@ -20,14 +20,16 @@ status: draft
 product_name: Innsigle
 activity: 01-frame
 created: 2026-07-22
-updated: 2026-07-22
+updated: 2026-07-25
 ---
 
 # Product Requirements Document
 
 ## Summary
 
-**Innsigle** is a content-origin seal for makers who publish in two channels:
+**Innsigle** is **the maker's seal for published work**—a content-origin seal
+for makers (publishers/operators) who publish in two channels. Category:
+**content provenance for the AI era.**
 
 1. **UC-AI-docs:** Owned documentation (e.g. HELIX microsite): model-primary
    content with a **signed colophon** that can proudly name tools (e.g. Claude)
@@ -199,7 +201,11 @@ UCs as one brand + claim system.
 - **FR-16** Public explainer documents both UCs, colophon examples (Claude-named
   docs, optionally with sloptimizer on the bill; human social), verify when
   signed, non-goals, and the sloptimizer complement (edit vs seal; no authorship
-  laundering).
+  laundering). Brand lines (byte-exact, straight `'`): home H1 and footer chrome
+  use **The maker's seal for published work**; category line **Content provenance
+  for the AI era** on Non-goals/meta—not as sole footer pitch. Seal/mark ≠ signet
+  (unsigned seals valid). **Maker** = publisher/operator. **Sigil** at most once
+  in home or Marks body plus glossary; no occult register.
 - **FR-17** Pronunciation documented once: **INN-siggle** (rhymes with *single*).
 
 ### Subsystem: Tooling Distribution
@@ -215,7 +221,7 @@ UCs as one brand + claim system.
 | FR-1–4, FR-4a, FR-8, FR-19 | HELIX-like docs page, model-primary | Colophon: Claude draft, sloptimizer rewrite, human edit; footer seal | Reader sees named model and editorial tool; state remains model-primary |
 | FR-9–12, FR-18 | Sign docs page | Canonical HTML or content bytes + house key | Verify succeeds; bit-flip fails; wrong key fails |
 | FR-5–7, FR-13–15 | Human X post | Human-authored mark asset or link pattern | Viewer can see human composition without file metadata |
-| FR-16–17 | New visitor | Brand site only | Explains both UCs; sloptimizer ≠ human authorship; not a detector; INN-siggle once |
+| FR-16–17 | New visitor | Brand site only | H1/footer B4; Non-goals/meta A1; both UCs; sloptimizer ≠ human authorship; detector only on Non-goals; INN-siggle once; no Colo· chrome |
 
 ## Technical Context
 

@@ -40,14 +40,18 @@ mark language. Complements claim schema and signing in
 | Axis | Choice |
 |------|--------|
 | Tone | Craft stamp, not compliance form; not panic "AI warning" |
-| Register | Short nouns; colophon / colo / seal / signet; avoid "credentials," "authentic real," "verified true content" |
+| Register | Short nouns; seal / mark / colophon; signet = crypto depth only; avoid "credentials," "authentic real," "verified true content" |
 | Dual composition | Human and model-primary use the **same seal family**; state is in the colo and optional mark variant, never shame color |
 | Pride | Model names (e.g. Claude) and human roles both allowed as credit |
 | Trust copy | "Who sealed this colo for these bytes," not "this content is true" |
 | Spoken name | **INN-siggle** (rhymes with *single*) |
+| Chrome (B4) | `The maker's seal for published work` (footer cue; straight `'`) |
+| Category (A1) | `Content provenance for the AI era` (meta / Non-goals—not footer) |
+| Home H1 | Same string as B4; lead paragraph teaches job + dual UC |
 
 **Do not use in UI or mark chrome:** green check "verified authentic," red "AI
-danger," detector percentages, Not By AI clone language as the only path.
+danger," detector percentages, "Colo · …" badges, Not By AI clone language as
+the only path. Chrome B4 does **not** mean the page is signed.
 
 **Pairing with sloptimizer:** Editorial cleanup may be listed on the colophon; it
 must not be presented as converting model-primary work into human-authored.
@@ -58,9 +62,11 @@ must not be presented as converting model-primary work into human-authored.
 |-------|------|
 | House | Azgaard (or other issuer) — signer identity |
 | Product | Innsigle — seal system |
-| Mark | Visual seal glyph + optional state cue |
-| Colophon | Colo — declared composition recipe |
-| Signet | Optional cryptographic bind |
+| Maker | Publisher/operator who applies the seal (not "human author only") |
+| Mark | Visual seal glyph + optional state cue (valid signed or unsigned) |
+| Colophon | Declared composition recipe |
+| Signet | Optional cryptographic bind — not synonym for the visible seal |
+| Sigil | Bounded metaphor: mark of care readers learn by sight (≤1 body use + glossary) |
 
 ## The badge (seal mark)
 
@@ -105,7 +111,7 @@ Geometry locked in `docs/sample/assets/marks/` (craft-matrix exploration). Const
 
 | Surface | Pattern |
 |---------|---------|
-| Docs footer | Glyph (+ wordmark) left or right; link "Colo" / open panel |
+| Docs footer | Glyph (+ wordmark) left or right; cue B4; link to colophon / claim |
 | Docs about | Larger seal + full colophon table |
 | Social image | Glyph baked into image or attached still; caption optional short URL |
 | Social profile | Link in bio to house keys + "how to read Innsigle" |

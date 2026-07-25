@@ -70,8 +70,10 @@ created: 2026-07-22</code></pre>
 <tr><td><strong>Attestation</strong></td><td>Claim body + signature by an issuer key</td></tr>
 <tr><td><strong>Issuer</strong></td><td>Person or house key that signs</td></tr>
 <tr><td><strong>Subject</strong></td><td>Content unit identified by digest (and optional URI)</td></tr>
-<tr><td><strong>Seal / mark</strong></td><td>Visual Innsigle badge (see DESIGN.md)</td></tr>
-<tr><td><strong>Signet</strong></td><td>Act of signing; optional depth</td></tr>
+<tr><td><strong>Seal / mark</strong></td><td>Visual Innsigle badge; valid signed or unsigned (see DESIGN.md)</td></tr>
+<tr><td><strong>Maker</strong></td><td>Publisher/operator who applies the seal (not human-author-only)</td></tr>
+<tr><td><strong>Sigil</strong></td><td>Bounded synonym for the mark as recognition surface; not occult</td></tr>
+<tr><td><strong>Signet</strong></td><td>Optional act of cryptographically signing; not always-on chrome</td></tr>
 </table>
 <p>Avoid public "credentials" for the product object (C2PA collision). Internal type URIs may still say <code>attestation</code>.</p>
 <h2 id="colophon-schema-draft-v1">Colophon schema (draft v1)</h2>
@@ -306,7 +308,7 @@ bio: https://azgaard.net/innsigle
         <img src="/assets/marks/innsigle-base.svg" width="48" height="48" alt="Innsigle seal" />
         <span>
           <strong>Innsigle</strong>
-          <span class="cue">Content provenance in the time of AI</span>
+          <span class="cue">The maker's seal for published work</span>
         </span>
       </a>
       <p>

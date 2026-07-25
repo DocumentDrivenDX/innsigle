@@ -10,7 +10,8 @@ description: Composition states and ingredients for how work was made.
 
 In publishing, a **colophon** lists how a work was produced. In Innsigle, it is
 the short machine-readable recipe bound to content bytes: composition plus
-ingredients. Not a moral grade.
+ingredients. The **seal** is what readers see; the colophon is what opens. Not a
+moral grade.
 
 CLI short name for the object and commands: **`colo`**.
 

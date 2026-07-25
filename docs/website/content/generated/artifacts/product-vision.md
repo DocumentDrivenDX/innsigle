@@ -32,7 +32,7 @@ house_affinity: azgaard
 repo_slug: aibadge
 activity: 00-discover
 created: 2026-07-22
-updated: 2026-07-22
+updated: 2026-07-25
 ```
 
 </details>
@@ -42,22 +42,24 @@ updated: 2026-07-22
 > **Innsigle** (say **INN-siggle**, rhymes with *single*). Etymon ON/Icelandic
 > *innsigli* (document seal). House: Azgaard. Repo slug: `aibadge`.
 >
-> **Thesis:** One seal family for two jobs makers actually have: (1) sign
-> long-lived docs with a colophon that can *name models proudly*; (2) mark
-> short social posts as human-authored when platforms strip metadata. Not a
-> detector. Not a C2PA replacement. Visual seal first; optional house/person
-> signature second.
+> **Thesis:** Innsigle is **the maker's seal for published work**—one seal family
+> for two jobs: (1) long-lived docs with a colophon that can *name models proudly*;
+> (2) short social posts marked human-authored when platforms strip metadata.
+> Category: **content provenance for the AI era**. Visual seal first; optional
+> house/person signature second. Not a detector or C2PA replacement (see Non-goals).
 
 ## Mission Statement
 
-Let makers seal how work was made (human, model-heavy, or mixed) and when they
-choose, bind that bill to a person or house others can verify.
+Let makers (publishers/operators) put a craft seal on how work was made—human,
+model-heavy, or mixed—and when they choose, bind that colophon to a person or
+house others can verify.
 
 ## Positioning
 
 For operators who ship documentation sites and short social posts and need
 origin under *their* control, Innsigle is a content-origin seal: a visible mark
-plus a colophon (recipe of making), with optional DKIM-style signing.
+plus a colophon (recipe of making), with optional DKIM-style signing. Chrome
+line: *The maker's seal for published work.*
 
 Unlike Not By AI, model-generated work is first-class and can credit tools by
 name. Unlike C2PA Content Credentials and SynthID, the primary surface is
@@ -69,8 +71,9 @@ media-pipeline manifests (those may interop later).
 Docs sites show an Innsigle that opens to a signed colophon: e.g. mostly
 Claude (or other named models), human review, house key. Social posts show a
 sibling mark that reads as human-authored without implying AI is shameful
-elsewhere. Same system, different bills. Readers learn the seal by sight;
-verify (when signed) answers who sealed the claim for which content bytes.
+elsewhere. Same system, different bills. Readers learn the mark by sight
+(a sigil of care: how-it-was-made on the record). Verify (when signed) answers
+who sealed the claim for which content bytes—not whether the prose is true.
 
 **North Star:** Within 24 months of public launch, operator live samples covers both
 primary use cases on real properties; ≥50% of surveyed readers in docs and

@@ -190,11 +190,19 @@ function renderGlossary() {
     },
     {
       term: "Seal / mark",
-      def: "Visual Innsigle badge; one family for all composition states.",
+      def: "Visual Innsigle badge; one family for all composition states. Valid signed or unsigned. Not the same as signet.",
+    },
+    {
+      term: "Sigil",
+      def: "Identifying mark readers learn by sight—a plain synonym for the seal as recognition surface. Not occult; use sparingly in public copy.",
+    },
+    {
+      term: "Maker",
+      def: "Publisher or operator who puts an Innsigle on work—not restricted to human-authored composition.",
     },
     {
       term: "Signet",
-      def: "Act of signing; optional cryptographic depth over an unsigned declaration.",
+      def: "Optional act of cryptographically signing a claim. Interior operator term; not always-on chrome.",
     },
     {
       term: "Issuer",
