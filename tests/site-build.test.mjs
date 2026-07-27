@@ -4,6 +4,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
+import { BRAND } from "../scripts/brand-lines.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const site = join(root, "site");
@@ -71,6 +72,13 @@ describe("site build (product-microsite-ia)", () => {
     assert.match(home, /aria-current="page"/);
     const why = readFileSync(join(site, "why/index.html"), "utf8");
     assert.match(why, /aria-current="page"/);
+  });
+
+  it("home footer cue is exact B4 once (fresh build)", () => {
+    const home = readFileSync(join(site, "index.html"), "utf8");
+    const needle = `<span class="cue">${BRAND.B4}</span>`;
+    const re = new RegExp(needle.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g");
+    assert.equal([...home.matchAll(re)].length, 1, `expected one ${needle}`);
   });
 
   it("generated artifact pages carry generation banner", () => {

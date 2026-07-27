@@ -1,20 +1,20 @@
 import { test, expect, type Page } from "@playwright/test";
+import {
+  BRAND,
+  brandRe,
+  includesA1Phrase,
+} from "../scripts/brand-lines.mjs";
 
 /**
  * Design-voice visual assessment (DESIGN.md + product-microsite-ia).
- * - Screenshots for human/reviewer inspection and optional baseline diffs
- * - Assertions that copy is visible, not clipped, and voice rules hold
+ * Brand strings from scripts/brand-lines.mjs only (no raw B4/SAMPLE literals).
  */
 
-/** Locked brand lines (VOICE.md / naming-exploration). Straight apostrophe. */
-const CHROME_B4 = /The maker's seal for published work/;
-const CATEGORY_A1 = /Content provenance for the AI era/i;
-
-const SHOT_PAGES: { name: string; path: string; mustSee: RegExp[] }[] = [
+const SHOT_PAGES: { name: string; path: string; mustSee: (string | RegExp)[] }[] = [
   {
     name: "home",
     path: "/",
-    mustSee: [CHROME_B4, /colophon|composition/i, /INN-siggle|Innsigle/i],
+    mustSee: [BRAND.B4, /colophon|composition/i, /INN-siggle|Innsigle/i],
   },
   {
     name: "why",
@@ -59,12 +59,12 @@ const SHOT_PAGES: { name: string; path: string; mustSee: RegExp[] }[] = [
   {
     name: "non-goals",
     path: "/non-goals/",
-    mustSee: [/AI detector/i, /C2PA replacement/i, CATEGORY_A1],
+    mustSee: [/AI detector/i, /C2PA replacement/i, brandRe(BRAND.A1, "i")],
   },
   {
     name: "sample",
     path: "/sample/",
-    mustSee: [/sample|model-primary|Innsigle|Sealed sample/i, /maker's seal/i],
+    mustSee: [/sample|model-primary|Innsigle|Sealed sample/i, brandRe(BRAND.SAMPLE_CUE)],
   },
   {
     name: "walkthrough-provenance",
@@ -101,7 +101,6 @@ async function assertTextNotClipped(page: Page, locator = "main") {
           ? (el.textContent || "").trim()
           : "";
         if (text.length > 8) {
-          // Overflow: content wider than client with hidden overflow
           if (
             (style.overflow === "hidden" || style.overflowX === "hidden") &&
             el.scrollWidth > el.clientWidth + 2
@@ -122,7 +121,6 @@ async function assertTextNotClipped(page: Page, locator = "main") {
 }
 
 async function assertReadableContrastSurface(page: Page) {
-  // Design tokens: body text color should not equal background (rough gate)
   const { color, bg, fontSize } = await page.evaluate(() => {
     const body = document.body;
     const cs = getComputedStyle(body);
@@ -136,6 +134,27 @@ async function assertReadableContrastSurface(page: Page) {
   });
   expect(color).not.toEqual(bg);
   expect(fontSize).toBeGreaterThanOrEqual(14);
+}
+
+async function assertFooterChrome(page: Page, path: string) {
+  if (path === "/sample/") {
+    const cue = page.locator("footer.innsigle-footer .innsigle-seal .cue");
+    await expect(cue).toHaveCount(1);
+    expect((await cue.innerText()).trim()).toBe(BRAND.SAMPLE_CUE);
+    return;
+  }
+
+  const footerCue = page.locator("footer.site-footer .innsigle-footer-seal .cue");
+  expect(await footerCue.count()).toBeGreaterThanOrEqual(1);
+  const text = (await footerCue.first().innerText()).trim();
+  expect(text).toBe(BRAND.B4);
+  expect(text).not.toMatch(/Colo\s*·/i);
+  expect(text).not.toMatch(/not a detector/i);
+
+  const sealLink = page.locator("footer.site-footer").getByRole("link", { name: /Innsigle/i });
+  await expect(sealLink.first()).toBeVisible();
+  const href = await sealLink.first().getAttribute("href");
+  expect(href || "").toMatch(/\/use\/colophon\/?$/);
 }
 
 test.describe("Design voice — desktop", () => {
@@ -154,20 +173,32 @@ test.describe("Design voice — desktop", () => {
         }
       });
 
-      await test.step("footer chrome B4 (not Colo· / not a detector cue)", async () => {
-        // Sample page uses specialized cue; others use generic B4.
-        if (shot.path === "/sample/") {
-          await expect(page.locator(".cue, .innsigle-seal .cue").filter({ hasText: /maker's seal/i }).first()).toBeVisible();
-          return;
-        }
-        const footerCue = page.locator("footer .cue, .site-footer .cue, .innsigle-footer-seal .cue");
-        if ((await footerCue.count()) > 0) {
-          const text = await footerCue.first().innerText();
-          expect(text).toMatch(CHROME_B4);
-          expect(text).not.toMatch(/Colo\s*·/i);
-          expect(text).not.toMatch(/not a detector/i);
-        }
+      await test.step("footer chrome B4 / sample SAMPLE_CUE", async () => {
+        await assertFooterChrome(page, shot.path);
       });
+
+      if (shot.path === "/") {
+        await test.step("home H1 exact B4", async () => {
+          await expect(
+            page.getByRole("heading", { level: 1, name: BRAND.B4, exact: true }),
+          ).toBeVisible();
+        });
+      }
+
+      if (shot.path === "/non-goals/") {
+        await test.step("non-goals A1 phrase in main", async () => {
+          const mainText = await page.locator("main").innerText();
+          expect(includesA1Phrase(mainText)).toBe(true);
+        });
+      }
+
+      if (shot.path === "/use/walkthrough-provenance/") {
+        await test.step("walkthrough demo cue exact WALKTHROUGH_CUE", async () => {
+          const cue = page.locator(".story-footer-demo .cue");
+          await expect(cue).toHaveCount(1);
+          expect((await cue.innerText()).trim()).toBe(BRAND.WALKTHROUGH_CUE);
+        });
+      }
 
       await test.step("no forbidden detector/purity voice", async () => {
         const bodyText = await page.locator("body").innerText();
@@ -207,7 +238,6 @@ test.describe("Design voice — desktop", () => {
     page,
   }) => {
     await page.goto("/");
-    // First viewport should not be the only content — scroll height > viewport
     const { scroll, view } = await page.evaluate(() => ({
       scroll: document.documentElement.scrollHeight,
       view: window.innerHeight,
@@ -235,7 +265,6 @@ test.describe("Design voice — mobile", () => {
       expect(text.length).toBeGreaterThan(30);
       await assertTextNotClipped(page, "main");
 
-      // Nav remains usable
       await expect(page.locator('nav[aria-label="Primary"]')).toBeVisible();
 
       await expect(page).toHaveScreenshot(`mobile-${name}.png`, {

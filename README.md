@@ -1,8 +1,11 @@
 # Innsigle
 
-Craft seal for content colophons: declare how work was made (human / mixed /
-model-primary), optionally sign with a house or person key (DKIM-like), and
-verify. Not an AI detector. Not a C2PA replacement.
+**The maker's seal for published work.** Content provenance for the AI era:
+declare how work was made (human / mixed / model-primary) with a short colophon,
+optionally sign with a house or person key, and verify.
+
+Same seal family for model-primary docs and human social posts. Not an AI
+detector. Not a C2PA replacement — see the site Non-goals page.
 
 **Say:** INN-siggle (rhymes with *single*).
 

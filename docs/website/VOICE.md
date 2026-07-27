@@ -11,13 +11,17 @@ do next.
 
 ## Branding
 
+**Canonical bytes:** `scripts/brand-lines.mjs` (import as `BRAND`).  
 Apostrophe in chrome/H1: straight ASCII `'` only.
 
 | Slot | Exact string | Surfaces |
 |------|--------------|----------|
 | **A — category** | `Content provenance for the AI era` | Meta category clause, Non-goals opener, evaluator tables |
-| **B — chrome** | `The maker's seal for published work` | Footer `.cue`, sample snippet default |
-| **H1 — home** | `The maker's seal for published work` | Home H1 (same as B) |
+| **B — chrome** | `The maker's seal for published work` | Footer `.cue`, sample snippet default, home H1 |
+| **H1 — home** | same as B | Home H1 only |
+
+**A1 matchers** are **case-insensitive** (mid-sentence lowercase is correct English).  
+Canonical casing above is for tables and SSoT display.
 
 | Do | Don't |
 |----|--------|

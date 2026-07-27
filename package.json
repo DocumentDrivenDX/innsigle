@@ -8,9 +8,9 @@
   },
   "scripts": {
     "innsigle": "node src/cli.mjs",
-    "test": "node --test tests/cli.test.mjs tests/vectors.test.mjs tests/site-build.test.mjs tests/provenance.test.mjs",
+    "test": "node --test tests/*.test.mjs",
     "test:e2e": "playwright test",
-    "test:e2e:update": "playwright test --update-snapshots",
+    "test:e2e:update": "CI=true playwright test --update-snapshots",
     "test:agent": "bash scripts/agent-check.sh",
     "test:agent:update": "bash scripts/agent-check.sh --update-snapshots",
     "test:provenance-driver": "node scripts/agent-provenance-driver.mjs",

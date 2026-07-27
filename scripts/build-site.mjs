@@ -21,6 +21,7 @@ import { dirname, join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { mdToHtml, splitFrontmatter } from "./md.mjs";
+import { BRAND } from "./brand-lines.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "site");
@@ -112,10 +113,10 @@ function layout({ title, description, pageUrl, bodyHtml, crumbs }) {
   <footer class="site-footer">
     <div class="wrap">
       <a class="innsigle-footer-seal" href="${BASE}/use/colophon/">
-        <img src="${BASE}/assets/marks/innsigle-base.svg" width="48" height="48" alt="Innsigle seal" />
+        <img src="${BASE}/assets/marks/innsigle-base.svg" width="48" height="48" alt="" />
         <span>
           <strong>Innsigle</strong>
-          <span class="cue">The maker's seal for published work</span>
+          <span class="cue">${BRAND.B4}</span>
         </span>
       </a>
       <p>
