@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Innsigle matrix seal">
+  <title>Innsigle matrix</title>
+  <!--
+    Craft-matrix stamp: ancient stamp-seal field + medieval merchant-mark monogram.
+    Dark face = wax/clay matrix; light = raised impression. No transparent wireframe.
+  -->
+  <defs>
+    <clipPath id="innsigle-face-base">
+      <circle cx="32" cy="32" r="30"/>
+    </clipPath>
+  </defs>
+  <!-- Matrix body -->
+  <circle cx="32" cy="32" r="31.5" fill="#141210"/>
+  <!-- Outer rim (tool edge) -->
+  <circle cx="32" cy="32" r="30" fill="none" stroke="#e4dccf" stroke-width="2"/>
+  <!-- Bead ring — wax-seal / pottery-cartouche tradition -->
+  <g fill="#e4dccf" clip-path="url(#innsigle-face-base)">
+    <circle cx="32" cy="4.8" r="1.15"/>
+    <circle cx="40.5" cy="6.5" r="1.15"/>
+    <circle cx="47.5" cy="11.2" r="1.15"/>
+    <circle cx="52.2" cy="18.2" r="1.15"/>
+    <circle cx="54.5" cy="26.5" r="1.15"/>
+    <circle cx="54.5" cy="37.5" r="1.15"/>
+    <circle cx="52.2" cy="45.8" r="1.15"/>
+    <circle cx="47.5" cy="52.8" r="1.15"/>
+    <circle cx="40.5" cy="57.5" r="1.15"/>
+    <circle cx="32" cy="59.2" r="1.15"/>
+    <circle cx="23.5" cy="57.5" r="1.15"/>
+    <circle cx="16.5" cy="52.8" r="1.15"/>
+    <circle cx="11.8" cy="45.8" r="1.15"/>
+    <circle cx="9.5" cy="37.5" r="1.15"/>
+    <circle cx="9.5" cy="26.5" r="1.15"/>
+    <circle cx="11.8" cy="18.2" r="1.15"/>
+    <circle cx="16.5" cy="11.2" r="1.15"/>
+    <circle cx="23.5" cy="6.5" r="1.15"/>
+  </g>
+  <!-- Inner field ring -->
+  <circle cx="32" cy="32" r="22.5" fill="none" stroke="#e4dccf" stroke-width="1.35"/>
+  <!-- Merchant-mark monogram: stave + thryst + lozenge (proprietary; not a letter font) -->
+  <g fill="none" stroke="#e4dccf" stroke-width="2.6" stroke-linecap="square" stroke-linejoin="miter">
+    <!-- vertical stave -->
+    <path d="M32 14.5 V46"/>
+    <!-- top thryst (roof) -->
+    <path d="M23 22 L32 14.5 L41 22"/>
+    <!-- mid thryst -->
+    <path d="M24 30 H40"/>
+    <!-- lower thryst -->
+    <path d="M26 38 H38"/>
+    <!-- center lozenge (cartouche knot) -->
+    <path d="M32 25.5 L36.2 30 L32 34.5 L27.8 30 Z" stroke-width="2.2"/>
+  </g>
+</svg>

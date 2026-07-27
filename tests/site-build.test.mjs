@@ -81,6 +81,44 @@ describe("site build (product-microsite-ia)", () => {
     assert.equal([...home.matchAll(re)].length, 1, `expected one ${needle}`);
   });
 
+  it("sample page is byte-identical to docs/sample (sealed subject)", () => {
+    const docs = readFileSync(join(root, "docs/sample/index.html"));
+    const built = readFileSync(join(site, "sample/index.html"));
+    assert.equal(
+      built.equals(docs),
+      true,
+      "build must not rewrite sample HTML; breaks claim digest",
+    );
+    assert.ok(
+      existsSync(join(site, "sample/assets/marks/innsigle-model.svg")),
+      "sample marks must ship under sample/assets for relative src",
+    );
+    assert.ok(
+      existsSync(
+        join(site, "sample/.well-known/innsigle/claims/index.attestation.json"),
+      ),
+    );
+  });
+
+  it("sample claim verifies against built sample content", () => {
+    const r = spawnSync(
+      process.execPath,
+      [
+        join(root, "src/cli.mjs"),
+        "verify",
+        "--attestation",
+        join(site, "sample/.well-known/innsigle/claims/index.attestation.json"),
+        "--content",
+        join(site, "sample/index.html"),
+        "--keys",
+        join(site, "sample/.well-known/innsigle/keys.json"),
+      ],
+      { encoding: "utf8" },
+    );
+    assert.equal(r.status, 0, r.stderr + r.stdout);
+    assert.match(r.stdout, /VALID/);
+  });
+
   it("generated artifact pages carry generation banner", () => {
     const prd = readFileSync(join(site, "reference/artifacts/prd/index.html"), "utf8");
     assert.match(prd, /Generated reference/);

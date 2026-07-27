@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Innsigle ring seal, human-authored">
+  <title>Innsigle ring — human-authored</title>
+  <circle cx="32" cy="32" r="31.5" fill="#141210"/>
+  <circle cx="32" cy="32" r="29" fill="none" stroke="#e4dccf" stroke-width="2"/>
+  <circle cx="32" cy="32" r="24" fill="none" stroke="#e4dccf" stroke-width="1.2"/>
+  <circle cx="32" cy="32" r="19" fill="none" stroke="#e4dccf" stroke-width="2.4"/>
+  <g fill="none" stroke="#e4dccf" stroke-width="2.2" stroke-linecap="square" stroke-linejoin="miter">
+    <path d="M32 17 V36"/>
+    <path d="M25 24 L32 17 L39 24"/>
+    <path d="M26 29.5 H38"/>
+    <path d="M32 26 L35 29.5 L32 33 L29 29.5 Z" stroke-width="1.8"/>
+  </g>
+  <circle cx="32" cy="48" r="7.5" fill="#e4dccf"/>
+  <path d="M28.5 44.8 v6.4 M35.5 44.8 v6.4 M28.5 48 h7" fill="none" stroke="#141210" stroke-width="1.7" stroke-linecap="square"/>
+</svg>

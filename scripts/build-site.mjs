@@ -310,32 +310,30 @@ function copyStatic() {
     mkdirSync(join(OUT, "examples"), { recursive: true });
     cpSync(examples, join(OUT, "examples"), { recursive: true });
   }
-  // sample HTML + claims
-  mkdirSync(join(OUT, "sample/.well-known/innsigle/claims"), { recursive: true });
-  cpSync(
-    join(ROOT, "docs/sample/.well-known/innsigle/keys.json"),
-    join(OUT, "sample/.well-known/innsigle/keys.json"),
-  );
-  cpSync(
-    join(ROOT, "docs/sample/.well-known/innsigle/claims"),
-    join(OUT, "sample/.well-known/innsigle/claims"),
-    { recursive: true },
-  );
-  // sample page: wrap or copy with path fix — use dedicated built page from curated note
-  // Keep a static sample index that matches UC sample
-  let dog = readFileSync(join(ROOT, "docs/sample/index.html"), "utf8");
-  dog = dog
-    .replace(/href="\.well-known\//g, `href="${BASE}/sample/.well-known/`)
-    .replace(/src="assets\/marks\//g, `src="${BASE}/assets/marks/`)
-    .replace(/src="\.\.\/assets\/marks\//g, `src="${BASE}/assets/marks/`);
-  // inject base-aware styles link if missing absolute base
-  if (!dog.includes("site.css")) {
-    dog = dog.replace(
-      "</head>",
-      `  <link rel="stylesheet" href="${BASE}/assets/css/site.css" />\n</head>`,
-    );
+  // Sample is a sealed subject: copy the tree byte-for-byte so published
+  // site/sample/index.html matches docs/sample/index.html (and its claim).
+  // Relative hrefs (.well-known/, assets/marks/) resolve under /sample/.
+  // Do not rewrite paths or inject site.css — that breaks content digests.
+  const sampleSrc = join(ROOT, "docs/sample");
+  const sampleOut = join(OUT, "sample");
+  mkdirSync(sampleOut, { recursive: true });
+  for (const name of ["index.html", "colo.json", "README.md"]) {
+    const from = join(sampleSrc, name);
+    if (existsSync(from)) cpSync(from, join(sampleOut, name));
   }
-  writeFileSync(join(OUT, "sample/index.html"), dog);
+  if (existsSync(join(sampleSrc, "assets"))) {
+    cpSync(join(sampleSrc, "assets"), join(sampleOut, "assets"), { recursive: true });
+  }
+  if (existsSync(join(sampleSrc, ".well-known"))) {
+    cpSync(join(sampleSrc, ".well-known"), join(sampleOut, ".well-known"), {
+      recursive: true,
+    });
+  }
+  if (existsSync(join(sampleSrc, "snippets"))) {
+    cpSync(join(sampleSrc, "snippets"), join(sampleOut, "snippets"), {
+      recursive: true,
+    });
+  }
 
   writeFileSync(
     join(OUT, "404.html"),

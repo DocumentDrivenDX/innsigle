@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Innsigle brand seal">
+  <title>Innsigle brand</title>
+  <!-- Iron-brand silhouette: heavy solid mark, distance-readable -->
+  <circle cx="32" cy="32" r="31.5" fill="#141210"/>
+  <circle cx="32" cy="32" r="28" fill="none" stroke="#e4dccf" stroke-width="3.5"/>
+  <g fill="#e4dccf">
+    <!-- thick stave -->
+    <rect x="28.5" y="14" width="7" height="34" rx="0.5"/>
+    <!-- top thryst as solid wedge -->
+    <path d="M18 24 L32 12 L46 24 L41 24 L32 17 L23 24 Z"/>
+    <!-- mid bar -->
+    <rect x="20" y="28" width="24" height="5"/>
+    <!-- lozenge solid -->
+    <path d="M32 33 L38 39 L32 45 L26 39 Z"/>
+  </g>
+</svg>
