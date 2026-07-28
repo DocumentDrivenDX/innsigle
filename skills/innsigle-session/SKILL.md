@@ -14,12 +14,14 @@ use the Innsigle CLI to build L2 provenance and propose a colophon.
 2. On request (or session end), run:
 
 ```bash
-node src/cli.mjs provenance build \
+# Prefer installed bin (npm install github:DocumentDrivenDX/innsigle → npx innsigle).
+# From a clone without install: node src/cli.mjs …
+innsigle provenance build \
   --journal .innsigle/session.jsonl \
   --generated-at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
   --out .innsigle/session-provenance.json
 
-node src/cli.mjs provenance propose-colo \
+innsigle provenance propose-colo \
   --provenance .innsigle/session-provenance.json \
   --out .innsigle/colo.json
 ```
