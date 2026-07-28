@@ -18,7 +18,12 @@ third party can verify offline.
 ## Prerequisites
 
 - Node 20+
-- Clone of [DocumentDrivenDX/innsigle](https://github.com/DocumentDrivenDX/innsigle)
+- Innsigle CLI installed ([CLI](../cli/)):  
+  `npm install github:DocumentDrivenDX/innsigle` then `npx innsigle`,  
+  or clone and `npm install -g .` / `node src/cli.mjs`
+
+Commands below use `innsigle`. From a clone without install, substitute
+`node src/cli.mjs`.
 
 ## Steps
 
@@ -30,15 +35,15 @@ prose. Do **not** change composition to human-authored because of that rewrite.
 ### 2. Write the colophon (colo)
 
 ```bash
-node src/cli.mjs colo example --kind model-primary > colo.json
+innsigle colo example --kind model-primary > colo.json
 # edit ingredients: name Claude, sloptimizer, human roles
 ```
 
 ### 3. Generate issuer keys (once)
 
 ```bash
-node src/cli.mjs keygen --out-dir ./keys
-node src/cli.mjs keys template \
+innsigle keygen --out-dir ./keys
+innsigle keys template \
   --issuer-id my-house --issuer-name "My House" \
   --public-key "$(cat keys/ed25519.pub.raw.b64url)" \
   --key-id "$(cat keys/key-id.txt)" \
@@ -50,7 +55,7 @@ Publish `keys.json` over HTTPS (or ship beside content for the sample).
 ### 4. Build claim and sign
 
 ```bash
-node src/cli.mjs claim build \
+innsigle claim build \
   --content ./page.html \
   --uri https://example.com/page/ \
   --colo colo.json \
@@ -59,7 +64,7 @@ node src/cli.mjs claim build \
   --key-url https://example.com/.well-known/innsigle/keys.json \
   --out claim.json
 
-node src/cli.mjs sign \
+innsigle sign \
   --claim claim.json \
   --key keys/ed25519.priv.pem \
   --out claim.attestation.json
@@ -75,7 +80,7 @@ or a colophon page. Use the **A** mark for model-primary.
 ### 6. Verify
 
 ```bash
-node src/cli.mjs verify \
+innsigle verify \
   --attestation claim.attestation.json \
   --content ./page.html \
   --keys keys.json

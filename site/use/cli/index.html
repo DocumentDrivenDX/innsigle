@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CLI — Innsigle</title>
-  <meta name="description" content="Innsigle command-line surface for keygen, claim, sign, and verify." />
+  <meta name="description" content="Install and run Innsigle — keygen, claim, sign, verify." />
   <link rel="stylesheet" href="/assets/css/site.css" />
   <link rel="icon" href="/assets/marks/innsigle-base.svg" type="image/svg+xml" />
 </head>
@@ -32,17 +32,56 @@
       </aside>
       <main class="docs-main prose">
         <h1 id="cli">CLI</h1>
-<p>Runnable distribution for the signed docs path (CONTRACT-001). Requires Node 20+.</p>
-<pre><code class="language-bash">node src/cli.mjs keygen --out-dir ./keys
-node src/cli.mjs colo example --kind model-primary &gt; colo.json
-node src/cli.mjs claim build --content ./page.html --colo colo.json \
-  --issuer-id azgaard --issuer-name Azgaard \
+<p><strong>Innsigle</strong> ships as a Node 20+ command-line tool (<code>innsigle</code>). It implements CONTRACT-001: colophon examples, claim build, Ed25519 sign/verify, and session provenance helpers.</p>
+<h2 id="install">Install</h2>
+<p>Not on the npm registry yet. Install from GitHub or a clone.</p>
+<h3 id="from-github">From GitHub</h3>
+<pre><code class="language-bash">npm install github:DocumentDrivenDX/innsigle
+npx innsigle
+# or: ./node_modules/.bin/innsigle</code></pre>
+<p>Global (optional):</p>
+<pre><code class="language-bash">npm install -g github:DocumentDrivenDX/innsigle
+innsigle</code></pre>
+<h3 id="from-a-clone">From a clone</h3>
+<pre><code class="language-bash">git clone https://github.com/DocumentDrivenDX/innsigle.git
+cd innsigle
+npm install -g .    # or: npm link
+innsigle</code></pre>
+<p>Without installing the bin, from the repo root:</p>
+<pre><code class="language-bash">node src/cli.mjs</code></pre>
+<p>Usage with no arguments prints the command list (exit code 1).</p>
+<h2 id="seal-a-page-happy-path">Seal a page (happy path)</h2>
+<pre><code class="language-bash">innsigle keygen --out-dir ./keys
+innsigle keys template \
+  --issuer-id my-house --issuer-name "My House" \
+  --public-key "$(cat keys/ed25519.pub.raw.b64url)" \
+  --key-id "$(cat keys/key-id.txt)" \
+  --out keys.json
+# host keys.json at an absolute HTTPS URL
+
+innsigle colo example --kind model-primary &gt; colo.json
+innsigle claim build --content ./page.html --colo colo.json \
+  --issuer-id my-house --issuer-name "My House" \
   --key-id "$(cat keys/key-id.txt)" \
   --key-url https://example.com/.well-known/innsigle/keys.json \
   --out claim.json
-node src/cli.mjs sign --claim claim.json --key keys/ed25519.priv.pem --out att.json
-node src/cli.mjs verify --attestation att.json --content ./page.html --keys keys.json</code></pre>
-<p>Exact flags and exit codes: <a href="/reference/artifacts/contracts/contract-001-claim-and-cli/">CONTRACT-001</a> (generated from the HELIX design tree).</p>
+innsigle sign --claim claim.json --key keys/ed25519.priv.pem --out att.json
+innsigle verify --attestation att.json --content ./page.html --keys keys.json</code></pre>
+<p><code>key_url</code> must be an <strong>absolute</strong> URL (ADR-003). Keep the private key offline.</p>
+<h2 id="other-verbs">Other verbs</h2>
+<table>
+<tr><th>Command</th><th>Role</th></tr>
+<tr><td><code>innsigle colo example --kind …</code></td><td>Print example colophon JSON</td></tr>
+<tr><td><code>innsigle provenance build …</code></td><td>Journal → L2 session provenance</td></tr>
+<tr><td><code>innsigle provenance propose-colo …</code></td><td>L2 → draft colophon</td></tr>
+</table>
+<h2 id="next">Next</h2>
+<ul>
+<li><a href="/use/walkthrough-docs/">Seal a docs page</a> — full UC-AI-docs walkthrough  </li>
+<li><a href="/use/issuer/">Issuer</a> — keys without a server  </li>
+<li><a href="/use/verify/">Verify</a> — what VALID means  </li>
+<li><a href="/reference/artifacts/contracts/contract-001-claim-and-cli/">CONTRACT-001</a> — flags and exit codes  </li>
+</ul>
       </main>
     </div>
   </div>

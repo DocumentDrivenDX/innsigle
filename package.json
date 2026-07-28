@@ -1,10 +1,28 @@
 {
   "name": "innsigle",
   "version": "0.1.0",
+  "description": "The maker's seal for published work — content provenance CLI (claim, sign, verify).",
   "private": true,
   "type": "module",
   "bin": {
     "innsigle": "./src/cli.mjs"
+  },
+  "files": [
+    "src/**",
+    "README.md",
+    "docs/sample/**",
+    "tests/vectors/**"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DocumentDrivenDX/innsigle.git"
+  },
+  "homepage": "https://documentdrivendx.github.io/innsigle/",
+  "bugs": {
+    "url": "https://github.com/DocumentDrivenDX/innsigle/issues"
+  },
+  "engines": {
+    "node": ">=20"
   },
   "scripts": {
     "innsigle": "node src/cli.mjs",
@@ -19,9 +37,6 @@
     "site:publish": "node scripts/publish-artifacts.mjs",
     "site:build": "node scripts/build-site.mjs",
     "site:build:local": "SITE_BASE= node scripts/build-site.mjs"
-  },
-  "engines": {
-    "node": ">=20"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.1",

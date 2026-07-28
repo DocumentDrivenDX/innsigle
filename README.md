@@ -10,60 +10,87 @@ detector. Not a C2PA replacement — see the site Non-goals page.
 **Say:** INN-siggle (rhymes with *single*).
 
 **Site:** [documentdrivendx.github.io/innsigle](https://documentdrivendx.github.io/innsigle/)
-(GitHub Pages via **Actions** — workflow `Deploy microsite`).
 
-Content pipeline (HELIX **product-microsite-ia**):
+## Install
 
-| Layer | Path |
-|-------|------|
-| Curated copy | `docs/website/content/curated/` |
-| Generated from HELIX | `docs/website/content/generated/` ← `docs/helix/` |
-| Build output | `site/` (artifact; CI deploys it) |
+Requires **Node 20+**. The CLI is not published to the npm registry yet (`private:
+true`). Install from this GitHub repo or a local clone.
+
+### From GitHub (recommended for users)
 
 ```bash
-npm run site:build          # publish artifacts + HTML (local)
-npm run test:agent          # local agent gate: unit + Playwright e2e (CI mode)
-npm run test:agent:update   # same + refresh screenshot baselines after UI changes
-git push origin main        # primary publish: Actions tests + deploys Pages
-# gh workflow run "Deploy microsite"   # manual re-run
+# project-local
+npm install github:DocumentDrivenDX/innsigle
+
+# then run via npx or the local bin
+npx innsigle
+./node_modules/.bin/innsigle
 ```
 
-**Agents:** run `npm run test:agent` (or `test:agent:update` after layout/nav/content
-changes that affect screenshots) **before** push. Stale e2e baselines fail Deploy
-and leave the live site on the last green commit.
+```bash
+# global (optional)
+npm install -g github:DocumentDrivenDX/innsigle
+innsigle
+```
 
-Do **not** use `scripts/publish-site.sh` for normal deploys (emergency legacy
-`gh-pages` only; requires `FORCE_LEGACY_GH_PAGES=1`).
-
-## CLI (v0)
-
-Requires Node 20+.
+### From a clone (contributors / offline)
 
 ```bash
-node src/cli.mjs keygen --out-dir ./keys
-# create keys.json via: keys template …
-node src/cli.mjs colo example --kind model-primary > colo.json
-node src/cli.mjs claim build --content ./page.html --colo colo.json \
-  --issuer-id azgaard --issuer-name Azgaard \
+git clone https://github.com/DocumentDrivenDX/innsigle.git
+cd innsigle
+npm install -g .          # or: npm link
+innsigle
+# without installing the bin:
+node src/cli.mjs
+```
+
+Check the tool:
+
+```bash
+innsigle                  # prints usage (exit 1)
+innsigle colo example --kind model-primary
+```
+
+## Quick start (seal a file)
+
+```bash
+innsigle keygen --out-dir ./keys
+innsigle keys template \
+  --issuer-id my-house --issuer-name "My House" \
+  --public-key "$(cat keys/ed25519.pub.raw.b64url)" \
+  --key-id "$(cat keys/key-id.txt)" \
+  --out keys.json
+# publish keys.json at an absolute HTTPS URL (key_url below)
+
+innsigle colo example --kind model-primary > colo.json
+# edit colo.json ingredients as needed
+
+innsigle claim build \
+  --content ./page.html \
+  --colo colo.json \
+  --issuer-id my-house --issuer-name "My House" \
   --key-id "$(cat keys/key-id.txt)" \
   --key-url https://example.com/.well-known/innsigle/keys.json \
   --out claim.json
-node src/cli.mjs sign --claim claim.json --key keys/ed25519.priv.pem --out att.json
-node src/cli.mjs verify --attestation att.json --content ./page.html --keys keys.json
+
+innsigle sign --claim claim.json --key keys/ed25519.priv.pem --out att.json
+innsigle verify --attestation att.json --content ./page.html --keys keys.json
 ```
+
+Keep `ed25519.priv.pem` offline. Full walkthrough:
+[Seal a docs page](https://documentdrivendx.github.io/innsigle/use/walkthrough-docs/).
+
+## Verify the live sample
 
 ```bash
-npm test
+# with CLI installed
+curl -sL -o page.html https://documentdrivendx.github.io/innsigle/sample/
+curl -sL -o att.json https://documentdrivendx.github.io/innsigle/sample/.well-known/innsigle/claims/index.attestation.json
+curl -sL -o keys.json https://documentdrivendx.github.io/innsigle/sample/.well-known/innsigle/keys.json
+innsigle verify --attestation att.json --content page.html --keys keys.json
 ```
 
-## Sample
-
-Static sample page with footer seal and signed claim:
-
-- Page: [`docs/sample/index.html`](docs/sample/index.html)
-- Attestation: `docs/sample/.well-known/innsigle/claims/index.attestation.json`
-- Marks: `docs/sample/assets/marks/`
-- Footer snippet: `docs/sample/snippets/footer.html`
+From a clone without install:
 
 ```bash
 node src/cli.mjs verify \
@@ -72,13 +99,34 @@ node src/cli.mjs verify \
   --keys docs/sample/.well-known/innsigle/keys.json
 ```
 
-## Golden vectors
+## Docs
 
-See [`tests/vectors/README.md`](tests/vectors/README.md). Regenerate only when
-crypto/schema changes: `npm run vectors`.
+| Topic | Where |
+|-------|--------|
+| Install + CLI | [Use → CLI](https://documentdrivendx.github.io/innsigle/use/cli/) |
+| Walkthroughs | [Use](https://documentdrivendx.github.io/innsigle/use/) |
+| Claim/CLI contract | [CONTRACT-001](https://documentdrivendx.github.io/innsigle/reference/artifacts/contracts/contract-001-claim-and-cli/) |
+| Golden crypto vectors | [`tests/vectors/`](tests/vectors/) |
 
-## Specs
+## Contributor notes
 
-HELIX docs under `docs/helix/`. Normative claim/CLI surface:
-`docs/helix/02-design/contracts/CONTRACT-001-claim-and-cli.md`. Signing:
-`docs/helix/02-design/adrs/ADR-001-signing-and-canonicalization.md`.
+Content pipeline (HELIX **product-microsite-ia**):
+
+| Layer | Path |
+|-------|------|
+| Curated copy | `docs/website/content/curated/` |
+| Generated from HELIX | `docs/website/content/generated/` ← `docs/helix/` |
+| Build output | `site/` (CI deploys it) |
+
+```bash
+npm test                    # unit + install/CLI smoke
+npm run test:agent          # unit + Playwright e2e (set CI=true)
+npm run test:agent:update   # refresh screenshot baselines after UI changes
+npm run site:build:local    # build site with BASE=
+git push origin main        # Actions tests + Deploy microsite
+```
+
+Do **not** use `scripts/publish-site.sh` for normal deploys (legacy `gh-pages`
+only; requires `FORCE_LEGACY_GH_PAGES=1`).
+
+Specs: `docs/helix/`. Signing: ADR-001. Issuer URL: ADR-003.

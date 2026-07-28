@@ -7,13 +7,24 @@ description: Try Innsigle — CLI, colophon, verify, and marks.
 
 # Use Innsigle
 
-Onboarding: install the CLI → write a colophon → claim and sign a file → verify.
+Onboarding: **install** the CLI → write a colophon → claim and sign a file → verify.
+
+## Install (30 seconds)
+
+Node 20+. Not on the public npm registry yet.
+
+```bash
+npm install github:DocumentDrivenDX/innsigle
+npx innsigle
+```
+
+Or clone and `npm install -g .` / `node src/cli.mjs`. Details: [CLI](cli/).
 
 ## Core pages
 
 | Page | Question |
 |------|----------|
-| [CLI](cli/) | How do I run keygen, claim, sign, verify? |
+| [CLI](cli/) | How do I install and run keygen, claim, sign, verify? |
 | [Issuer](issuer/) | How do I get a key and publish it without a server? |
 | [Colophon](colophon/) | How do I declare composition? |
 | [Provenance](provenance/) | Auto colophon from agent sessions (+ examples) |

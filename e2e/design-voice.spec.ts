@@ -24,7 +24,12 @@ const SHOT_PAGES: { name: string; path: string; mustSee: (string | RegExp)[] }[]
   {
     name: "use",
     path: "/use/",
-    mustSee: [/Use Innsigle/i, /Walkthrough/i, /CLI/i],
+    mustSee: [/Use Innsigle/i, /Install|github:DocumentDrivenDX\/innsigle/i, /Walkthrough/i, /CLI/i],
+  },
+  {
+    name: "cli",
+    path: "/use/cli/",
+    mustSee: [/Install/i, /github:DocumentDrivenDX\/innsigle|npm install/i, /keygen|claim build|verify/i],
   },
   {
     name: "colophon",
