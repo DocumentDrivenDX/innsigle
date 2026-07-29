@@ -32,29 +32,50 @@
       </aside>
       <main class="docs-main prose">
         <h1 id="verify">Verify</h1>
-<p>Verification checks crypto and content binding. It does not score truth or detect AI.</p>
+<p>Think of a signed Innsigle like a careful postage mark: it ties <strong>who sealed</strong>, <strong>what they declared about production</strong>, and <strong>which exact file</strong> they sealed. It is not a fact-checker and not an AI detector.</p>
+<h2 id="what-valid-means">What VALID means</h2>
+<p>When <code>innsigle verify</code> prints <strong>VALID</strong>:</p>
+<ol>
+<li>The signature checks out for the issuer key  </li>
+<li>The content SHA-256 matches the subject in the claim  </li>
+<li>You can read the colophon (composition + ingredients) that was sealed  </li>
+</ol>
+<p>When the page is only marked and <strong>not</strong> signed, treat it as a <strong>declaration</strong>— still a valid use of the seal family, without cryptographic standing.</p>
+<h2 id="what-it-does-not-mean">What it does not mean</h2>
+<ul>
+<li>The prose is true or complete  </li>
+<li>A platform or government certified the content  </li>
+<li>Models were or were not used beyond what the colophon declares  </li>
+</ul>
+<h3 id="check-it">Check it</h3>
+<pre><code class="language-bash">curl -sL -o page.html https://documentdrivendx.github.io/innsigle/sample/
+curl -sL -o att.json https://documentdrivendx.github.io/innsigle/sample/.well-known/innsigle/claims/index.attestation.json
+curl -sL -o keys.json https://documentdrivendx.github.io/innsigle/sample/.well-known/innsigle/keys.json
+npx innsigle verify --attestation att.json --content page.html --keys keys.json</code></pre>
+<p>Expect: <code>VALID</code>. Live: <a href="/sample/">Sample</a>.</p>
 <h2 id="hierarchy-on-a-verify-view">Hierarchy on a verify view</h2>
 <ol>
-<li><strong>Primary:</strong> Signature valid or invalid; issuer id when valid. Or “unsigned declaration.”</li>
-<li><strong>Secondary:</strong> Composition and ingredient list (colophon).</li>
-<li><strong>Tertiary:</strong> Content fingerprint, timestamps, raw claim download.</li>
+<li><strong>Primary:</strong> Signature valid or invalid; issuer when valid. Or “unsigned declaration.”  </li>
+<li><strong>Secondary:</strong> Composition and ingredient list (colophon).  </li>
+<li><strong>Tertiary:</strong> Content fingerprint, timestamps, raw claim download.  </li>
 </ol>
-<h2 id="cli-checks">CLI checks</h2>
+<h2 id="what-the-cli-checks">What the CLI checks</h2>
 <ol>
 <li>Load attestation + keys  </li>
 <li>Issuer public key present and not revoked  </li>
 <li>SHA-256 of content matches subject digest  </li>
-<li>Ed25519 over SHA-256(JCS(payload))  </li>
+<li>Ed25519 over the canonical claim payload  </li>
 </ol>
 <table>
 <tr><th>Layer</th><th>What it answers</th></tr>
-<tr><td>Crypto valid</td><td>Did this <code>key_id</code> seal this colophon for these bytes?</td></tr>
-<tr><td>Discovery</td><td>Absolute <code>key_url</code> is inside the signed claim (ADR-003)</td></tr>
-<tr><td>Recognized</td><td>Pin that fingerprint, and/or follow key-endorsements (transitive WoT)</td></tr>
+<tr><td>Crypto valid</td><td>Did this key seal this colophon for these bytes?</td></tr>
+<tr><td>Discovery</td><td>Absolute keys URL is inside the signed claim</td></tr>
+<tr><td>Recognized</td><td>You pin that fingerprint, and/or follow key-endorsements</td></tr>
 </table>
-<p><code>issuer.id</code> is a display slug and may collide. Share and pin <strong>fingerprints</strong>.</p>
-<p>Issuer documents live at any durable HTTPS URL (gist, Pages, free host). Social bios can embed an <strong>issuer card</strong> for discovery; that is not a signature. See <a href="/use/issuer/">Issuer identity</a>.</p>
-<p>See <a href="/reference/artifacts/adrs/adr-001-signing-and-canonicalization/">ADR-001</a> (crypto) and <a href="/reference/artifacts/adrs/adr-003-issuer-url-and-web-of-trust/">ADR-003</a> (issuer URL and web of trust).</p>
+<p><code>issuer.id</code> is a display slug and may collide. Prefer <strong>fingerprints</strong>.</p>
+<p>Issuer documents can live on any durable HTTPS URL (gist, Pages, free host). A social bio <strong>issuer card</strong> is discovery only—not a signature. See <a href="/use/issuer/">Issuer</a>.</p>
+<h2 id="spec">Spec</h2>
+<p>Crypto: <a href="/reference/artifacts/adrs/adr-001-signing-and-canonicalization/">ADR-001</a>.   Issuer URL and web of trust: <a href="/reference/artifacts/adrs/adr-003-issuer-url-and-web-of-trust/">ADR-003</a>.</p>
       </main>
     </div>
   </div>

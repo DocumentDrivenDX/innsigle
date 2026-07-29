@@ -32,24 +32,32 @@
       </aside>
       <main class="docs-main prose">
         <h1 id="the-makers-seal-for-published-work">The maker's seal for published work</h1>
-<p><strong>Innsigle</strong> (say <strong>INN-siggle</strong>, rhymes with <em>single</em>) is a craft seal for published work: a visible mark, a short <strong>colophon</strong> of how the piece was made (human-authored, mixed, or model-primary), and an optional house or person signature over the content bytes.</p>
-<p>Readers can learn the mark by sight—a <strong>sigil</strong> of care: the publisher put how the work was made on the record. Same seal family for model-heavy docs and human social posts. Not a purity score.</p>
+<p>You finish a docs page that a model helped write. You want the footer to say so honestly—and, when it matters, let anyone check that <em>you</em> sealed that story to <em>these</em> bytes. Or you post something you wrote yourself, and want the same seal family to read human-authored without a purity lecture.</p>
+<p><strong>Innsigle</strong> (say <strong>INN-siggle</strong>, rhymes with <em>single</em>) is that craft seal: a visible mark, a short <strong>colophon</strong> of how the piece was made (human-authored, mixed, or model-primary), and an optional house or person signature over the content bytes.</p>
+<p>Readers can learn the mark by sight—a <strong>sigil</strong> of care: the publisher put how the work was made on the record. Same seal family for model-heavy docs and human social posts.</p>
 <h2 id="two-jobs-one-system">Two jobs, one system</h2>
 <h3 id="docs-model-primary-proud">Docs (model-primary, proud)</h3>
 <p>Long-lived documentation often starts with models. Name the tools on the colophon (Claude, sloptimizer, …). Sign with a house key when you want standing.</p>
 <h3 id="social-human-authored-clear">Social (human-authored, clear)</h3>
 <p>Short posts strip file metadata. Use the same seal family with a human cue and a link out. Visibility first; per-post crypto optional.</p>
-<h2 id="what-verification-answers">What verification answers</h2>
-<p>When a claim is signed: <strong>did this issuer seal this colophon for these content bytes?</strong> It does not say whether the prose is true. An unsigned mark is still a valid Innsigle—signature is optional depth.</p>
-<h2 id="start">Start</h2>
-<ul>
-<li><a href="/why/">Why Innsigle</a> — problem and gap</li>
-<li><a href="/use/walkthrough-provenance/">Conversation → colophon</a> — prompts become a sealed document</li>
-<li><a href="/use/">Use</a> — CLI, issuer, colophon, verify, marks</li>
-<li><a href="/sample/">Sample</a> — signed model-primary page</li>
-<li><a href="/reference/">Reference</a> — specs from <code>docs/helix/</code></li>
-<li><a href="/non-goals/">Non-goals</a> — category boundaries</li>
-</ul>
+<h2 id="what-a-seal-actually-guarantees">What a seal actually guarantees</h2>
+<p>When a claim is <strong>signed</strong>, verification answers one question: <strong>did this issuer seal this colophon for these content bytes?</strong> It does not say whether the prose is true. An unsigned mark is still a valid Innsigle—the signature is optional depth, not a tax on using the mark.</p>
+<h3 id="check-it">Check it</h3>
+<p>What we claim: the published sample is sealed to its exact file bytes.</p>
+<pre><code class="language-bash">npm install github:DocumentDrivenDX/innsigle
+curl -sL -o page.html https://documentdrivendx.github.io/innsigle/sample/
+curl -sL -o att.json https://documentdrivendx.github.io/innsigle/sample/.well-known/innsigle/claims/index.attestation.json
+curl -sL -o keys.json https://documentdrivendx.github.io/innsigle/sample/.well-known/innsigle/keys.json
+npx innsigle verify --attestation att.json --content page.html --keys keys.json</code></pre>
+<p>Expect: <code>VALID</code>. Live page: <a href="/sample/">Sample</a>.</p>
+<h2 id="start-here">Start here</h2>
+<ol>
+<li><a href="/sample/">See the sealed sample</a> — model-primary page you can re-verify  </li>
+<li><a href="/use/cli/">Install the CLI</a> — keygen, claim, sign, verify  </li>
+<li><a href="/use/walkthrough-docs/">Seal a docs page</a> — full walkthrough  </li>
+<li><a href="/why/">Why Innsigle</a> — gap vs badges, C2PA, watermarks  </li>
+<li><a href="/non-goals/">Non-goals</a> — not a detector, not a purity product  </li>
+</ol>
       </main>
     </div>
   </div>

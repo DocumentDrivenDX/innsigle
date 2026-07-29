@@ -14,22 +14,22 @@ const SHOT_PAGES: { name: string; path: string; mustSee: (string | RegExp)[] }[]
   {
     name: "home",
     path: "/",
-    mustSee: [BRAND.B4, /colophon|composition/i, /INN-siggle|Innsigle/i],
+    mustSee: [BRAND.B4, /colophon|composition/i, /INN-siggle|Innsigle/i, /Check it|sample/i],
   },
   {
     name: "why",
     path: "/why/",
-    mustSee: [/Why Innsigle/i, /gap|C2PA|Not By AI/i],
+    mustSee: [/Why Innsigle/i, /gap|C2PA|Not By AI/i, /sample|check/i],
   },
   {
     name: "use",
     path: "/use/",
-    mustSee: [/Use Innsigle/i, /Install|github:DocumentDrivenDX\/innsigle/i, /Walkthrough/i, /CLI/i],
+    mustSee: [/Use Innsigle/i, /Install|github:DocumentDrivenDX\/innsigle/i, /sample|sealed/i, /CLI/i],
   },
   {
     name: "cli",
     path: "/use/cli/",
-    mustSee: [/Install/i, /github:DocumentDrivenDX\/innsigle|npm install/i, /keygen|claim build|verify/i],
+    mustSee: [/Install/i, /github:DocumentDrivenDX\/innsigle|npm install/i, /Check it|VALID|keygen/i],
   },
   {
     name: "colophon",
@@ -39,7 +39,7 @@ const SHOT_PAGES: { name: string; path: string; mustSee: (string | RegExp)[] }[]
   {
     name: "verify",
     path: "/use/verify/",
-    mustSee: [/Verify/i, /signature|digest|content/i],
+    mustSee: [/Verify/i, /VALID|signature|digest/i, /Check it|sample/i],
   },
   {
     name: "marks",
@@ -90,6 +90,10 @@ const FORBIDDEN_VOICE = [
   /\bdetects AI content\b/i,
   /(?:offers|shows|includes|displays)\s+(?:a\s+)?purity score/i,
   /(?:guarantees|proves)\s+(?:the\s+)?content is (?:true|authentic)/i,
+  /\bunlock\b/i,
+  /\bempower(?:s|ing)?\b/i,
+  /\bseamless\b/i,
+  /\brevolutionary\b/i,
 ];
 
 async function assertTextNotClipped(page: Page, locator = "main") {

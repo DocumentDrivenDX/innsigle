@@ -32,36 +32,37 @@
       </aside>
       <main class="docs-main prose">
         <h1 id="use-innsigle">Use Innsigle</h1>
-<p>Onboarding: <strong>install</strong> the CLI → write a colophon → claim and sign a file → verify.</p>
-<h2 id="install-30-seconds">Install (30 seconds)</h2>
+<p>Four beats: <strong>install</strong> the tool → <strong>see</strong> a sealed sample → <strong>declare</strong> how a file was made → <strong>verify</strong> (yours or someone else’s).</p>
+<h2 id="1-install">1. Install</h2>
 <p>Node 20+. Not on the public npm registry yet.</p>
 <pre><code class="language-bash">npm install github:DocumentDrivenDX/innsigle
 npx innsigle</code></pre>
 <p>Or clone and <code>npm install -g .</code> / <code>node src/cli.mjs</code>. Details: <a href="/use/cli/">CLI</a>.</p>
-<h2 id="core-pages">Core pages</h2>
+<h2 id="2-see-a-real-seal">2. See a real seal</h2>
+<p>Open the <a href="/sample/">sealed sample</a>—model-primary docs with a live attestation. Re-check it anytime with the commands on <a href="/use/verify/">Verify</a> or <a href="/use/cli/">CLI</a>.</p>
+<h2 id="3-learn-the-pieces">3. Learn the pieces</h2>
 <table>
 <tr><th>Page</th><th>Question</th></tr>
 <tr><td><a href="/use/cli/">CLI</a></td><td>How do I install and run keygen, claim, sign, verify?</td></tr>
 <tr><td><a href="/use/issuer/">Issuer</a></td><td>How do I get a key and publish it without a server?</td></tr>
 <tr><td><a href="/use/colophon/">Colophon</a></td><td>How do I declare composition?</td></tr>
-<tr><td><a href="/use/provenance/">Provenance</a></td><td>Auto colophon from agent sessions (+ examples)</td></tr>
-<tr><td><a href="/use/verify/">Verify</a></td><td>What does a valid seal mean?</td></tr>
+<tr><td><a href="/use/provenance/">Provenance</a></td><td>Auto colophon from agent sessions</td></tr>
+<tr><td><a href="/use/verify/">Verify</a></td><td>What does VALID mean?</td></tr>
 <tr><td><a href="/use/marks/">Marks</a></td><td>Which seal cue for which state?</td></tr>
 </table>
-<h2 id="walkthroughs">Walkthroughs</h2>
+<h2 id="4-walk-it-through">4. Walk it through</h2>
 <table>
-<tr><th>Walkthrough</th><th>Use case</th></tr>
-<tr><td><a href="/use/walkthrough-provenance/">Conversation → colophon</a></td><td>FEAT-004 — agent session to sealed colophon</td></tr>
-<tr><td><a href="/use/walkthrough-docs/">Seal a docs page</a></td><td>UC-AI-docs (FEAT-002)</td></tr>
-<tr><td><a href="/use/walkthrough-social/">Human social mark</a></td><td>UC-human-social (FEAT-003)</td></tr>
+<tr><th>Walkthrough</th><th>Story</th></tr>
+<tr><td><a href="/use/walkthrough-docs/">Seal a docs page</a></td><td>Model-primary page from colo to verify</td></tr>
+<tr><td><a href="/use/walkthrough-provenance/">Conversation → colophon</a></td><td>Agent session to sealed document</td></tr>
+<tr><td><a href="/use/walkthrough-social/">Human social mark</a></td><td>Human-authored mark when metadata dies</td></tr>
 </table>
-<p>Screenshots go in <code>docs/website/static/captures/</code> and link from those pages.</p>
 <h2 id="proof">Proof</h2>
 <ul>
-<li><a href="/sample/">Sample</a> — signed model-primary page in this site tree</li>
-<li><a href="https://github.com/DocumentDrivenDX/innsigle/tree/main/tests/vectors">Golden vectors</a> — crypto fixtures</li>
+<li><a href="/sample/">Sample</a> — signed page in this site tree  </li>
+<li><a href="https://github.com/DocumentDrivenDX/innsigle/tree/main/tests/vectors">Golden vectors</a> — crypto fixtures  </li>
 </ul>
-<p>Spec detail is generated from <code>docs/helix/</code> under <a href="/reference/">Reference</a>.</p>
+<p>Deeper specs (generated from design docs): <a href="/reference/">Reference</a>.</p>
       </main>
     </div>
   </div>

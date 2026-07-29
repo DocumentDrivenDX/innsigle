@@ -8,13 +8,12 @@ description: Install and run Innsigle — keygen, claim, sign, verify.
 
 # CLI
 
-**Innsigle** ships as a Node 20+ command-line tool (`innsigle`). It implements
-CONTRACT-001: colophon examples, claim build, Ed25519 sign/verify, and session
-provenance helpers.
+Get a small tool that can **declare how a file was made**, optionally **sign**
+that declaration to the file bytes, and **verify** someone else’s seal. Node 20+.
 
 ## Install
 
-Not on the npm registry yet. Install from GitHub or a clone.
+Not on the public npm registry yet. Install from GitHub or a clone.
 
 ### From GitHub
 
@@ -46,9 +45,9 @@ Without installing the bin, from the repo root:
 node src/cli.mjs
 ```
 
-Usage with no arguments prints the command list (exit code 1).
+Running with no arguments prints the command list (exit code 1).
 
-## Seal a page (happy path)
+## Seal a page
 
 ```bash
 innsigle keygen --out-dir ./keys
@@ -57,9 +56,11 @@ innsigle keys template \
   --public-key "$(cat keys/ed25519.pub.raw.b64url)" \
   --key-id "$(cat keys/key-id.txt)" \
   --out keys.json
-# host keys.json at an absolute HTTPS URL
+# host keys.json at an absolute HTTPS URL (required in the claim)
 
 innsigle colo example --kind model-primary > colo.json
+# edit ingredients: name models, tools, human roles honestly
+
 innsigle claim build --content ./page.html --colo colo.json \
   --issuer-id my-house --issuer-name "My House" \
   --key-id "$(cat keys/key-id.txt)" \
@@ -69,19 +70,35 @@ innsigle sign --claim claim.json --key keys/ed25519.priv.pem --out att.json
 innsigle verify --attestation att.json --content ./page.html --keys keys.json
 ```
 
-`key_url` must be an **absolute** URL (ADR-003). Keep the private key offline.
+Keep the private key offline. `key_url` must be an **absolute** URL—relative
+paths are rejected.
 
-## Other verbs
+### Check it (live sample)
+
+What we claim: the microsite sample still verifies after install.
+
+```bash
+curl -sL -o page.html https://documentdrivendx.github.io/innsigle/sample/
+curl -sL -o att.json https://documentdrivendx.github.io/innsigle/sample/.well-known/innsigle/claims/index.attestation.json
+curl -sL -o keys.json https://documentdrivendx.github.io/innsigle/sample/.well-known/innsigle/keys.json
+npx innsigle verify --attestation att.json --content page.html --keys keys.json
+```
+
+Expect: `VALID`.
+
+## Other commands
 
 | Command | Role |
 |---------|------|
 | `innsigle colo example --kind …` | Print example colophon JSON |
-| `innsigle provenance build …` | Journal → L2 session provenance |
-| `innsigle provenance propose-colo …` | L2 → draft colophon |
+| `innsigle provenance build …` | Journal → detailed session provenance |
+| `innsigle provenance propose-colo …` | Session record → draft colophon |
 
 ## Next
 
-- [Seal a docs page](../walkthrough-docs/) — full UC-AI-docs walkthrough  
+- [Seal a docs page](../walkthrough-docs/) — full walkthrough  
 - [Issuer](../issuer/) — keys without a server  
-- [Verify](../verify/) — what VALID means  
-- [CONTRACT-001](../../reference/artifacts/contracts/contract-001-claim-and-cli/) — flags and exit codes  
+- [Verify](../verify/) — what VALID means (and does not)  
+
+Spec detail (flags, exit codes):  
+[claim and CLI contract](../../reference/artifacts/contracts/contract-001-claim-and-cli/).

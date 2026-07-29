@@ -8,10 +8,13 @@ description: Composition states and ingredients for how work was made.
 
 # Colophon
 
-In publishing, a **colophon** lists how a work was produced. In Innsigle, it is
-the short machine-readable recipe bound to content bytes: composition plus
-ingredients. The **seal** is what readers see; the colophon is what opens. Not a
-moral grade.
+Printers used to tuck a short note at the end of a book: who set the type, where
+it was printed, what went into the production. Innsigle borrows that idea for
+the web.
+
+The **colophon** is the short recipe bound to content bytes: **composition**
+plus **ingredients**. The **seal** is what readers see; the colophon is what
+opens. It is not a moral grade.
 
 CLI short name for the object and commands: **`colo`**.
 
@@ -36,7 +39,7 @@ Running sloptimizer (or similar) on model output does **not** flip
 ## CLI
 
 ```bash
-node src/cli.mjs colo example --kind model-primary > colo.json
+innsigle colo example --kind model-primary > colo.json
 ```
 
 Full schema: [claim system design](../../reference/artifacts/claim-system/) and

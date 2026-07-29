@@ -7,8 +7,13 @@ description: Why content provenance matters when models draft and platforms stri
 
 # Why Innsigle
 
-For evaluators: what problem this attacks, and why existing tools leave a gap.
-Category: **content provenance for the AI era.**
+You ship work in an AI-shaped world: models draft, platforms strip metadata, and
+readers still want a straight answer to *how was this made?* Badges that only
+celebrate “no AI” leave model-primary docs without a proud path. Industrial
+media pipelines do not center HTML docs or short posts.
+
+**Content provenance for the AI era** is that problem: origin under *your*
+control, as a mark people can learn by sight.
 
 ## The gap
 
@@ -19,16 +24,34 @@ Category: **content provenance for the AI era.**
 | Vendor watermark | SynthID | Not a maker-authored bill of production |
 | Free-text footer | “Written with AI” | No mark system, no verify, easy to ignore |
 
-Makers (publishers) need one language for **how work was made**, usable in:
+You need one language for **how work was made**, usable for:
 
-1. **UC-AI-docs** — Owned docs with a signed colophon that can name models.  
-2. **UC-human-social** — Human-authored mark that survives metadata death.
+1. **Owned docs** — a signed colophon that can name models without shame  
+2. **Human social posts** — a mark that survives when file metadata dies  
 
-**Innsigle** is that language: the maker's seal under their control, across docs
-and social, with an optional signature over content bytes. Industrial media
-pipelines (C2PA) stay in their lane—see [Non-goals](../non-goals/).
+**Innsigle** is that language: the maker's seal under your control, across docs
+and social, with an optional signature over content bytes. C2PA and similar stay
+in their lane for industrial media—see [Non-goals](../non-goals/).
+
+## What you can check
+
+We do not ask you to take the marketing on faith. The microsite ships a
+[sealed sample](../sample/) you can re-verify with the CLI. That proves binding
+of issuer + colophon + bytes—not “the article is true.”
+
+### Check it
+
+```bash
+npx innsigle verify \
+  --attestation path/to/att.json \
+  --content path/to/page.html \
+  --keys path/to/keys.json
+```
+
+Download the three files from [Sample](../sample/) (page + claim + keys). Expect:
+`VALID`. Full curl recipe: [CLI](../use/cli/).
 
 ## Next
 
-- [How to use Innsigle](../use/)  
-- [Non-goals](../non-goals/)  
+- [Install and seal](../use/)  
+- [Non-goals](../non-goals/) — category boundaries  

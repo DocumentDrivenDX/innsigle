@@ -19,17 +19,18 @@
     .innsigle-seal strong { display: block; }
     .cue { font-size: 0.8rem; color: var(--muted); }
     code { font-size: 0.9em; }
+    pre { overflow: auto; font-size: 0.85rem; background: color-mix(in srgb, var(--muted) 12%, transparent); padding: 0.75rem; border-radius: 4px; }
   </style>
 </head>
 <body>
   <main>
   <h1>Sealed sample page</h1>
-  <p class="meta">UC-AI-docs sample. Composition: <strong>model-primary</strong>. Say the product name <strong>INN-siggle</strong> (rhymes with <em>single</em>).</p>
+  <p class="meta">A real signed docs-style page. Composition: <strong>model-primary</strong>. Product name: <strong>INN-siggle</strong> (rhymes with <em>single</em>).</p>
 
-  <p>This page is a real subject for an Innsigle claim: a short documentation-style
-  artifact whose colophon names model and editorial tools. Verification answers
-  whether a named issuer sealed this colophon for these exact bytes—not whether
-  the prose is true.</p>
+  <p>This page is the subject of an Innsigle claim: a short documentation-style
+  artifact whose colophon names model and editorial tools. When you verify, you
+  learn whether a named issuer sealed that colophon for <em>these exact bytes</em>—
+  not whether the prose is true.</p>
 
   <h2>Colophon</h2>
   <table>
@@ -42,13 +43,15 @@
   </table>
   <p class="cue">Editorial tools do not flip composition to human-authored.</p>
 
-  <h2>Verify</h2>
+  <h2>Check it</h2>
   <p>Attestation: <a href=".well-known/innsigle/claims/index.attestation.json"><code>claims/index.attestation.json</code></a>.
   Keys: <a href=".well-known/innsigle/keys.json"><code>keys.json</code></a>.</p>
-  <pre><code>node src/cli.mjs verify \
+  <p class="meta">From a clone (byte-identical to this page):</p>
+  <pre><code>innsigle verify \
   --attestation docs/sample/.well-known/innsigle/claims/index.attestation.json \
   --content docs/sample/index.html \
   --keys docs/sample/.well-known/innsigle/keys.json</code></pre>
+  <p class="meta">Or download this live page and its claim, then verify—expect <strong>VALID</strong>.</p>
 
   <footer class="innsigle-footer">
     <a class="innsigle-seal" href=".well-known/innsigle/claims/index.attestation.json">

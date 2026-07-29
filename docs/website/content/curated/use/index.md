@@ -7,9 +7,10 @@ description: Try Innsigle — CLI, colophon, verify, and marks.
 
 # Use Innsigle
 
-Onboarding: **install** the CLI → write a colophon → claim and sign a file → verify.
+Four beats: **install** the tool → **see** a sealed sample → **declare** how a
+file was made → **verify** (yours or someone else’s).
 
-## Install (30 seconds)
+## 1. Install
 
 Node 20+. Not on the public npm registry yet.
 
@@ -20,30 +21,33 @@ npx innsigle
 
 Or clone and `npm install -g .` / `node src/cli.mjs`. Details: [CLI](cli/).
 
-## Core pages
+## 2. See a real seal
+
+Open the [sealed sample](../sample/)—model-primary docs with a live attestation.
+Re-check it anytime with the commands on [Verify](verify/) or [CLI](cli/).
+
+## 3. Learn the pieces
 
 | Page | Question |
 |------|----------|
 | [CLI](cli/) | How do I install and run keygen, claim, sign, verify? |
 | [Issuer](issuer/) | How do I get a key and publish it without a server? |
 | [Colophon](colophon/) | How do I declare composition? |
-| [Provenance](provenance/) | Auto colophon from agent sessions (+ examples) |
-| [Verify](verify/) | What does a valid seal mean? |
+| [Provenance](provenance/) | Auto colophon from agent sessions |
+| [Verify](verify/) | What does VALID mean? |
 | [Marks](marks/) | Which seal cue for which state? |
 
-## Walkthroughs
+## 4. Walk it through
 
-| Walkthrough | Use case |
-|-------------|----------|
-| [Conversation → colophon](walkthrough-provenance/) | FEAT-004 — agent session to sealed colophon |
-| [Seal a docs page](walkthrough-docs/) | UC-AI-docs (FEAT-002) |
-| [Human social mark](walkthrough-social/) | UC-human-social (FEAT-003) |
-
-Screenshots go in `docs/website/static/captures/` and link from those pages.
+| Walkthrough | Story |
+|-------------|--------|
+| [Seal a docs page](walkthrough-docs/) | Model-primary page from colo to verify |
+| [Conversation → colophon](walkthrough-provenance/) | Agent session to sealed document |
+| [Human social mark](walkthrough-social/) | Human-authored mark when metadata dies |
 
 ## Proof
 
-- [Sample](../sample/) — signed model-primary page in this site tree
-- [Golden vectors](https://github.com/DocumentDrivenDX/innsigle/tree/main/tests/vectors) — crypto fixtures
+- [Sample](../sample/) — signed page in this site tree  
+- [Golden vectors](https://github.com/DocumentDrivenDX/innsigle/tree/main/tests/vectors) — crypto fixtures  
 
-Spec detail is generated from `docs/helix/` under [Reference](../reference/).
+Deeper specs (generated from design docs): [Reference](../reference/).
