@@ -28,6 +28,17 @@ const P0 = [
   "use/verify.md",
 ];
 
+/** P2: scene or Check it + concrete proof word */
+const P2 = [
+  "use/issuer.md",
+  "use/marks.md",
+  "use/provenance.md",
+  "use/walkthrough-docs.md",
+  "use/walkthrough-social.md",
+  "use/walkthrough-provenance.md",
+  "reference/index.md",
+];
+
 describe("curated voice + proof spine", () => {
   it("CLAIM-MAP and VOICE exist", () => {
     assert.match(readFileSync(join(root, "docs/website/CLAIM-MAP.md"), "utf8"), /Public claim map/);
@@ -61,5 +72,25 @@ describe("curated voice + proof spine", () => {
     assert.match(home, /human social|human-authored/i);
     const sigilCount = (home.match(/\bsigil\b/gi) || []).length;
     assert.ok(sigilCount <= 1, `sigil count ${sigilCount}`);
+  });
+
+  it("P2 pages stay concrete (sample, check, or you/)", () => {
+    for (const rel of P2) {
+      const text = readFileSync(join(curated, rel), "utf8");
+      const ok =
+        /Check it/i.test(text) ||
+        /sample/i.test(text) ||
+        /\bYou\b/.test(text) ||
+        /install/i.test(text);
+      assert.ok(ok, `${rel} should open with scene or proof (got dry catalog?)`);
+      assert.ok(!/^# .*\n\n\*\*Reader mode:\*\*/m.test(text), `${rel} still uses Reader mode header`);
+    }
+  });
+
+  it("issuer documents absolute key_url", () => {
+    const text = readFileSync(join(curated, "use/issuer.md"), "utf8");
+    assert.match(text, /absolute/i);
+    assert.match(text, /key_url/);
+    assert.match(text, /innsigle (keygen|claim)/i);
   });
 });

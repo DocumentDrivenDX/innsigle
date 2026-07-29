@@ -8,12 +8,15 @@ description: How agent prompts become a document with an Innsigle colophon.
 
 # Walkthrough: conversation → document → colophon
 
-**Reader mode:** Start. **Feature:** FEAT-004.
+You prompt two agents. They each write a markdown page. You want more than a
+finished file—you want a **journal**, a **session record**, and a **proposed
+colophon** you can seal to the bytes.
 
-This page is the story—not the raw JSON. Three human prompts go into agent
-sessions (Claude and Codex in the fixture). Each session produces a markdown
-page. The Innsigle skill builds **session provenance** and **proposes a colophon**
-you can seal to the file bytes.
+This page is the **story**, not the raw JSON. Three human prompts go into agent
+sessions (Claude and Codex in the fixture). The Innsigle session skill builds
+session provenance and proposes a colophon.
+
+Spec detail (optional): [session provenance feature](../../reference/artifacts/features/feat-004-session-provenance/).
 
 ```text
 Human prompts  →  agent writes markdown  →  journal + L2 provenance  →  colo.json
@@ -153,7 +156,12 @@ issuer `key_url`. Verification checks the seal—not whether the prose is true.
 npm run test:provenance-driver
 ```
 
-More on layers, CLI, and FR-4a: [Session provenance](../provenance/).  
+### Check it
+
+Expect the driver to propose **model-primary** with models + tools (including
+rewrite tools) listed as ingredients—not a flip to human-authored. Details:
+[Session provenance](../provenance/).
+
 Issuer without a server: [Issuer identity](../issuer/).
 
 ## Machine pack
@@ -163,5 +171,5 @@ Issuer without a server: [Issuer identity](../issuer/).
 | [human-inputs.json](/examples/provenance/human-inputs.json) | Prompts |
 | [session-claude.jsonl](/examples/provenance/session-claude.jsonl) | Claude journal |
 | [session-codex.jsonl](/examples/provenance/session-codex.jsonl) | Codex journal |
-| [session-provenance.json](/examples/provenance/session-provenance.json) | L2 |
-| [colo.json](/examples/provenance/colo.json) | L1 colo |
+| [session-provenance.json](/examples/provenance/session-provenance.json) | Session record |
+| [colo.json](/examples/provenance/colo.json) | Proposed colo |

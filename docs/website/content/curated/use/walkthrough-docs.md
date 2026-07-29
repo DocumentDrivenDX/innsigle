@@ -3,24 +3,20 @@ title: Walkthrough — seal a docs page
 nav: use
 weight: 25
 parent: use
-description: Step-by-step UC-AI-docs path from colophon to verify.
+description: Step-by-step path from colophon to verify for a docs page.
 ---
 
 # Walkthrough: seal a docs page
 
-**Reader mode:** Start. **Feature:** FEAT-002. **Use case:** UC-AI-docs.
-
-## Goal
-
-Publish a static HTML page with a model-primary colophon and a signed claim a
-third party can verify offline.
+You have a static HTML page (often model-drafted). You want a **model-primary**
+colophon, a footer seal, and a claim a third party can verify offline.
 
 ## Prerequisites
 
-- Node 20+
+- Node 20+  
 - Innsigle CLI installed ([CLI](../cli/)):  
   `npm install github:DocumentDrivenDX/innsigle` then `npx innsigle`,  
-  or clone and `npm install -g .` / `node src/cli.mjs`
+  or clone and `npm install -g .` / `node src/cli.mjs`  
 
 Commands below use `innsigle`. From a clone without install, substitute
 `node src/cli.mjs`.
@@ -29,10 +25,10 @@ Commands below use `innsigle`. From a clone without install, substitute
 
 ### 1. Draft and edit
 
-Produce the page content (often model draft). Optionally run **sloptimizer** on
+Produce the page content (often a model draft). Optionally run **sloptimizer** on
 prose. Do **not** change composition to human-authored because of that rewrite.
 
-### 2. Write the colophon (colo)
+### 2. Write the colophon
 
 ```bash
 innsigle colo example --kind model-primary > colo.json
@@ -50,7 +46,8 @@ innsigle keys template \
   --out keys.json
 ```
 
-Publish `keys.json` over HTTPS (or ship beside content for the sample).
+Publish `keys.json` over HTTPS (or ship beside content for local demos). See
+[Issuer](../issuer/).
 
 ### 4. Build claim and sign
 
@@ -70,12 +67,13 @@ innsigle sign \
   --out claim.attestation.json
 ```
 
-Keep the private key offline (not in the site tree).
+Keep the private key offline (not in the site tree). `--key-url` must be
+**absolute** `https://…`.
 
 ### 5. Place the seal
 
 Footer (see `docs/sample/snippets/footer.html`): glyph + link to the attestation
-or a colophon page. Use the **A** mark for model-primary.
+or a colophon page. Use the **A** mark for model-primary ([Marks](../marks/)).
 
 ### 6. Verify
 
@@ -87,14 +85,19 @@ innsigle verify \
 # expect VALID
 ```
 
-Mutate the HTML and re-run: expect content mismatch (exit 3).
+Mutate the HTML and re-run: expect content mismatch (exit **3**).
+
+### Check it (this site)
+
+What we claim: the published sample is already sealed this way.
+
+Live: [Sample](../../sample/) · curl recipe on [CLI](../cli/). Expect: `VALID`.
 
 ## Proof in this repo
 
-- Sample: [Sample](../../sample/)
-- Vectors: `tests/vectors/` on GitHub
+- Sample page + attestation under `docs/sample/`  
+- Vectors: `tests/vectors/` on GitHub  
 
-## Captures
+## Spec
 
-Drop screenshots into `docs/website/static/captures/` (e.g.
-`walkthrough-docs-verify.png`) and link them here when recorded.
+Feature note: [signed docs claims](../../reference/artifacts/features/feat-002-signed-docs-claims/)

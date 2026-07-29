@@ -32,12 +32,13 @@
       </aside>
       <main class="docs-main prose">
         <h1 id="reference">Reference</h1>
-<p>Exact behavior and governing documents. Most pages here are <strong>generated</strong> from <code>docs/helix/</code> (and related docs sources). Edit the source files under <code>docs/</code>, not the generated HTML under <code>site/</code>.</p>
+<p>This is the <strong>exact-behavior</strong> shelf: contracts, design notes, and a glossary. Most pages here are <strong>generated</strong> from <code>docs/helix/</code> so implementers and auditors can read the same text as the source tree.</p>
+<p>If you want the friendly product path first, start at <a href="//">Home</a> or <a href="/use/">Use</a>. Come here when you need flags, schemas, or ADR decisions.</p>
 <h2 id="core-catalogs">Core catalogs</h2>
 <table>
-<tr><th>Catalog</th><th>Source</th></tr>
-<tr><td><a href="/reference/artifacts/">Artifacts</a></td><td><code>docs/helix/**</code> HELIX activity tree</td></tr>
-<tr><td><a href="/reference/glossary/">Glossary</a></td><td>Terms from claim system + DESIGN</td></tr>
+<tr><th>Catalog</th><th>What you get</th></tr>
+<tr><td><a href="/reference/artifacts/">Artifacts</a></td><td>Product vision, PRD, ADRs, contracts, feature notes</td></tr>
+<tr><td><a href="/reference/glossary/">Glossary</a></td><td>Seal, colophon, claim, maker, signet, and related terms</td></tr>
 <tr><td>Contracts &amp; ADRs</td><td>Nested under Artifacts → Design</td></tr>
 </table>
 <h2 id="curated-vs-generated">Curated vs generated</h2>
@@ -47,7 +48,15 @@
 <tr><td>Generated reference</td><td><code>docs/website/content/generated/</code></td><td><code>npm run site:publish</code></td></tr>
 <tr><td>Deployable HTML</td><td><code>site/</code></td><td><code>npm run site:build</code></td></tr>
 </table>
-<p>Walkthroughs, captures, and design screenshots land in <code>docs/website/static/captures/</code> and link from Use pages without mixing into HELIX artifact sources.</p>
+<p>Edit sources under <code>docs/</code>, not the generated HTML under <code>site/</code>.</p>
+<h2 id="proof-of-the-product-path">Proof of the product path</h2>
+<p>Friendly docs can drift; these stay checkable:</p>
+<ul>
+<li>Live <a href="/sample/">sample</a> — sealed page, re-verify with the CLI  </li>
+<li><a href="https://github.com/DocumentDrivenDX/innsigle/blob/main/docs/website/CLAIM-MAP.md">CLAIM-MAP</a> — public claims and proofs  </li>
+<li>Golden vectors in <code>tests/vectors/</code> on GitHub  </li>
+</ul>
+<p>Walkthroughs and screenshots live under Use (<code>docs/website/static/captures/</code>) so they do not mix into the HELIX artifact tree.</p>
       </main>
     </div>
   </div>

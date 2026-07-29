@@ -32,23 +32,24 @@
       </aside>
       <main class="docs-main prose">
         <h1 id="session-provenance">Session provenance</h1>
-<p>Agent work should leave a <strong>machine trail</strong> and a <strong>short colophon</strong>—not just a finished markdown file with no history.</p>
+<p>You finish an agent session with a shiny markdown file and no memory of which prompts, tools, or models produced it. Session provenance leaves a <strong>machine trail</strong> and a <strong>short colophon</strong>—so the seal can name what actually happened.</p>
 <p><strong>See the story first:</strong>   <a href="/use/walkthrough-provenance/">Walkthrough: conversation → document → colophon</a></p>
-<p>That page shows human prompts, the document the agent wrote, the proposed colo, and a sealed-page footer—using the multi-agent fixture (Claude + Codex).</p>
+<p>That page shows human prompts, the document the agent wrote, the proposed colophon, and a sealed-page footer—using the multi-agent fixture (Claude + Codex).</p>
 <h2 id="in-one-diagram">In one diagram</h2>
 <pre><code class="language-text">You prompt the agent
         ↓
 Agent writes a document (model-primary bytes)
         ↓
-Skill records journal → builds L2 provenance → proposes colo
+Skill records journal → builds session record → proposes colo
         ↓
-You review · optionally publish L2 · sign claim to content bytes</code></pre>
+You review · optionally publish the record · sign claim to content bytes</code></pre>
+<p>Signing stays a separate, deliberate step. Auto-sign is out of scope.</p>
 <h2 id="layers">Layers</h2>
 <table>
 <tr><th>Layer</th><th>What</th><th>Public?</th></tr>
 <tr><td>Content</td><td>The markdown/HTML you ship</td><td>Yes</td></tr>
 <tr><td>Colophon</td><td>Composition + ingredients</td><td>Yes (in claim)</td></tr>
-<tr><td>Session provenance (L2)</td><td>Prompt counts, tools, timeline</td><td>Optional URL</td></tr>
+<tr><td>Session provenance</td><td>Prompt counts, tools, timeline</td><td>Optional URL</td></tr>
 <tr><td>Raw transcript</td><td>Full chat</td><td>Local by default</td></tr>
 </table>
 <h2 id="quick-results-fixture">Quick results (fixture)</h2>
@@ -66,20 +67,31 @@ You review · optionally publish L2 · sign claim to content bytes</code></pre>
 <tr><td><a href="/examples/provenance/human-inputs.json">human-inputs.json</a></td><td>Scripted human prompts</td></tr>
 <tr><td><a href="/examples/provenance/session-claude.jsonl">session-claude.jsonl</a></td><td>Claude journal</td></tr>
 <tr><td><a href="/examples/provenance/session-codex.jsonl">session-codex.jsonl</a></td><td>Codex journal</td></tr>
-<tr><td><a href="/examples/provenance/session-provenance.json">session-provenance.json</a></td><td>L2</td></tr>
+<tr><td><a href="/examples/provenance/session-provenance.json">session-provenance.json</a></td><td>Session record</td></tr>
 <tr><td><a href="/examples/provenance/colo.json">colo.json</a></td><td>Proposed colo</td></tr>
 <tr><td><a href="/examples/provenance/artifacts/sealed-notes-claude.md">sealed-notes-claude.md</a></td><td>Document from Claude</td></tr>
 <tr><td><a href="/examples/provenance/artifacts/sealed-notes-codex.md">sealed-notes-codex.md</a></td><td>Document from Codex</td></tr>
 </table>
 <h2 id="reproduce">Reproduce</h2>
+<p>From a full clone of this repo:</p>
 <pre><code class="language-bash">npm run test:provenance-driver</code></pre>
-<pre><code class="language-bash">node src/cli.mjs provenance build --journal session.jsonl --generated-at 2026-07-24T18:00:00Z --out l2.json
-node src/cli.mjs provenance propose-colo --provenance l2.json --out colo.json</code></pre>
-<h2 id="specs">Specs</h2>
+<pre><code class="language-bash">innsigle provenance build \
+  --journal session.jsonl \
+  --generated-at 2026-07-24T18:00:00Z \
+  --out l2.json
+innsigle provenance propose-colo --provenance l2.json --out colo.json</code></pre>
+<p>(From a clone without install: <code>node src/cli.mjs …</code>.)</p>
+<h3 id="check-it">Check it</h3>
+<p>What we claim: the fixture driver proposes <strong>model-primary</strong> and lists rewrite tools without laundering authorship.</p>
+<pre><code class="language-bash">npm run test:provenance-driver
+# then inspect examples under docs/website/static/examples/provenance/
+# or site/examples/provenance/ after a site build</code></pre>
+<p>Expect: composition <code>model-primary</code>; ingredients include models and <code>innsigle-session</code> / sloptimizer as tools—not a flip to human-authored.</p>
+<h2 id="spec">Spec</h2>
 <ul>
 <li><a href="/use/walkthrough-provenance/">Walkthrough (story)</a>  </li>
-<li>Design: <a href="/reference/artifacts/session-provenance/">session-provenance</a>  </li>
-<li><a href="/reference/artifacts/features/feat-004-session-provenance/">FEAT-004</a>  </li>
+<li>Design: <a href="/reference/artifacts/session-provenance/">session provenance</a>  </li>
+<li>Feature note: <a href="/reference/artifacts/features/feat-004-session-provenance/">session provenance feature</a>  </li>
 </ul>
       </main>
     </div>

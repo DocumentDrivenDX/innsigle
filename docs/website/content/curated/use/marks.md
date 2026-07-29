@@ -8,8 +8,13 @@ description: Seal mark pack — choosable families, H/M/A composition cues.
 
 # Marks
 
-Pick a **seal family**, then a **composition countermark**. Opaque stamp matrices
-inspired by craft seals, merchant marks, pottery cartouches, and hallmarks.
+You need a glyph people can learn by sight—on a docs footer, a social still, or
+a dense sidebar. Innsigle ships **one seal idea in several stamp families**, each
+with the same composition cues (H / M / A).
+
+Pick a **family** that fits the surface, then a **countermark** that matches your
+colophon. The shapes borrow from craft seals, merchant marks, pottery cartouches,
+and hallmarks—not traffic-light “AI danger” badges.
 
 This site’s header and footer use the **matrix** family (`innsigle-*.svg`). Use
 any family in your own footers and social posts.
@@ -127,16 +132,19 @@ Concentric bezel rings; smaller monogram field. Quieter on dense footers.
 
 ## How to use
 
-1. Choose a **family** that fits the surface (brand for social; ring for dense docs).
-2. Choose the **cue** that matches your colo composition.
-3. Link the mark to your colophon or attestation—not to a “verified true” claim.
-4. Export PNG at 128 or 256 if a platform hates SVG.
+1. Choose a **family** that fits the surface (brand for social; ring for dense docs).  
+2. Choose the **cue** that matches your colophon composition.  
+3. Link the mark to your colophon or attestation—not to a “verified true” claim.  
+4. Export PNG at 128 or 256 if a platform hates SVG.  
 
 ```html
 <a href="/path/to/colo-or-claim">
   <img src="brand-model.svg" width="48" height="48" alt="Innsigle, model-primary" />
 </a>
 ```
+
+The mark is recognition. Crypto lives in the claim (optional). See
+[Verify](../verify/) for what VALID means.
 
 ## Sizes on this site
 
@@ -151,9 +159,15 @@ Concentric bezel rings; smaller monogram field. Quieter on dense footers.
 | Do | Don’t |
 |----|--------|
 | High-contrast solid matrix | Green = human, red = AI |
-| Link mark to colophon | Imply “content is true” |
+| Link mark to colophon or claim | Imply “content is true” |
 | Same family for all composition states | A human-only purity fork of the product |
 | Let makers pick a family | Force one glyph when another reads better |
 
-Source: `docs/sample/assets/marks/` (synced to site assets at build). Research notes in
-`RESEARCH.md`.
+### Check it
+
+Live docs chrome uses the matrix base seal in the site footer (every curated
+page). The [sealed sample](../../sample/) uses the **A** (model-primary) cue
+with cue text `The maker's seal · model-primary · signed`.
+
+Source pack: `docs/sample/assets/marks/` (synced to site assets at build). Research:
+`RESEARCH.md` in that folder.

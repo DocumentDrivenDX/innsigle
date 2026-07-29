@@ -37,19 +37,29 @@ const SHOT_PAGES: { name: string; path: string; mustSee: (string | RegExp)[] }[]
     mustSee: [/colophon/i, /model-primary|human-authored|mixed/i, /Edit is not origin/i],
   },
   {
+    name: "issuer",
+    path: "/use/issuer/",
+    mustSee: [/Issuer/i, /key_url|absolute|HTTPS/i, /Check it|exit/i],
+  },
+  {
     name: "verify",
     path: "/use/verify/",
     mustSee: [/Verify/i, /VALID|signature|digest/i, /Check it|sample/i],
   },
   {
+    name: "provenance",
+    path: "/use/provenance/",
+    mustSee: [/Session provenance|provenance/i, /model-primary/i, /Check it|test:provenance/i],
+  },
+  {
     name: "marks",
     path: "/use/marks/",
-    mustSee: [/Marks/i, /Matrix|Brand|Cartouche|Ring/i, /human-authored|model-primary/i],
+    mustSee: [/Marks/i, /Matrix|Brand|Cartouche|Ring/i, /human-authored|model-primary/i, /Check it|sample/i],
   },
   {
     name: "walkthrough-docs",
     path: "/use/walkthrough-docs/",
-    mustSee: [/Walkthrough/i, /seal a docs page/i, /keygen|claim build|verify/i],
+    mustSee: [/Walkthrough/i, /seal a docs page/i, /keygen|claim build|verify/i, /Check it|Sample/i],
   },
   {
     name: "artifacts",

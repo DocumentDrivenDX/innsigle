@@ -7,16 +7,19 @@ description: Generated specs, design docs, and glossary from the docs tree.
 
 # Reference
 
-Exact behavior and governing documents. Most pages here are **generated** from
-`docs/helix/` (and related docs sources). Edit the source files under `docs/`,
-not the generated HTML under `site/`.
+This is the **exact-behavior** shelf: contracts, design notes, and a glossary.
+Most pages here are **generated** from `docs/helix/` so implementers and
+auditors can read the same text as the source tree.
+
+If you want the friendly product path first, start at [Home](../) or
+[Use](../use/). Come here when you need flags, schemas, or ADR decisions.
 
 ## Core catalogs
 
-| Catalog | Source |
-|---------|--------|
-| [Artifacts](artifacts/) | `docs/helix/**` HELIX activity tree |
-| [Glossary](glossary/) | Terms from claim system + DESIGN |
+| Catalog | What you get |
+|---------|----------------|
+| [Artifacts](artifacts/) | Product vision, PRD, ADRs, contracts, feature notes |
+| [Glossary](glossary/) | Seal, colophon, claim, maker, signet, and related terms |
 | Contracts & ADRs | Nested under Artifacts → Design |
 
 ## Curated vs generated
@@ -27,6 +30,15 @@ not the generated HTML under `site/`.
 | Generated reference | `docs/website/content/generated/` | `npm run site:publish` |
 | Deployable HTML | `site/` | `npm run site:build` |
 
-Walkthroughs, captures, and design screenshots land in
-`docs/website/static/captures/` and link from Use pages without mixing into
-HELIX artifact sources.
+Edit sources under `docs/`, not the generated HTML under `site/`.
+
+## Proof of the product path
+
+Friendly docs can drift; these stay checkable:
+
+- Live [sample](../sample/) — sealed page, re-verify with the CLI  
+- [CLAIM-MAP](https://github.com/DocumentDrivenDX/innsigle/blob/main/docs/website/CLAIM-MAP.md) — public claims and proofs  
+- Golden vectors in `tests/vectors/` on GitHub  
+
+Walkthroughs and screenshots live under Use (`docs/website/static/captures/`) so
+they do not mix into the HELIX artifact tree.

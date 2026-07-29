@@ -32,7 +32,8 @@
       </aside>
       <main class="docs-main prose">
         <h1 id="marks">Marks</h1>
-<p>Pick a <strong>seal family</strong>, then a <strong>composition countermark</strong>. Opaque stamp matrices inspired by craft seals, merchant marks, pottery cartouches, and hallmarks.</p>
+<p>You need a glyph people can learn by sight—on a docs footer, a social still, or a dense sidebar. Innsigle ships <strong>one seal idea in several stamp families</strong>, each with the same composition cues (H / M / A).</p>
+<p>Pick a <strong>family</strong> that fits the surface, then a <strong>countermark</strong> that matches your colophon. The shapes borrow from craft seals, merchant marks, pottery cartouches, and hallmarks—not traffic-light “AI danger” badges.</p>
 <p>This site’s header and footer use the <strong>matrix</strong> family (<code>innsigle-*.svg</code>). Use any family in your own footers and social posts.</p>
 <h2 id="composition-cues">Composition cues</h2>
 <table>
@@ -133,14 +134,15 @@
 </div>
 <h2 id="how-to-use">How to use</h2>
 <ol>
-<li>Choose a <strong>family</strong> that fits the surface (brand for social; ring for dense docs).</li>
-<li>Choose the <strong>cue</strong> that matches your colo composition.</li>
-<li>Link the mark to your colophon or attestation—not to a “verified true” claim.</li>
-<li>Export PNG at 128 or 256 if a platform hates SVG.</li>
+<li>Choose a <strong>family</strong> that fits the surface (brand for social; ring for dense docs).  </li>
+<li>Choose the <strong>cue</strong> that matches your colophon composition.  </li>
+<li>Link the mark to your colophon or attestation—not to a “verified true” claim.  </li>
+<li>Export PNG at 128 or 256 if a platform hates SVG.  </li>
 </ol>
 <pre><code class="language-html">&lt;a href="/path/to/colo-or-claim"&gt;
   &lt;img src="brand-model.svg" width="48" height="48" alt="Innsigle, model-primary" /&gt;
 &lt;/a&gt;</code></pre>
+<p>The mark is recognition. Crypto lives in the claim (optional). See <a href="/use/verify/">Verify</a> for what VALID means.</p>
 <h2 id="sizes-on-this-site">Sizes on this site</h2>
 <table>
 <tr><th>Place</th><th>Size</th></tr>
@@ -152,11 +154,13 @@
 <table>
 <tr><th>Do</th><th>Don’t</th></tr>
 <tr><td>High-contrast solid matrix</td><td>Green = human, red = AI</td></tr>
-<tr><td>Link mark to colophon</td><td>Imply “content is true”</td></tr>
+<tr><td>Link mark to colophon or claim</td><td>Imply “content is true”</td></tr>
 <tr><td>Same family for all composition states</td><td>A human-only purity fork of the product</td></tr>
 <tr><td>Let makers pick a family</td><td>Force one glyph when another reads better</td></tr>
 </table>
-<p>Source: <code>docs/sample/assets/marks/</code> (synced to site assets at build). Research notes in <code>RESEARCH.md</code>.</p>
+<h3 id="check-it">Check it</h3>
+<p>Live docs chrome uses the matrix base seal in the site footer (every curated page). The <a href="/sample/">sealed sample</a> uses the <strong>A</strong> (model-primary) cue with cue text <code>The maker's seal · model-primary · signed</code>.</p>
+<p>Source pack: <code>docs/sample/assets/marks/</code> (synced to site assets at build). Research: <code>RESEARCH.md</code> in that folder.</p>
       </main>
     </div>
   </div>

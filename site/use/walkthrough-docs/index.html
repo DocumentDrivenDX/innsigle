@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Walkthrough — seal a docs page — Innsigle</title>
-  <meta name="description" content="Step-by-step UC-AI-docs path from colophon to verify." />
+  <meta name="description" content="Step-by-step path from colophon to verify for a docs page." />
   <link rel="stylesheet" href="/assets/css/site.css" />
   <link rel="icon" href="/assets/marks/innsigle-base.svg" type="image/svg+xml" />
 </head>
@@ -32,20 +32,18 @@
       </aside>
       <main class="docs-main prose">
         <h1 id="walkthrough-seal-a-docs-page">Walkthrough: seal a docs page</h1>
-<p><strong>Reader mode:</strong> Start. <strong>Feature:</strong> FEAT-002. <strong>Use case:</strong> UC-AI-docs.</p>
-<h2 id="goal">Goal</h2>
-<p>Publish a static HTML page with a model-primary colophon and a signed claim a third party can verify offline.</p>
+<p>You have a static HTML page (often model-drafted). You want a <strong>model-primary</strong> colophon, a footer seal, and a claim a third party can verify offline.</p>
 <h2 id="prerequisites">Prerequisites</h2>
 <ul>
-<li>Node 20+</li>
+<li>Node 20+  </li>
 <li>Innsigle CLI installed (<a href="/use/cli/">CLI</a>):  </li>
 </ul>
-<p>  <code>npm install github:DocumentDrivenDX/innsigle</code> then <code>npx innsigle</code>,     or clone and <code>npm install -g .</code> / <code>node src/cli.mjs</code></p>
+<p>  <code>npm install github:DocumentDrivenDX/innsigle</code> then <code>npx innsigle</code>,     or clone and <code>npm install -g .</code> / <code>node src/cli.mjs</code>  </p>
 <p>Commands below use <code>innsigle</code>. From a clone without install, substitute <code>node src/cli.mjs</code>.</p>
 <h2 id="steps">Steps</h2>
 <h3 id="1-draft-and-edit">1. Draft and edit</h3>
-<p>Produce the page content (often model draft). Optionally run <strong>sloptimizer</strong> on prose. Do <strong>not</strong> change composition to human-authored because of that rewrite.</p>
-<h3 id="2-write-the-colophon-colo">2. Write the colophon (colo)</h3>
+<p>Produce the page content (often a model draft). Optionally run <strong>sloptimizer</strong> on prose. Do <strong>not</strong> change composition to human-authored because of that rewrite.</p>
+<h3 id="2-write-the-colophon">2. Write the colophon</h3>
 <pre><code class="language-bash">innsigle colo example --kind model-primary &gt; colo.json
 # edit ingredients: name Claude, sloptimizer, human roles</code></pre>
 <h3 id="3-generate-issuer-keys-once">3. Generate issuer keys (once)</h3>
@@ -55,7 +53,7 @@ innsigle keys template \
   --public-key "$(cat keys/ed25519.pub.raw.b64url)" \
   --key-id "$(cat keys/key-id.txt)" \
   --out keys.json</code></pre>
-<p>Publish <code>keys.json</code> over HTTPS (or ship beside content for the sample).</p>
+<p>Publish <code>keys.json</code> over HTTPS (or ship beside content for local demos). See <a href="/use/issuer/">Issuer</a>.</p>
 <h3 id="4-build-claim-and-sign">4. Build claim and sign</h3>
 <pre><code class="language-bash">innsigle claim build \
   --content ./page.html \
@@ -70,23 +68,26 @@ innsigle sign \
   --claim claim.json \
   --key keys/ed25519.priv.pem \
   --out claim.attestation.json</code></pre>
-<p>Keep the private key offline (not in the site tree).</p>
+<p>Keep the private key offline (not in the site tree). <code>--key-url</code> must be <strong>absolute</strong> <code>https://…</code>.</p>
 <h3 id="5-place-the-seal">5. Place the seal</h3>
-<p>Footer (see <code>docs/sample/snippets/footer.html</code>): glyph + link to the attestation or a colophon page. Use the <strong>A</strong> mark for model-primary.</p>
+<p>Footer (see <code>docs/sample/snippets/footer.html</code>): glyph + link to the attestation or a colophon page. Use the <strong>A</strong> mark for model-primary (<a href="/use/marks/">Marks</a>).</p>
 <h3 id="6-verify">6. Verify</h3>
 <pre><code class="language-bash">innsigle verify \
   --attestation claim.attestation.json \
   --content ./page.html \
   --keys keys.json
 # expect VALID</code></pre>
-<p>Mutate the HTML and re-run: expect content mismatch (exit 3).</p>
+<p>Mutate the HTML and re-run: expect content mismatch (exit <strong>3</strong>).</p>
+<h3 id="check-it-this-site">Check it (this site)</h3>
+<p>What we claim: the published sample is already sealed this way.</p>
+<p>Live: <a href="/sample/">Sample</a> · curl recipe on <a href="/use/cli/">CLI</a>. Expect: <code>VALID</code>.</p>
 <h2 id="proof-in-this-repo">Proof in this repo</h2>
 <ul>
-<li>Sample: <a href="/sample/">Sample</a></li>
-<li>Vectors: <code>tests/vectors/</code> on GitHub</li>
+<li>Sample page + attestation under <code>docs/sample/</code>  </li>
+<li>Vectors: <code>tests/vectors/</code> on GitHub  </li>
 </ul>
-<h2 id="captures">Captures</h2>
-<p>Drop screenshots into <code>docs/website/static/captures/</code> (e.g. <code>walkthrough-docs-verify.png</code>) and link them here when recorded.</p>
+<h2 id="spec">Spec</h2>
+<p>Feature note: <a href="/reference/artifacts/features/feat-002-signed-docs-claims/">signed docs claims</a></p>
       </main>
     </div>
   </div>

@@ -32,8 +32,9 @@
       </aside>
       <main class="docs-main prose">
         <h1 id="walkthrough-conversation-document-colophon">Walkthrough: conversation → document → colophon</h1>
-<p><strong>Reader mode:</strong> Start. <strong>Feature:</strong> FEAT-004.</p>
-<p>This page is the story—not the raw JSON. Three human prompts go into agent sessions (Claude and Codex in the fixture). Each session produces a markdown page. The Innsigle skill builds <strong>session provenance</strong> and <strong>proposes a colophon</strong> you can seal to the file bytes.</p>
+<p>You prompt two agents. They each write a markdown page. You want more than a finished file—you want a <strong>journal</strong>, a <strong>session record</strong>, and a <strong>proposed colophon</strong> you can seal to the bytes.</p>
+<p>This page is the <strong>story</strong>, not the raw JSON. Three human prompts go into agent sessions (Claude and Codex in the fixture). The Innsigle session skill builds session provenance and proposes a colophon.</p>
+<p>Spec detail (optional): <a href="/reference/artifacts/features/feat-004-session-provenance/">session provenance feature</a>.</p>
 <pre><code class="language-text">Human prompts  →  agent writes markdown  →  journal + L2 provenance  →  colo.json
                                                               ↓
                                                     review · optional sign</code></pre>
@@ -131,15 +132,17 @@
 <hr />
 <h2 id="reproduce">Reproduce</h2>
 <pre><code class="language-bash">npm run test:provenance-driver</code></pre>
-<p>More on layers, CLI, and FR-4a: <a href="/use/provenance/">Session provenance</a>.   Issuer without a server: <a href="/use/issuer/">Issuer identity</a>.</p>
+<h3 id="check-it">Check it</h3>
+<p>Expect the driver to propose <strong>model-primary</strong> with models + tools (including rewrite tools) listed as ingredients—not a flip to human-authored. Details: <a href="/use/provenance/">Session provenance</a>.</p>
+<p>Issuer without a server: <a href="/use/issuer/">Issuer identity</a>.</p>
 <h2 id="machine-pack">Machine pack</h2>
 <table>
 <tr><th>File</th><th>Role</th></tr>
 <tr><td><a href="/examples/provenance/human-inputs.json">human-inputs.json</a></td><td>Prompts</td></tr>
 <tr><td><a href="/examples/provenance/session-claude.jsonl">session-claude.jsonl</a></td><td>Claude journal</td></tr>
 <tr><td><a href="/examples/provenance/session-codex.jsonl">session-codex.jsonl</a></td><td>Codex journal</td></tr>
-<tr><td><a href="/examples/provenance/session-provenance.json">session-provenance.json</a></td><td>L2</td></tr>
-<tr><td><a href="/examples/provenance/colo.json">colo.json</a></td><td>L1 colo</td></tr>
+<tr><td><a href="/examples/provenance/session-provenance.json">session-provenance.json</a></td><td>Session record</td></tr>
+<tr><td><a href="/examples/provenance/colo.json">colo.json</a></td><td>Proposed colo</td></tr>
 </table>
       </main>
     </div>
