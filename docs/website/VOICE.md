@@ -14,14 +14,15 @@ do next.
 
 ## Branding
 
-**Canonical bytes:** `scripts/brand-lines.mjs` (import as `BRAND`).  
+**Canonical bytes:** `scripts/brand-lines.mjs` (import as `BRAND`).
 Apostrophe in chrome/H1: straight ASCII `'` only.
+**No em dashes** (`—`) in curated product copy; use colon, comma, semicolon, or a new sentence.
 
 | Slot | Exact string | Surfaces |
 |------|--------------|----------|
-| **A — category** | `Content provenance for the AI era` | Meta category clause, Non-goals opener, evaluator tables |
-| **B — chrome** | `The maker's seal for published work` | Footer `.cue`, sample snippet default, home H1 |
-| **H1 — home** | same as B | Home H1 only |
+| **A: category** | `Content provenance for the AI era` | Meta category clause, Non-goals opener, evaluator tables |
+| **B: chrome** | `The maker's seal for published work` | Footer `.cue`, sample snippet default, home H1 |
+| **H1: home** | same as B | Home H1 only |
 
 **A1 matchers** are **case-insensitive** (mid-sentence lowercase is correct English).
 
@@ -40,17 +41,17 @@ Apostrophe in chrome/H1: straight ASCII `'` only.
 Spoken product name: **INN-siggle** (rhymes with *single*). Once per page max.
 Do not put pronunciation and “sigil” in the same sentence.
 
-Sample specialized cue (signed page only):  
+Sample specialized cue (signed page only):
 `The maker's seal · model-primary · signed`
 
 ## Warmth without fluff
 
-Craft manual with a human in the room—not a compliance form, not a startup
+Craft manual with a human in the room, not a compliance form, not a startup
 brochure.
 
-- Prefer concrete nouns: footer mark, house key, page bytes, keys URL  
-- Prefer short sentences and named actors (you, the reader, the issuer)  
-- One craft register: pride in honest production, not shame about models  
+- Prefer concrete nouns: footer mark, house key, page bytes, keys URL
+- Prefer short sentences and named actors (you, the reader, the issuer)
+- One craft register: pride in honest production, not shame about models
 
 **Ban empty boosters:** seamless, powerful, unlock, empower, next-gen, revolutionary.
 
@@ -64,13 +65,13 @@ When you make a checkable claim, show how to check it:
 ```markdown
 ### Check it
 
-What we claim: [one sentence, scoped to crypto/binding—not content truth].
+What we claim: [one sentence, scoped to crypto/binding, not content truth].
 
 \`\`\`bash
 [exact command a reader can run]
 \`\`\`
 
-Expect: `VALID` (or named exit code).  
+Expect: `VALID` (or named exit code).
 Live: [Sample](/sample/) · Spec: [link if needed]
 ```
 
@@ -95,8 +96,8 @@ Avoid “credentials” as product objects, “authentic real,” “unlock,” 
 
 ## Author checklist (before merge)
 
-- [ ] Stranger can run one command from this page and get the stated outcome?  
-- [ ] No sentence promises content truth or detection?  
-- [ ] Spec IDs below the fold or single Spec link?  
-- [ ] Brand lines (A1/B4/sample cue) untouched?  
-- [ ] Claim still in CLAIM-MAP with a proof?  
+- [ ] Stranger can run one command from this page and get the stated outcome?
+- [ ] No sentence promises content truth or detection?
+- [ ] Spec IDs below the fold or single Spec link?
+- [ ] Brand lines (A1/B4/sample cue) untouched?
+- [ ] Claim still in CLAIM-MAP with a proof?

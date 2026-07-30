@@ -3,18 +3,18 @@ title: Marks
 nav: use
 weight: 24
 parent: use
-description: Seal mark pack — choosable families, H/M/A composition cues.
+description: Seal mark pack: choosable families, H/M/A composition cues.
 ---
 
 # Marks
 
-You need a glyph people can learn by sight—on a docs footer, a social still, or
+You need a glyph people can learn by sight, on a docs footer, a social still, or
 a dense sidebar. Innsigle ships **one seal idea in several stamp families**, each
 with the same composition cues (H / M / A).
 
 Pick a **family** that fits the surface, then a **countermark** that matches your
 colophon. The shapes borrow from craft seals, merchant marks, pottery cartouches,
-and hallmarks—not traffic-light “AI danger” badges.
+and hallmarks, not traffic-light “AI danger” badges.
 
 This site’s header and footer use the **matrix** family (`innsigle-*.svg`). Use
 any family in your own footers and social posts.
@@ -132,14 +132,14 @@ Concentric bezel rings; smaller monogram field. Quieter on dense footers.
 
 ## How to use
 
-1. Choose a **family** that fits the surface (brand for social; ring for dense docs).  
-2. Choose the **cue** that matches your colophon composition.  
-3. Link the mark to your colophon or attestation—not to a “verified true” claim.  
-4. Export PNG at 128 or 256 if a platform hates SVG.  
+1. Choose a **family** that fits the surface (brand for social; ring for dense docs).
+2. Choose the **cue** that matches your colophon composition.
+3. Link the mark to your colophon or attestation, not to a “verified true” claim.
+4. Export PNG at 128 or 256 if a platform hates SVG.
 
 ```html
 <a href="/path/to/colo-or-claim">
-  <img src="brand-model.svg" width="48" height="48" alt="Innsigle, model-primary" />
+ <img src="brand-model.svg" width="48" height="48" alt="Innsigle, model-primary" />
 </a>
 ```
 

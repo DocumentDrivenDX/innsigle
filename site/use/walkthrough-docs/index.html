@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Walkthrough — seal a docs page — Innsigle</title>
+  <title>Walkthrough: seal a docs page — Innsigle</title>
   <meta name="description" content="Step-by-step path from colophon to verify for a docs page." />
   <link rel="stylesheet" href="/assets/css/site.css" />
   <link rel="icon" href="/assets/marks/innsigle-base.svg" type="image/svg+xml" />
@@ -25,7 +25,7 @@
     </div>
   </header>
   <div class="wrap layout-docs">
-    <p class="crumbs" aria-label="Breadcrumb"><a href="/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/use/">Use</a> <span aria-hidden="true">/</span> <span>Walkthrough — seal a docs page</span></p>
+    <p class="crumbs" aria-label="Breadcrumb"><a href="/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/use/">Use</a> <span aria-hidden="true">/</span> <span>Walkthrough: seal a docs page</span></p>
     <div class="docs-grid">
       <aside class="docs-side" aria-label="Section">
         <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/sample/">Sample</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/" aria-current="page">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/issuer/">Issuer</a></li><li><a href="/use/colophon/">Colophon</a></li><li><a href="/use/provenance/">Provenance</a></li><li><a href="/use/verify/">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-provenance/">Walkthrough: conversation → colophon</a></li><li><a href="/use/walkthrough-docs/" aria-current="page">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/">Walkthrough: social</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/">Reference home</a></li><li><a href="/reference/artifacts/">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
@@ -35,10 +35,10 @@
 <p>You have a static HTML page (often model-drafted). You want a <strong>model-primary</strong> colophon, a footer seal, and a claim someone can verify from local copies of the page, attestation, and keys.</p>
 <h2 id="prerequisites">Prerequisites</h2>
 <ul>
-<li>Node 20+  </li>
-<li>Innsigle CLI installed (<a href="/use/cli/">CLI</a>):  </li>
+<li>Node 20+</li>
+<li>Innsigle CLI installed (<a href="/use/cli/">CLI</a>):</li>
 </ul>
-<p>  <code>npm install github:DocumentDrivenDX/innsigle</code> then <code>npx innsigle</code>,     or clone and <code>npm install -g .</code> / <code>node src/cli.mjs</code>  </p>
+<p> <code>npm install github:DocumentDrivenDX/innsigle</code> then <code>npx innsigle</code>,  or clone and <code>npm install -g .</code> / <code>node src/cli.mjs</code></p>
 <p>Commands below use <code>innsigle</code>. From a clone without install, substitute <code>node src/cli.mjs</code>.</p>
 <h2 id="steps">Steps</h2>
 <h3 id="1-draft-and-edit">1. Draft and edit</h3>
@@ -49,33 +49,33 @@
 <h3 id="3-generate-issuer-keys-once">3. Generate issuer keys (once)</h3>
 <pre><code class="language-bash">innsigle keygen --out-dir ./keys
 innsigle keys template \
-  --issuer-id my-house --issuer-name "My House" \
-  --public-key "$(cat keys/ed25519.pub.raw.b64url)" \
-  --key-id "$(cat keys/key-id.txt)" \
-  --out keys.json</code></pre>
+ --issuer-id my-house --issuer-name "My House" \
+ --public-key "$(cat keys/ed25519.pub.raw.b64url)" \
+ --key-id "$(cat keys/key-id.txt)" \
+ --out keys.json</code></pre>
 <p>Publish <code>keys.json</code> over HTTPS (or ship beside content for local demos). See <a href="/use/issuer/">Issuer</a>.</p>
 <h3 id="4-build-claim-and-sign">4. Build claim and sign</h3>
 <pre><code class="language-bash">innsigle claim build \
-  --content ./page.html \
-  --uri https://example.com/page/ \
-  --colo colo.json \
-  --issuer-id my-house --issuer-name "My House" \
-  --key-id "$(cat keys/key-id.txt)" \
-  --key-url https://example.com/.well-known/innsigle/keys.json \
-  --out claim.json
+ --content ./page.html \
+ --uri https://example.com/page/ \
+ --colo colo.json \
+ --issuer-id my-house --issuer-name "My House" \
+ --key-id "$(cat keys/key-id.txt)" \
+ --key-url https://example.com/.well-known/innsigle/keys.json \
+ --out claim.json
 
 innsigle sign \
-  --claim claim.json \
-  --key keys/ed25519.priv.pem \
-  --out claim.attestation.json</code></pre>
+ --claim claim.json \
+ --key keys/ed25519.priv.pem \
+ --out claim.attestation.json</code></pre>
 <p>Keep the private key offline (not in the site tree). <code>--key-url</code> must be <strong>absolute</strong> <code>https://…</code>.</p>
 <h3 id="5-place-the-seal">5. Place the seal</h3>
 <p>Footer (see <code>docs/sample/snippets/footer.html</code>): glyph + link to the attestation or a colophon page. Use the <strong>A</strong> mark for model-primary (<a href="/use/marks/">Marks</a>).</p>
 <h3 id="6-verify">6. Verify</h3>
 <pre><code class="language-bash">innsigle verify \
-  --attestation claim.attestation.json \
-  --content ./page.html \
-  --keys keys.json
+ --attestation claim.attestation.json \
+ --content ./page.html \
+ --keys keys.json
 # expect VALID</code></pre>
 <p>Mutate the HTML and re-run: expect content mismatch (exit <strong>3</strong>).</p>
 <h3 id="check-it-this-site">Check it (this site)</h3>
@@ -83,8 +83,8 @@ innsigle sign \
 <p>Live: <a href="/sample/">Sample</a> · curl recipe on <a href="/use/cli/">CLI</a>. Expect: <code>VALID</code>.</p>
 <h2 id="proof-in-this-repo">Proof in this repo</h2>
 <ul>
-<li>Sample page + attestation under <code>docs/sample/</code>  </li>
-<li>Vectors: <code>tests/vectors/</code> on GitHub  </li>
+<li>Sample page + attestation under <code>docs/sample/</code></li>
+<li>Vectors: <code>tests/vectors/</code> on GitHub</li>
 </ul>
 <h2 id="spec">Spec</h2>
 <p>Feature note: <a href="/reference/artifacts/features/feat-002-signed-docs-claims/">signed docs claims</a></p>

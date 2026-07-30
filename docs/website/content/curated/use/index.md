@@ -2,7 +2,7 @@
 title: Use
 nav: use
 weight: 20
-description: Try Innsigle — CLI, colophon, verify, and marks.
+description: Try Innsigle: CLI, colophon, verify, and marks.
 ---
 
 # Use Innsigle
@@ -23,7 +23,7 @@ Or clone and `npm install -g .` / `node src/cli.mjs`. Details: [CLI](cli/).
 
 ## 2. See a real seal
 
-Open the [sealed sample](../sample/)—model-primary docs with a live attestation.
+Open the [sealed sample](../sample/), model-primary docs with a live attestation.
 Re-check it anytime with the commands on [Verify](verify/) or [CLI](cli/).
 
 ## 3. Learn the pieces
@@ -47,7 +47,7 @@ Re-check it anytime with the commands on [Verify](verify/) or [CLI](cli/).
 
 ## Proof
 
-- [Sample](../sample/) — signed page in this site tree  
-- [Golden vectors](https://github.com/DocumentDrivenDX/innsigle/tree/main/tests/vectors) — crypto fixtures  
+- [Sample](../sample/): signed page in this site tree
+- [Golden vectors](https://github.com/DocumentDrivenDX/innsigle/tree/main/tests/vectors): crypto fixtures
 
 Deeper specs (generated from design docs): [Reference](../reference/).

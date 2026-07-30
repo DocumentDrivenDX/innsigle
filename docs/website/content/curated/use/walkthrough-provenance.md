@@ -1,5 +1,5 @@
 ---
-title: Walkthrough — conversation to colophon
+title: Walkthrough: conversation to colophon
 nav: use
 weight: 27
 parent: use
@@ -9,7 +9,7 @@ description: How agent prompts become a document with an Innsigle colophon.
 # Walkthrough: conversation → document → colophon
 
 You prompt two agents. They each write a markdown page. You want more than a
-finished file—you want a **journal**, a **session record**, and a **proposed
+finished file. You want a **journal**, a **session record**, and a **proposed
 colophon** you can seal to the bytes.
 
 This page is the **story**, not the raw JSON. Three human prompts go into agent
@@ -19,14 +19,14 @@ session provenance and proposes a colophon.
 Spec detail (optional): [session provenance feature](../../reference/artifacts/features/feat-004-session-provenance/).
 
 ```text
-Human prompts  →  agent writes markdown  →  journal + L2 provenance  →  colo.json
-                                                              ↓
-                                                    review · optional sign
+Human prompts → agent writes markdown → journal + L2 provenance → colo.json
+ ↓
+ review · optional sign
 ```
 
 ---
 
-## Step 1 — Human prompts
+## Step 1: Human prompts
 
 The operator types these (same sequence for each agent in the fixture):
 
@@ -49,20 +49,20 @@ Full list: [human-inputs.json](/examples/provenance/human-inputs.json).
 
 ---
 
-## Step 2 — Agent writes the document
+## Step 2: Agent writes the document
 
 The model produces a markdown file (model-primary: the agent wrote the bytes).
 
 <div class="story-bubble agent" role="listitem">
 <span class="story-who">Claude (fixture)</span>
-<p>Writes <code>sealed-notes-claude.md</code> — two paragraphs on the colophon, then the non-goals list.</p>
+<p>Writes <code>sealed-notes-claude.md</code>: two paragraphs on the colophon, then the non-goals list.</p>
 </div>
 
 ### The document (Claude session)
 
 <div class="story-doc">
 <p class="story-doc-title">Sealed Notes</p>
-<p>An Innsigle colophon declares how a piece of work was made—composition and ingredients—not whether the prose is true or pure.</p>
+<p>An Innsigle colophon declares how a piece of work was made, composition and ingredients, not whether the prose is true or pure.</p>
 <p>It lists models, tools, and human roles so readers can see how the piece was produced.</p>
 <p class="story-doc-h">Non-goals</p>
 <ul>
@@ -72,15 +72,15 @@ The model produces a markdown file (model-primary: the agent wrote the bytes).
 </ul>
 </div>
 
-Codex produces a parallel page: [sealed-notes-codex.md](/examples/provenance/artifacts/sealed-notes-codex.md).  
+Codex produces a parallel page: [sealed-notes-codex.md](/examples/provenance/artifacts/sealed-notes-codex.md).
 Claude artifact: [sealed-notes-claude.md](/examples/provenance/artifacts/sealed-notes-claude.md).
 
 ---
 
-## Step 3 — Skill captures the session
+## Step 3: Skill captures the session
 
 The harness records a **journal** (JSONL): each human prompt, assistant turn,
-file write (`by: model`), tool/skill calls. That is not the colo yet—it is the
+file write (`by: model`), tool/skill calls. That is not the colo yet; it is the
 raw machine log.
 
 <div class="story-flow" aria-hidden="true">
@@ -109,7 +109,7 @@ work into `human-authored`.
 
 ---
 
-## Step 4 — Proposed colophon
+## Step 4: Proposed colophon
 
 This is what a reader (or claim) should show next to the document:
 
@@ -133,7 +133,7 @@ Machine form: [colo.json](/examples/provenance/colo.json).
 
 ---
 
-## Step 5 — How it looks on a sealed page
+## Step 5: How it looks on a sealed page
 
 Footer pattern (same idea as the [Sample](../../sample/) signed page):
 
@@ -146,7 +146,7 @@ Footer pattern (same idea as the [Sample](../../sample/) signed page):
 </div>
 
 When you **sign**, the claim binds **content SHA-256** + this colo + absolute
-issuer `key_url`. Verification checks the seal—not whether the prose is true.
+issuer `key_url`. Verification checks the seal, not whether the prose is true.
 
 ---
 
@@ -159,7 +159,7 @@ npm run test:provenance-driver
 ### Check it
 
 Expect the driver to propose **model-primary** with models + tools (including
-rewrite tools) listed as ingredients—not a flip to human-authored. Details:
+rewrite tools) listed as ingredients, not a flip to human-authored. Details:
 [Session provenance](../provenance/).
 
 Issuer without a server: [Issuer identity](../issuer/).

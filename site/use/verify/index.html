@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Verify — Innsigle</title>
-  <meta name="description" content="What Innsigle verification checks — and what it does not." />
+  <meta name="description" content="What Innsigle verification checks: and what it does not." />
   <link rel="stylesheet" href="/assets/css/site.css" />
   <link rel="icon" href="/assets/marks/innsigle-base.svg" type="image/svg+xml" />
 </head>
@@ -36,16 +36,16 @@
 <h2 id="what-valid-means">What VALID means</h2>
 <p>When <code>innsigle verify</code> prints <strong>VALID</strong>:</p>
 <ol>
-<li>The signature checks out for the issuer key  </li>
-<li>The content SHA-256 matches the subject in the claim  </li>
-<li>You can read the colophon (composition + ingredients) that was sealed  </li>
+<li>The signature checks out for the issuer key</li>
+<li>The content SHA-256 matches the subject in the claim</li>
+<li>You can read the colophon (composition + ingredients) that was sealed</li>
 </ol>
-<p>When the page is only marked and <strong>not</strong> signed, treat it as a <strong>declaration</strong>— still a valid use of the seal family, without cryptographic standing.</p>
+<p>When the page is only marked and <strong>not</strong> signed, treat it as a <strong>declaration</strong>. still a valid use of the seal family, without cryptographic standing.</p>
 <h2 id="what-it-does-not-mean">What it does not mean</h2>
 <ul>
-<li>The prose is true or complete  </li>
-<li>A platform or government certified the content  </li>
-<li>Models were or were not used beyond what the colophon declares  </li>
+<li>The prose is true or complete</li>
+<li>A platform or government certified the content</li>
+<li>Models were or were not used beyond what the colophon declares</li>
 </ul>
 <h3 id="check-it">Check it</h3>
 <pre><code class="language-bash">curl -sL -o page.html https://documentdrivendx.github.io/innsigle/sample/
@@ -55,16 +55,16 @@ npx innsigle verify --attestation att.json --content page.html --keys keys.json<
 <p>Expect: <code>VALID</code>. Live: <a href="/sample/">Sample</a>.</p>
 <h2 id="hierarchy-on-a-verify-view">Hierarchy on a verify view</h2>
 <ol>
-<li><strong>Primary:</strong> Signature valid or invalid; issuer when valid. Or “unsigned declaration.”  </li>
-<li><strong>Secondary:</strong> Composition and ingredient list (colophon).  </li>
-<li><strong>Tertiary:</strong> Content fingerprint, timestamps, raw claim download.  </li>
+<li><strong>Primary:</strong> Signature valid or invalid; issuer when valid. Or “unsigned declaration.”</li>
+<li><strong>Secondary:</strong> Composition and ingredient list (colophon).</li>
+<li><strong>Tertiary:</strong> Content fingerprint, timestamps, raw claim download.</li>
 </ol>
 <h2 id="what-the-cli-checks">What the CLI checks</h2>
 <ol>
-<li>Load attestation + keys  </li>
-<li>Issuer public key present and not revoked  </li>
-<li>SHA-256 of content matches subject digest  </li>
-<li>Ed25519 over the canonical claim payload  </li>
+<li>Load attestation + keys</li>
+<li>Issuer public key present and not revoked</li>
+<li>SHA-256 of content matches subject digest</li>
+<li>Ed25519 over the canonical claim payload</li>
 </ol>
 <table>
 <tr><th>Layer</th><th>What it answers</th></tr>
@@ -73,9 +73,9 @@ npx innsigle verify --attestation att.json --content page.html --keys keys.json<
 <tr><td>Recognized</td><td>You pin that fingerprint, and/or follow key-endorsements (published statements naming another fingerprint)</td></tr>
 </table>
 <p><code>issuer.id</code> is a display slug and may collide. Prefer <strong>fingerprints</strong>.</p>
-<p>Issuer documents can live on any durable HTTPS URL (gist, Pages, free host). A social bio <strong>issuer card</strong> is discovery only—not a signature. See <a href="/use/issuer/">Issuer</a>.</p>
+<p>Issuer documents can live on any durable HTTPS URL (gist, Pages, free host). A social bio <strong>issuer card</strong> is discovery only, not a signature. See <a href="/use/issuer/">Issuer</a>.</p>
 <h2 id="spec">Spec</h2>
-<p>Crypto: <a href="/reference/artifacts/adrs/adr-001-signing-and-canonicalization/">ADR-001</a>.   Issuer URL and web of trust: <a href="/reference/artifacts/adrs/adr-003-issuer-url-and-web-of-trust/">ADR-003</a>.</p>
+<p>Crypto: <a href="/reference/artifacts/adrs/adr-001-signing-and-canonicalization/">ADR-001</a>. Issuer URL and web of trust: <a href="/reference/artifacts/adrs/adr-003-issuer-url-and-web-of-trust/">ADR-003</a>.</p>
       </main>
     </div>
   </div>

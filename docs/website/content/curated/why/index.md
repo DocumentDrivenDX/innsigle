@@ -26,12 +26,12 @@ control, as a mark people can learn by sight.
 
 You need one language for **how work was made**, usable for:
 
-1. **Owned docs** — a signed colophon that can name models without shame  
-2. **Human social posts** — a mark that survives when file metadata dies  
+1. **Owned docs**: a signed colophon that can name models without shame
+2. **Human social posts**: a mark that survives when file metadata dies
 
 **Innsigle** is that language: the maker's seal under your control, across docs
 and social, with an optional signature over content bytes. C2PA and similar stay
-in their lane for industrial media—see [Non-goals](../non-goals/).
+in their lane for industrial media, see [Non-goals](../non-goals/).
 
 ## What you can check
 
@@ -56,5 +56,5 @@ Expect: `VALID`. Same recipe on [CLI](../use/cli/).
 
 ## Next
 
-- [Install and seal](../use/)  
-- [Non-goals](../non-goals/) — category boundaries  
+- [Install and seal](../use/)
+- [Non-goals](../non-goals/): category boundaries

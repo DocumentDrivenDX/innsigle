@@ -36,9 +36,9 @@ Edit sources under `docs/`, not the generated HTML under `site/`.
 
 Friendly docs can drift; these stay checkable:
 
-- Live [sample](../sample/) — sealed page, re-verify with the CLI  
-- [CLAIM-MAP](https://github.com/DocumentDrivenDX/innsigle/blob/main/docs/website/CLAIM-MAP.md) — public claims and proofs  
-- Golden vectors in `tests/vectors/` on GitHub  
+- Live [sample](../sample/): sealed page, re-verify with the CLI
+- [CLAIM-MAP](https://github.com/DocumentDrivenDX/innsigle/blob/main/docs/website/CLAIM-MAP.md): public claims and proofs
+- Golden vectors in `tests/vectors/` on GitHub
 
 Walkthroughs and screenshots live under Use (`docs/website/static/captures/`) so
 they do not mix into the generated reference tree.

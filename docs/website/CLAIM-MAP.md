@@ -17,9 +17,9 @@ it may not **expand** it.
 
 ## Forbidden expansions (never on curated or chrome)
 
-- Content is true / authentic / verified fact  
-- Detector accuracy, authorship percentages, “AI score”  
-- Human-only purity as the product story  
+- Content is true / authentic / verified fact
+- Detector accuracy, authorship percentages, “AI score”
+- Human-only purity as the product story
 - Chrome implying every page is cryptographically signed (B4 alone ≠ signed)
 
 ## Spec IDs

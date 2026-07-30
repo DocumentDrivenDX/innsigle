@@ -8,11 +8,11 @@ description: Get a key, publish issuer metadata without a webserver, share on so
 
 # Issuer identity
 
-You want people to know *who* sealed a page—not just that a seal exists. You do
+You want people to know *who* sealed a page, not just that a seal exists. You do
 **not** need to run a webserver. You need three things:
 
-1. An Ed25519 keypair (private key stays offline)  
-2. A public **issuer document** at a durable **HTTPS** URL  
+1. An Ed25519 keypair (private key stays offline)
+2. A public **issuer document** at a durable **HTTPS** URL
 3. That absolute URL in every **signed** claim as `issuer.key_url`
 
 Anyone can paste a house name in a bio. **Identity is the key fingerprint**, not
@@ -23,11 +23,11 @@ the slug.
 ```bash
 innsigle keygen --out-dir ./keys
 innsigle keys template \
-  --issuer-id my-house \
-  --issuer-name "My House" \
-  --public-key "$(cat keys/ed25519.pub.raw.b64url)" \
-  --key-id "$(cat keys/key-id.txt)" \
-  --out issuer.json
+ --issuer-id my-house \
+ --issuer-name "My House" \
+ --public-key "$(cat keys/ed25519.pub.raw.b64url)" \
+ --key-id "$(cat keys/key-id.txt)" \
+ --out issuer.json
 ```
 
 Keep `ed25519.priv.pem` offline. Never put it in a gist, bio, or site tree.
@@ -45,7 +45,7 @@ Upload **public** `issuer.json` (or `keys.json`) somewhere HTTPS and stable:
 | **Your existing site** | Optional `/.well-known/innsigle/issuer.json` |
 
 That HTTPS URL is what you pass to `claim build --key-url …`. It is **frozen
-inside the signature**—changing the host later does not rewrite old seals.
+inside the signature**. Changing the host later does not rewrite old seals.
 
 ## Embed on social profiles
 
@@ -78,12 +78,12 @@ Verify seals with the CLI; pin fingerprints you care about.
 
 ```bash
 innsigle claim build \
-  --content ./page.html \
-  --colo ./colo.json \
-  --issuer-id my-house --issuer-name "My House" \
-  --key-id "$(cat keys/key-id.txt)" \
-  --key-url "https://…/issuer.json" \
-  --out claim.json
+ --content ./page.html \
+ --colo ./colo.json \
+ --issuer-id my-house --issuer-name "My House" \
+ --key-id "$(cat keys/key-id.txt)" \
+ --key-url "https://…/issuer.json" \
+ --out claim.json
 innsigle sign --claim claim.json --key keys/ed25519.priv.pem --out att.json
 ```
 
@@ -95,10 +95,10 @@ What we claim: relative key URLs cannot enter a claim.
 
 ```bash
 innsigle claim build \
-  --content ./page.html --colo ./colo.json \
-  --issuer-id my-house --issuer-name "My House" \
-  --key-id "$(cat keys/key-id.txt)" \
-  --key-url "/.well-known/innsigle/keys.json"
+ --content ./page.html --colo ./colo.json \
+ --issuer-id my-house --issuer-name "My House" \
+ --key-id "$(cat keys/key-id.txt)" \
+ --key-url "/.well-known/innsigle/keys.json"
 ```
 
 Expect: failure (exit **5**), with a message about absolute `key_url`.
@@ -109,7 +109,7 @@ Expect: failure (exit **5**), with a message about absolute `key_url`.
 |----------|--------|
 | How do others trust me? | They pin your **fingerprint**, and/or follow **key-endorsements** (published statements that name another key’s fingerprint) |
 | How do I verify them? | Content + attestation + their issuer document (`key_url` in the signed claim); `innsigle verify` |
-| Duplicate house names? | Fine — identity is the **key**, not the slug |
+| Duplicate house names? | Fine: identity is the **key**, not the slug |
 
 ## Spec
 

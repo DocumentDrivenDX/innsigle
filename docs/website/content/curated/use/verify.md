@@ -3,7 +3,7 @@ title: Verify
 nav: use
 weight: 23
 parent: use
-description: What Innsigle verification checks — and what it does not.
+description: What Innsigle verification checks: and what it does not.
 ---
 
 # Verify
@@ -16,18 +16,18 @@ It is not a fact-checker and not an AI detector.
 
 When `innsigle verify` prints **VALID**:
 
-1. The signature checks out for the issuer key  
-2. The content SHA-256 matches the subject in the claim  
-3. You can read the colophon (composition + ingredients) that was sealed  
+1. The signature checks out for the issuer key
+2. The content SHA-256 matches the subject in the claim
+3. You can read the colophon (composition + ingredients) that was sealed
 
-When the page is only marked and **not** signed, treat it as a **declaration**—
+When the page is only marked and **not** signed, treat it as a **declaration**.
 still a valid use of the seal family, without cryptographic standing.
 
 ## What it does not mean
 
-- The prose is true or complete  
-- A platform or government certified the content  
-- Models were or were not used beyond what the colophon declares  
+- The prose is true or complete
+- A platform or government certified the content
+- Models were or were not used beyond what the colophon declares
 
 ### Check it
 
@@ -42,16 +42,16 @@ Expect: `VALID`. Live: [Sample](../../sample/).
 
 ## Hierarchy on a verify view
 
-1. **Primary:** Signature valid or invalid; issuer when valid. Or “unsigned declaration.”  
-2. **Secondary:** Composition and ingredient list (colophon).  
-3. **Tertiary:** Content fingerprint, timestamps, raw claim download.  
+1. **Primary:** Signature valid or invalid; issuer when valid. Or “unsigned declaration.”
+2. **Secondary:** Composition and ingredient list (colophon).
+3. **Tertiary:** Content fingerprint, timestamps, raw claim download.
 
 ## What the CLI checks
 
-1. Load attestation + keys  
-2. Issuer public key present and not revoked  
-3. SHA-256 of content matches subject digest  
-4. Ed25519 over the canonical claim payload  
+1. Load attestation + keys
+2. Issuer public key present and not revoked
+3. SHA-256 of content matches subject digest
+4. Ed25519 over the canonical claim payload
 
 | Layer | What it answers |
 |-------|-----------------|
@@ -62,10 +62,10 @@ Expect: `VALID`. Live: [Sample](../../sample/).
 `issuer.id` is a display slug and may collide. Prefer **fingerprints**.
 
 Issuer documents can live on any durable HTTPS URL (gist, Pages, free host). A
-social bio **issuer card** is discovery only—not a signature. See
+social bio **issuer card** is discovery only, not a signature. See
 [Issuer](../issuer/).
 
 ## Spec
 
-Crypto: [ADR-001](../../reference/artifacts/adrs/adr-001-signing-and-canonicalization/).  
+Crypto: [ADR-001](../../reference/artifacts/adrs/adr-001-signing-and-canonicalization/).
 Issuer URL and web of trust: [ADR-003](../../reference/artifacts/adrs/adr-003-issuer-url-and-web-of-trust/).

@@ -10,24 +10,24 @@ description: Session provenance from captured agent journals into proposed colop
 
 You finish an agent session with a shiny markdown file and no durable record of
 which prompts, tools, or models the harness captured. Session provenance records
-those events and **proposes a short colophon** for review—so the seal can name
+those events and **proposes a short colophon** for review, so the seal can name
 what the journal actually logged.
 
-**See the story first:**  
+**See the story first:**
 [Walkthrough: conversation → document → colophon](../walkthrough-provenance/)
 
 That page shows human prompts, the document the agent wrote, the proposed
-colophon, and a sealed-page footer—using the multi-agent fixture (Claude + Codex).
+colophon, and a sealed-page footer, using the multi-agent fixture (Claude + Codex).
 
 ## In one diagram
 
 ```text
 You prompt the agent
-        ↓
+ ↓
 Agent writes a document (model-primary bytes)
-        ↓
+ ↓
 Skill records journal → builds session record → proposes colo
-        ↓
+ ↓
 You review · optionally publish the record · sign claim to content bytes
 ```
 
@@ -76,9 +76,9 @@ npm run test:provenance-driver
 
 ```bash
 innsigle provenance build \
-  --journal session.jsonl \
-  --generated-at 2026-07-24T18:00:00Z \
-  --out l2.json
+ --journal session.jsonl \
+ --generated-at 2026-07-24T18:00:00Z \
+ --out l2.json
 innsigle provenance propose-colo --provenance l2.json --out colo.json
 ```
 
@@ -96,10 +96,10 @@ npm run test:provenance-driver
 ```
 
 Expect: composition `model-primary`; ingredients include models and
-`innsigle-session` / sloptimizer as tools—not a flip to human-authored.
+`innsigle-session` / sloptimizer as tools, not a flip to human-authored.
 
 ## Spec
 
-- [Walkthrough (story)](../walkthrough-provenance/)  
-- Design: [session provenance](../../reference/artifacts/session-provenance/)  
-- Feature note: [session provenance feature](../../reference/artifacts/features/feat-004-session-provenance/)  
+- [Walkthrough (story)](../walkthrough-provenance/)
+- Design: [session provenance](../../reference/artifacts/session-provenance/)
+- Feature note: [session provenance feature](../../reference/artifacts/features/feat-004-session-provenance/)

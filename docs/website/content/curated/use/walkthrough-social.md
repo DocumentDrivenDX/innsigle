@@ -1,5 +1,5 @@
 ---
-title: Walkthrough — human social mark
+title: Walkthrough: human social mark
 nav: use
 weight: 26
 parent: use
@@ -9,8 +9,8 @@ description: Step-by-step human-authored mark for X-class platforms.
 # Walkthrough: human social mark
 
 You wrote the post yourself. Many platforms strip or hide file metadata. You
-still want the **same Innsigle seal family** as your docs—with a clear human
-cue—and you do not want to run a webserver.
+still want the **same Innsigle seal family** as your docs, with a clear human
+cue, and you do not want to run a webserver.
 
 ## Goal
 
@@ -28,9 +28,9 @@ mark model-primary text as human because it was sloptimized.
 
 If you sign anything (optional for social, required when you do sign):
 
-1. `keygen` + `keys template` → `issuer.json`  
-2. Host the **public** file on a free HTTPS host (GitHub Gist raw, Codeberg, Pages, …)  
-3. That absolute URL is your `key_url`  
+1. `keygen` + `keys template` → `issuer.json`
+2. Host the **public** file on a free HTTPS host (GitHub Gist raw, Codeberg, Pages, …)
+3. That absolute URL is your `key_url`
 
 See [Issuer identity](../issuer/).
 
@@ -50,8 +50,8 @@ Link field → the same `keys` URL. This is **discovery**, not a seal.
 
 Use the **H** cue from the mark pack:
 
-- Repo: `docs/sample/assets/marks/innsigle-human.svg`  
-- Site catalog: [Marks](../marks/)  
+- Repo: `docs/sample/assets/marks/innsigle-human.svg`
+- Site catalog: [Marks](../marks/)
 
 Render to PNG at 128×128 if the platform prefers raster attachments.
 
@@ -59,8 +59,8 @@ Render to PNG at 128×128 if the platform prefers raster attachments.
 
 Pick one or both:
 
-1. **Image:** attach the mark still (or composite into a card).  
-2. **Link:** short URL to how-to-read (e.g. site Use → Marks) and/or your keys URL.  
+1. **Image:** attach the mark still (or composite into a card).
+2. **Link:** short URL to how-to-read (e.g. site Use → Marks) and/or your keys URL.
 
 Example caption skeleton:
 
@@ -72,10 +72,10 @@ How to read: https://documentdrivendx.github.io/innsigle/use/marks/
 
 ### 6. What not to do
 
-- Do not rely on C2PA in the image surviving upload.  
-- Do not use a different “purity” logo for human posts only.  
-- Do not claim the platform verified authenticity.  
-- Do not upload your private key anywhere.  
+- Do not rely on C2PA in the image surviving upload.
+- Do not use a different “purity” logo for human posts only.
+- Do not claim the platform verified authenticity.
+- Do not upload your private key anywhere.
 
 ## Same family as docs
 

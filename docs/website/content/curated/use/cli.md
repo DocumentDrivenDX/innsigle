@@ -3,7 +3,7 @@ title: CLI
 nav: use
 weight: 21
 parent: use
-description: Install and run Innsigle — keygen, claim, sign, verify.
+description: Install and run Innsigle: keygen, claim, sign, verify.
 ---
 
 # CLI
@@ -35,7 +35,7 @@ innsigle
 ```bash
 git clone https://github.com/DocumentDrivenDX/innsigle.git
 cd innsigle
-npm install -g .    # or: npm link
+npm install -g . # or: npm link
 innsigle
 ```
 
@@ -52,25 +52,25 @@ Running with no arguments prints the command list (exit code 1).
 ```bash
 innsigle keygen --out-dir ./keys
 innsigle keys template \
-  --issuer-id my-house --issuer-name "My House" \
-  --public-key "$(cat keys/ed25519.pub.raw.b64url)" \
-  --key-id "$(cat keys/key-id.txt)" \
-  --out keys.json
+ --issuer-id my-house --issuer-name "My House" \
+ --public-key "$(cat keys/ed25519.pub.raw.b64url)" \
+ --key-id "$(cat keys/key-id.txt)" \
+ --out keys.json
 # host keys.json at an absolute HTTPS URL (required in the claim)
 
 innsigle colo example --kind model-primary > colo.json
 # edit ingredients: name models, tools, human roles honestly
 
 innsigle claim build --content ./page.html --colo colo.json \
-  --issuer-id my-house --issuer-name "My House" \
-  --key-id "$(cat keys/key-id.txt)" \
-  --key-url https://example.com/.well-known/innsigle/keys.json \
-  --out claim.json
+ --issuer-id my-house --issuer-name "My House" \
+ --key-id "$(cat keys/key-id.txt)" \
+ --key-url https://example.com/.well-known/innsigle/keys.json \
+ --out claim.json
 innsigle sign --claim claim.json --key keys/ed25519.priv.pem --out att.json
 innsigle verify --attestation att.json --content ./page.html --keys keys.json
 ```
 
-Keep the private key offline. `key_url` must be an **absolute** URL—relative
+Keep the private key offline. `key_url` must be an **absolute** URL, relative
 paths are rejected.
 
 ### Check it (live sample)
@@ -96,9 +96,9 @@ Expect: `VALID`.
 
 ## Next
 
-- [Seal a docs page](../walkthrough-docs/) — full walkthrough  
-- [Issuer](../issuer/) — keys without a server  
-- [Verify](../verify/) — what VALID means (and does not)  
+- [Seal a docs page](../walkthrough-docs/): full walkthrough
+- [Issuer](../issuer/): keys without a server
+- [Verify](../verify/): what VALID means (and does not)
 
-Spec detail (flags, exit codes):  
+Spec detail (flags, exit codes):
 [claim and CLI contract](../../reference/artifacts/contracts/contract-001-claim-and-cli/).

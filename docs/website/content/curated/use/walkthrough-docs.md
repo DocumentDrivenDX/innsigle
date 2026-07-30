@@ -1,5 +1,5 @@
 ---
-title: Walkthrough — seal a docs page
+title: Walkthrough: seal a docs page
 nav: use
 weight: 25
 parent: use
@@ -14,10 +14,10 @@ page, attestation, and keys.
 
 ## Prerequisites
 
-- Node 20+  
-- Innsigle CLI installed ([CLI](../cli/)):  
-  `npm install github:DocumentDrivenDX/innsigle` then `npx innsigle`,  
-  or clone and `npm install -g .` / `node src/cli.mjs`  
+- Node 20+
+- Innsigle CLI installed ([CLI](../cli/)):
+ `npm install github:DocumentDrivenDX/innsigle` then `npx innsigle`,
+ or clone and `npm install -g .` / `node src/cli.mjs`
 
 Commands below use `innsigle`. From a clone without install, substitute
 `node src/cli.mjs`.
@@ -41,10 +41,10 @@ innsigle colo example --kind model-primary > colo.json
 ```bash
 innsigle keygen --out-dir ./keys
 innsigle keys template \
-  --issuer-id my-house --issuer-name "My House" \
-  --public-key "$(cat keys/ed25519.pub.raw.b64url)" \
-  --key-id "$(cat keys/key-id.txt)" \
-  --out keys.json
+ --issuer-id my-house --issuer-name "My House" \
+ --public-key "$(cat keys/ed25519.pub.raw.b64url)" \
+ --key-id "$(cat keys/key-id.txt)" \
+ --out keys.json
 ```
 
 Publish `keys.json` over HTTPS (or ship beside content for local demos). See
@@ -54,18 +54,18 @@ Publish `keys.json` over HTTPS (or ship beside content for local demos). See
 
 ```bash
 innsigle claim build \
-  --content ./page.html \
-  --uri https://example.com/page/ \
-  --colo colo.json \
-  --issuer-id my-house --issuer-name "My House" \
-  --key-id "$(cat keys/key-id.txt)" \
-  --key-url https://example.com/.well-known/innsigle/keys.json \
-  --out claim.json
+ --content ./page.html \
+ --uri https://example.com/page/ \
+ --colo colo.json \
+ --issuer-id my-house --issuer-name "My House" \
+ --key-id "$(cat keys/key-id.txt)" \
+ --key-url https://example.com/.well-known/innsigle/keys.json \
+ --out claim.json
 
 innsigle sign \
-  --claim claim.json \
-  --key keys/ed25519.priv.pem \
-  --out claim.attestation.json
+ --claim claim.json \
+ --key keys/ed25519.priv.pem \
+ --out claim.attestation.json
 ```
 
 Keep the private key offline (not in the site tree). `--key-url` must be
@@ -80,9 +80,9 @@ or a colophon page. Use the **A** mark for model-primary ([Marks](../marks/)).
 
 ```bash
 innsigle verify \
-  --attestation claim.attestation.json \
-  --content ./page.html \
-  --keys keys.json
+ --attestation claim.attestation.json \
+ --content ./page.html \
+ --keys keys.json
 # expect VALID
 ```
 
@@ -96,8 +96,8 @@ Live: [Sample](../../sample/) · curl recipe on [CLI](../cli/). Expect: `VALID`.
 
 ## Proof in this repo
 
-- Sample page + attestation under `docs/sample/`  
-- Vectors: `tests/vectors/` on GitHub  
+- Sample page + attestation under `docs/sample/`
+- Vectors: `tests/vectors/` on GitHub
 
 ## Spec
 

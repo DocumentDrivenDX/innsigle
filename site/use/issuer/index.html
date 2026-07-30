@@ -32,21 +32,21 @@
       </aside>
       <main class="docs-main prose">
         <h1 id="issuer-identity">Issuer identity</h1>
-<p>You want people to know <em>who</em> sealed a page—not just that a seal exists. You do <strong>not</strong> need to run a webserver. You need three things:</p>
+<p>You want people to know <em>who</em> sealed a page, not just that a seal exists. You do <strong>not</strong> need to run a webserver. You need three things:</p>
 <ol>
-<li>An Ed25519 keypair (private key stays offline)  </li>
-<li>A public <strong>issuer document</strong> at a durable <strong>HTTPS</strong> URL  </li>
+<li>An Ed25519 keypair (private key stays offline)</li>
+<li>A public <strong>issuer document</strong> at a durable <strong>HTTPS</strong> URL</li>
 <li>That absolute URL in every <strong>signed</strong> claim as <code>issuer.key_url</code></li>
 </ol>
 <p>Anyone can paste a house name in a bio. <strong>Identity is the key fingerprint</strong>, not the slug.</p>
 <h2 id="create-keys">Create keys</h2>
 <pre><code class="language-bash">innsigle keygen --out-dir ./keys
 innsigle keys template \
-  --issuer-id my-house \
-  --issuer-name "My House" \
-  --public-key "$(cat keys/ed25519.pub.raw.b64url)" \
-  --key-id "$(cat keys/key-id.txt)" \
-  --out issuer.json</code></pre>
+ --issuer-id my-house \
+ --issuer-name "My House" \
+ --public-key "$(cat keys/ed25519.pub.raw.b64url)" \
+ --key-id "$(cat keys/key-id.txt)" \
+ --out issuer.json</code></pre>
 <p>Keep <code>ed25519.priv.pem</code> offline. Never put it in a gist, bio, or site tree. From a clone without install, use <code>node src/cli.mjs</code> instead of <code>innsigle</code>.</p>
 <h2 id="publish-the-issuer-document-no-server-admin">Publish the issuer document (no server admin)</h2>
 <p>Upload <strong>public</strong> <code>issuer.json</code> (or <code>keys.json</code>) somewhere HTTPS and stable:</p>
@@ -57,7 +57,7 @@ innsigle keys template \
 <tr><td><strong>Static free host</strong></td><td>Neocities, Netlify Drop, Cloudflare Pages</td></tr>
 <tr><td><strong>Your existing site</strong></td><td>Optional <code>/.well-known/innsigle/issuer.json</code></td></tr>
 </table>
-<p>That HTTPS URL is what you pass to <code>claim build --key-url …</code>. It is <strong>frozen inside the signature</strong>—changing the host later does not rewrite old seals.</p>
+<p>That HTTPS URL is what you pass to <code>claim build --key-url …</code>. It is <strong>frozen inside the signature</strong>. Changing the host later does not rewrite old seals.</p>
 <h2 id="embed-on-social-profiles">Embed on social profiles</h2>
 <p>Profiles are for <strong>discovery</strong>, not crypto. Use a short <strong>issuer card</strong>:</p>
 <pre><code class="language-text">Innsigle · My House
@@ -79,28 +79,28 @@ keys https://gist.githubusercontent.com/you/…/raw/issuer.json</code></pre>
 </table>
 <h2 id="seal-content-with-your-issuer">Seal content with your issuer</h2>
 <pre><code class="language-bash">innsigle claim build \
-  --content ./page.html \
-  --colo ./colo.json \
-  --issuer-id my-house --issuer-name "My House" \
-  --key-id "$(cat keys/key-id.txt)" \
-  --key-url "https://…/issuer.json" \
-  --out claim.json
+ --content ./page.html \
+ --colo ./colo.json \
+ --issuer-id my-house --issuer-name "My House" \
+ --key-id "$(cat keys/key-id.txt)" \
+ --key-url "https://…/issuer.json" \
+ --out claim.json
 innsigle sign --claim claim.json --key keys/ed25519.priv.pem --out att.json</code></pre>
 <p><code>--key-url</code> must be <strong>absolute</strong> <code>https://…</code> (relative paths are rejected).</p>
 <h3 id="check-it">Check it</h3>
 <p>What we claim: relative key URLs cannot enter a claim.</p>
 <pre><code class="language-bash">innsigle claim build \
-  --content ./page.html --colo ./colo.json \
-  --issuer-id my-house --issuer-name "My House" \
-  --key-id "$(cat keys/key-id.txt)" \
-  --key-url "/.well-known/innsigle/keys.json"</code></pre>
+ --content ./page.html --colo ./colo.json \
+ --issuer-id my-house --issuer-name "My House" \
+ --key-id "$(cat keys/key-id.txt)" \
+ --key-url "/.well-known/innsigle/keys.json"</code></pre>
 <p>Expect: failure (exit <strong>5</strong>), with a message about absolute <code>key_url</code>.</p>
 <h2 id="trust-and-others-keys">Trust and others’ keys</h2>
 <table>
 <tr><th>Question</th><th>Answer</th></tr>
 <tr><td>How do others trust me?</td><td>They pin your <strong>fingerprint</strong>, and/or follow <strong>key-endorsements</strong> (published statements that name another key’s fingerprint)</td></tr>
 <tr><td>How do I verify them?</td><td>Content + attestation + their issuer document (<code>key_url</code> in the signed claim); <code>innsigle verify</code></td></tr>
-<tr><td>Duplicate house names?</td><td>Fine — identity is the <strong>key</strong>, not the slug</td></tr>
+<tr><td>Duplicate house names?</td><td>Fine: identity is the <strong>key</strong>, not the slug</td></tr>
 </table>
 <h2 id="spec">Spec</h2>
 <p><a href="/reference/artifacts/adrs/adr-003-issuer-url-and-web-of-trust/">Issuer URL and web of trust</a> · <a href="/use/verify/">Verify</a></p>

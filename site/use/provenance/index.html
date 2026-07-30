@@ -32,16 +32,16 @@
       </aside>
       <main class="docs-main prose">
         <h1 id="session-provenance">Session provenance</h1>
-<p>You finish an agent session with a shiny markdown file and no durable record of which prompts, tools, or models the harness captured. Session provenance records those events and <strong>proposes a short colophon</strong> for review—so the seal can name what the journal actually logged.</p>
-<p><strong>See the story first:</strong>   <a href="/use/walkthrough-provenance/">Walkthrough: conversation → document → colophon</a></p>
-<p>That page shows human prompts, the document the agent wrote, the proposed colophon, and a sealed-page footer—using the multi-agent fixture (Claude + Codex).</p>
+<p>You finish an agent session with a shiny markdown file and no durable record of which prompts, tools, or models the harness captured. Session provenance records those events and <strong>proposes a short colophon</strong> for review, so the seal can name what the journal actually logged.</p>
+<p><strong>See the story first:</strong> <a href="/use/walkthrough-provenance/">Walkthrough: conversation → document → colophon</a></p>
+<p>That page shows human prompts, the document the agent wrote, the proposed colophon, and a sealed-page footer, using the multi-agent fixture (Claude + Codex).</p>
 <h2 id="in-one-diagram">In one diagram</h2>
 <pre><code class="language-text">You prompt the agent
-        ↓
+ ↓
 Agent writes a document (model-primary bytes)
-        ↓
+ ↓
 Skill records journal → builds session record → proposes colo
-        ↓
+ ↓
 You review · optionally publish the record · sign claim to content bytes</code></pre>
 <p>Signing stays a separate, deliberate step. Auto-sign is out of scope.</p>
 <h2 id="layers">Layers</h2>
@@ -76,9 +76,9 @@ You review · optionally publish the record · sign claim to content bytes</code
 <p>From a full clone of this repo:</p>
 <pre><code class="language-bash">npm run test:provenance-driver</code></pre>
 <pre><code class="language-bash">innsigle provenance build \
-  --journal session.jsonl \
-  --generated-at 2026-07-24T18:00:00Z \
-  --out l2.json
+ --journal session.jsonl \
+ --generated-at 2026-07-24T18:00:00Z \
+ --out l2.json
 innsigle provenance propose-colo --provenance l2.json --out colo.json</code></pre>
 <p>(From a clone without install: <code>node src/cli.mjs …</code>.)</p>
 <h3 id="check-it">Check it</h3>
@@ -86,12 +86,12 @@ innsigle provenance propose-colo --provenance l2.json --out colo.json</code></pr
 <pre><code class="language-bash">npm run test:provenance-driver
 # then inspect examples under docs/website/static/examples/provenance/
 # or site/examples/provenance/ after a site build</code></pre>
-<p>Expect: composition <code>model-primary</code>; ingredients include models and <code>innsigle-session</code> / sloptimizer as tools—not a flip to human-authored.</p>
+<p>Expect: composition <code>model-primary</code>; ingredients include models and <code>innsigle-session</code> / sloptimizer as tools, not a flip to human-authored.</p>
 <h2 id="spec">Spec</h2>
 <ul>
-<li><a href="/use/walkthrough-provenance/">Walkthrough (story)</a>  </li>
-<li>Design: <a href="/reference/artifacts/session-provenance/">session provenance</a>  </li>
-<li>Feature note: <a href="/reference/artifacts/features/feat-004-session-provenance/">session provenance feature</a>  </li>
+<li><a href="/use/walkthrough-provenance/">Walkthrough (story)</a></li>
+<li>Design: <a href="/reference/artifacts/session-provenance/">session provenance</a></li>
+<li>Feature note: <a href="/reference/artifacts/features/feat-004-session-provenance/">session provenance feature</a></li>
 </ul>
       </main>
     </div>
