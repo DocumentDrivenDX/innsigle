@@ -98,7 +98,7 @@ innsigle sign --claim claim.json --key keys/ed25519.priv.pem --out att.json</cod
 <h2 id="trust-and-others-keys">Trust and others’ keys</h2>
 <table>
 <tr><th>Question</th><th>Answer</th></tr>
-<tr><td>How do others trust me?</td><td>They pin your <strong>fingerprint</strong>, and/or follow <strong>key-endorsements</strong> peers publish</td></tr>
+<tr><td>How do others trust me?</td><td>They pin your <strong>fingerprint</strong>, and/or follow <strong>key-endorsements</strong> (published statements that name another key’s fingerprint)</td></tr>
 <tr><td>How do I verify them?</td><td>Content + attestation + their issuer document (<code>key_url</code> in the signed claim); <code>innsigle verify</code></td></tr>
 <tr><td>Duplicate house names?</td><td>Fine — identity is the <strong>key</strong>, not the slug</td></tr>
 </table>

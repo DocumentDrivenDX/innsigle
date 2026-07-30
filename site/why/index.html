@@ -38,9 +38,9 @@
 <table>
 <tr><th>Approach</th><th>Example</th><th>Miss for makers</th></tr>
 <tr><td>Human-only badges</td><td>Not By AI</td><td>No proud path for model-primary docs</td></tr>
-<tr><td>Media credentials</td><td>C2PA</td><td>Social uploads strip metadata; docs/HTML are not the center</td></tr>
+<tr><td>Media credentials</td><td>C2PA</td><td>Social uploads strip metadata; not optimized for plain HTML docs or short social posts</td></tr>
 <tr><td>Vendor watermark</td><td>SynthID</td><td>Not a maker-authored bill of production</td></tr>
-<tr><td>Free-text footer</td><td>“Written with AI”</td><td>No mark system, no verify, easy to ignore</td></tr>
+<tr><td>Free-text footer</td><td>“Written with AI”</td><td>No shared mark or signature check</td></tr>
 </table>
 <p>You need one language for <strong>how work was made</strong>, usable for:</p>
 <ol>
@@ -49,13 +49,15 @@
 </ol>
 <p><strong>Innsigle</strong> is that language: the maker's seal under your control, across docs and social, with an optional signature over content bytes. C2PA and similar stay in their lane for industrial media—see <a href="/non-goals/">Non-goals</a>.</p>
 <h2 id="what-you-can-check">What you can check</h2>
-<p>We do not ask you to take the marketing on faith. The microsite ships a <a href="/sample/">sealed sample</a> you can re-verify with the CLI. That proves binding of issuer + colophon + bytes—not “the article is true.”</p>
+<p>We do not ask you to take the marketing on faith. The microsite ships a <a href="/sample/">sealed sample</a> you can re-verify with the CLI. That lets a reader check one binding: this issuer sealed this colophon for these bytes. It does not check whether the article is true.</p>
 <h3 id="check-it">Check it</h3>
-<pre><code class="language-bash">npx innsigle verify \
-  --attestation path/to/att.json \
-  --content path/to/page.html \
-  --keys path/to/keys.json</code></pre>
-<p>Download the three files from <a href="/sample/">Sample</a> (page + claim + keys). Expect: <code>VALID</code>. Full curl recipe: <a href="/use/cli/">CLI</a>.</p>
+<p>What we claim: the published sample verifies under its live claim and keys.</p>
+<pre><code class="language-bash">npm install github:DocumentDrivenDX/innsigle
+curl -sL -o page.html https://documentdrivendx.github.io/innsigle/sample/
+curl -sL -o att.json https://documentdrivendx.github.io/innsigle/sample/.well-known/innsigle/claims/index.attestation.json
+curl -sL -o keys.json https://documentdrivendx.github.io/innsigle/sample/.well-known/innsigle/keys.json
+npx innsigle verify --attestation att.json --content page.html --keys keys.json</code></pre>
+<p>Expect: <code>VALID</code>. Same recipe on <a href="/use/cli/">CLI</a>.</p>
 <h2 id="next">Next</h2>
 <ul>
 <li><a href="/use/">Install and seal</a>  </li>
