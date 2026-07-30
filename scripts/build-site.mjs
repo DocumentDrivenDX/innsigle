@@ -82,7 +82,7 @@ function layout({ title, description, pageUrl, bodyHtml, crumbs }) {
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>${escapeHtml(title)} — Innsigle</title>
+  <title>${escapeHtml(title)}: Innsigle</title>
   <meta name="description" content="${escapeHtml(description || title)}" />
   <link rel="stylesheet" href="${BASE}/assets/css/site.css" />
   <link rel="icon" href="${BASE}/assets/marks/innsigle-base.svg" type="image/svg+xml" />
@@ -259,7 +259,7 @@ function renderMdFile(file, contentRoot, kind) {
   bodyHtml = rewriteMdLinks(bodyHtml, pageUrl);
   if (data.generated === "true" || kind === "generated") {
     bodyHtml =
-      `<p class="gen-banner note">Generated reference — edit sources under <code>docs/helix/</code>, then <code>npm run site:build</code>.</p>\n` +
+      `<p class="gen-banner note">Generated reference: edit sources under <code>docs/helix/</code>, then <code>npm run site:build</code>.</p>\n` +
       bodyHtml;
   }
   const crumbs = [{ title: "Innsigle", href: `${BASE}/` }];
