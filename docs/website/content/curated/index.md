@@ -7,16 +7,13 @@ description: The maker's seal for published work: Innsigle, content provenance f
 
 # The maker's seal for published work
 
-You finish a docs page that a model helped write. You want the footer to name
-the models and tools on the record, and, when it matters, let anyone check that
-*you* sealed that story to *these* bytes. Or you post something you wrote
-yourself, and want the same seal family to read human-authored without a purity
-lecture.
+Model-heavy docs and human posts share one problem: readers cannot see *how
+the piece was made*, and platforms strip the metadata that might have told them.
 
-**Innsigle** (say **INN-siggle**, rhymes with *single*) is that craft seal: a
-visible mark, a short **colophon** of how the piece was made (human-authored,
-mixed, or model-primary), and an optional house or person signature over the
-content bytes.
+**Innsigle** (say **INN-siggle**, rhymes with *single*) is a craft seal for that
+gap: a visible mark, a short **colophon** of how the piece was made
+(human-authored, mixed, or model-primary), and an optional house or person
+signature over the content bytes.
 
 Readers can learn the mark by sight: a **sigil** of care. The publisher put how
 the work was made on the record. Same seal family for model-heavy docs and
