@@ -26,7 +26,8 @@ human social posts.
 ### Docs (model-primary, proud)
 
 Long-lived documentation often starts with models. Name the tools on the
-colophon (Claude, sloptimizer, …). Sign with a house key when you want standing.
+colophon (Claude, sloptimizer, …). Sign with a house key when you want readers to
+verify that your issuer sealed this colophon for these bytes.
 
 ### Social (human-authored, clear)
 

@@ -3,14 +3,15 @@ title: Session provenance
 nav: use
 weight: 23.5
 parent: use
-description: Automatic machine provenance from agent sessions into detailed colophons.
+description: Session provenance from captured agent journals into proposed colophons.
 ---
 
 # Session provenance
 
-You finish an agent session with a shiny markdown file and no memory of which
-prompts, tools, or models produced it. Session provenance leaves a **machine
-trail** and a **short colophon**—so the seal can name what actually happened.
+You finish an agent session with a shiny markdown file and no durable record of
+which prompts, tools, or models the harness captured. Session provenance records
+those events and **proposes a short colophon** for review—so the seal can name
+what the journal actually logged.
 
 **See the story first:**  
 [Walkthrough: conversation → document → colophon](../walkthrough-provenance/)

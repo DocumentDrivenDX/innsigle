@@ -32,7 +32,7 @@ any family in your own footers and social posts.
 
 ### Matrix (default)
 
-Beaded rim, merchant-mark monogram (stave + thryst + lozenge). Site chrome.
+Beaded rim and angular monogram field. Site chrome.
 
 <div class="mark-family">
 <div class="mark-pack" role="list">

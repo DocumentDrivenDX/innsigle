@@ -41,4 +41,4 @@ Friendly docs can drift; these stay checkable:
 - Golden vectors in `tests/vectors/` on GitHub  
 
 Walkthroughs and screenshots live under Use (`docs/website/static/captures/`) so
-they do not mix into the HELIX artifact tree.
+they do not mix into the generated reference tree.

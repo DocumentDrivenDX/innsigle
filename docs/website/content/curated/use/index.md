@@ -33,7 +33,7 @@ Re-check it anytime with the commands on [Verify](verify/) or [CLI](cli/).
 | [CLI](cli/) | How do I install and run keygen, claim, sign, verify? |
 | [Issuer](issuer/) | How do I get a key and publish it without a server? |
 | [Colophon](colophon/) | How do I declare composition? |
-| [Provenance](provenance/) | Auto colophon from agent sessions |
+| [Provenance](provenance/) | Proposed colophon from agent sessions |
 | [Verify](verify/) | What does VALID mean? |
 | [Marks](marks/) | Which seal cue for which state? |
 

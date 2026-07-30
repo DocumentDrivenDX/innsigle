@@ -8,9 +8,9 @@ description: Step-by-step human-authored mark for X-class platforms.
 
 # Walkthrough: human social mark
 
-You wrote the post yourself. Platforms will strip file metadata. You still want
-the **same Innsigle seal family** as your docs—with a clear human cue—and you
-do not want to run a webserver.
+You wrote the post yourself. Many platforms strip or hide file metadata. You
+still want the **same Innsigle seal family** as your docs—with a clear human
+cue—and you do not want to run a webserver.
 
 ## Goal
 

@@ -57,7 +57,7 @@ Expect: `VALID`. Live: [Sample](../../sample/).
 |-------|-----------------|
 | Crypto valid | Did this key seal this colophon for these bytes? |
 | Discovery | Absolute keys URL is inside the signed claim |
-| Recognized | You pin that fingerprint, and/or follow key-endorsements |
+| Recognized | You pin that fingerprint, and/or follow key-endorsements (published statements naming another fingerprint) |
 
 `issuer.id` is a display slug and may collide. Prefer **fingerprints**.
 

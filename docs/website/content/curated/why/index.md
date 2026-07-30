@@ -20,9 +20,9 @@ control, as a mark people can learn by sight.
 | Approach | Example | Miss for makers |
 |----------|---------|-----------------|
 | Human-only badges | Not By AI | No proud path for model-primary docs |
-| Media credentials | C2PA | Social uploads strip metadata; docs/HTML are not the center |
+| Media credentials | C2PA | Social uploads strip metadata; not optimized for plain HTML docs or short social posts |
 | Vendor watermark | SynthID | Not a maker-authored bill of production |
-| Free-text footer | “Written with AI” | No mark system, no verify, easy to ignore |
+| Free-text footer | “Written with AI” | No shared mark or signature check |
 
 You need one language for **how work was made**, usable for:
 
@@ -36,20 +36,23 @@ in their lane for industrial media—see [Non-goals](../non-goals/).
 ## What you can check
 
 We do not ask you to take the marketing on faith. The microsite ships a
-[sealed sample](../sample/) you can re-verify with the CLI. That proves binding
-of issuer + colophon + bytes—not “the article is true.”
+[sealed sample](../sample/) you can re-verify with the CLI. That lets a reader
+check one binding: this issuer sealed this colophon for these bytes. It does not
+check whether the article is true.
 
 ### Check it
 
+What we claim: the published sample verifies under its live claim and keys.
+
 ```bash
-npx innsigle verify \
-  --attestation path/to/att.json \
-  --content path/to/page.html \
-  --keys path/to/keys.json
+npm install github:DocumentDrivenDX/innsigle
+curl -sL -o page.html https://documentdrivendx.github.io/innsigle/sample/
+curl -sL -o att.json https://documentdrivendx.github.io/innsigle/sample/.well-known/innsigle/claims/index.attestation.json
+curl -sL -o keys.json https://documentdrivendx.github.io/innsigle/sample/.well-known/innsigle/keys.json
+npx innsigle verify --attestation att.json --content page.html --keys keys.json
 ```
 
-Download the three files from [Sample](../sample/) (page + claim + keys). Expect:
-`VALID`. Full curl recipe: [CLI](../use/cli/).
+Expect: `VALID`. Same recipe on [CLI](../use/cli/).
 
 ## Next
 

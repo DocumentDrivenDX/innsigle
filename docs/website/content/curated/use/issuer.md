@@ -107,7 +107,7 @@ Expect: failure (exit **5**), with a message about absolute `key_url`.
 
 | Question | Answer |
 |----------|--------|
-| How do others trust me? | They pin your **fingerprint**, and/or follow **key-endorsements** peers publish |
+| How do others trust me? | They pin your **fingerprint**, and/or follow **key-endorsements** (published statements that name another key’s fingerprint) |
 | How do I verify them? | Content + attestation + their issuer document (`key_url` in the signed claim); `innsigle verify` |
 | Duplicate house names? | Fine — identity is the **key**, not the slug |
 

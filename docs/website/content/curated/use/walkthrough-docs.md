@@ -9,7 +9,8 @@ description: Step-by-step path from colophon to verify for a docs page.
 # Walkthrough: seal a docs page
 
 You have a static HTML page (often model-drafted). You want a **model-primary**
-colophon, a footer seal, and a claim a third party can verify offline.
+colophon, a footer seal, and a claim someone can verify from local copies of the
+page, attestation, and keys.
 
 ## Prerequisites
 
