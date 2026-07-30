@@ -86,6 +86,16 @@ const SHOT_PAGES: { name: string; path: string; mustSee: (string | RegExp)[] }[]
     path: "/use/walkthrough-provenance/",
     mustSee: [/conversation|colophon/i, /Human prompts|You/i, /Sealed Notes|model-primary/i],
   },
+  {
+    name: "walkthrough-hugo",
+    path: "/use/walkthrough-hugo/",
+    mustSee: [
+      /Hugo/i,
+      /\.innsigle/i,
+      /init --onepassword|VALID|well-known/i,
+      /Check it|workflow/i,
+    ],
+  },
 ];
 
 /**

@@ -155,6 +155,7 @@ function sidebar(pageUrl) {
         { t: "Walkthrough: conversation → colophon", h: `${BASE}/use/walkthrough-provenance/` },
         { t: "Walkthrough: docs", h: `${BASE}/use/walkthrough-docs/` },
         { t: "Walkthrough: social", h: `${BASE}/use/walkthrough-social/` },
+        { t: "Walkthrough: Hugo", h: `${BASE}/use/walkthrough-hugo/` },
       ],
     },
     {

@@ -44,6 +44,7 @@ Re-check it anytime with the commands on [Verify](verify/) or [CLI](cli/).
 | [Seal a docs page](walkthrough-docs/) | Model-primary page from colo to verify |
 | [Conversation → colophon](walkthrough-provenance/) | Agent session to sealed document |
 | [Human social mark](walkthrough-social/) | Human-authored mark when metadata dies |
+| [Hugo site](walkthrough-hugo/) | Init → `.innsigle/` → publish wire → seal (screencast) |
 
 ## Proof
 

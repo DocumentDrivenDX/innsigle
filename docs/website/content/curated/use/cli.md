@@ -47,9 +47,40 @@ node src/cli.mjs
 
 Running with no arguments prints the command list (exit code 1).
 
+## Init a repo (1Password house key)
+
+One-time setup. Needs `op` signed in. Writes only under **`.innsigle/`** — no
+framework-specific publish tree.
+
+```bash
+innsigle init --onepassword --site-url https://example.com
+# optional: --issuer-id my-house --vault Private
+```
+
+| Path | Contents |
+|------|----------|
+| `.innsigle/config.json` | Commit-safe: `key_id`, `key_url`, 1Password `op://…` ref |
+| `.innsigle/public/keys.json` | Public issuer document (staging) |
+| `.innsigle/AGENTS.md` | How agents copy staging into a site build |
+| 1Password Secure Note | Private key only (not in git) |
+
+**Publish contract** (your build or an agent): copy
+`.innsigle/public/` → site `/.well-known/innsigle/` so keys are at
+`https://…/.well-known/innsigle/keys.json`.
+
+After init, claim/sign pick up issuer fields and the key from config + `op`.
+
 ## Seal a page
 
 ```bash
+# After init (preferred):
+innsigle colo example --kind model-primary > colo.json
+innsigle claim build --content ./page.html --colo colo.json --out claim.json
+innsigle sign --claim claim.json --out att.json
+innsigle verify --attestation att.json --content ./page.html \
+  --keys .innsigle/public/keys.json
+
+# Or manual keygen (no 1Password):
 innsigle keygen --out-dir ./keys
 innsigle keys template \
  --issuer-id my-house --issuer-name "My House" \
@@ -57,9 +88,6 @@ innsigle keys template \
  --key-id "$(cat keys/key-id.txt)" \
  --out keys.json
 # host keys.json at an absolute HTTPS URL (required in the claim)
-
-innsigle colo example --kind model-primary > colo.json
-# edit ingredients: name models, tools, human roles honestly
 
 innsigle claim build --content ./page.html --colo colo.json \
  --issuer-id my-house --issuer-name "My House" \
@@ -70,8 +98,8 @@ innsigle sign --claim claim.json --key keys/ed25519.priv.pem --out att.json
 innsigle verify --attestation att.json --content ./page.html --keys keys.json
 ```
 
-Keep the private key offline. `key_url` must be an **absolute** URL, relative
-paths are rejected.
+Keep the private key offline (1Password or local PEM). `key_url` must be an
+**absolute** URL; relative paths are rejected.
 
 ### Check it (live sample)
 
@@ -97,6 +125,7 @@ Expect: `VALID`.
 ## Next
 
 - [Seal a docs page](../walkthrough-docs/): full walkthrough
+- [Hugo site](../walkthrough-hugo/): init → `.innsigle/` → publish wire (screencast)
 - [Issuer](../issuer/): keys without a server
 - [Verify](../verify/): what VALID means (and does not)
 

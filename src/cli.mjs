@@ -9,6 +9,9 @@ import {
   signPayload,
   verifyPayload,
 } from "./crypto.mjs";
+import { loadConfig } from "./config.mjs";
+import { runInit } from "./init.mjs";
+import { readPrivateKeyPem } from "./onepassword.mjs";
 import { loadJournal, mergeJournals, buildProvenance, proposeColo } from "./provenance/index.mjs";
 
 const EXIT = { ok: 0, usage: 1, badSig: 2, contentMismatch: 3, badKey: 4, badSchema: 5 };
@@ -18,14 +21,21 @@ function usage(msg) {
   console.error(`innsigle — content origin seal (CONTRACT-001)
 
 Usage:
+  innsigle init --onepassword [--dir <repo>] [--site-url <https://…>]
+                 [--issuer-id <id>] [--issuer-name <name>] [--vault <name>] [--force]
   innsigle keygen --out-dir <dir>
   innsigle keys template --issuer-id <id> --issuer-name <name> --public-key <b64url> --key-id <id> [--out file]
-  innsigle claim build --content <file> [--uri <uri>] --colo <colo.json> --issuer-id <id> --issuer-name <name> --key-id <id> --key-url <url> [--out file]
-  innsigle sign --claim <file> --key <private.pem> [--out file]
+  innsigle claim build --content <file> [--uri <uri>] --colo <colo.json> [--issuer-id <id>] [--issuer-name <name>] [--key-id <id>] [--key-url <url>] [--out file]
+  innsigle sign --claim <file> [--key <private.pem>] [--out file]
   innsigle verify --attestation <file> --content <file> --keys <file>
   innsigle colo example --kind model-primary|human-authored|mixed
   innsigle provenance build --journal <jsonl> [--artifact <path>]... --generated-at <iso> [--out file]
   innsigle provenance propose-colo --provenance <l2.json> [--uri <url>] [--force-composition] [--notes t] [--out file]
+
+  init --onepassword  house key in 1Password; all repo state under .innsigle/
+                      (config, public keys staging, AGENTS.md for build wiring).
+  sign                if --key is omitted, loads private key from .innsigle/config.json → 1Password.
+  claim build         issuer flags default from .innsigle/config.json when present.
 `);
   process.exit(EXIT.usage);
 }
@@ -115,6 +125,10 @@ function cmdKeysTemplate(args) {
   writeOut(arg(args, "--out"), JSON.stringify(doc, null, 2));
 }
 
+function repoConfig() {
+  return loadConfig();
+}
+
 function cmdClaimBuild(args) {
   const contentPath = requireArg(args, "--content");
   const coloPath = argColoPath(args);
@@ -127,15 +141,25 @@ function cmdClaimBuild(args) {
   }
   colophon.schema_version = "1";
   const uri = arg(args, "--uri");
-  const keyUrl = assertAbsoluteKeyUrl(requireArg(args, "--key-url"));
+  const cfg = repoConfig();
+  const issuerId = arg(args, "--issuer-id") || cfg?.issuer?.id;
+  const issuerName = arg(args, "--issuer-name") || cfg?.issuer?.name;
+  const keyId = arg(args, "--key-id") || cfg?.issuer?.key_id;
+  const keyUrlRaw = arg(args, "--key-url") || cfg?.issuer?.key_url;
+  if (!issuerId || !issuerName || !keyId || !keyUrlRaw) {
+    usage(
+      "missing issuer fields (pass --issuer-id/--issuer-name/--key-id/--key-url or run innsigle init)",
+    );
+  }
+  const keyUrl = assertAbsoluteKeyUrl(keyUrlRaw);
   const payload = {
     innsigle: "1",
     type: "https://innsigle.dev/claim/colophon/v1",
     issued_at: nowIso(),
     issuer: {
-      id: requireArg(args, "--issuer-id"),
-      name: requireArg(args, "--issuer-name"),
-      key_id: requireArg(args, "--key-id"),
+      id: issuerId,
+      name: issuerName,
+      key_id: keyId,
       key_url: keyUrl,
     },
     subjects: [
@@ -149,6 +173,31 @@ function cmdClaimBuild(args) {
   writeOut(arg(args, "--out"), JSON.stringify(payload, null, 2));
 }
 
+function loadSigningKeyPem(args) {
+  const keyPath = arg(args, "--key");
+  if (keyPath) return readFileSync(keyPath, "utf8");
+  const ref = arg(args, "--op-ref");
+  if (ref) {
+    try {
+      return readPrivateKeyPem(ref);
+    } catch (e) {
+      console.error(`INVALID: ${e.message}`);
+      process.exit(EXIT.usage);
+    }
+  }
+  const cfg = repoConfig();
+  const cfgRef = cfg?.onepassword?.private_key_ref;
+  if (cfgRef) {
+    try {
+      return readPrivateKeyPem(cfgRef);
+    } catch (e) {
+      console.error(`INVALID: ${e.message}`);
+      process.exit(EXIT.usage);
+    }
+  }
+  usage("missing --key <private.pem> (or .innsigle/config.json onepassword.private_key_ref / --op-ref)");
+}
+
 function cmdSign(args) {
   const payload = JSON.parse(readFileSync(requireArg(args, "--claim"), "utf8"));
   if (!payload?.issuer?.key_url) {
@@ -156,7 +205,7 @@ function cmdSign(args) {
     process.exit(EXIT.badSchema);
   }
   assertAbsoluteKeyUrl(payload.issuer.key_url);
-  const privateKeyPem = readFileSync(requireArg(args, "--key"), "utf8");
+  const privateKeyPem = loadSigningKeyPem(args);
   const sig = signPayload(payload, privateKeyPem);
   const attestation = {
     payload,
@@ -339,6 +388,11 @@ const cmd = argv[0];
 const rest = argv.slice(1);
 
 switch (cmd) {
+  case "init": {
+    const code = runInit(rest, { nowIso });
+    process.exit(code);
+    break;
+  }
   case "keygen":
     cmdKeygen(rest);
     break;

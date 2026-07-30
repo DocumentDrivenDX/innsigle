@@ -54,6 +54,7 @@ core_leaves:
   - /use/walkthrough-docs/
   - /use/walkthrough-social/
   - /use/walkthrough-provenance/
+  - /use/walkthrough-hugo/
   - /reference/artifacts/
   - /reference/glossary/
   - /non-goals/

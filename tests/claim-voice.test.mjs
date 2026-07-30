@@ -36,6 +36,7 @@ const P2 = [
   "use/walkthrough-docs.md",
   "use/walkthrough-social.md",
   "use/walkthrough-provenance.md",
+  "use/walkthrough-hugo.md",
   "reference/index.md",
 ];
 

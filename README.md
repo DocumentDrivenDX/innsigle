@@ -51,7 +51,41 @@ innsigle                  # prints usage (exit 1)
 innsigle colo example --kind model-primary
 ```
 
-## Quick start (seal a file)
+## Quick start (repo house key + 1Password)
+
+One-time per repo. Requires the [1Password CLI](https://developer.1password.com/docs/cli/get-started/) (`op`) signed in.
+
+```bash
+cd your-site-repo
+innsigle init --onepassword --site-url https://example.com
+```
+
+This writes **only** under **`.innsigle/`** (Innsigle does not guess Quarto/Hugo/etc.):
+
+1. Ed25519 house key → **private** half in 1Password (Secure Note)
+2. **`.innsigle/config.json`** — fingerprint, `key_url`, `op://…` ref (commit-safe)
+3. **`.innsigle/public/keys.json`** — public issuer document to publish
+4. **`.innsigle/AGENTS.md`** — how agents should copy that tree into a site build
+
+**Your** build (or an agent following `AGENTS.md`) must publish:
+
+```text
+.innsigle/public/  →  <site-root>/.well-known/innsigle/
+```
+
+Then seal content (issuer flags and signing key come from config + 1Password):
+
+```bash
+innsigle colo example --kind model-primary > colo.json
+# edit colo.json ingredients as needed
+
+innsigle claim build --content ./page.html --colo colo.json --out claim.json
+innsigle sign --claim claim.json --out att.json
+innsigle verify --attestation att.json --content ./page.html \
+  --keys .innsigle/public/keys.json
+```
+
+### Manual keygen (no 1Password)
 
 ```bash
 innsigle keygen --out-dir ./keys
@@ -63,8 +97,6 @@ innsigle keys template \
 # publish keys.json at an absolute HTTPS URL (key_url below)
 
 innsigle colo example --kind model-primary > colo.json
-# edit colo.json ingredients as needed
-
 innsigle claim build \
   --content ./page.html \
   --colo colo.json \
@@ -77,7 +109,7 @@ innsigle sign --claim claim.json --key keys/ed25519.priv.pem --out att.json
 innsigle verify --attestation att.json --content ./page.html --keys keys.json
 ```
 
-Keep `ed25519.priv.pem` offline. Full walkthrough:
+Keep private keys offline (1Password or local PEM). Full walkthrough:
 [Seal a docs page](https://documentdrivendx.github.io/innsigle/use/walkthrough-docs/).
 
 ## Verify the live sample
@@ -119,9 +151,11 @@ Content pipeline (HELIX **product-microsite-ia**):
 | Build output | `site/` (CI deploys it) |
 
 ```bash
-npm test                    # unit + install/CLI smoke
+npm test                    # unit + install/CLI smoke (+ Hugo workflow if hugo on PATH)
+npm run test:hugo           # Hugo × Innsigle e2e only
 npm run test:agent          # unit + Playwright e2e (set CI=true)
 npm run test:agent:update   # refresh screenshot baselines after UI changes
+npm run record:hugo-walkthrough  # VHS screencast → docs/website/static/captures/
 npm run site:build:local    # build site with BASE=
 git push origin main        # Actions tests + Deploy microsite
 ```
