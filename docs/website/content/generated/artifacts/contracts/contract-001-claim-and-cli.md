@@ -231,10 +231,12 @@ Binary name: `innsigle` (package may ship as such).
 | Command | Args (normative intent) | Behavior |
 |---------|-------------------------|----------|
 | `innsigle init` | `--onepassword` `[--dir]` `[--site-url]` `[--issuer-*]` `[--vault]` `[--force]` | MUST create house key custody outside the repo (1Password when `--onepassword`); MUST write all repo-local state under `.innsigle/` only (no framework web-root detection); MUST stage public issuer document at `.innsigle/public/keys.json` for publish to site `/.well-known/innsigle/keys.json`; MUST write commit-safe `.innsigle/config.json` with `key_id` fingerprint and custody reference; MUST write agent-oriented publish instructions under `.innsigle/`; MUST NOT write private key material into the repo |
+| `innsigle seal` | `<content>` `[--kind]` `[--colo]` `[--uri]` `[--out]` | MUST claim+sign using `.innsigle/config.json` issuer fields and 1Password (or `--key`); MUST write attestation under `.innsigle/public/claims/` by default; MUST NOT require repeating issuer flags |
 | `innsigle keygen` | `--out-dir <dir>` | MUST write private key (permissions 0600 when FS supports) and public material; MUST NOT print private key |
 | `innsigle keys template` | `--issuer-id` `--issuer-name` `--public-key` `--key-id` | MUST emit issuer document skeleton (`innsigle_issuer` preferred; includes `endorsements: []`) |
 | `innsigle claim build` | `--content <file>` `--uri <uri?>` `--colo <colo.json>` `--issuer-*` `--key-url` | MUST emit claim payload JSON; MUST reject non-absolute `key_url` (exit 5); MAY accept `--bill` as alias for `--colo`; MAY default issuer fields from `.innsigle/config.json` |
 | `innsigle sign` | `--claim <file>` `--key <private?>` | MUST emit attestation envelope; SHOULD refuse unsigned path if claim lacks absolute `key_url`; MAY load private key from `--key`, `--op-ref`, or `.innsigle/config.json` → 1Password (`op read`) |
+| `innsigle verify` | `<content>` **or** `--attestation` `--content` `--keys` | Short form MUST resolve attestation and keys from `.innsigle/` (or published well-known next to content) when possible |
 | `innsigle verify` | `--attestation <file>` `--content <file>` `--keys <file\|url>` | MUST exit 0 iff signature valid, key not revoked, and content digest matches; MUST exit non-zero otherwise. Identity/WoT recognition is separate (ADR-003) |
 | `innsigle colo example` | `--kind model-primary\|human-authored\|mixed` | MUST print example colophon JSON; MAY accept `bill example` as alias |
 

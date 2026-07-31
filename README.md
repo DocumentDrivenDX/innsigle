@@ -73,16 +73,11 @@ This writes **only** under **`.innsigle/`** (Innsigle does not guess Quarto/Hugo
 .innsigle/public/  →  <site-root>/.well-known/innsigle/
 ```
 
-Then seal content (issuer flags and signing key come from config + 1Password):
+Then seal content (issuer + 1Password from `.innsigle/config.json`):
 
 ```bash
-innsigle colo example --kind model-primary > colo.json
-# edit colo.json ingredients as needed
-
-innsigle claim build --content ./page.html --colo colo.json --out claim.json
-innsigle sign --claim claim.json --out att.json
-innsigle verify --attestation att.json --content ./page.html \
-  --keys .innsigle/public/keys.json
+innsigle seal ./page.html          # claim+sign → .innsigle/public/claims/
+innsigle verify ./page.html        # finds att + keys from .innsigle/
 ```
 
 ### Manual keygen (no 1Password)

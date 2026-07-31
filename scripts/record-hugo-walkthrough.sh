@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Record Hugo × Innsigle walkthrough screencast into docs/website/static/captures/
+# Record narrated Hugo × Innsigle walkthrough → docs/website/static/captures/
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
@@ -14,19 +14,27 @@ if ! command -v hugo >/dev/null 2>&1; then
 fi
 
 mkdir -p docs/website/static/captures
-chmod +x scripts/demo-hugo-innsigle.sh
+chmod +x scripts/prepare-hugo-demo.sh scripts/demo-hugo-innsigle.sh
 
-# Warm the workflow once so the tape's long Sleep is enough
-echo "==> warm workflow"
-bash scripts/demo-hugo-innsigle.sh >/tmp/innsigle-hugo-warm.log 2>&1 || {
-  echo "warm failed:" >&2
-  cat /tmp/innsigle-hugo-warm.log >&2
-  exit 1
-}
+echo "==> prepare demo site (init + hugo; seal runs in the tape)"
+bash scripts/prepare-hugo-demo.sh
 
 echo "==> vhs record"
 vhs scripts/tapes/hugo-innsigle.tape
 
+# Ship into site/ as well when present
+if [[ -d site/captures ]]; then
+  cp -a docs/website/static/captures/walkthrough-hugo.gif \
+        docs/website/static/captures/walkthrough-hugo.mp4 \
+        site/captures/
+fi
+
 echo "==> outputs"
 ls -la docs/website/static/captures/walkthrough-hugo.* 2>/dev/null || true
-echo "ok: screencast assets under docs/website/static/captures/"
+if command -v ffprobe >/dev/null 2>&1; then
+  ffprobe -v error -show_entries format=duration \
+    -of default=noprint_wrappers=1:nokey=1 \
+    docs/website/static/captures/walkthrough-hugo.mp4 2>/dev/null \
+    | awk '{printf "mp4 duration: %.1fs\n", $1}'
+fi
+echo "ok: screencast under docs/website/static/captures/"

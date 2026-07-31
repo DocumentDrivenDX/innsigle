@@ -14,22 +14,29 @@ without Innsigle learning Hugo’s layout rules.
 
 ## Screencast
 
-Recorded end-to-end run (init → Hugo build → sign → `VALID`). Demo uses a stub
-`op` so CI can record without a vault; your machine uses real `op signin`.
+Step-by-step terminal walkthrough (narrated on screen):
 
-<video controls playsinline width="100%" style="max-width:48rem;border:1px solid #ccc;border-radius:6px;background:#111">
+1. One-time `init` → `.innsigle/` + 1Password  
+2. Publish wire → copy public staging into the site  
+3. `innsigle seal public/index.html`  
+4. `innsigle verify public/index.html` → **VALID**
+
+Demo uses a stub `op` so recording does not need a vault; production uses
+`op signin`.
+
+<video controls playsinline preload="metadata" width="100%" style="max-width:48rem;border:1px solid #ccc;border-radius:6px;background:#111">
 <source src="../../captures/walkthrough-hugo.mp4" type="video/mp4" />
 </video>
 
 [GIF fallback](/captures/walkthrough-hugo.gif) · regenerate with
-`bash scripts/record-hugo-walkthrough.sh` in the repo.
+`npm run record:hugo-walkthrough`.
 
 ## Goal
 
 1. `innsigle init --onepassword` writes only **`.innsigle/`**
 2. An agent (or you) copies **`.innsigle/public/` → site `/.well-known/innsigle/`**
-3. After `hugo`, claim + sign the **built** `public/index.html`
-4. `innsigle verify` prints **VALID**
+3. After `hugo`, **`innsigle seal`** the built `public/index.html`
+4. **`innsigle verify`** prints **VALID**
 
 ## Prerequisites
 
@@ -41,97 +48,56 @@ Recorded end-to-end run (init → Hugo build → sign → `VALID`). Demo uses a 
 ## Automated proof (this repo)
 
 ```bash
-# Full workflow (skips cleanly if hugo missing)
 npm test -- tests/hugo-workflow.test.mjs
 # or:
 node scripts/hugo-innsigle-workflow.mjs --out-dir /tmp/hugo-demo --keep
 ```
 
-Expect: exit 0, stderr contains `VALID`, and
-`/tmp/hugo-demo/public/.well-known/innsigle/keys.json` exists.
+Expect: exit 0, stderr contains `VALID`.
 
-## Steps (what the script does)
+## Steps
 
-### 1. Trivial Hugo site
-
-Minimal `hugo.toml`, `content/_index.md`, and layouts with an Innsigle footer
-partial linking at the attestation URL.
-
-### 2. Init (1Password house key)
+### 1. Init (once per repo)
 
 ```bash
-innsigle init --onepassword \
-  --site-url https://hugo-demo.example \
-  --issuer-id hugo-demo \
-  --issuer-name "Hugo Demo"
+innsigle init --onepassword --site-url https://hugo-demo.example
 ```
 
-Writes:
+Writes `.innsigle/config.json` (fingerprint + `op://` ref), stages
+`.innsigle/public/keys.json`, and `AGENTS.md` for publish wiring.
 
-| Path | Role |
-|------|------|
-| `.innsigle/config.json` | `key_id`, `key_url`, `op://…` ref |
-| `.innsigle/public/keys.json` | Public issuer document (staging) |
-| `.innsigle/AGENTS.md` | Publish + seal checklist for agents |
-
-Private key stays in 1Password only.
-
-### 3. Publish wire (not Innsigle’s job)
-
-From `.innsigle/AGENTS.md` / `config.publish.copy`:
+### 2. Publish wire (not Innsigle’s job)
 
 ```bash
 mkdir -p static/.well-known/innsigle
 cp -a .innsigle/public/. static/.well-known/innsigle/
 ```
 
-Hugo copies `static/` into `public/` on build, so keys land at
-`/.well-known/innsigle/keys.json` on the site.
-
-### 4. Build, claim, sign, verify
+### 3. Build, seal, verify
 
 ```bash
 hugo -d public
 
-innsigle colo example --kind model-primary > colo.json
-innsigle claim build \
-  --content public/index.html \
-  --uri https://hugo-demo.example/ \
-  --colo colo.json \
-  --out claim.json
-# issuer flags default from .innsigle/config.json
-
-innsigle sign --claim claim.json \
-  --out .innsigle/public/claims/index.attestation.json
-# private key via op read from config
-
-cp -a .innsigle/public/. static/.well-known/innsigle/
-cp -a static/.well-known/innsigle/. public/.well-known/innsigle/
-
-innsigle verify \
-  --attestation public/.well-known/innsigle/claims/index.attestation.json \
-  --content public/index.html \
-  --keys public/.well-known/innsigle/keys.json
+innsigle seal public/index.html
+innsigle verify public/index.html
 # expect VALID
 ```
 
-Sign the **rendered HTML bytes** you ship. Re-run claim/sign after intentional
-rebuilds that change those bytes.
+Optional: `--kind model-primary|human-authored|mixed`, or `.innsigle/colo.json`.
+
+Re-run `seal` after rebuilds that change the published HTML bytes.
 
 ### Check it
 
-What we claim: the workflow script and unit e2e keep this path green.
-
 ```bash
 node scripts/hugo-innsigle-workflow.mjs --keep --out-dir /tmp/hugo-demo
-# stderr ends with VALID
 ```
 
 ## Why Hugo is only an example
 
-Innsigle never probes `static/` vs `public/` vs `_site/`. The **same**
-`.innsigle/public → /.well-known/innsigle` copy rule works for Quarto, plain
-rsync, or CI artifacts — see `.innsigle/AGENTS.md` after init.
+Innsigle never probes `static/` vs `public/` vs `_site/`. The same
+`.innsigle/public → /.well-known/innsigle` rule works for any static host —
+see `.innsigle/AGENTS.md` after init.
 
 ## Spec
 

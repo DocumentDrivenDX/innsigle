@@ -68,27 +68,27 @@ innsigle init --onepassword --site-url https://example.com
 `.innsigle/public/` → site `/.well-known/innsigle/` so keys are at
 `https://…/.well-known/innsigle/keys.json`.
 
-After init, claim/sign pick up issuer fields and the key from config + `op`.
+After init, everyday commands stay short — repo config + 1Password supply the rest.
 
 ## Seal a page
 
 ```bash
 # After init (preferred):
-innsigle colo example --kind model-primary > colo.json
-innsigle claim build --content ./page.html --colo colo.json --out claim.json
-innsigle sign --claim claim.json --out att.json
-innsigle verify --attestation att.json --content ./page.html \
-  --keys .innsigle/public/keys.json
+innsigle seal ./page.html
+innsigle verify ./page.html
 
-# Or manual keygen (no 1Password):
+# Optional colophon control:
+#   --kind model-primary|human-authored|mixed
+#   or commit .innsigle/colo.json
+#   or --colo path.json
+
+# Manual keygen still available (no 1Password):
 innsigle keygen --out-dir ./keys
 innsigle keys template \
  --issuer-id my-house --issuer-name "My House" \
  --public-key "$(cat keys/ed25519.pub.raw.b64url)" \
  --key-id "$(cat keys/key-id.txt)" \
  --out keys.json
-# host keys.json at an absolute HTTPS URL (required in the claim)
-
 innsigle claim build --content ./page.html --colo colo.json \
  --issuer-id my-house --issuer-name "My House" \
  --key-id "$(cat keys/key-id.txt)" \
@@ -98,8 +98,16 @@ innsigle sign --claim claim.json --key keys/ed25519.priv.pem --out att.json
 innsigle verify --attestation att.json --content ./page.html --keys keys.json
 ```
 
-Keep the private key offline (1Password or local PEM). `key_url` must be an
-**absolute** URL; relative paths are rejected.
+Keep the private key offline (1Password via init, or local PEM). `key_url` must
+be an **absolute** URL; relative paths are rejected.
+
+### Config layers
+
+| Layer | Path | Role |
+|-------|------|------|
+| Repo | `.innsigle/config.json` | Issuer, `key_url`, `op://` private key ref |
+| User (optional) | `~/.config/innsigle/config.json` | e.g. `default_composition` |
+| 1Password | via `op read` | Private key only |
 
 ### Check it (live sample)
 

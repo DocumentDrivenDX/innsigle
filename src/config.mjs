@@ -1,5 +1,6 @@
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { homedir } from "node:os";
+import { basename, dirname, join, relative, resolve, sep } from "node:path";
 
 /** Directory under the repo that owns all Innsigle project state. */
 export const DIR_NAME = ".innsigle";
@@ -14,6 +15,8 @@ export const PATHS = {
   public: `${DIR_NAME}/public`,
   keys: `${DIR_NAME}/public/keys.json`,
   claims_dir: `${DIR_NAME}/public/claims`,
+  /** Optional default colophon for `innsigle seal`. */
+  colo: `${DIR_NAME}/colo.json`,
   readme: `${DIR_NAME}/README.md`,
   agents: `${DIR_NAME}/AGENTS.md`,
 };
@@ -62,6 +65,105 @@ export function loadConfig(path) {
 export function writeConfig(path, config) {
   const body = JSON.stringify(config, null, 2) + "\n";
   writeFileSync(path, body);
+}
+
+/**
+ * Per-user config: ~/.config/innsigle/config.json
+ * Optional fields: default_composition, onepassword.vault, site_url defaults for init.
+ * @returns {{ path: string, config: object | null }}
+ */
+export function userConfigPath() {
+  const base =
+    process.env.INNSIGLE_CONFIG_HOME ||
+    process.env.XDG_CONFIG_HOME ||
+    join(homedir(), ".config");
+  return join(base, "innsigle", "config.json");
+}
+
+/**
+ * @returns {object}
+ */
+export function loadUserConfig() {
+  const p = userConfigPath();
+  if (!existsSync(p)) return {};
+  try {
+    return JSON.parse(readFileSync(p, "utf8"));
+  } catch {
+    return {};
+  }
+}
+
+/**
+ * Ensure user config directory exists; merge-write shallow keys.
+ * @param {object} patch
+ */
+export function updateUserConfig(patch) {
+  const p = userConfigPath();
+  mkdirSync(dirname(p), { recursive: true });
+  const cur = loadUserConfig();
+  const next = { ...cur, ...patch };
+  if (patch.onepassword || cur.onepassword) {
+    next.onepassword = { ...(cur.onepassword || {}), ...(patch.onepassword || {}) };
+  }
+  writeFileSync(p, JSON.stringify(next, null, 2) + "\n");
+  return next;
+}
+
+/**
+ * Resolved project context for short commands.
+ * @param {string} [startDir]
+ */
+export function loadProject(startDir = process.cwd()) {
+  const configPath = findConfigPath(startDir);
+  if (!configPath) return null;
+  const repoRoot = findRepoRoot(configPath);
+  const config = loadConfig(configPath);
+  const user = loadUserConfig();
+  return {
+    configPath,
+    repoRoot,
+    config,
+    user,
+    keysPath: join(repoRoot, PATHS.keys),
+    claimsDir: join(repoRoot, PATHS.claims_dir),
+    coloPath: join(repoRoot, PATHS.colo),
+    publicDir: join(repoRoot, PATHS.public),
+  };
+}
+
+/**
+ * Default attestation path for a content file under .innsigle/public/claims/.
+ * @param {string} repoRoot
+ * @param {string} contentPath
+ */
+export function defaultAttestationPath(repoRoot, contentPath) {
+  const base = basename(contentPath).replace(/\.[^.]+$/, "") || "content";
+  return join(repoRoot, PATHS.claims_dir, `${base}.attestation.json`);
+}
+
+/**
+ * Guess content URI from issuer key_url origin + relative path from repo root.
+ * @param {object} config repo config
+ * @param {string} repoRoot
+ * @param {string} contentPath
+ * @returns {string | undefined}
+ */
+export function guessContentUri(config, repoRoot, contentPath) {
+  const keyUrl = config?.issuer?.key_url;
+  if (!keyUrl) return undefined;
+  try {
+    const origin = new URL(keyUrl).origin;
+    let rel = relative(repoRoot, resolve(contentPath)).split(sep).join("/");
+    // common publish trees: public/, _site/, dist/ strip for site URL
+    rel = rel.replace(/^(public|_site|dist|site)\//, "");
+    if (rel === "index.html") return `${origin}/`;
+    if (rel.endsWith("/index.html")) {
+      return `${origin}/${rel.slice(0, -"index.html".length)}`;
+    }
+    return `${origin}/${rel}`;
+  } catch {
+    return undefined;
+  }
 }
 
 /**

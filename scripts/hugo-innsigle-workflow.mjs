@@ -22,6 +22,7 @@ import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
+// dirname still used for FAKE_OP / ROOT paths
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const CLI = join(ROOT, "src/cli.mjs");
@@ -246,64 +247,22 @@ function main() {
     process.exit(1);
   }
 
-  // 4. Colophon + claim + sign built HTML
-  r = run(process.execPath, [CLI, "colo", "example", "--kind", "model-primary"], {
-    cwd: outDir,
-  });
-  mustOk(r, "colo example");
-  const coloPath = join(outDir, "colo.json");
-  writeFileSync(coloPath, r.stdout);
-
-  const claimPath = join(outDir, "claim.json");
+  // 4. Seal built HTML (issuer + 1Password from .innsigle/config.json)
   r = run(
     process.execPath,
-    [
-      CLI,
-      "claim",
-      "build",
-      "--content",
-      page,
-      "--uri",
-      "https://hugo-demo.example/",
-      "--colo",
-      coloPath,
-      "--out",
-      claimPath,
-    ],
+    [CLI, "seal", page, "--kind", "model-primary"],
     { cwd: outDir, env },
   );
-  mustOk(r, "claim build");
+  mustOk(r, "seal");
+  console.error(r.stderr.trim());
 
-  const attPath = join(outDir, ".innsigle/public/claims/index.attestation.json");
-  mkdirSync(dirname(attPath), { recursive: true });
-  r = run(
-    process.execPath,
-    [CLI, "sign", "--claim", claimPath, "--out", attPath],
-    { cwd: outDir, env },
-  );
-  mustOk(r, "sign");
-
-  // 5. Re-publish claims + verify against built site keys
+  // 5. Re-publish claims + short verify
   publishToHugoStatic(outDir);
-  // Copy claims into already-built public/ (no full rebuild required for verify)
   cpSync(join(outDir, "static/.well-known/innsigle"), join(outDir, "public/.well-known/innsigle"), {
     recursive: true,
   });
 
-  r = run(
-    process.execPath,
-    [
-      CLI,
-      "verify",
-      "--attestation",
-      join(outDir, "public/.well-known/innsigle/claims/index.attestation.json"),
-      "--content",
-      page,
-      "--keys",
-      join(outDir, "public/.well-known/innsigle/keys.json"),
-    ],
-    { cwd: outDir },
-  );
+  r = run(process.execPath, [CLI, "verify", page], { cwd: outDir, env });
   mustOk(r, "verify");
   if (!/VALID/.test(r.stdout)) {
     console.error("FAIL: expected VALID");

@@ -5,30 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Verify: Innsigle</title>
   <meta name="description" content="What Innsigle verification checks: and what it does not." />
-  <link rel="stylesheet" href="/assets/css/site.css" />
-  <link rel="icon" href="/assets/marks/innsigle-base.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/innsigle/assets/css/site.css" />
+  <link rel="icon" href="/innsigle/assets/marks/innsigle-base.svg" type="image/svg+xml" />
 </head>
 <body>
   <header class="site-header">
     <div class="wrap">
-      <a class="brand" href="/">
-        <img class="brand-mark" src="/assets/marks/innsigle-base.svg" width="40" height="40" alt="" />
+      <a class="brand" href="/innsigle/">
+        <img class="brand-mark" src="/innsigle/assets/marks/innsigle-base.svg" width="40" height="40" alt="" />
         Innsigle
       </a>
       <nav class="nav" aria-label="Primary">
-        <a href="/">What it is</a>
-        <a href="/why/">Why</a>
-        <a href="/use/" aria-current="page">Use</a>
-        <a href="/reference/">Reference</a>
-        <a href="/sample/">Sample</a>
+        <a href="/innsigle/">What it is</a>
+        <a href="/innsigle/why/">Why</a>
+        <a href="/innsigle/use/" aria-current="page">Use</a>
+        <a href="/innsigle/reference/">Reference</a>
+        <a href="/innsigle/sample/">Sample</a>
       </nav>
     </div>
   </header>
   <div class="wrap layout-docs">
-    <p class="crumbs" aria-label="Breadcrumb"><a href="/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/use/">Use</a> <span aria-hidden="true">/</span> <span>Verify</span></p>
+    <p class="crumbs" aria-label="Breadcrumb"><a href="/innsigle/">Innsigle</a> <span aria-hidden="true">/</span> <a href="/innsigle/use/">Use</a> <span aria-hidden="true">/</span> <span>Verify</span></p>
     <div class="docs-grid">
       <aside class="docs-side" aria-label="Section">
-        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/">Home</a></li><li><a href="/why/">Why</a></li><li><a href="/sample/">Sample</a></li><li><a href="/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/use/" aria-current="page">Use overview</a></li><li><a href="/use/cli/">CLI</a></li><li><a href="/use/issuer/">Issuer</a></li><li><a href="/use/colophon/">Colophon</a></li><li><a href="/use/provenance/">Provenance</a></li><li><a href="/use/verify/" aria-current="page">Verify</a></li><li><a href="/use/marks/">Marks</a></li><li><a href="/use/walkthrough-provenance/">Walkthrough: conversation → colophon</a></li><li><a href="/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/use/walkthrough-social/">Walkthrough: social</a></li><li><a href="/use/walkthrough-hugo/">Walkthrough: Hugo</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/reference/">Reference home</a></li><li><a href="/reference/artifacts/">Artifacts</a></li><li><a href="/reference/glossary/">Glossary</a></li></ul>
+        <p class="side-label">Evaluate</p><ul class="side-list"><li><a href="/innsigle/">Home</a></li><li><a href="/innsigle/why/">Why</a></li><li><a href="/innsigle/sample/">Sample</a></li><li><a href="/innsigle/non-goals/">Non-goals</a></li></ul><p class="side-label">Use</p><ul class="side-list"><li><a href="/innsigle/use/" aria-current="page">Use overview</a></li><li><a href="/innsigle/use/cli/">CLI</a></li><li><a href="/innsigle/use/issuer/">Issuer</a></li><li><a href="/innsigle/use/colophon/">Colophon</a></li><li><a href="/innsigle/use/provenance/">Provenance</a></li><li><a href="/innsigle/use/verify/" aria-current="page">Verify</a></li><li><a href="/innsigle/use/marks/">Marks</a></li><li><a href="/innsigle/use/walkthrough-provenance/">Walkthrough: conversation → colophon</a></li><li><a href="/innsigle/use/walkthrough-docs/">Walkthrough: docs</a></li><li><a href="/innsigle/use/walkthrough-social/">Walkthrough: social</a></li><li><a href="/innsigle/use/walkthrough-hugo/">Walkthrough: Hugo</a></li></ul><p class="side-label">Reference</p><ul class="side-list"><li><a href="/innsigle/reference/">Reference home</a></li><li><a href="/innsigle/reference/artifacts/">Artifacts</a></li><li><a href="/innsigle/reference/glossary/">Glossary</a></li></ul>
       </aside>
       <main class="docs-main prose">
         <h1 id="verify">Verify</h1>
@@ -52,7 +52,7 @@
 curl -sL -o att.json https://documentdrivendx.github.io/innsigle/sample/.well-known/innsigle/claims/index.attestation.json
 curl -sL -o keys.json https://documentdrivendx.github.io/innsigle/sample/.well-known/innsigle/keys.json
 npx innsigle verify --attestation att.json --content page.html --keys keys.json</code></pre>
-<p>Expect: <code>VALID</code>. Live: <a href="/sample/">Sample</a>.</p>
+<p>Expect: <code>VALID</code>. Live: <a href="/innsigle/sample/">Sample</a>.</p>
 <h2 id="hierarchy-on-a-verify-view">Hierarchy on a verify view</h2>
 <ol>
 <li><strong>Primary:</strong> Signature valid or invalid; issuer when valid. Or “unsigned declaration.”</li>
@@ -73,16 +73,16 @@ npx innsigle verify --attestation att.json --content page.html --keys keys.json<
 <tr><td>Recognized</td><td>You pin that fingerprint, and/or follow key-endorsements (published statements naming another fingerprint)</td></tr>
 </table>
 <p><code>issuer.id</code> is a display slug and may collide. Prefer <strong>fingerprints</strong>.</p>
-<p>Issuer documents can live on any durable HTTPS URL (gist, Pages, free host). A social bio <strong>issuer card</strong> is discovery only, not a signature. See <a href="/use/issuer/">Issuer</a>.</p>
+<p>Issuer documents can live on any durable HTTPS URL (gist, Pages, free host). A social bio <strong>issuer card</strong> is discovery only, not a signature. See <a href="/innsigle/use/issuer/">Issuer</a>.</p>
 <h2 id="spec">Spec</h2>
-<p>Crypto: <a href="/reference/artifacts/adrs/adr-001-signing-and-canonicalization/">ADR-001</a>. Issuer URL and web of trust: <a href="/reference/artifacts/adrs/adr-003-issuer-url-and-web-of-trust/">ADR-003</a>.</p>
+<p>Crypto: <a href="/innsigle/reference/artifacts/adrs/adr-001-signing-and-canonicalization/">ADR-001</a>. Issuer URL and web of trust: <a href="/innsigle/reference/artifacts/adrs/adr-003-issuer-url-and-web-of-trust/">ADR-003</a>.</p>
       </main>
     </div>
   </div>
   <footer class="site-footer">
     <div class="wrap">
-      <a class="innsigle-footer-seal" href="/use/colophon/">
-        <img src="/assets/marks/innsigle-base.svg" width="48" height="48" alt="" />
+      <a class="innsigle-footer-seal" href="/innsigle/use/colophon/">
+        <img src="/innsigle/assets/marks/innsigle-base.svg" width="48" height="48" alt="" />
         <span>
           <strong>Innsigle</strong>
           <span class="cue">The maker's seal for published work</span>

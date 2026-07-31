@@ -92,41 +92,18 @@ describe("innsigle init --onepassword", () => {
     assert.match(agents, /\.well-known\/innsigle/);
 
     writeFileSync(join(repo, "page.html"), "<html>sealed</html>\n");
-    const colo = run(["colo", "example", "--kind", "human-authored"]);
-    writeFileSync(join(repo, "colo.json"), colo.stdout);
 
-    let c = run(
-      [
-        "claim",
-        "build",
-        "--content",
-        join(repo, "page.html"),
-        "--colo",
-        join(repo, "colo.json"),
-        "--out",
-        join(repo, "claim.json"),
-      ],
-      { cwd: repo, env },
-    );
+    let c = run(["seal", "page.html", "--kind", "human-authored"], {
+      cwd: repo,
+      env,
+    });
     assert.equal(c.status, 0, c.stderr);
-    const claim = JSON.parse(readFileSync(join(repo, "claim.json"), "utf8"));
-    assert.equal(claim.issuer.key_id, cfg.issuer.key_id);
-
-    c = run(
-      ["sign", "--claim", join(repo, "claim.json"), "--out", join(repo, "att.json")],
-      { cwd: repo, env },
+    assert.match(c.stderr, /ok: sealed/);
+    assert.ok(
+      existsSync(join(repo, ".innsigle/public/claims/page.attestation.json")),
     );
-    assert.equal(c.status, 0, c.stderr);
 
-    c = run([
-      "verify",
-      "--attestation",
-      join(repo, "att.json"),
-      "--content",
-      join(repo, "page.html"),
-      "--keys",
-      join(repo, ".innsigle/public/keys.json"),
-    ]);
+    c = run(["verify", "page.html"], { cwd: repo, env });
     assert.equal(c.status, 0, c.stderr + c.stdout);
     assert.match(c.stdout, /VALID/);
 

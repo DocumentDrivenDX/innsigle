@@ -12,6 +12,7 @@ import {
 import { loadConfig } from "./config.mjs";
 import { runInit } from "./init.mjs";
 import { readPrivateKeyPem } from "./onepassword.mjs";
+import { runSeal, resolveVerifyPaths } from "./seal.mjs";
 import { loadJournal, mergeJournals, buildProvenance, proposeColo } from "./provenance/index.mjs";
 
 const EXIT = { ok: 0, usage: 1, badSig: 2, contentMismatch: 3, badKey: 4, badSchema: 5 };
@@ -20,22 +21,23 @@ function usage(msg) {
   if (msg) console.error(msg);
   console.error(`innsigle — content origin seal (CONTRACT-001)
 
-Usage:
-  innsigle init --onepassword [--dir <repo>] [--site-url <https://…>]
-                 [--issuer-id <id>] [--issuer-name <name>] [--vault <name>] [--force]
+Common (uses .innsigle/ + 1Password + optional ~/.config/innsigle/config.json):
+  innsigle init --onepassword --site-url https://example.com
+  innsigle seal <content-file> [--kind model-primary|human-authored|mixed]
+  innsigle verify <content-file>
+
+Low-level:
   innsigle keygen --out-dir <dir>
   innsigle keys template --issuer-id <id> --issuer-name <name> --public-key <b64url> --key-id <id> [--out file]
-  innsigle claim build --content <file> [--uri <uri>] --colo <colo.json> [--issuer-id <id>] [--issuer-name <name>] [--key-id <id>] [--key-url <url>] [--out file]
+  innsigle claim build --content <file> [--uri <uri>] --colo <colo.json> [issuer flags…] [--out file]
   innsigle sign --claim <file> [--key <private.pem>] [--out file]
   innsigle verify --attestation <file> --content <file> --keys <file>
   innsigle colo example --kind model-primary|human-authored|mixed
-  innsigle provenance build --journal <jsonl> [--artifact <path>]... --generated-at <iso> [--out file]
-  innsigle provenance propose-colo --provenance <l2.json> [--uri <url>] [--force-composition] [--notes t] [--out file]
+  innsigle provenance build|propose-colo …
 
-  init --onepassword  house key in 1Password; all repo state under .innsigle/
-                      (config, public keys staging, AGENTS.md for build wiring).
-  sign                if --key is omitted, loads private key from .innsigle/config.json → 1Password.
-  claim build         issuer flags default from .innsigle/config.json when present.
+  seal     claim+sign in one step; attestation → .innsigle/public/claims/
+  verify   short form finds att + keys from .innsigle/ (or public/.well-known/)
+  init     house key in 1Password; repo state under .innsigle/ only
 `);
   process.exit(EXIT.usage);
 }
@@ -98,7 +100,7 @@ function assertAbsoluteKeyUrl(keyUrl) {
     console.error("INVALID: key_url scheme must be https (or http/file for tests)");
     process.exit(EXIT.badSchema);
   }
-  if (!u.protocol || !u.host && u.protocol !== "file:") {
+  if (!u.protocol || (!u.host && u.protocol !== "file:")) {
     console.error("INVALID: key_url incomplete");
     process.exit(EXIT.badSchema);
   }
@@ -106,7 +108,6 @@ function assertAbsoluteKeyUrl(keyUrl) {
 }
 
 function cmdKeysTemplate(args) {
-  // ADR-003 issuer document (preferred); still readable by verify as keys list
   const doc = {
     innsigle_issuer: "1",
     issuer_id: requireArg(args, "--issuer-id"),
@@ -148,7 +149,7 @@ function cmdClaimBuild(args) {
   const keyUrlRaw = arg(args, "--key-url") || cfg?.issuer?.key_url;
   if (!issuerId || !issuerName || !keyId || !keyUrlRaw) {
     usage(
-      "missing issuer fields (pass --issuer-id/--issuer-name/--key-id/--key-url or run innsigle init)",
+      "missing issuer fields (pass flags or run innsigle init; prefer: innsigle seal <file>)",
     );
   }
   const keyUrl = assertAbsoluteKeyUrl(keyUrlRaw);
@@ -195,7 +196,7 @@ function loadSigningKeyPem(args) {
       process.exit(EXIT.usage);
     }
   }
-  usage("missing --key <private.pem> (or .innsigle/config.json onepassword.private_key_ref / --op-ref)");
+  usage("missing --key (or innsigle init --onepassword / --op-ref)");
 }
 
 function cmdSign(args) {
@@ -223,11 +224,49 @@ function cmdSign(args) {
 }
 
 function cmdVerify(args) {
+  // Short form: innsigle verify <content>
+  // Long form: --attestation --content --keys
+  const hasLong =
+    args.includes("--attestation") || args.includes("--content") || args.includes("--keys");
+  let contentPath;
+  let attPath;
+  let keysPath;
+
+  if (!hasLong && args.length >= 1 && !args[0].startsWith("-")) {
+    const resolved = resolveVerifyPaths(args);
+    contentPath = resolved.content;
+    attPath = resolved.att;
+    keysPath = resolved.keys;
+    if (!contentPath || !attPath || !keysPath) {
+      console.error(
+        "INVALID: could not resolve attestation/keys for short verify (need .innsigle/ or --attestation/--keys)",
+      );
+      if (contentPath) console.error(`content=${contentPath}`);
+      if (attPath) console.error(`attestation=${attPath}`);
+      if (keysPath) console.error(`keys=${keysPath}`);
+      process.exit(EXIT.usage);
+    }
+  } else if (!args.includes("--attestation") && args.some((a) => !a.startsWith("-"))) {
+    // mixed: content positional + optional flags
+    const resolved = resolveVerifyPaths(args);
+    contentPath = arg(args, "--content") || resolved.content;
+    attPath = arg(args, "--attestation") || resolved.att;
+    keysPath = arg(args, "--keys") || resolved.keys;
+  } else {
+    contentPath = requireArg(args, "--content");
+    attPath = requireArg(args, "--attestation");
+    keysPath = requireArg(args, "--keys");
+  }
+
+  if (!contentPath || !attPath || !keysPath) {
+    usage("verify <content>   or   verify --attestation … --content … --keys …");
+  }
+
   let attestation;
   let keys;
   try {
-    attestation = JSON.parse(readFileSync(requireArg(args, "--attestation"), "utf8"));
-    keys = JSON.parse(readFileSync(requireArg(args, "--keys"), "utf8"));
+    attestation = JSON.parse(readFileSync(attPath, "utf8"));
+    keys = JSON.parse(readFileSync(keysPath, "utf8"));
   } catch {
     console.error("INVALID: schema/parse");
     process.exit(EXIT.badSchema);
@@ -237,7 +276,6 @@ function cmdVerify(args) {
     console.error("INVALID: schema");
     process.exit(EXIT.badSchema);
   }
-  // ADR-003: signed payload must carry absolute key_url (integrity of discovery channel)
   if (!payload.issuer?.key_url) {
     console.error("INVALID: missing issuer.key_url in signed payload");
     process.exit(EXIT.badSchema);
@@ -247,7 +285,6 @@ function cmdVerify(args) {
   } catch {
     /* assertAbsoluteKeyUrl already exits */
   }
-  // Accept innsigle_issuer or legacy innsigle_keys documents
   if (!keys.keys && !keys.innsigle_issuer && !keys.innsigle_keys) {
     console.error("INVALID: issuer document schema");
     process.exit(EXIT.badSchema);
@@ -262,7 +299,7 @@ function cmdVerify(args) {
     console.error("INVALID: revoked_key");
     process.exit(EXIT.badKey);
   }
-  const contentHash = sha256Hex(readFileSync(requireArg(args, "--content")));
+  const contentHash = sha256Hex(readFileSync(contentPath));
   const subject = payload.subjects?.[0];
   if (!subject?.digest?.value || subject.digest.value !== contentHash) {
     console.error("INVALID: content_mismatch");
@@ -390,6 +427,11 @@ const rest = argv.slice(1);
 switch (cmd) {
   case "init": {
     const code = runInit(rest, { nowIso });
+    process.exit(code);
+    break;
+  }
+  case "seal": {
+    const code = runSeal(rest, { nowIso });
     process.exit(code);
     break;
   }

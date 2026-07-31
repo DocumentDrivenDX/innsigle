@@ -229,12 +229,8 @@ trees (\`static/\`, \`public/\`, \`docs/\`, \`_site/\`, etc.).
   AGENTS.md            # this file
 \`\`\`
 
-Private keys are **never** in the repo. Sign via:
-
-\`\`\`bash
-innsigle sign --claim claim.json --out att.json
-# loads private key from config.json → 1Password (op read)
-\`\`\`
+Private keys are **never** in the repo. Credentials come from 1Password via
+\`config.json\` → \`onepassword.private_key_ref\`.
 
 ## Required build step
 
@@ -267,19 +263,20 @@ If the public host differs, update \`.innsigle/config.json\` \`issuer.key_url\`
 
 ## Seal a content file
 
-1. Finalize the **exact bytes** you will publish (e.g. rendered HTML).
-2. Write a colophon: \`innsigle colo example --kind model-primary > colo.json\`
-3. Build claim (issuer fields default from \`.innsigle/config.json\`):
+Finalize the **exact bytes** you will publish, then:
 
 \`\`\`bash
-innsigle claim build --content path/to/page.html --colo colo.json --out claim.json
-innsigle sign --claim claim.json --out .innsigle/public/claims/<name>.attestation.json
-innsigle verify --attestation .innsigle/public/claims/<name>.attestation.json \\
-  --content path/to/page.html --keys .innsigle/public/keys.json
+innsigle seal path/to/page.html
+# optional: --kind model-primary|human-authored|mixed
+# or commit a default colophon at .innsigle/colo.json
+
+innsigle verify path/to/page.html
+# finds attestation + keys under .innsigle/ (or public/.well-known/)
 \`\`\`
 
-4. Ensure the attestation is included in the same publish copy as \`keys.json\`.
-5. Optional: footer link to the attestation URL or how-to-verify docs.
+Issuer metadata and the private key ref come from \`.innsigle/config.json\` +
+1Password. Attestation lands in \`.innsigle/public/claims/\` — include that tree
+in the publish copy step.
 
 ## Identity (this repo)
 
