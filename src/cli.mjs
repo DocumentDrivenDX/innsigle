@@ -13,7 +13,8 @@ import { loadConfig } from "./config.mjs";
 import { runInit } from "./init.mjs";
 import { readPrivateKeyPem } from "./onepassword.mjs";
 import { runSeal, resolveVerifyPaths } from "./seal.mjs";
-import { loadJournal, mergeJournals, buildProvenance, proposeColo } from "./provenance/index.mjs";
+import { runStatus, runVerifyAll } from "./status.mjs";
+import { loadJournal, mergeJournals, buildProvenance, proposeColo, cmdProvenanceImport } from "./provenance/index.mjs";
 
 const EXIT = { ok: 0, usage: 1, badSig: 2, contentMismatch: 3, badKey: 4, badSchema: 5 };
 
@@ -24,7 +25,11 @@ function usage(msg) {
 Common (uses .innsigle/ + 1Password + optional ~/.config/innsigle/config.json):
   innsigle init --onepassword --site-url https://example.com
   innsigle seal <content-file> [--kind model-primary|human-authored|mixed]
+                [--force] [--debug-claim] [--op-account <account>]
+  innsigle seal --stale                # re-seal claims whose content drifted
+  innsigle status                      # VALID | STALE | ORPHAN | UNSEALED per claim
   innsigle verify <content-file>
+  innsigle verify --all                # CI gate: nonzero if anything not VALID
 
 Low-level:
   innsigle keygen --out-dir <dir>
@@ -34,6 +39,7 @@ Low-level:
   innsigle verify --attestation <file> --content <file> --keys <file>
   innsigle colo example --kind model-primary|human-authored|mixed
   innsigle provenance build|propose-colo …
+  innsigle provenance import claude-code <transcript.jsonl> [--out journal.jsonl]
 
   seal     claim+sign in one step; attestation → .innsigle/public/claims/
   verify   short form finds att + keys from .innsigle/ (or public/.well-known/)
@@ -224,6 +230,10 @@ function cmdSign(args) {
 }
 
 function cmdVerify(args) {
+  // Repo form: innsigle verify --all (CI gate over .innsigle/public/claims/)
+  if (args.includes("--all")) {
+    process.exit(runVerifyAll(args, {}));
+  }
   // Short form: innsigle verify <content>
   // Long form: --attestation --content --keys
   const hasLong =
@@ -452,6 +462,11 @@ switch (cmd) {
   case "verify":
     cmdVerify(rest);
     break;
+  case "status": {
+    const code = runStatus(rest, {});
+    process.exit(code);
+    break;
+  }
   case "colo":
   case "bill": // transitional alias
     if (rest[0] !== "example") usage();
@@ -460,7 +475,8 @@ switch (cmd) {
   case "provenance":
     if (rest[0] === "build") cmdProvenanceBuild(rest.slice(1));
     else if (rest[0] === "propose-colo") cmdProvenanceProposeColo(rest.slice(1));
-    else usage("provenance build|propose-colo");
+    else if (rest[0] === "import") process.exit(cmdProvenanceImport(rest.slice(1), {}));
+    else usage("provenance build|propose-colo|import");
     break;
   default:
     usage();

@@ -132,13 +132,45 @@ export function loadProject(startDir = process.cwd()) {
 }
 
 /**
+ * Canonical attestation slug (PLAN-001 A1): project-relative content path,
+ * every non-alphanumeric run collapsed to "-", trimmed.
+ * e.g. posts/x/index.qmd → posts-x-index-qmd
+ * @param {string} repoRoot
+ * @param {string} contentPath
+ */
+export function attestationSlug(repoRoot, contentPath) {
+  let rel = relative(repoRoot, resolve(contentPath));
+  if (!rel || rel.startsWith("..")) rel = basename(contentPath);
+  const slug = rel
+    .split(sep)
+    .join("/")
+    .replace(/[^a-zA-Z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return slug || "content";
+}
+
+/**
+ * Legacy (pre-A1) attestation filename: basename minus extension.
+ * Kept for verify fallback so existing sites keep verifying.
+ * @param {string} contentPath
+ */
+export function legacyAttestationName(contentPath) {
+  const base = basename(contentPath).replace(/\.[^.]+$/, "") || "content";
+  return `${base}.attestation.json`;
+}
+
+/**
  * Default attestation path for a content file under .innsigle/public/claims/.
+ * Uses the canonical slug (project-relative path).
  * @param {string} repoRoot
  * @param {string} contentPath
  */
 export function defaultAttestationPath(repoRoot, contentPath) {
-  const base = basename(contentPath).replace(/\.[^.]+$/, "") || "content";
-  return join(repoRoot, PATHS.claims_dir, `${base}.attestation.json`);
+  return join(
+    repoRoot,
+    PATHS.claims_dir,
+    `${attestationSlug(repoRoot, contentPath)}.attestation.json`,
+  );
 }
 
 /**

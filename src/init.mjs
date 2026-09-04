@@ -99,6 +99,9 @@ export function runInit(args, deps) {
   const claimsDir = join(publicDir, "claims");
   mkdirSync(claimsDir, { recursive: true });
 
+  // .innsigle-scoped gitignore: debug sidecars (seal --debug-claim) stay local.
+  writeFileSync(join(dir, DIR_NAME, ".gitignore"), "debug/\n");
+
   const issuerDoc = {
     innsigle_issuer: "1",
     issuer_id: issuerId,
@@ -277,6 +280,13 @@ innsigle verify path/to/page.html
 Issuer metadata and the private key ref come from \`.innsigle/config.json\` +
 1Password. Attestation lands in \`.innsigle/public/claims/\` — include that tree
 in the publish copy step.
+
+## 1Password bridging (env)
+
+- \`INNSIGLE_OP_BIN\` may contain arguments, e.g. \`INNSIGLE_OP_BIN="mac op"\`
+  to bridge to the host CLI from a VM (OrbStack).
+- \`OP_ACCOUNT=<account>\` (or \`innsigle seal --op-account <account>\`) selects
+  the 1Password account; it is passed as \`--account\` to \`op read\`.
 
 ## Identity (this repo)
 

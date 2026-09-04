@@ -4,10 +4,22 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 /**
- * @returns {string} path to op binary
+ * Resolve the op command. INNSIGLE_OP_BIN may contain arguments
+ * (e.g. INNSIGLE_OP_BIN="mac op" for the OrbStack host bridge):
+ * split on whitespace, spawn argv[0], prepend the rest to args.
+ * @returns {{ bin: string, preArgs: string[] }}
+ */
+export function opCommand() {
+  const raw = (process.env.INNSIGLE_OP_BIN || "op").trim();
+  const parts = raw.split(/\s+/).filter(Boolean);
+  return { bin: parts[0] || "op", preArgs: parts.slice(1) };
+}
+
+/**
+ * @returns {string} path to op binary (first word of INNSIGLE_OP_BIN)
  */
 export function opBin() {
-  return process.env.INNSIGLE_OP_BIN || "op";
+  return opCommand().bin;
 }
 
 /**
@@ -15,7 +27,8 @@ export function opBin() {
  * @param {{ input?: string, env?: NodeJS.ProcessEnv }} [opts]
  */
 export function runOp(args, opts = {}) {
-  const r = spawnSync(opBin(), args, {
+  const { bin, preArgs } = opCommand();
+  const r = spawnSync(bin, [...preArgs, ...args], {
     encoding: "utf8",
     input: opts.input,
     env: { ...process.env, ...opts.env },
@@ -153,12 +166,18 @@ export function createHouseKeyItem(p) {
 
 /**
  * Read private key PEM from an op:// reference.
+ * Account selection: opts.account (seal --op-account) wins, then OP_ACCOUNT
+ * env; either appends `--account <value>` to `op read`.
  * @param {string} ref
+ * @param {{ account?: string }} [opts]
  * @returns {string}
  */
-export function readPrivateKeyPem(ref) {
+export function readPrivateKeyPem(ref, opts = {}) {
   assertOpAvailable();
-  const r = runOp(["read", ref]);
+  const account = opts.account || process.env.OP_ACCOUNT;
+  const args = ["read", ref];
+  if (account) args.push("--account", account);
+  const r = runOp(args);
   if (r.status !== 0) {
     const err = new Error(
       `op read failed for ${ref}: ${(r.stderr || r.stdout || "").trim()}`,

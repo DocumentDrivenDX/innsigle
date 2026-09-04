@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Quarto post-render hook.
+#
+# Publishes the Innsigle public tree (issuer keys + claim attestations) at
+# /.well-known/innsigle/ so content seals are verifiable. Signed claims
+# reference the absolute key_url configured at `innsigle init`, which by
+# convention points at /.well-known/innsigle/keys.json on the site origin;
+# see .innsigle/AGENTS.md in the sealing repo.
+set -euo pipefail
+
+src=".innsigle/public"
+
+# No-op for checkouts without an Innsigle issuer tree.
+[ -d "$src" ] || exit 0
+
+out="${QUARTO_PROJECT_OUTPUT_DIR:-_site}"
+
+mkdir -p "$out/.well-known/innsigle"
+cp -a "$src/." "$out/.well-known/innsigle/"

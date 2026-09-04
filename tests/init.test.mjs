@@ -99,9 +99,12 @@ describe("innsigle init --onepassword", () => {
     });
     assert.equal(c.status, 0, c.stderr);
     assert.match(c.stderr, /ok: sealed/);
+    // Canonical slug naming (PLAN-001 A1): project-relative path slug
     assert.ok(
-      existsSync(join(repo, ".innsigle/public/claims/page.attestation.json")),
+      existsSync(join(repo, ".innsigle/public/claims/page-html.attestation.json")),
     );
+    // Debug sidecars gitignored (PLAN-001 A4)
+    assert.match(readFileSync(join(repo, ".innsigle/.gitignore"), "utf8"), /^debug\/$/m);
 
     c = run(["verify", "page.html"], { cwd: repo, env });
     assert.equal(c.status, 0, c.stderr + c.stdout);

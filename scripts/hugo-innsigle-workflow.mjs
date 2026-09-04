@@ -148,7 +148,7 @@ This page is a **trivial Hugo site** sealed with Innsigle after \`hugo\` render.
   writeFileSync(
     join(siteDir, "layouts/partials/innsigle-footer.html"),
     `<footer class="innsigle-footer">
-  <a class="seal" href="{{ "/.well-known/innsigle/claims/index.attestation.json" | relURL }}">
+  <a class="seal" href="{{ "/.well-known/innsigle/claims/public-index-html.attestation.json" | relURL }}">
     <strong>Innsigle</strong>
     <span>The maker's seal · model-primary · signed</span>
   </a>
@@ -277,7 +277,7 @@ function main() {
     key_id: cfg.issuer.key_id,
     key_url: cfg.issuer.key_url,
     page,
-    attestation: "public/.well-known/innsigle/claims/index.attestation.json",
+    attestation: "public/.well-known/innsigle/claims/public-index-html.attestation.json",
     agents_md: ".innsigle/AGENTS.md",
   };
   console.log("summary=" + JSON.stringify(summary));

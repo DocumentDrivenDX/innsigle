@@ -36,7 +36,9 @@ describe("Hugo × Innsigle workflow (e2e)", () => {
     assert.ok(existsSync(join(out, "static/.well-known/innsigle/keys.json")));
     assert.ok(existsSync(join(out, "public/index.html")));
     assert.ok(
-      existsSync(join(out, "public/.well-known/innsigle/claims/index.attestation.json")),
+      existsSync(
+        join(out, "public/.well-known/innsigle/claims/public-index-html.attestation.json"),
+      ),
     );
 
     const agents = readFileSync(join(out, ".innsigle/AGENTS.md"), "utf8");
