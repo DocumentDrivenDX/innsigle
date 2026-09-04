@@ -1,19 +1,19 @@
 ---
 ddx:
-  id: aibadge.design.session-provenance
+  id: innsigle.design.session-provenance
   type: solution-design
   links:
-    - target: aibadge.design.claim-system
+    - target: innsigle.design.claim-system
       kind: informed_by
-    - target: aibadge.adr.001
+    - target: innsigle.adr.001
       kind: informed_by
-    - target: aibadge.adr.003
+    - target: innsigle.adr.003
       kind: informed_by
-    - target: aibadge.contract.001
+    - target: innsigle.contract.001
       kind: informs
-    - target: aibadge.feat.004
+    - target: innsigle.feat.004
       kind: informs
-    - target: aibadge.prd
+    - target: innsigle.prd
       kind: informed_by
 status: draft
 activity: 02-design

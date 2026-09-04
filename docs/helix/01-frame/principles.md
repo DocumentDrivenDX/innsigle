@@ -1,11 +1,11 @@
 ---
 ddx:
-  id: aibadge.principles
+  id: innsigle.principles
   type: principles
   links:
-    - target: aibadge.product-vision
+    - target: innsigle.product-vision
       kind: informed_by
-    - target: aibadge.prd
+    - target: innsigle.prd
       kind: informed_by
 status: draft
 activity: 01-frame

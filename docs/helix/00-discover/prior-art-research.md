@@ -1,6 +1,6 @@
 ---
 ddx:
-  id: aibadge.research.prior-art
+  id: innsigle.research.prior-art
   type: research-note
 status: draft
 activity: 00-discover
@@ -11,7 +11,7 @@ created: 2026-07-22
 
 **Research disposition:** done (time-boxed survey for genesis / vision)  
 **Decisions this research enables:** product gap, non-goals, and differentiation before PRD  
-**Product name (locked):** Innsigle (etymon *innsigli*; repo slug still `aibadge`)
+**Product name (locked):** Innsigle (etymon *innsigli*; repo slug `innsigle`)
 
 ## Research questions
 

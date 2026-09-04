@@ -1,13 +1,13 @@
 ---
 ddx:
-  id: aibadge.competitive-analysis
+  id: innsigle.competitive-analysis
   type: competitive-analysis
   links:
-    - target: aibadge.research.prior-art
+    - target: innsigle.research.prior-art
       kind: informed_by
-    - target: aibadge.product-vision
+    - target: innsigle.product-vision
       kind: informs
-    - target: aibadge.prd
+    - target: innsigle.prd
       kind: informs
 status: draft
 activity: 00-discover

@@ -1,13 +1,13 @@
 ---
 ddx:
-  id: aibadge.contract.001
+  id: innsigle.contract.001
   type: contract
   links:
-    - target: aibadge.adr.001
+    - target: innsigle.adr.001
       kind: informed_by
-    - target: aibadge.design.claim-system
+    - target: innsigle.design.claim-system
       kind: informed_by
-    - target: aibadge.prd
+    - target: innsigle.prd
       kind: informed_by
 status: draft
 activity: 02-design

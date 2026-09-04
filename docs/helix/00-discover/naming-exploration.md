@@ -1,9 +1,9 @@
 ---
 ddx:
-  id: aibadge.research.naming
+  id: innsigle.research.naming
   type: research-note
   links:
-    - target: aibadge.research.prior-art
+    - target: innsigle.research.prior-art
       kind: informed_by
 status: decided
 activity: 00-discover
@@ -15,7 +15,7 @@ updated: 2026-07-25
 
 **Goal:** Choose a durable public name before PRD / frame.  
 **Status:** **Decided** — public product name is **Innsigle**. Brand lines A1/B4/H1 locked 2026-07-25.  
-**Repo slug:** `aibadge` (legacy code name; rename optional later).  
+**Repo slug:** `innsigle` (renamed from legacy code name `aibadge`).  
 **House:** Azgaard (`azgaard.net`).
 
 ## Locked decisions
@@ -85,7 +85,7 @@ Public use: glossary + **at most one** body sentence on home *or* Marks—not fo
 | Maker | Publisher/operator who seals work | Any house or person issuer |
 | Concept words | Explainer vocabulary | seal, mark, colophon, claim; signet (crypto); sigil (bounded) |
 | Visual primary | Mark readers recognize | **Innsigle seal mark** |
-| Repo / code | Engineering slug | `aibadge` until rename |
+| Repo / code | Engineering slug | `innsigle` |
 
 Ship pattern: *“Innsigle by Azgaard”* or seal.azgaard.net / innsigle.* when domains settle.
 
@@ -125,7 +125,7 @@ No other variants. Brand audio/video uses this once; the **mark** carries recogn
 ### Deferred
 
 - [ ] Domain / handle acquisition
-- [ ] Repo rename `aibadge` → `innsigle` (optional)
+- [x] Repo rename `aibadge` → `innsigle`
 - [ ] Visual seal mark + colophon layout system
 - [ ] Trademark skim before public launch
 

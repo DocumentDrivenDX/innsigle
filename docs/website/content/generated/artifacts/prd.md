@@ -13,21 +13,21 @@ supporting: false
 
 ```yaml
 ddx:
-  id: aibadge.prd
+  id: innsigle.prd
   type: prd
   kind: product
   links:
-    - target: aibadge.product-vision
+    - target: innsigle.product-vision
       kind: informed_by
-    - target: aibadge.competitive-analysis
+    - target: innsigle.competitive-analysis
       kind: informed_by
-    - target: aibadge.research.prior-art
+    - target: innsigle.research.prior-art
       kind: informed_by
-    - target: aibadge.research.naming
+    - target: innsigle.research.naming
       kind: informed_by
-    - target: aibadge.principles
+    - target: innsigle.principles
       kind: informs
-    - target: aibadge.concerns
+    - target: innsigle.concerns
       kind: informs
 status: draft
 product_name: Innsigle

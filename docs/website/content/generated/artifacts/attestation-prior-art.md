@@ -13,12 +13,12 @@ supporting: false
 
 ```yaml
 ddx:
-  id: aibadge.design.attestation-prior-art
+  id: innsigle.design.attestation-prior-art
   type: research-note
   links:
-    - target: aibadge.competitive-analysis
+    - target: innsigle.competitive-analysis
       kind: informed_by
-    - target: aibadge.prd
+    - target: innsigle.prd
       kind: informs
 status: draft
 activity: 02-design

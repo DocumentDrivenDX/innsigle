@@ -14,14 +14,14 @@ collection: "adrs"
 
 ```yaml
 ddx:
-  id: aibadge.adr.001
+  id: innsigle.adr.001
   type: adr
   links:
-    - target: aibadge.design.claim-system
+    - target: innsigle.design.claim-system
       kind: informed_by
-    - target: aibadge.design.attestation-prior-art
+    - target: innsigle.design.attestation-prior-art
       kind: informed_by
-    - target: aibadge.prd
+    - target: innsigle.prd
       kind: informed_by
 status: accepted
 activity: 02-design

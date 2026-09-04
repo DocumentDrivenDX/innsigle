@@ -14,14 +14,14 @@ collection: "features"
 
 ```yaml
 ddx:
-  id: aibadge.feat.002
+  id: innsigle.feat.002
   type: feature-specification
   links:
-    - target: aibadge.prd
+    - target: innsigle.prd
       kind: informed_by
-    - target: aibadge.contract.001
+    - target: innsigle.contract.001
       kind: informed_by
-    - target: aibadge.adr.001
+    - target: innsigle.adr.001
       kind: informed_by
 status: draft
 activity: 01-frame

@@ -1,11 +1,11 @@
 ---
 ddx:
-  id: aibadge.adr.002
+  id: innsigle.adr.002
   type: adr
   links:
-    - target: aibadge.prd
+    - target: innsigle.prd
       kind: informed_by
-    - target: aibadge.design-system
+    - target: innsigle.design-system
       kind: informed_by
 status: accepted
 activity: 02-design

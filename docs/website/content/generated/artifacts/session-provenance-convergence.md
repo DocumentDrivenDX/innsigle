@@ -13,12 +13,12 @@ supporting: false
 
 ```yaml
 ddx:
-  id: aibadge.design.session-provenance-convergence
+  id: innsigle.design.session-provenance-convergence
   type: design-note
   links:
-    - target: aibadge.design.session-provenance
+    - target: innsigle.design.session-provenance
       kind: refines
-    - target: aibadge.feat.004
+    - target: innsigle.feat.004
       kind: informs
 status: accepted
 activity: 02-design

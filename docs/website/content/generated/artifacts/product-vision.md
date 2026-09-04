@@ -13,14 +13,14 @@ supporting: false
 
 ```yaml
 ddx:
-  id: aibadge.product-vision
+  id: innsigle.product-vision
   type: product-vision
   links:
-    - target: aibadge.research.prior-art
+    - target: innsigle.research.prior-art
       kind: informed_by
-    - target: aibadge.research.naming
+    - target: innsigle.research.naming
       kind: informed_by
-    - target: aibadge.competitive-analysis
+    - target: innsigle.competitive-analysis
       kind: informed_by
 status: draft
 naming: locked
@@ -29,7 +29,7 @@ etymon: innsigli
 concept: signet
 composition_metaphor: colophon
 house_affinity: azgaard
-repo_slug: aibadge
+repo_slug: innsigle
 activity: 00-discover
 created: 2026-07-22
 updated: 2026-07-25
@@ -40,7 +40,7 @@ updated: 2026-07-25
 # Product Vision
 
 > **Innsigle** (say **INN-siggle**, rhymes with *single*). Etymon ON/Icelandic
-> *innsigli* (document seal). House: Azgaard. Repo slug: `aibadge`.
+> *innsigli* (document seal). House: Azgaard. Repo slug: `innsigle`.
 >
 > **Thesis:** Innsigle is **the maker's seal for published work**—one seal family
 > for two jobs: (1) long-lived docs with a colophon that can *name models proudly*;

@@ -1,13 +1,13 @@
 ---
 ddx:
-  id: aibadge.design-system
+  id: innsigle.design-system
   type: design-system
   links:
-    - target: aibadge.product-vision
+    - target: innsigle.product-vision
       kind: informed_by
-    - target: aibadge.prd
+    - target: innsigle.prd
       kind: informed_by
-    - target: aibadge.design.claim-system
+    - target: innsigle.design.claim-system
       kind: informs
 status: draft
 activity: 02-design

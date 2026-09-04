@@ -1,11 +1,11 @@
 ---
 ddx:
-  id: aibadge.feat.001
+  id: innsigle.feat.001
   type: feature-specification
   links:
-    - target: aibadge.prd
+    - target: innsigle.prd
       kind: informed_by
-    - target: aibadge.design-system
+    - target: innsigle.design-system
       kind: informs
 status: draft
 activity: 01-frame
