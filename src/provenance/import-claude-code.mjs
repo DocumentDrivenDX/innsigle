@@ -3,9 +3,11 @@
  *
  * Maps a Claude Code session transcript (JSONL, internal format that drifts
  * across versions) to journal v1 events. Privacy is a hard requirement
- * (PROV-09): emitted events carry counts and short summaries only — never
- * message bodies, tool outputs, or file contents. Summaries are truncated to
- * SUMMARY_MAX chars and the whole event stream passes through redactEvents.
+ * (PROV-09): emitted events carry counts and derived metadata only — never
+ * message bodies, tool arguments, tool outputs, or file contents. User prompts
+ * emit only a character count; tool/file summaries carry the tool name and
+ * path only. Summaries are capped at SUMMARY_MAX chars and the whole event
+ * stream passes through redactEvents.
  * Unknown or unparseable lines degrade to "note" events or are skipped —
  * never a hard failure.
  */
@@ -136,10 +138,11 @@ export function transformTranscript(lines, opts = {}) {
       if (isCommandWrapper(text)) continue;
       const trimmed = text.trim();
       if (!trimmed) continue;
+      // PROV-09: never carry prompt-body text — derived metadata only.
       push({
         type: "user_prompt",
         actor: { kind: "human", name: "operator" },
-        summary: summarize(trimmed),
+        summary: `user prompt (${trimmed.length} chars)`,
       });
       continue;
     }

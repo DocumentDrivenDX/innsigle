@@ -60,12 +60,31 @@ describe("claude-code transcript importer (PLAN-001 B1)", () => {
     const serialized = journalToJsonl(events);
     // Bodies, tool inputs/outputs, meta content never cross into the journal.
     assert.ok(!serialized.includes("must never appear in the journal"));
-    // The long first prompt is truncated, not copied whole.
-    const longPrompt =
-      "Draft a short demo post about sealing content provenance for our static site. Keep it to two paragraphs, add a code sample, and use a friendly tone throughout.";
-    assert.ok(longPrompt.length > SUMMARY_MAX);
-    assert.ok(!serialized.includes(longPrompt));
-    assert.ok(serialized.includes("Draft a short demo post"));
+    // Prompt bodies never enter the journal at all (F6/F11): user_prompt
+    // events carry derived metadata only — not even a truncated prefix, and
+    // short prompts never land verbatim either.
+    assert.ok(!serialized.includes("Draft a short demo post"));
+    assert.ok(!serialized.includes("Tighten the intro paragraph"));
+    assert.ok(!serialized.includes("Continue and finalize the demo post"));
+    for (const e of events.filter((ev) => ev.type === "user_prompt")) {
+      assert.match(e.summary, /^user prompt \(\d+ chars\)$/);
+    }
+  });
+
+  it("user prompts with secrets never leak into the journal (F6/F11)", () => {
+    const secretPrompt =
+      "use password hunter2 for the staging db, then draft the post";
+    const line = JSON.stringify({
+      type: "user",
+      sessionId: "0f0f0f0f-1111-4222-8333-444455556666",
+      message: { role: "user", content: secretPrompt },
+      timestamp: "2026-09-03T10:00:00.000Z",
+    });
+    const events = transformTranscriptText(line + "\n");
+    const prompts = events.filter((e) => e.type === "user_prompt");
+    assert.equal(prompts.length, 1);
+    assert.equal(prompts[0].summary, `user prompt (${secretPrompt.length} chars)`);
+    assert.ok(!journalToJsonl(events).includes("hunter2"));
   });
 
   it("golden: buildProvenance on imported events reports the session facts", () => {

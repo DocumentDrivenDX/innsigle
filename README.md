@@ -125,7 +125,7 @@ export OP_ACCOUNT=<account>       # or: innsigle seal … --op-account <account>
 ## Everyday commands
 
 ```bash
-innsigle status                        # each claim: VALID / STALE / ORPHAN / UNSEALED
+innsigle status                        # each claim: VALID / STALE / ORPHAN / AMBIGUOUS / UNSEALED
 innsigle verify --all                  # CI gate: exits nonzero on any non-VALID
 innsigle seal --stale                  # re-seal only drifted claims
 innsigle seal ./post/index.qmd --auto  # colophon proposed from agent transcripts, review, seal
@@ -141,7 +141,8 @@ innsigle provenance import claude-code session.jsonl --out journal.jsonl  # one 
 
 Your Claude Code transcripts already record who wrote what.
 `innsigle provenance sync <content-file>` finds the repo's transcripts
-(`~/.claude/projects/<cwd with "/" → "-">/`), imports every session whose file
+(`~/.claude/projects/<cwd with every non-alphanumeric character → "-">/`,
+e.g. `/home/erik/my.site` → `-home-erik-my-site`), imports every session whose file
 writes touched the content file — summaries and counts only, never message
 bodies — merges them, and writes `.innsigle/provenance/<slug>.l2.json`.
 Re-running after more conversation folds in new sessions; the provenance

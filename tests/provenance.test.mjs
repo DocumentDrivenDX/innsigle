@@ -20,6 +20,16 @@ describe("session provenance (FEAT-004 P1)", () => {
   it("redacts secrets deterministically", () => {
     assert.match(redactText("key sk-abcdefghijklmnopqrst"), /REDACTED/);
     assert.equal(redactText("hello"), "hello");
+    // F7: home paths are redacted anywhere in a string, not only at the start
+    assert.equal(redactText("/home/erik/x.md"), "/home/[REDACTED]/x.md");
+    assert.equal(
+      redactText("Write /home/erik/private/notes.md"),
+      "Write /home/[REDACTED]/private/notes.md",
+    );
+    assert.equal(
+      redactText("see /Users/erik/notes and /home/erik/x"),
+      "see /Users/[REDACTED]/notes and /home/[REDACTED]/x",
+    );
   });
 
   it("build + propose-colo from claude fixture (PROV-04)", () => {

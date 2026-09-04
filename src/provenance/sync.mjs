@@ -4,9 +4,10 @@
  * `innsigle provenance sync <content-file> [--transcript-dir <dir>] [--out <l2.json>]`
  *
  * Finds the Claude Code transcripts for this repo (default:
- * ~/.claude/projects/<cwd with every "/" replaced by "-">/), imports every
- * session (*.jsonl) whose file_write events touch the content file (matched
- * on repo-relative path suffix), merges them via mergeJournals, builds L2 via
+ * ~/.claude/projects/<cwd with every non-alphanumeric character replaced by
+ * "-">/), imports every session (*.jsonl) whose file_write events touch the
+ * content file (matched exactly: the repo-relative path, or the absolute path
+ * under the repo root), merges them via mergeJournals, builds L2 via
  * buildProvenance, and writes .innsigle/provenance/<slug>.l2.json.
  *
  * Re-running after more conversation folds new sessions/turns into the same
@@ -21,40 +22,68 @@ import {
   writeFileSync,
 } from "node:fs";
 import { homedir } from "node:os";
-import { dirname, join, relative, resolve, sep } from "node:path";
+import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { sha256Hex } from "../crypto.mjs";
 import { attestationSlug, DIR_NAME, loadProject } from "../config.mjs";
 import { transformTranscriptText } from "./import-claude-code.mjs";
+import { redactText } from "./redact.mjs";
 import { mergeJournals } from "./journal.mjs";
 import { buildProvenance } from "./build.mjs";
 
 /**
  * Default Claude Code transcript directory for a working directory:
- * ~/.claude/projects/<cwd with every "/" replaced by "-">/
- * e.g. /home/erik/Projects/aibadge → -home-erik-Projects-aibadge
+ * ~/.claude/projects/<cwd with every non-alphanumeric character replaced by "-">/
+ * (Claude Code's own escaping rule — dots, underscores, spaces, and slashes
+ * all become "-"). e.g. /home/erik/Projects/aibadge →
+ * -home-erik-Projects-aibadge, /home/erik/my.site → -home-erik-my-site
  * @param {string} [cwd]
  */
 export function defaultTranscriptDir(cwd = process.cwd()) {
-  return join(homedir(), ".claude", "projects", resolve(cwd).split("/").join("-"));
+  return join(
+    homedir(),
+    ".claude",
+    "projects",
+    resolve(cwd).replace(/[^a-zA-Z0-9]/g, "-"),
+  );
 }
 
-/** Repo-relative content path, posix separators (for suffix matching). */
+/**
+ * Repo-relative content path, posix separators. Content outside the repo root
+ * cannot be attributed (event paths are redacted and matching would be
+ * meaningless) — refuse it with a clear error (F4).
+ */
 function contentRelPath(repoRoot, contentPath) {
-  let rel = relative(repoRoot, resolve(contentPath));
-  if (!rel || rel.startsWith("..")) rel = resolve(contentPath);
+  const rel = relative(repoRoot, resolve(contentPath));
+  if (!rel || rel.startsWith("..") || isAbsolute(rel)) {
+    throw new Error(
+      `content must be inside the repository: ${resolve(contentPath)} ` +
+        `(repo root: ${resolve(repoRoot)})`,
+    );
+  }
   return rel.split(sep).join("/");
 }
 
-/** Does an event path (absolute or relative) match the repo-relative path? */
-function pathMatches(eventPath, relPath) {
+/**
+ * Does an event path match the repo-relative content path? Exact matches only
+ * (F2): the event path must equal relPath, or be the absolute path of relPath
+ * under the repo root (also in its home-redacted form, since imported events
+ * pass through redactEvents). Suffix matching would attribute mirror-tree
+ * writes (site/docs/index.md) to the source file (docs/index.md).
+ */
+function pathMatches(eventPath, relPath, repoRoot) {
   const p = String(eventPath).replace(/\\/g, "/");
-  return p === relPath || p.endsWith("/" + relPath);
+  if (p === relPath) return true;
+  const root = resolve(repoRoot).replace(/\\/g, "/").replace(/\/+$/, "");
+  if (p === `${root}/${relPath}`) return true;
+  const redactedRoot = redactText(root);
+  if (redactedRoot !== root && p === `${redactedRoot}/${relPath}`) return true;
+  return false;
 }
 
 /** Does this journal contain a file_write touching the content file? */
-export function sessionTouchesFile(events, relPath) {
+export function sessionTouchesFile(events, relPath, repoRoot) {
   return events.some(
-    (e) => e.type === "file_write" && e.path && pathMatches(e.path, relPath),
+    (e) => e.type === "file_write" && e.path && pathMatches(e.path, relPath, repoRoot),
   );
 }
 
@@ -98,7 +127,7 @@ export function syncProvenance(opts) {
     } catch {
       continue; // unreadable/drifted transcript never blocks the sync
     }
-    if (!sessionTouchesFile(events, rel)) continue;
+    if (!sessionTouchesFile(events, rel, repoRoot)) continue;
     lists.push(events);
     sessions.push(f);
   }
@@ -112,7 +141,7 @@ export function syncProvenance(opts) {
   // repo-relative path so one content file is one artifact across sessions.
   const normalized = lists.map((events) =>
     events.map((e) =>
-      e.type === "file_write" && e.path && pathMatches(e.path, rel)
+      e.type === "file_write" && e.path && pathMatches(e.path, rel, repoRoot)
         ? { ...e, path: rel }
         : e,
     ),

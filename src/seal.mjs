@@ -3,10 +3,12 @@ import {
   mkdirSync,
   readFileSync,
   readSync,
+  renameSync,
   unlinkSync,
   writeFileSync,
 } from "node:fs";
 import { basename, dirname, join, resolve } from "node:path";
+import { jcs } from "./canonical.mjs";
 import { b64url, sha256Hex, signPayload } from "./crypto.mjs";
 import {
   attestationSlug,
@@ -180,32 +182,54 @@ function loadKeysDoc(project) {
 }
 
 /**
- * Write attestation, then verify it against the project keys file.
- * On failure delete the written attestation.
+ * Write the attestation to a temp file in the same directory, self-verify
+ * THAT file, then rename it over outPath only on success. On failure only the
+ * temp file is removed — a pre-existing attestation at outPath always
+ * survives a failed seal (F9).
  * @returns {{ ok: boolean, reason?: string }}
  */
 function writeVerified({ outPath, attestation, project, contentBytes }) {
   mkdirSync(dirname(outPath), { recursive: true });
-  writeFileSync(outPath, JSON.stringify(attestation, null, 2) + "\n");
+  const tmpPath = join(
+    dirname(outPath),
+    `.${basename(outPath)}.tmp-${process.pid}-${Date.now()}`,
+  );
+  const cleanup = () => {
+    try {
+      unlinkSync(tmpPath);
+    } catch {
+      /* ignore */
+    }
+  };
+  try {
+    writeFileSync(tmpPath, JSON.stringify(attestation, null, 2) + "\n");
+  } catch (e) {
+    cleanup();
+    return { ok: false, reason: `cannot write attestation: ${e.message}` };
+  }
   let keysDoc;
   try {
     keysDoc = loadKeysDoc(project);
   } catch {
-    try {
-      unlinkSync(outPath);
-    } catch {
-      /* ignore */
-    }
+    cleanup();
     return { ok: false, reason: `cannot read ${PATHS.keys}` };
   }
-  const check = checkAttestation({ attestation, keysDoc, contentBytes });
+  let check;
+  try {
+    const written = JSON.parse(readFileSync(tmpPath, "utf8"));
+    check = checkAttestation({ attestation: written, keysDoc, contentBytes });
+  } catch {
+    check = { ok: false, reason: "unreadable written attestation" };
+  }
   if (!check.ok) {
-    try {
-      unlinkSync(outPath);
-    } catch {
-      /* ignore */
-    }
+    cleanup();
     return check;
+  }
+  try {
+    renameSync(tmpPath, outPath);
+  } catch (e) {
+    cleanup();
+    return { ok: false, reason: `cannot replace attestation: ${e.message}` };
   }
   return { ok: true };
 }
@@ -229,6 +253,18 @@ function runSealStale(args, deps) {
   if (!issuer) return 5;
 
   const { entries } = collectStatus(project);
+  // AMBIGUOUS claims (colliding slug/legacy keys, no digest match) are never
+  // resealed: signing would risk asserting the wrong file's provenance and
+  // deleting the correct claim (F1). Skip with a warning; resolve manually.
+  for (const e of entries) {
+    if (e.state !== "AMBIGUOUS") continue;
+    const cands = (e.candidates || []).join(", ");
+    log(
+      `warn: skipping AMBIGUOUS claim ${e.fname}: multiple candidate sources` +
+        (cands ? ` (${cands})` : "") +
+        " and none matches the claim digest — not resealing, not deleting",
+    );
+  }
   const stale = entries.filter((e) => e.state === "STALE");
   if (!stale.length) {
     log("up to date: no stale claims");
@@ -389,11 +425,16 @@ export function runSeal(args, deps) {
   const outPath =
     arg(args, "--out") || defaultAttestationPath(project.repoRoot, contentPath);
 
-  // Idempotence (PLAN-001 A2): existing attestation over identical bytes → no-op.
+  // Idempotence (PLAN-001 A2): no-op only when the existing attestation covers
+  // identical bytes AND carries the same colophon we are about to sign (F5) —
+  // an edited colophon (e.g. the --save-colo review flow) must land.
   if (!args.includes("--force") && existsSync(outPath)) {
     try {
       const prev = JSON.parse(readFileSync(outPath, "utf8"));
-      if (prev?.payload?.subjects?.[0]?.digest?.value === digestHex) {
+      if (
+        prev?.payload?.subjects?.[0]?.digest?.value === digestHex &&
+        jcs(prev.payload.colophon ?? null) === jcs(colophon)
+      ) {
         log(`up to date: ${outPath}`);
         return 0;
       }

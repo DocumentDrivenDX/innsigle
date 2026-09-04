@@ -105,6 +105,13 @@ describe("innsigle init --onepassword", () => {
     );
     // Debug sidecars gitignored (PLAN-001 A4)
     assert.match(readFileSync(join(repo, ".innsigle/.gitignore"), "utf8"), /^debug\/$/m);
+    // Transcript-derived provenance data stays local too (F8)
+    assert.match(
+      readFileSync(join(repo, ".innsigle/.gitignore"), "utf8"),
+      /^provenance\/$/m,
+    );
+    assert.match(readFileSync(join(repo, ".innsigle/README.md"), "utf8"), /provenance\//);
+    assert.match(readFileSync(join(repo, ".innsigle/AGENTS.md"), "utf8"), /provenance\//);
 
     c = run(["verify", "page.html"], { cwd: repo, env });
     assert.equal(c.status, 0, c.stderr + c.stdout);

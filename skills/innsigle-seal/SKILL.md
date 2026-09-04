@@ -32,7 +32,7 @@ export OP_ACCOUNT=<account>            # or pass --op-account to seal
 1. **Status.** See what needs work:
 
 ```bash
-innsigle status          # VALID / STALE / ORPHAN / UNSEALED per claim
+innsigle status          # VALID / STALE / ORPHAN / AMBIGUOUS / UNSEALED per claim
 innsigle verify --all    # exits nonzero on any non-VALID (CI gate)
 ```
 
@@ -43,8 +43,9 @@ innsigle provenance sync <content-file> [--transcript-dir <dir>] [--out <l2.json
 ```
 
 Finds Claude Code transcripts for this repo (default dir:
-`~/.claude/projects/<cwd with every "/" replaced by "-">/`, e.g.
-`/home/erik/Projects/aibadge` → `-home-erik-Projects-aibadge`), imports every
+`~/.claude/projects/<cwd with every non-alphanumeric character replaced by
+"-">/`, e.g. `/home/erik/Projects/aibadge` → `-home-erik-Projects-aibadge`
+and `/home/erik/my.site` → `-home-erik-my-site`), imports every
 session whose file writes touched the content file, merges them, and writes
 `.innsigle/provenance/<slug>.l2.json`. Re-run after more conversation — the
 provenance accumulates. Summaries and counts only; message bodies never leave

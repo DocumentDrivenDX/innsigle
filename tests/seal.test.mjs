@@ -140,6 +140,99 @@ describe("seal idempotence + self-verify (PLAN-001 A2)", () => {
     rmSync(repo, { recursive: true, force: true });
   });
 
+  it("re-seal over identical bytes with a different colophon lands the new colophon (F5)", () => {
+    const { repo, env } = setupRepo("f5colo");
+    writeFileSync(join(repo, "page.html"), "<html>same bytes</html>\n");
+    let r = run(["seal", "page.html", "--kind", "model-primary"], { cwd: repo, env });
+    assert.equal(r.status, 0, r.stderr);
+    const attPath = join(repo, ".innsigle/public/claims/page-html.attestation.json");
+    assert.equal(
+      JSON.parse(readFileSync(attPath, "utf8")).payload.colophon.composition,
+      "model-primary",
+    );
+
+    // same bytes, different colophon → must re-seal, not "up to date"
+    r = run(["seal", "page.html", "--kind", "mixed"], { cwd: repo, env });
+    assert.equal(r.status, 0, r.stderr);
+    assert.match(r.stderr, /ok: sealed/);
+    assert.doesNotMatch(r.stderr, /up to date/);
+    assert.equal(
+      JSON.parse(readFileSync(attPath, "utf8")).payload.colophon.composition,
+      "mixed",
+    );
+
+    // the --save-colo review flow: an edited sidecar colo.json must land on
+    // the instructed plain re-run, even over identical bytes
+    writeFileSync(
+      join(repo, "colo.json"),
+      JSON.stringify(
+        {
+          schema_version: "1",
+          composition: "human-authored",
+          ingredients: [{ kind: "human", name: "operator", role: "author" }],
+          notes: null,
+        },
+        null,
+        2,
+      ) + "\n",
+    );
+    r = run(["seal", "page.html"], { cwd: repo, env });
+    assert.equal(r.status, 0, r.stderr);
+    assert.match(r.stderr, /ok: sealed/);
+    assert.equal(
+      JSON.parse(readFileSync(attPath, "utf8")).payload.colophon.composition,
+      "human-authored",
+    );
+
+    // identical bytes AND identical colophon → still idempotent
+    r = run(["seal", "page.html"], { cwd: repo, env });
+    assert.equal(r.status, 0, r.stderr);
+    assert.match(r.stderr, /up to date/);
+    rmSync(repo, { recursive: true, force: true });
+  });
+
+  it("failed self-verify preserves the pre-existing attestation (F9)", () => {
+    const { repo, env } = setupRepo("f9keep");
+    writeFileSync(join(repo, "doc.html"), "<html>v1</html>\n");
+    let r = run(["seal", "doc.html", "--kind", "human-authored"], { cwd: repo, env });
+    assert.equal(r.status, 0, r.stderr);
+    const attPath = join(repo, ".innsigle/public/claims/doc-html.attestation.json");
+    const original = readFileSync(attPath, "utf8");
+
+    // drift the content, then rotate keys.json out of sync → reseal must fail…
+    writeFileSync(join(repo, "doc.html"), "<html>v2</html>\n");
+    const keysPath = join(repo, ".innsigle/public/keys.json");
+    const goodKeys = readFileSync(keysPath, "utf8");
+    const bad = JSON.parse(goodKeys);
+    bad.keys[0].key_id = "rotated-out-of-sync";
+    writeFileSync(keysPath, JSON.stringify(bad, null, 2) + "\n");
+
+    r = run(["seal", "doc.html", "--kind", "human-authored"], { cwd: repo, env });
+    assert.notEqual(r.status, 0, r.stderr + r.stdout);
+    assert.match(r.stderr, /self-verify failed/);
+    // …and the previously good attestation survives, byte for byte
+    assert.equal(readFileSync(attPath, "utf8"), original);
+
+    // seal --stale hits the same failure and also never destroys the claim
+    r = run(["seal", "--stale"], { cwd: repo, env });
+    assert.equal(r.status, 2, r.stderr + r.stdout);
+    assert.match(r.stderr, /reseal self-verify failed/);
+    assert.equal(readFileSync(attPath, "utf8"), original);
+
+    // no temp files left behind in the claims dir
+    const leftovers = readdirSync(join(repo, ".innsigle/public/claims")).filter((n) =>
+      n.includes(".tmp-"),
+    );
+    assert.deepEqual(leftovers, []);
+
+    // restoring keys.json recovers — the claim (colophon, uri) was never lost
+    writeFileSync(keysPath, goodKeys);
+    r = run(["seal", "--stale"], { cwd: repo, env });
+    assert.equal(r.status, 0, r.stderr + r.stdout);
+    assert.match(r.stderr, /ok: resealed doc\.html/);
+    rmSync(repo, { recursive: true, force: true });
+  });
+
   it("corrupted issuer key → INVALID, no attestation file kept", () => {
     const { repo, env } = setupRepo("a2bad");
     const keysPath = join(repo, ".innsigle/public/keys.json");

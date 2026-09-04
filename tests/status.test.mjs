@@ -5,6 +5,7 @@ import {
   existsSync,
   mkdirSync,
   mkdtempSync,
+  readdirSync,
   readFileSync,
   renameSync,
   rmSync,
@@ -175,6 +176,81 @@ describe("innsigle status / verify --all / seal --stale (PLAN-001 A5)", () => {
     r = run(["verify", "--all"], { cwd: repo, env });
     assert.notEqual(r.status, 0, r.stderr + r.stdout);
     assert.match(r.stdout, /INVALID\(bad_signature\) s\.html/);
+    rmSync(repo, { recursive: true, force: true });
+  });
+});
+
+describe("claim→source inversion safety (F1)", () => {
+  /** Repo with a uri-less legacy claim over blog/post.md plus a colliding
+   *  assets/post.txt that sorts alphabetically first. */
+  function setupCollision(name) {
+    const { repo, env } = setupRepo(name);
+    mkdirSync(join(repo, "blog"), { recursive: true });
+    mkdirSync(join(repo, "assets"), { recursive: true });
+    writeFileSync(join(repo, "blog/post.md"), "# the real post\n");
+    writeFileSync(join(repo, "assets/post.txt"), "unrelated bytes that sort first\n");
+    seal(repo, env, "blog/post.md");
+    const claims = join(repo, ".innsigle/public/claims");
+    renameSync(
+      join(claims, "blog-post-md.attestation.json"),
+      join(claims, "post.attestation.json"),
+    );
+    // uri-less legacy claim: buildClaim can produce these, and the legacy
+    // fallback exists to support them
+    const attPath = join(claims, "post.attestation.json");
+    const att = JSON.parse(readFileSync(attPath, "utf8"));
+    delete att.payload.subjects[0].uri;
+    writeFileSync(attPath, JSON.stringify(att, null, 2) + "\n");
+    return { repo, env, claims, attPath };
+  }
+
+  it("digest disambiguates colliding legacy names; --stale never touches the wrong file", () => {
+    const { repo, env, claims, attPath } = setupCollision("f1valid");
+
+    // resolves to blog/post.md by digest, never to the first-sorted collider
+    let r = run(["status"], { cwd: repo, env });
+    assert.equal(r.status, 0, r.stderr + r.stdout);
+    assert.match(r.stdout, /^VALID blog\/post\.md \(post\.attestation\.json\)$/m);
+    assert.doesNotMatch(r.stdout, /assets\/post\.txt/);
+
+    // nothing stale → seal --stale must not sign or delete anything
+    r = run(["seal", "--stale"], { cwd: repo, env });
+    assert.equal(r.status, 0, r.stderr);
+    assert.match(r.stderr, /up to date: no stale claims/);
+    assert.ok(existsSync(attPath), "original claim survives");
+    assert.equal(existsSync(join(claims, "assets-post-txt.attestation.json")), false);
+    rmSync(repo, { recursive: true, force: true });
+  });
+
+  it("colliding candidates with no digest match → AMBIGUOUS; verify fails, --stale skips", () => {
+    const { repo, env, claims, attPath } = setupCollision("f1ambig");
+    writeFileSync(join(repo, "blog/post.md"), "# drifted content\n");
+
+    let r = run(["status"], { cwd: repo, env });
+    assert.equal(r.status, 0, r.stderr + r.stdout);
+    assert.match(r.stdout, /^AMBIGUOUS - \(post\.attestation\.json\)$/m);
+    assert.match(r.stdout, /ambiguous=1/);
+    // never resolved by guess to either candidate
+    assert.doesNotMatch(r.stdout, /STALE (assets|blog)\//);
+
+    // CI gate treats AMBIGUOUS as failure
+    r = run(["verify", "--all"], { cwd: repo, env });
+    assert.notEqual(r.status, 0, r.stderr + r.stdout);
+    assert.match(r.stdout, /AMBIGUOUS/);
+
+    // seal --stale skips it with a warning: never signs wrong bytes, never
+    // deletes the claim (the verifier's F1 end-to-end scenario)
+    r = run(["seal", "--stale"], { cwd: repo, env });
+    assert.equal(r.status, 0, r.stderr + r.stdout);
+    assert.match(r.stderr, /warn: skipping AMBIGUOUS claim post\.attestation\.json/);
+    assert.match(r.stderr, /up to date: no stale claims/);
+    assert.doesNotMatch(r.stderr, /ok: resealed/);
+    assert.ok(existsSync(attPath), "original claim survives");
+    assert.deepEqual(
+      readdirSync(claims).sort(),
+      ["post.attestation.json"],
+      "no attestation signed for either candidate",
+    );
     rmSync(repo, { recursive: true, force: true });
   });
 });

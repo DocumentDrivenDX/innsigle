@@ -13,7 +13,7 @@ import { homedir, tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
-import { defaultTranscriptDir } from "../src/provenance/sync.mjs";
+import { defaultTranscriptDir, sessionTouchesFile } from "../src/provenance/sync.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const cli = join(root, "src/cli.mjs");
@@ -62,7 +62,8 @@ function makeTranscript({ sessionId, model, path, hour }) {
 /**
  * Repo with content file + transcript dir holding:
  * - the golden fixture session (relative path posts/demo/index.qmd, claude-opus-5)
- * - a second session touching the same file via an absolute path (claude-fable-5)
+ * - a second session touching the same file via its absolute path under the
+ *   repo root (claude-fable-5)
  * - an unrelated session touching another file (must be excluded)
  */
 function setupSyncRepo(name) {
@@ -77,7 +78,7 @@ function setupSyncRepo(name) {
     makeTranscript({
       sessionId: "22222222-2222-4222-8222-222222222222",
       model: "claude-fable-5",
-      path: "/home/user/projects/demo-site/posts/demo/index.qmd",
+      path: join(repo, "posts/demo/index.qmd"),
       hour: "11",
     }),
   );
@@ -99,6 +100,36 @@ describe("provenance sync (PLAN-001 B2)", () => {
       defaultTranscriptDir("/home/erik/Projects/aibadge"),
       join(homedir(), ".claude", "projects", "-home-erik-Projects-aibadge"),
     );
+  });
+
+  it("escapes every non-alphanumeric character like Claude Code does (F3/F10)", () => {
+    // dots, underscores, and spaces become "-" too — not only slashes
+    assert.equal(
+      defaultTranscriptDir("/home/erik/my.site"),
+      join(homedir(), ".claude", "projects", "-home-erik-my-site"),
+    );
+    assert.equal(
+      defaultTranscriptDir("/home/erik/.cache/ddx"),
+      join(homedir(), ".claude", "projects", "-home-erik--cache-ddx"),
+    );
+    assert.equal(
+      defaultTranscriptDir("/home/e_u/a b"),
+      join(homedir(), ".claude", "projects", "-home-e-u-a-b"),
+    );
+  });
+
+  it("matches event paths exactly against the repo root, redacted form included (F2)", () => {
+    const ev = (path) => [{ type: "file_write", path }];
+    const root = "/home/erik/proj";
+    assert.ok(sessionTouchesFile(ev("docs/a.md"), "docs/a.md", root));
+    assert.ok(sessionTouchesFile(ev("/home/erik/proj/docs/a.md"), "docs/a.md", root));
+    // imported events pass through redactEvents, so the redacted root matches too
+    assert.ok(sessionTouchesFile(ev("/home/[REDACTED]/proj/docs/a.md"), "docs/a.md", root));
+    // a deeper same-named file (mirror tree) must never match
+    assert.ok(!sessionTouchesFile(ev("/home/erik/proj/site/docs/a.md"), "docs/a.md", root));
+    assert.ok(!sessionTouchesFile(ev("site/docs/a.md"), "docs/a.md", root));
+    // an equal-tail path under a different root must never match
+    assert.ok(!sessionTouchesFile(ev("/other/root/docs/a.md"), "docs/a.md", root));
   });
 
   it("two transcripts touching one file merge into one L2 with both models", () => {
@@ -187,6 +218,52 @@ describe("provenance sync (PLAN-001 B2)", () => {
     assert.match(r.stderr, /INVALID: no Claude Code sessions touching README\.md/);
     assert.equal(existsSync(join(repo, ".innsigle/provenance/README-md.l2.json")), false);
     rmSync(repo, { recursive: true, force: true });
+  });
+
+  it("a mirror-tree write (site/docs/index.md) never matches docs/index.md (F2)", () => {
+    const repo = mkdtempSync(join(tmpdir(), "innsigle-sync-mirror-"));
+    mkdirSync(join(repo, "docs"), { recursive: true });
+    writeFileSync(join(repo, "docs/index.md"), "# the source file\n");
+    const tdir = join(repo, "transcripts");
+    mkdirSync(tdir);
+    // the session's only Write went to the mirrored publish copy
+    writeFileSync(
+      join(tdir, "mirror.jsonl"),
+      makeTranscript({
+        sessionId: "55555555-5555-4555-8555-555555555555",
+        model: "claude-fable-5",
+        path: join(repo, "site/docs/index.md"),
+        hour: "10",
+      }),
+    );
+    const r = run(["provenance", "sync", "docs/index.md", "--transcript-dir", tdir], {
+      cwd: repo,
+    });
+    assert.notEqual(r.status, 0);
+    assert.match(r.stderr, /INVALID: no Claude Code sessions touching docs\/index\.md/);
+    assert.equal(
+      existsSync(join(repo, ".innsigle/provenance/docs-index-md.l2.json")),
+      false,
+    );
+    rmSync(repo, { recursive: true, force: true });
+  });
+
+  it("content outside the repo root → clear INVALID error, not a no-sessions result (F4)", () => {
+    const outer = mkdtempSync(join(tmpdir(), "innsigle-sync-outside-"));
+    const repo = join(outer, "repo");
+    mkdirSync(join(repo, "posts/demo"), { recursive: true });
+    writeFileSync(join(repo, "posts/demo/index.qmd"), "# demo\n");
+    writeFileSync(join(outer, "outside.md"), "# outside the repo\n");
+    const tdir = join(repo, "transcripts");
+    mkdirSync(tdir);
+    copyFileSync(fixture, join(tdir, "session-one.jsonl"));
+    const r = run(["provenance", "sync", "../outside.md", "--transcript-dir", tdir], {
+      cwd: repo,
+    });
+    assert.notEqual(r.status, 0);
+    assert.match(r.stderr, /INVALID: content must be inside the repository/);
+    assert.doesNotMatch(r.stderr, /no Claude Code sessions/);
+    rmSync(outer, { recursive: true, force: true });
   });
 
   it("missing transcript dir → INVALID with a --transcript-dir hint", () => {

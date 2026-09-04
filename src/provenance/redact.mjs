@@ -9,8 +9,10 @@ const SECRET_PATTERNS = [
   /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g,
 ];
 
-const PATH_HOME = /^\/home\/[^/\s]+/g;
-const PATH_USERS = /^\/Users\/[^/\s]+/g;
+// Match anywhere in the string (F7): paths appear mid-text in summaries
+// ("Write /home/erik/x.md"), not only as whole-string path fields.
+const PATH_HOME = /\/home\/[^/\s]+/g;
+const PATH_USERS = /\/Users\/[^/\s]+/g;
 
 export function redactText(s) {
   if (s == null) return s;

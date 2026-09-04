@@ -99,8 +99,10 @@ export function runInit(args, deps) {
   const claimsDir = join(publicDir, "claims");
   mkdirSync(claimsDir, { recursive: true });
 
-  // .innsigle-scoped gitignore: debug sidecars (seal --debug-claim) stay local.
-  writeFileSync(join(dir, DIR_NAME, ".gitignore"), "debug/\n");
+  // .innsigle-scoped gitignore: debug sidecars (seal --debug-claim) and
+  // transcript-derived provenance L2 data (provenance sync / seal --auto)
+  // stay local — publish provenance only deliberately, after review.
+  writeFileSync(join(dir, DIR_NAME, ".gitignore"), "debug/\nprovenance/\n");
 
   const issuerDoc = {
     innsigle_issuer: "1",
@@ -181,6 +183,7 @@ This directory is owned by the Innsigle CLI. **Do not put private keys here.**
 | \`public/\` | **Public** files to publish at site \`/.well-known/innsigle/\` |
 | \`public/keys.json\` | Issuer document (public keys only) |
 | \`public/claims/\` | Optional attestations after you sign content |
+| \`provenance/\` | Transcript-derived session data (prompt counts, file paths) — **local only**, gitignored; publish only deliberately after review |
 | \`AGENTS.md\` | Instructions for agents wiring this into a build |
 
 ## Custody
@@ -228,6 +231,7 @@ trees (\`static/\`, \`public/\`, \`docs/\`, \`_site/\`, etc.).
   public/
     keys.json          # public issuer document
     claims/            # put *.attestation.json here when sealing pages
+  provenance/          # transcript-derived L2 session data — stays local (gitignored)
   README.md
   AGENTS.md            # this file
 \`\`\`

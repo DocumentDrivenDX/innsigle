@@ -126,8 +126,10 @@ function sourceFromUri(repoRoot, uri, claimName, slugOf) {
 
 /**
  * Scan .innsigle/public/claims/*.attestation.json and map each subject back
- * to a source file. States: VALID | STALE | ORPHAN (plus INVALID for
- * unparsable claim files). Also lists UNSEALED files for config.content_globs.
+ * to a source file. States: VALID | STALE | ORPHAN | AMBIGUOUS (plus INVALID
+ * for unparsable claim files). AMBIGUOUS means several files share the claim's
+ * slug/legacy key and none matches the claim digest — never resolved by guess.
+ * Also lists UNSEALED files for config.content_globs.
  *
  * @param {ReturnType<typeof loadProject>} project
  * @returns {{ entries: Array<{ name: string, fname: string, claimPath: string,
@@ -138,13 +140,17 @@ export function collectStatus(project) {
   const { repoRoot, claimsDir } = project;
   const files = listRepoFiles(repoRoot);
   const slugOf = (rel) => attestationSlug(repoRoot, join(repoRoot, rel));
-  const slugIndex = new Map();
-  const legacyIndex = new Map();
+  // Multi-candidate maps: slugs and legacy basenames can collide across
+  // distinct files, so keep every candidate and disambiguate per claim.
+  const slugCandidates = new Map();
+  const legacyCandidates = new Map();
   for (const rel of files) {
     const slug = slugOf(rel);
-    if (!slugIndex.has(slug)) slugIndex.set(slug, rel);
+    if (!slugCandidates.has(slug)) slugCandidates.set(slug, []);
+    slugCandidates.get(slug).push(rel);
     const base = legacyBase(rel);
-    if (!legacyIndex.has(base)) legacyIndex.set(base, rel);
+    if (!legacyCandidates.has(base)) legacyCandidates.set(base, []);
+    legacyCandidates.get(base).push(rel);
   }
 
   const entries = [];
@@ -167,19 +173,61 @@ export function collectStatus(project) {
       continue;
     }
     const uri = attestation.payload.subjects[0].uri;
-    const source =
-      sourceFromUri(repoRoot, uri, name, slugOf) ||
-      slugIndex.get(name) ||
-      legacyIndex.get(name) ||
-      null;
-    if (!source) {
+    const claimDigest = attestation.payload.subjects[0].digest.value;
+    // Candidate sources, in preference order: explicit uri mapping, then the
+    // canonical slug key, then the legacy basename key.
+    const uriSource = sourceFromUri(repoRoot, uri, name, slugOf);
+    let keyKind = null;
+    let candidates = [];
+    if (uriSource) {
+      keyKind = "uri";
+      candidates = [uriSource];
+    } else if (slugCandidates.has(name)) {
+      keyKind = "slug";
+      candidates = slugCandidates.get(name);
+    } else if (legacyCandidates.has(name)) {
+      keyKind = "legacy";
+      candidates = legacyCandidates.get(name);
+    }
+    if (!candidates.length) {
       entries.push({ name, fname, claimPath, attestation, state: "ORPHAN", source: null });
       continue;
     }
-    const digest = sha256Hex(readFileSync(join(repoRoot, source)));
-    const state =
-      digest === attestation.payload.subjects[0].digest.value ? "VALID" : "STALE";
-    entries.push({ name, fname, claimPath, attestation, state, source });
+    const digestOf = (rel) => {
+      try {
+        return sha256Hex(readFileSync(join(repoRoot, rel)));
+      } catch {
+        return null;
+      }
+    };
+    // A claim resolves to a file only when the digest confirms it, or when
+    // the mapping is unambiguous. Never guess among colliding candidates.
+    const digestMatches = candidates.filter((rel) => digestOf(rel) === claimDigest);
+    if (digestMatches.length) {
+      entries.push({
+        name, fname, claimPath, attestation, state: "VALID", source: digestMatches[0],
+      });
+      continue;
+    }
+    const single = candidates.length === 1 ? candidates[0] : null;
+    const staleSource =
+      keyKind === "uri"
+        ? candidates[0]
+        : keyKind === "slug"
+          ? single
+          : single && slugOf(single) === name // legacy key: require slug confirmation
+            ? single
+            : null;
+    if (staleSource) {
+      entries.push({
+        name, fname, claimPath, attestation, state: "STALE", source: staleSource,
+      });
+      continue;
+    }
+    entries.push({
+      name, fname, claimPath, attestation, state: "AMBIGUOUS", source: null,
+      candidates: [...candidates],
+    });
   }
 
   const globs = project.config?.content_globs;
@@ -201,7 +249,7 @@ function formatLine(e) {
 }
 
 /**
- * innsigle status — report VALID / STALE / ORPHAN per claim, plus UNSEALED
+ * innsigle status — report VALID / STALE / ORPHAN / AMBIGUOUS per claim, plus UNSEALED
  * content_globs matches. Reporting only; always exit 0 once the project loads.
  * @returns {number} exit code
  */
@@ -219,7 +267,8 @@ export function runStatus(args, deps = {}) {
   const count = (s) => entries.filter((e) => e.state === s).length;
   out(
     `total=${entries.length} valid=${count("VALID")} stale=${count("STALE")} ` +
-      `orphan=${count("ORPHAN")} unsealed=${unsealed.length}`,
+      `orphan=${count("ORPHAN")} unsealed=${unsealed.length} ` +
+      `ambiguous=${count("AMBIGUOUS")}`,
   );
   return 0;
 }
