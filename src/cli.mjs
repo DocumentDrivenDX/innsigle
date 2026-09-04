@@ -14,7 +14,7 @@ import { runInit } from "./init.mjs";
 import { readPrivateKeyPem } from "./onepassword.mjs";
 import { runSeal, resolveVerifyPaths } from "./seal.mjs";
 import { runStatus, runVerifyAll } from "./status.mjs";
-import { loadJournal, mergeJournals, buildProvenance, proposeColo, cmdProvenanceImport } from "./provenance/index.mjs";
+import { loadJournal, mergeJournals, buildProvenance, proposeColo, cmdProvenanceImport, runProvenanceSync } from "./provenance/index.mjs";
 
 const EXIT = { ok: 0, usage: 1, badSig: 2, contentMismatch: 3, badKey: 4, badSchema: 5 };
 
@@ -26,6 +26,8 @@ Common (uses .innsigle/ + 1Password + optional ~/.config/innsigle/config.json):
   innsigle init --onepassword --site-url https://example.com
   innsigle seal <content-file> [--kind model-primary|human-authored|mixed]
                 [--force] [--debug-claim] [--op-account <account>]
+  innsigle seal <file> --auto [--yes] [--save-colo] [--provenance-uri <uri>]
+                                       # colophon proposed from Claude Code transcripts
   innsigle seal --stale                # re-seal claims whose content drifted
   innsigle status                      # VALID | STALE | ORPHAN | UNSEALED per claim
   innsigle verify <content-file>
@@ -40,6 +42,7 @@ Low-level:
   innsigle colo example --kind model-primary|human-authored|mixed
   innsigle provenance build|propose-colo …
   innsigle provenance import claude-code <transcript.jsonl> [--out journal.jsonl]
+  innsigle provenance sync <content-file> [--transcript-dir <dir>] [--out <l2.json>]
 
   seal     claim+sign in one step; attestation → .innsigle/public/claims/
   verify   short form finds att + keys from .innsigle/ (or public/.well-known/)
@@ -476,7 +479,8 @@ switch (cmd) {
     if (rest[0] === "build") cmdProvenanceBuild(rest.slice(1));
     else if (rest[0] === "propose-colo") cmdProvenanceProposeColo(rest.slice(1));
     else if (rest[0] === "import") process.exit(cmdProvenanceImport(rest.slice(1), {}));
-    else usage("provenance build|propose-colo|import");
+    else if (rest[0] === "sync") process.exit(runProvenanceSync(rest.slice(1), { nowIso }));
+    else usage("provenance build|propose-colo|import|sync");
     break;
   default:
     usage();

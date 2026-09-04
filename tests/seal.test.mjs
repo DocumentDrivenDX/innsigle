@@ -2,6 +2,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import {
   chmodSync,
+  copyFileSync,
   existsSync,
   mkdirSync,
   mkdtempSync,
@@ -12,6 +13,7 @@ import {
   statSync,
   writeFileSync,
 } from "node:fs";
+import { createHash } from "node:crypto";
 import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -325,6 +327,148 @@ describe("content-adjacent colophons (PLAN-001 A6)", () => {
       readFileSync(join(repo, ".innsigle/public/claims/page-html.attestation.json"), "utf8"),
     );
     assert.equal(att2.payload.colophon.composition, "mixed");
+    rmSync(repo, { recursive: true, force: true });
+  });
+});
+
+describe("seal --auto (PLAN-001 B3)", () => {
+  const transcriptFixture = join(
+    root,
+    "tests/fixtures/provenance/claude-code-transcript.jsonl",
+  );
+
+  /** Content file at the fixture's file_write path + a transcript dir. */
+  function addAutoFixtures(repo) {
+    mkdirSync(join(repo, "posts/demo"), { recursive: true });
+    writeFileSync(join(repo, "posts/demo/index.qmd"), "# demo post\n\nsealed by test\n");
+    const tdir = join(repo, "transcripts");
+    mkdirSync(tdir);
+    copyFileSync(transcriptFixture, join(tdir, "session-one.jsonl"));
+    return tdir;
+  }
+
+  it("seal --auto --yes produces a VALID attestation naming the transcript model", () => {
+    const { repo, env } = setupRepo("b3yes");
+    const tdir = addAutoFixtures(repo);
+    const r = run(
+      ["seal", "posts/demo/index.qmd", "--auto", "--yes", "--transcript-dir", tdir],
+      { cwd: repo, env },
+    );
+    assert.equal(r.status, 0, r.stderr + r.stdout);
+    assert.match(r.stderr, /proposed colophon:/);
+    assert.match(r.stderr, /composition=model-primary/);
+    assert.match(r.stderr, /user_prompts=3/);
+
+    // L2 accumulates under .innsigle/provenance/, never under public/ (PROV-08)
+    const l2Path = join(repo, ".innsigle/provenance/posts-demo-index-qmd.l2.json");
+    assert.ok(existsSync(l2Path));
+    const publicFiles = walkFiles(join(repo, ".innsigle/public"));
+    assert.equal(publicFiles.some((p) => p.endsWith(".l2.json")), false);
+
+    const attPath = join(
+      repo,
+      ".innsigle/public/claims/posts-demo-index-qmd.attestation.json",
+    );
+    assert.ok(existsSync(attPath));
+    const att = JSON.parse(readFileSync(attPath, "utf8"));
+    const colo = att.payload.colophon;
+    assert.equal(colo.composition, "model-primary");
+    const names = colo.ingredients.map((i) => `${i.kind}:${i.name}`);
+    assert.ok(names.includes("model:claude-opus-5"), names.join(","));
+    assert.ok(names.includes("tool:sloptimizer"), names.join(","));
+    assert.ok(names.includes("human:operator"), names.join(","));
+
+    const v = run(["verify", "posts/demo/index.qmd"], { cwd: repo, env });
+    assert.equal(v.status, 0, v.stderr + v.stdout);
+    assert.match(v.stdout, /VALID/);
+    rmSync(repo, { recursive: true, force: true });
+  });
+
+  it("--auto without --yes in a non-TTY signs nothing and exits nonzero", () => {
+    const { repo, env, opLog } = setupRepo("b3notty");
+    const tdir = addAutoFixtures(repo);
+    writeFileSync(opLog, "");
+    const r = run(["seal", "posts/demo/index.qmd", "--auto", "--transcript-dir", tdir], {
+      cwd: repo,
+      env,
+    });
+    assert.notEqual(r.status, 0);
+    assert.match(r.stderr, /proposed colophon:/); // review still printed (PROV-05)
+    assert.match(r.stderr, /re-run with --yes/);
+    assert.equal(
+      existsSync(
+        join(repo, ".innsigle/public/claims/posts-demo-index-qmd.attestation.json"),
+      ),
+      false,
+    );
+    assert.doesNotMatch(readFileSync(opLog, "utf8"), /read op:\/\//); // key never read
+    rmSync(repo, { recursive: true, force: true });
+  });
+
+  it("--save-colo writes <content-dir>/colo.json and seals nothing", () => {
+    const { repo, env } = setupRepo("b3save");
+    const tdir = addAutoFixtures(repo);
+    const r = run(
+      ["seal", "posts/demo/index.qmd", "--auto", "--save-colo", "--transcript-dir", tdir],
+      { cwd: repo, env },
+    );
+    assert.equal(r.status, 0, r.stderr + r.stdout);
+    const sidecar = join(repo, "posts/demo/colo.json");
+    assert.ok(existsSync(sidecar));
+    const colo = JSON.parse(readFileSync(sidecar, "utf8"));
+    assert.equal(colo.composition, "model-primary");
+    assert.ok(colo.ingredients.some((i) => i.kind === "model" && i.name === "claude-opus-5"));
+    assert.equal(
+      existsSync(
+        join(repo, ".innsigle/public/claims/posts-demo-index-qmd.attestation.json"),
+      ),
+      false,
+    );
+
+    // the saved sidecar then drives a plain seal (A6 resolution order)
+    const r2 = run(["seal", "posts/demo/index.qmd"], { cwd: repo, env });
+    assert.equal(r2.status, 0, r2.stderr);
+    const att = JSON.parse(
+      readFileSync(
+        join(repo, ".innsigle/public/claims/posts-demo-index-qmd.attestation.json"),
+        "utf8",
+      ),
+    );
+    assert.equal(att.payload.colophon.composition, "model-primary");
+    rmSync(repo, { recursive: true, force: true });
+  });
+
+  it("--provenance-uri embeds provenance.uri + digest of the L2 (PROV-06)", () => {
+    const { repo, env } = setupRepo("b3prov");
+    const tdir = addAutoFixtures(repo);
+    const uri = "https://seal.example/provenance/posts-demo-index-qmd.l2.json";
+    const r = run(
+      [
+        "seal",
+        "posts/demo/index.qmd",
+        "--auto",
+        "--yes",
+        "--transcript-dir",
+        tdir,
+        "--provenance-uri",
+        uri,
+      ],
+      { cwd: repo, env },
+    );
+    assert.equal(r.status, 0, r.stderr + r.stdout);
+    const att = JSON.parse(
+      readFileSync(
+        join(repo, ".innsigle/public/claims/posts-demo-index-qmd.attestation.json"),
+        "utf8",
+      ),
+    );
+    const prov = att.payload.colophon.provenance;
+    assert.ok(prov, "colophon.provenance embedded");
+    assert.equal(prov.uri, uri);
+    const l2Bytes = readFileSync(
+      join(repo, ".innsigle/provenance/posts-demo-index-qmd.l2.json"),
+    );
+    assert.equal(prov.digest.value, createHash("sha256").update(l2Bytes).digest("hex"));
     rmSync(repo, { recursive: true, force: true });
   });
 });

@@ -2,6 +2,7 @@ import {
   existsSync,
   mkdirSync,
   readFileSync,
+  readSync,
   unlinkSync,
   writeFileSync,
 } from "node:fs";
@@ -17,6 +18,7 @@ import {
   PATHS,
 } from "./config.mjs";
 import { readPrivateKeyPem } from "./onepassword.mjs";
+import { proposeColo, syncProvenance } from "./provenance/index.mjs";
 import { checkAttestation, collectStatus } from "./status.mjs";
 
 const EXAMPLE_COLO = {
@@ -67,7 +69,9 @@ function positionalContent(args) {
         a === "--out" ||
         a === "--key" ||
         a === "--op-ref" ||
-        a === "--op-account"
+        a === "--op-account" ||
+        a === "--transcript-dir" ||
+        a === "--provenance-uri"
       ) {
         i++; // skip value
       }
@@ -268,6 +272,19 @@ function runSealStale(args, deps) {
   return failures ? 2 : 0;
 }
 
+/** Blocking y/N prompt on a TTY (line-buffered read of fd 0). */
+function confirmTTY(question) {
+  process.stderr.write(question);
+  try {
+    const buf = Buffer.alloc(256);
+    const n = readSync(0, buf, 0, 256, null);
+    const ans = buf.toString("utf8", 0, n).trim().toLowerCase();
+    return ans === "y" || ans === "yes";
+  } catch {
+    return false;
+  }
+}
+
 /**
  * innsigle seal <content> [--kind …] [--colo …] [--uri …] [--out att.json]
  *                [--force] [--debug-claim] [--op-account <acct>]
@@ -291,6 +308,8 @@ export function runSeal(args, deps) {
     err("Usage: innsigle seal <content-file> [--kind model-primary|human-authored|mixed]");
     err("                              [--colo colo.json] [--uri https://…] [--out att.json]");
     err("                              [--force] [--debug-claim] [--op-account <acct>]");
+    err("       innsigle seal <file> --auto [--yes] [--save-colo] [--provenance-uri <uri>]");
+    err("                                # propose colophon from Claude Code transcripts");
     err("       innsigle seal --stale   # re-seal drifted claims");
     err("Requires .innsigle/config.json (innsigle init --onepassword). Key from 1Password.");
     return 1;
@@ -308,12 +327,53 @@ export function runSeal(args, deps) {
   const issuer = issuerFromProject(project, err);
   if (!issuer) return 5;
 
+  const auto = args.includes("--auto");
   let colophon;
-  try {
-    colophon = resolveColophon(args, project, contentPath);
-  } catch (e) {
-    err(`INVALID: ${e.message}`);
-    return 5;
+  let autoSync = null;
+  if (auto) {
+    // PLAN-001 B3: sync transcripts → L2 → proposed colophon (PROV-05 gate below).
+    try {
+      autoSync = syncProvenance({
+        contentPath,
+        transcriptDir: arg(args, "--transcript-dir"),
+        repoRoot: project.repoRoot,
+        generatedAt: nowIso(),
+      });
+    } catch (e) {
+      err(`INVALID: ${e.message}`);
+      return 5;
+    }
+    log(`provenance: ${autoSync.sessions.length} session(s) → ${autoSync.outPath}`);
+    const provUri = arg(args, "--provenance-uri");
+    try {
+      // FR-4a laundering refusal lives in proposeColo and stays intact here.
+      colophon = proposeColo(autoSync.l2, {
+        provenanceUri: provUri || null,
+        provenanceDigestHex: provUri ? autoSync.digestHex : undefined,
+      });
+    } catch (e) {
+      err(`INVALID: ${e.message}`);
+      return 5;
+    }
+    log("proposed colophon:");
+    log(`  composition=${colophon.composition}`);
+    for (const ing of colophon.ingredients) {
+      log(`  ingredient=${ing.kind}:${ing.name} role=${ing.role}`);
+    }
+    log(`  user_prompts=${autoSync.l2.metrics.user_prompts}`);
+    if (args.includes("--save-colo")) {
+      const sidecar = join(dirname(resolve(contentPath)), "colo.json");
+      writeFileSync(sidecar, JSON.stringify(colophon, null, 2) + "\n");
+      log(`saved colo=${sidecar} (review/edit, then re-run innsigle seal without --save-colo)`);
+      return 0;
+    }
+  } else {
+    try {
+      colophon = resolveColophon(args, project, contentPath);
+    } catch (e) {
+      err(`INVALID: ${e.message}`);
+      return 5;
+    }
   }
   if (!colophon.composition || !Array.isArray(colophon.ingredients)) {
     err("INVALID: colophon schema");
@@ -339,6 +399,20 @@ export function runSeal(args, deps) {
       }
     } catch {
       /* unreadable previous attestation — fall through and re-seal */
+    }
+  }
+
+  // PROV-05: review precedes sign — --auto requires confirmation or --yes.
+  if (auto && !args.includes("--yes")) {
+    if (!process.stdin.isTTY) {
+      err("not sealed: --auto needs confirmation (PROV-05).");
+      err("re-run with --yes to accept the proposed colophon, or --save-colo to write it for review");
+      return 1;
+    }
+    const confirm = deps.confirm || confirmTTY;
+    if (!confirm("seal with this colophon? [y/N] ")) {
+      err("not sealed: declined");
+      return 1;
     }
   }
 

@@ -210,3 +210,19 @@ C1/C3 can proceed in parallel with Phase 3. Each task above is bead-sized for
 ddx if you want them queued. Planning only — no code changed yet; C2's publish
 step and the entropy-exchange smoke test are explicitly operator-authorized
 actions.
+
+## Execution Log (2026-09-03)
+
+- **A1** canonical attestation slug naming — done
+- **A2** idempotent, self-verifying seal — done
+- **A3** 1Password bridging (`INNSIGLE_OP_BIN`, `OP_ACCOUNT`/`--op-account`) — done
+- **A4** debug claim sidecars gated to `.innsigle/debug/` — done
+- **A5** `status` / `seal --stale` / `verify --all` — done
+- **A6** content-adjacent colophon resolution — done
+- **B1** `provenance import claude-code` transcript importer — done
+- **B2** `provenance sync` session discovery + accumulation — done
+- **B3** `seal --auto` (review-gated, `--save-colo`, `--provenance-uri`) — done
+- **B4** live hook capture — deferred (importer supersedes it for Claude Code)
+- **C1** Quarto reference integration — done
+- **C2** npm publish — release pending (operator action)
+- **C3** sealing skill (`skills/innsigle-seal/`) + documentation pass — this change

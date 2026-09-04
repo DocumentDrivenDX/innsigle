@@ -14,7 +14,12 @@ detector. Not a C2PA replacement — see the site Non-goals page.
 ## Install
 
 Requires **Node 20+**. The CLI is not published to the npm registry yet (`private:
-true`). Install from this GitHub repo or a local clone.
+true`); the planned npm name is `innsigle`. Install from this GitHub repo or a
+local clone, or run one-off without installing:
+
+```bash
+npx --package=github:DocumentDrivenDX/innsigle innsigle
+```
 
 ### From GitHub (recommended for users)
 
@@ -107,6 +112,52 @@ innsigle verify --attestation att.json --content ./page.html --keys keys.json
 Keep private keys offline (1Password or local PEM). Full walkthrough:
 [Seal a docs page](https://documentdrivendx.github.io/innsigle/use/walkthrough-docs/).
 
+### 1Password across a VM boundary
+
+When `op` lives on the host (e.g. sealing from a Linux VM with keys on the
+Mac side):
+
+```bash
+export INNSIGLE_OP_BIN="mac op"   # command to reach the host op (split on whitespace)
+export OP_ACCOUNT=<account>       # or: innsigle seal … --op-account <account>
+```
+
+## Everyday commands
+
+```bash
+innsigle status                        # each claim: VALID / STALE / ORPHAN / UNSEALED
+innsigle verify --all                  # CI gate: exits nonzero on any non-VALID
+innsigle seal --stale                  # re-seal only drifted claims
+innsigle seal ./post/index.qmd --auto  # colophon proposed from agent transcripts, review, seal
+innsigle seal ./post/index.qmd --auto --save-colo   # write proposal to colo.json, don't seal
+innsigle provenance sync ./post/index.qmd           # transcripts → .innsigle/provenance/<slug>.l2.json
+innsigle provenance import claude-code session.jsonl --out journal.jsonl  # one transcript → journal
+```
+
+`seal` also honors a content-adjacent `colo.json`: `--colo` →
+`<content-dir>/colo.json` → `.innsigle/colo.json` → `--kind`.
+
+## Automatic colophons from agent sessions
+
+Your Claude Code transcripts already record who wrote what.
+`innsigle provenance sync <content-file>` finds the repo's transcripts
+(`~/.claude/projects/<cwd with "/" → "-">/`), imports every session whose file
+writes touched the content file — summaries and counts only, never message
+bodies — merges them, and writes `.innsigle/provenance/<slug>.l2.json`.
+Re-running after more conversation folds in new sessions; the provenance
+accumulates.
+
+`innsigle seal <file> --auto` runs that sync, prints the proposed colophon
+(composition, ingredients, prompt count), and seals only after you confirm
+(`--yes` skips the prompt; `--save-colo` writes the proposal to
+`<content-dir>/colo.json` for editing instead of sealing). The review gate and
+the no-laundering refusal stay on: `--force-composition` will not turn model
+work into `human-authored`. The L2 is never auto-published; once you publish
+it yourself, `--provenance-uri <uri>` embeds the link and digest in the claim.
+
+Agent-side: install the `innsigle-seal` Claude Code skill from
+[`skills/innsigle-seal/`](skills/innsigle-seal/README.md).
+
 ## Verify the live sample
 
 ```bash
@@ -133,6 +184,8 @@ node src/cli.mjs verify \
 | Install + CLI | [Use → CLI](https://documentdrivendx.github.io/innsigle/use/cli/) |
 | Walkthroughs | [Use](https://documentdrivendx.github.io/innsigle/use/) |
 | Claim/CLI contract | [CONTRACT-001](https://documentdrivendx.github.io/innsigle/reference/artifacts/contracts/contract-001-claim-and-cli/) |
+| Quarto integration | [`integrations/quarto/README.md`](integrations/quarto/README.md) |
+| Agent sealing skill | [`skills/innsigle-seal/`](skills/innsigle-seal/README.md) |
 | Golden crypto vectors | [`tests/vectors/`](tests/vectors/) |
 
 ## Contributor notes
