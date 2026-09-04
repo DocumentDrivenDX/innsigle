@@ -6,6 +6,7 @@ name: Release to npm
 on:
   push:
     tags: ["v*"]
+  workflow_dispatch: {} # run from a tag ref to (re)publish that version
 
 permissions:
   contents: read
