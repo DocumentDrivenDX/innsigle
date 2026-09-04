@@ -52,3 +52,6 @@ blob-report/
 .tmp-prov-run/
 .tmp-test-*
 
+
+# Site is built by CI (pages.yml) and locally by npm run site:build; never committed
+site/
