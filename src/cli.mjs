@@ -358,7 +358,7 @@ function cmdProvenanceBuild(args) {
       cwd,
       generator: {
         name: "innsigle-provenance",
-        version: "0.1.0",
+        version: "0.2.0",
         uri: null,
       },
       harness: { name: arg(args, "--harness") || "cli", version: null },

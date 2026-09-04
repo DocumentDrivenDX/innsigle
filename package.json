@@ -1,8 +1,7 @@
 {
   "name": "innsigle",
-  "version": "0.1.0",
-  "description": "The maker's seal for published work — content provenance CLI (claim, sign, verify).",
-  "private": true,
+  "version": "0.2.0",
+  "description": "The maker's seal for published work \u2014 content provenance CLI (claim, sign, verify).",
   "type": "module",
   "bin": {
     "innsigle": "./src/cli.mjs"
@@ -11,7 +10,9 @@
     "src/**",
     "README.md",
     "docs/sample/**",
-    "tests/vectors/**"
+    "tests/vectors/**",
+    "integrations/**",
+    "skills/**"
   ],
   "repository": {
     "type": "git",
@@ -44,5 +45,6 @@
   "devDependencies": {
     "@playwright/test": "^1.61.1",
     "serve": "^14.2.6"
-  }
+  },
+  "license": "MIT"
 }

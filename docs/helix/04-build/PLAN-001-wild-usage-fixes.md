@@ -213,5 +213,5 @@ actions.
 - **B3** `seal --auto` (review-gated, `--save-colo`, `--provenance-uri`) — done
 - **B4** live hook capture — deferred (importer supersedes it for Claude Code)
 - **C1** Quarto reference integration — done
-- **C2** npm publish — release pending (operator action)
+- **C2** npm release readiness — done (v0.2.0 tagged; npm publish pending npm login)
 - **C3** sealing skill (`skills/innsigle-seal/`) + documentation pass — this change
