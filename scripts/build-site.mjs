@@ -382,7 +382,8 @@ function main() {
     }
   }
 
-  // Wipe HTML outputs but rebuild fully
+  // Wipe HTML outputs but rebuild fully (OUT may not exist on a fresh checkout)
+  mkdirSync(OUT, { recursive: true });
   for (const name of readdirSync(OUT)) {
     if (name === ".git") continue;
     rmSync(join(OUT, name), { recursive: true, force: true });
