@@ -311,6 +311,23 @@ export function transformTranscript(lines, opts = {}) {
       continue;
     }
 
+    // Messages the operator typed while the assistant was mid-turn are queued
+    // by the harness and land as `queue-operation` records (`enqueue`, then
+    // `remove`/`dequeue` on delivery) rather than as `user` messages. They are
+    // human-typed direction and review; count each once, on enqueue. Chars
+    // only (PROV-09).
+    if (rec.type === "queue-operation" && rec.operation === "enqueue") {
+      const queued = typeof rec.content === "string" ? stripSystemReminders(rec.content).trim() : "";
+      if (!queued) continue;
+      push({
+        type: "user_prompt",
+        actor: { kind: "human", name: "operator" },
+        chars: queued.length,
+        summary: `user prompt, queued mid-turn (${queued.length} chars)`,
+      });
+      continue;
+    }
+
     // Non-message record types (mode, file-history-snapshot, attachment, …)
     // carry no provenance facts we emit; skip them tolerantly.
   }

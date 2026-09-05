@@ -315,3 +315,29 @@ describe("Bash heredoc writes count as file_write (shell-first agents)", () => {
     assert.equal(plain.filter((e) => e.type === "tool_call").length, 1);
   });
 });
+
+describe("mid-turn queued messages count as user prompts", () => {
+  it("emits one user_prompt per queue-operation enqueue, none for remove/dequeue", () => {
+    const sid = "0b0b0b0b-1111-4222-8333-444455556666";
+    const lines = [
+      { type: "user", sessionId: sid, cwd: "/home/user/p", uuid: `${sid}-u1`, timestamp: "2026-09-04T10:00:00.000Z",
+        message: { role: "user", content: "Draft the post" } },
+      { type: "queue-operation", operation: "enqueue", sessionId: sid, timestamp: "2026-09-04T10:00:30.000Z",
+        content: "This sentence is slop, rewrite it.<system-reminder>harness noise</system-reminder>" },
+      { type: "queue-operation", operation: "remove", sessionId: sid, timestamp: "2026-09-04T10:00:31.000Z",
+        content: "This sentence is slop, rewrite it.", reason: "delivered" },
+      { type: "queue-operation", operation: "dequeue", sessionId: sid, timestamp: "2026-09-04T10:00:32.000Z",
+        content: "This sentence is slop, rewrite it." },
+      { type: "queue-operation", operation: "enqueue", sessionId: sid, timestamp: "2026-09-04T10:00:40.000Z",
+        content: "   " },
+    ].map((r) => JSON.stringify(r)).join("\n") + "\n";
+    const events = transformTranscriptText(lines);
+    const prompts = events.filter((e) => e.type === "user_prompt");
+    assert.equal(prompts.length, 2);
+    assert.equal(prompts[1].chars, "This sentence is slop, rewrite it.".length);
+    assert.equal(prompts[1].actor.kind, "human");
+    assert.match(prompts[1].summary, /queued mid-turn/);
+    assert.ok(!prompts[1].summary.includes("slop"), "prompt text never carried (PROV-09)");
+    assert.equal(parseJournal(journalToJsonl(events)).length, events.length);
+  });
+});
