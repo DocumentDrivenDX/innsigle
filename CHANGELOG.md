@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.3.1] — 2026-09-04
+
+Operator/agent surfacing for the hi1 human-input measure (no behavior change):
+
+- `innsigle colo example --kind <k> --human-input` emits a valid, sealable
+  reference `human_input` object (percent recomputes from its counts)
+- CLI usage documents the flag and the `human_input=NN%` output lines
+- README "Human-input percent" section; init's `.innsigle/AGENTS.md` template
+  states the no-tuning rule and the shape-reference command
+
 ## [0.3.0] — 2026-09-04
 
 **Declared human-input percentage (`colophon.human_input`, method `hi1`).**
