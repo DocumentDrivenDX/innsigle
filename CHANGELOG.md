@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [0.3.2] — 2026-09-04
 
 ### Product
 
@@ -15,6 +15,9 @@
   review for long working sessions
 - `provenance sync` follows renames via `git log --follow`: writes recorded
   under a content file's earlier paths attribute to the current artifact
+- Queued messages later delivered as normal user records count once, at
+  delivery — enqueue+delivery double counting would have inflated
+  direction/review (~42% of enqueues in sampled transcripts are delivered)
 
 ## [0.3.1] — 2026-09-04
 
