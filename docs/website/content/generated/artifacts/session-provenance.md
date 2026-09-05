@@ -292,7 +292,13 @@ is **omitted** from L1 entirely — the colophon never carries an invented
 number. `direction` and `review` are null only when `B = 0` (nothing to
 direct or review; possible non-null sets are `{C}` and `{D, C, R}`).
 An `Edit` with `replace_all` counts its chars once — a documented importer
-limitation.
+limitation. Bash heredoc writes (`cat > path <<'EOF' … EOF`, `cat <<EOF > path`,
+`tee path <<EOF`, `>>` append, `<<-`) are imported as model `file_write` events
+with the heredoc body length as `chars_added`, so shell-first agents leave the
+same char evidence as `Write`; scripts that write files indirectly (a python3
+heredoc calling `open().write`) are not measurable and stay `tool_call`. A
+renamed content file keeps its evidence: `provenance sync` matches writes under
+every earlier path reported by `git log --follow`.
 
 Worked example: `P=3`, `B=3` → `D=1`; `H=0`, `M=812` → `C=0`; `Rp=2`, `Re=0`
 → `R=2/3`; headline `round(25·1 + 40·0 + 35·⅔) = round(48.33…) = 48`.

@@ -8,6 +8,7 @@ import {
   transformTranscriptText,
   journalToJsonl,
   cmdProvenanceImport,
+  extractHeredocWrites,
   SUMMARY_MAX,
 } from "../src/provenance/import-claude-code.mjs";
 
@@ -225,5 +226,130 @@ describe("hi1 evidence fields from the importer (M2)", () => {
       mk("<system-reminder>injected context, not typed</system-reminder>") + "\n",
     ).filter((e) => e.type === "user_prompt");
     assert.equal(only.length, 0);
+  });
+});
+
+/** One-turn transcript whose assistant issues a single Bash tool_use. */
+function bashTranscript(command) {
+  const sid = "0a0a0a0a-1111-4222-8333-444455556666";
+  return (
+    [
+      JSON.stringify({
+        type: "user",
+        sessionId: sid,
+        cwd: "/home/user/projects/demo-site",
+        message: { role: "user", content: "Write the post" },
+        uuid: `${sid}-u1`,
+        timestamp: "2026-09-04T10:00:00.000Z",
+      }),
+      JSON.stringify({
+        type: "assistant",
+        sessionId: sid,
+        message: {
+          id: "msg_bash",
+          role: "assistant",
+          model: "claude-fable-5",
+          content: [
+            { type: "tool_use", id: `${sid}-t1`, name: "Bash", input: { command } },
+          ],
+        },
+        timestamp: "2026-09-04T10:00:05.000Z",
+      }),
+    ].join("\n") + "\n"
+  );
+}
+
+describe("Bash heredoc writes count as file_write (shell-first agents)", () => {
+  const body = "---\ntitle: Demo\n---\n\nFirst paragraph.\n\nSecond paragraph.";
+
+  it("extracts cat > path <<'EOF' with the exact body length", () => {
+    const cmd = `mkdir -p posts/demo && cat > posts/demo/index.qmd <<'EOF'\n${body}\nEOF\nwc -w posts/demo/index.qmd`;
+    assert.deepEqual(extractHeredocWrites(cmd), [
+      { path: "posts/demo/index.qmd", chars: body.length, append: false },
+    ]);
+  });
+
+  it("handles redirect-after-heredoc, tee, append, quoted paths, and <<-", () => {
+    const cmd = [
+      `cat <<EOF > "posts/a b/index.qmd"\nalpha\nEOF`,
+      `tee -a notes.md <<"END"\nbeta\ngamma\nEND`,
+      `cat >> log.txt <<-EOF\n\tdelta\n\tEOF`,
+    ].join("\n");
+    assert.deepEqual(extractHeredocWrites(cmd), [
+      { path: "posts/a b/index.qmd", chars: 5, append: false },
+      { path: "notes.md", chars: "beta\ngamma".length, append: true },
+      { path: "log.txt", chars: "\tdelta".length, append: true },
+    ]);
+  });
+
+  it("ignores unterminated heredocs and indirect writers", () => {
+    assert.deepEqual(extractHeredocWrites(`cat > x.md <<'EOF'\nnever closed`), []);
+    assert.deepEqual(
+      extractHeredocWrites(`python3 - <<'EOF'\nopen('x.md','w').write('hi')\nEOF`),
+      [],
+    );
+    assert.deepEqual(extractHeredocWrites("ls -la"), []);
+    // unexpanded variables cannot be attributed to a file
+    assert.deepEqual(extractHeredocWrites(`cat > $S/colo.json <<'EOF'\n{}\nEOF`), []);
+    assert.deepEqual(extractHeredocWrites("cat > \"$W/x.md\" <<'EOF'\nhi\nEOF"), []);
+    assert.deepEqual(extractHeredocWrites(undefined), []);
+  });
+
+  it("emits a model file_write with chars_added for a heredoc, tool_call otherwise", () => {
+    const withWrite = transformTranscriptText(
+      bashTranscript(`cat > posts/demo/index.qmd <<'EOF'\n${body}\nEOF`),
+    );
+    const writes = withWrite.filter((e) => e.type === "file_write");
+    assert.equal(writes.length, 1);
+    assert.equal(writes[0].path, "posts/demo/index.qmd");
+    assert.equal(writes[0].by, "model");
+    assert.equal(writes[0].chars_added, body.length);
+    assert.equal(writes[0].model, "claude-fable-5");
+    assert.ok(!writes[0].summary.includes("First paragraph"), "body text never carried (PROV-09)");
+    assert.equal(withWrite.filter((e) => e.type === "tool_call").length, 0);
+    // round-trips through the journal validator
+    assert.equal(parseJournal(journalToJsonl(withWrite)).length, withWrite.length);
+
+    const plain = transformTranscriptText(bashTranscript("just render-internal"));
+    assert.equal(plain.filter((e) => e.type === "file_write").length, 0);
+    assert.equal(plain.filter((e) => e.type === "tool_call").length, 1);
+  });
+});
+
+describe("mid-turn queued messages count as user prompts", () => {
+  it("emits one user_prompt per queue-operation enqueue, none for remove/dequeue", () => {
+    const sid = "0b0b0b0b-1111-4222-8333-444455556666";
+    const lines = [
+      { type: "user", sessionId: sid, cwd: "/home/user/p", uuid: `${sid}-u1`, timestamp: "2026-09-04T10:00:00.000Z",
+        message: { role: "user", content: "Draft the post" } },
+      { type: "queue-operation", operation: "enqueue", sessionId: sid, timestamp: "2026-09-04T10:00:30.000Z",
+        content: "This sentence is slop, rewrite it.<system-reminder>harness noise</system-reminder>" },
+      { type: "queue-operation", operation: "remove", sessionId: sid, timestamp: "2026-09-04T10:00:31.000Z",
+        content: "This sentence is slop, rewrite it.", reason: "delivered" },
+      { type: "queue-operation", operation: "dequeue", sessionId: sid, timestamp: "2026-09-04T10:00:32.000Z",
+        content: "This sentence is slop, rewrite it." },
+      { type: "queue-operation", operation: "enqueue", sessionId: sid, timestamp: "2026-09-04T10:00:40.000Z",
+        content: "   " },
+    ].map((r) => JSON.stringify(r)).join("\n") + "\n";
+    const events = transformTranscriptText(lines);
+    const prompts = events.filter((e) => e.type === "user_prompt");
+    assert.equal(prompts.length, 2);
+    // A queued message later delivered as a user record counts ONCE (at
+    // delivery) — enqueue+delivery double counting would inflate the measure.
+    const sid2 = "0c0c0c0c-1111-4222-8333-444455556666";
+    const delivered = [
+      { type: "queue-operation", operation: "enqueue", sessionId: sid2, timestamp: "2026-09-04T11:00:00.000Z",
+        content: "Tighten the intro." },
+      { type: "user", sessionId: sid2, uuid: `${sid2}-u1`, timestamp: "2026-09-04T11:00:10.000Z",
+        message: { role: "user", content: "Tighten the intro." } },
+    ].map((r) => JSON.stringify(r)).join("\n") + "\n";
+    const once = transformTranscriptText(delivered).filter((e) => e.type === "user_prompt");
+    assert.equal(once.length, 1);
+    assert.doesNotMatch(once[0].summary, /queued mid-turn/);
+    assert.equal(prompts[1].chars, "This sentence is slop, rewrite it.".length);
+    assert.equal(prompts[1].actor.kind, "human");
+    assert.match(prompts[1].summary, /queued mid-turn/);
+    assert.ok(!prompts[1].summary.includes("slop"), "prompt text never carried (PROV-09)");
+    assert.equal(parseJournal(journalToJsonl(events)).length, events.length);
   });
 });

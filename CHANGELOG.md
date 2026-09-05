@@ -1,5 +1,21 @@
 # Changelog
 
+## [Unreleased]
+
+### Product
+
+- Claude Code importer counts Bash heredoc writes (`cat > path <<'EOF'`,
+  `cat <<EOF > path`, `tee`, `>>`, `<<-`) as model `file_write` events with
+  `chars_added` = heredoc body length, so shell-first sessions carry char
+  evidence for `human_input`; indirect writers (python heredocs) stay
+  `tool_call`; bodies are measured, never carried (PROV-09)
+- Claude Code importer counts messages the operator typed mid-turn
+  (`queue-operation` `enqueue` records) as `user_prompt` events; they were
+  previously skipped as non-message records, under-counting direction and
+  review for long working sessions
+- `provenance sync` follows renames via `git log --follow`: writes recorded
+  under a content file's earlier paths attribute to the current artifact
+
 ## [0.3.1] — 2026-09-04
 
 Operator/agent surfacing for the hi1 human-input measure (no behavior change):
