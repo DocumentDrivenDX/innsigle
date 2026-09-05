@@ -151,6 +151,50 @@ describe("Quarto × Innsigle workflow (e2e)", () => {
       existsSync(join(proj, "_site/.well-known/innsigle/claims", claims[0])),
     );
 
+    // --- human_input (CONTRACT-001 v1.1): badge shows the declared percent
+    const hiColo = {
+      schema_version: "1",
+      composition: "model-primary",
+      ingredients: [
+        { kind: "model", name: "Claude", role: "draft" },
+        { kind: "human", name: "operator", role: "prompter-reviewer" },
+      ],
+      notes: null,
+      human_input: {
+        method: "hi1",
+        basis: "session-journal",
+        percent: 48,
+        weights: { direction: 25, contribution: 40, review: 35 },
+        direction: { percent: 100, user_prompts: 3, model_write_bursts: 3 },
+        contribution: {
+          percent: 0,
+          human_chars: 0,
+          model_chars: 812,
+          human_write_events: 0,
+          coverage: "full",
+        },
+        review: { percent: 67, post_output_prompts: 2, review_events: 0 },
+      },
+    };
+    writeFileSync(join(proj, "hi-colo.json"), JSON.stringify(hiColo, null, 2) + "\n");
+    r = innsigle([
+      "seal",
+      "index.qmd",
+      "--colo",
+      "hi-colo.json",
+      "--uri",
+      "https://example.com/index.qmd",
+      "--key",
+      join(keyDir, "ed25519.priv.pem"),
+    ]);
+    assert.equal(r.status, 0, r.stderr);
+    r = run("quarto", ["render"]);
+    assert.equal(r.status, 0, r.stderr + r.stdout);
+    html = readFileSync(join(proj, "_site/index.html"), "utf8");
+    assert.match(html, /48% human input/);
+    assert.match(html, /innsigle-seal--hi/);
+    assert.match(html, /Human input<\/dt>/);
+
     // --- canonical slug filename (PLAN-001 A1) is honored too
     const slugName = "index-qmd.attestation.json";
     renameSync(

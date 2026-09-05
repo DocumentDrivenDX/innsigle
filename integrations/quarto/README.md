@@ -95,3 +95,33 @@ quarto render
 
 `innsigle verify path/to/page.qmd` confirms the published attestation
 still matches before you deploy.
+
+## Human-input percent (optional)
+
+If a sealed colophon carries the optional `human_input` measure
+(CONTRACT-001 v1.1: an integer percent declared from the maker's own
+session journal), the footer summary line becomes
+
+```
+Innsigle seal: model-primary · 48% human input by Issuer
+```
+
+and the details list gains a `Human input` row with the per-component
+breakdown (direction · contribution · review). The `<details>` element
+also gains the modifier class `innsigle-seal--hi`, so percent-bearing
+seals can be styled slightly more visibly than plain ones:
+
+```css
+details.innsigle-seal--hi > summary {
+  font-size: 1.05em;
+}
+details.innsigle-seal--hi > summary strong:nth-of-type(2) {
+  padding: 0 0.3em;
+  border-radius: 0.3em;
+  background: color-mix(in srgb, currentColor 12%, transparent);
+}
+```
+
+The percent is a declaration under the seal — never a detection score.
+Pages sealed without session-journal char evidence carry no percent: the
+measure is omitted, not invented.

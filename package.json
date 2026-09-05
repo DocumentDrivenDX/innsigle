@@ -1,6 +1,6 @@
 {
   "name": "innsigle",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "The maker's seal for published work \u2014 content provenance CLI (claim, sign, verify).",
   "type": "module",
   "bin": {

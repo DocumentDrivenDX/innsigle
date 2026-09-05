@@ -20,7 +20,7 @@ import {
   PATHS,
 } from "./config.mjs";
 import { readPrivateKeyPem } from "./onepassword.mjs";
-import { proposeColo, syncProvenance } from "./provenance/index.mjs";
+import { proposeColo, syncProvenance, validateHumanInput } from "./provenance/index.mjs";
 import { checkAttestation, collectStatus } from "./status.mjs";
 
 const EXAMPLE_COLO = {
@@ -397,6 +397,9 @@ export function runSeal(args, deps) {
       log(`  ingredient=${ing.kind}:${ing.name} role=${ing.role}`);
     }
     log(`  user_prompts=${autoSync.l2.metrics.user_prompts}`);
+    if (colophon.human_input) {
+      log(`  human_input=${colophon.human_input.percent}% (method ${colophon.human_input.method})`);
+    }
     if (args.includes("--save-colo")) {
       const sidecar = join(dirname(resolve(contentPath)), "colo.json");
       writeFileSync(sidecar, JSON.stringify(colophon, null, 2) + "\n");
@@ -414,6 +417,15 @@ export function runSeal(args, deps) {
   if (!colophon.composition || !Array.isArray(colophon.ingredients)) {
     err("INVALID: colophon schema");
     return 5;
+  }
+  // CONTRACT-001 v1.1: a declared human_input must be arithmetically honest.
+  if (colophon.human_input !== undefined) {
+    try {
+      validateHumanInput(colophon.human_input);
+    } catch (e) {
+      err(`INVALID: colophon ${e.message}`);
+      return 5;
+    }
   }
   colophon.schema_version = "1";
 
@@ -487,6 +499,9 @@ export function runSeal(args, deps) {
   log(`ok: sealed ${contentPath}`);
   log(`attestation=${outPath}`);
   log(`composition=${colophon.composition}`);
+  if (colophon.human_input) {
+    log(`human_input=${colophon.human_input.percent}% (declared, method ${colophon.human_input.method})`);
+  }
   log(`key_id=${issuer.key_id}`);
   if (uri) log(`uri=${uri}`);
   log(`next: copy ${PATHS.public}/ into site /.well-known/innsigle/ (see ${PATHS.agents})`);

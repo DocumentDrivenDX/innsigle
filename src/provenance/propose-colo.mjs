@@ -107,6 +107,12 @@ export function proposeColo(l2, opts = {}) {
     notes,
   };
 
+  // hi1 (FR-20): carry the measured object onto the colo unchanged; absent
+  // measure stays absent (never invented).
+  if (l2.human_input) {
+    colo.human_input = structuredClone(l2.human_input);
+  }
+
   if (opts.provenanceDigestHex) {
     colo.provenance = {
       kind: "session",

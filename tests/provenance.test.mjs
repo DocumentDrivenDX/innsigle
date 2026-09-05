@@ -5,7 +5,15 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { sha256Hex } from "../src/crypto.mjs";
-import { loadJournal, buildProvenance, proposeColo, redactText } from "../src/provenance/index.mjs";
+import {
+  loadJournal,
+  buildProvenance,
+  proposeColo,
+  redactText,
+  computeHumanInput,
+  validateHumanInput,
+  roundHalfUpPercent,
+} from "../src/provenance/index.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const cli = join(root, "src/cli.mjs");
@@ -141,5 +149,110 @@ describe("session provenance (FEAT-004 P1)", () => {
     assert.ok(summary.models.includes("Codex"));
     const colo = JSON.parse(readFileSync(join(outDir, "colo.json"), "utf8"));
     assert.ok(colo.ingredients.length >= 3);
+  });
+});
+
+describe("human-input measure hi1 (FR-20 / PROV-11)", () => {
+  const load = (name) => loadJournal(join(fixtures, name));
+  const A = "notes/post.md";
+
+  it("mixed session: worked example from session-provenance.md → 48", () => {
+    const hi = computeHumanInput(load("session-hi-mixed.jsonl"), A);
+    assert.deepEqual(hi, {
+      method: "hi1",
+      basis: "session-journal",
+      percent: 48,
+      weights: { direction: 25, contribution: 40, review: 35 },
+      direction: { percent: 100, user_prompts: 3, model_write_bursts: 3 },
+      contribution: {
+        percent: 0,
+        human_chars: 0,
+        model_chars: 812,
+        human_write_events: 0,
+        coverage: "full",
+      },
+      review: { percent: 67, post_output_prompts: 2, review_events: 0 },
+    });
+    validateHumanInput(hi); // computed objects always validate
+  });
+
+  it("human-only chars → 100, direction/review null (B = 0)", () => {
+    const hi = computeHumanInput(load("session-hi-human-only.jsonl"), A);
+    assert.equal(hi.percent, 100);
+    assert.equal(hi.direction, null);
+    assert.equal(hi.review, null);
+    assert.equal(hi.contribution.human_chars, 500);
+    assert.equal(hi.contribution.human_write_events, 1);
+    validateHumanInput(hi);
+  });
+
+  it("unprompted, unreviewed model output → 0", () => {
+    const hi = computeHumanInput(load("session-hi-unattended.jsonl"), A);
+    assert.equal(hi.percent, 0);
+    assert.equal(hi.direction.percent, 0);
+    assert.equal(hi.direction.model_write_bursts, 1); // one uninterrupted burst
+    assert.equal(hi.review.percent, 0);
+    validateHumanInput(hi);
+  });
+
+  it("rounding is half-up on exact rationals (25.5 → 26, not 25)", () => {
+    const hi = computeHumanInput(load("session-hi-rounding.jsonl"), A);
+    // D = 1 (3 prompts, 1 burst), C = 1/80, R = 0 → 25 + 0.5 + 0 = 25.5
+    assert.equal(hi.percent, 26);
+    assert.equal(roundHalfUpPercent(1, 200), 1); // 0.5 → 1
+    assert.equal(roundHalfUpPercent(1, 300), 0);
+    assert.equal(roundHalfUpPercent(1, 2), 50);
+    validateHumanInput(hi);
+  });
+
+  it("explicit human review event lifts the review component", () => {
+    const hi = computeHumanInput(load("session-hi-review.jsonl"), A);
+    // D = 1, C = 0, R = 1 (one review event per one burst) → 25 + 0 + 35 = 60
+    assert.equal(hi.percent, 60);
+    assert.equal(hi.review.review_events, 1);
+    assert.equal(hi.review.post_output_prompts, 0);
+    validateHumanInput(hi);
+  });
+
+  it("no char evidence → null; never invented (FR-20a)", () => {
+    const events = load("session-claude.jsonl"); // legacy journal, no chars
+    assert.equal(
+      computeHumanInput(events, "tests/fixtures/provenance/out/sealed-notes-claude.md"),
+      null,
+    );
+    const l2 = buildProvenance(events, { generatedAt: FIXED, cwd: root });
+    assert.equal(l2.human_input, null);
+  });
+
+  it("buildProvenance attaches hi1 for the primary artifact", () => {
+    const l2 = buildProvenance(load("session-hi-mixed.jsonl"), {
+      generatedAt: FIXED,
+      cwd: root,
+    });
+    assert.equal(l2.human_input.percent, 48);
+    validateHumanInput(l2.human_input);
+  });
+
+  it("validateHumanInput rejects fudged arithmetic and bad shapes", () => {
+    const good = computeHumanInput(load("session-hi-mixed.jsonl"), A);
+    assert.throws(() => validateHumanInput({ ...good, percent: 75 }), /does not recompute/);
+    assert.throws(
+      () =>
+        validateHumanInput({
+          ...good,
+          review: { ...good.review, review_events: 3 },
+        }),
+      /does not recompute/,
+    );
+    assert.throws(() => validateHumanInput({ ...good, method: "hi2" }), /method/);
+    assert.throws(
+      () => validateHumanInput({ ...good, weights: { direction: 90, contribution: 5, review: 5 } }),
+      /weights/,
+    );
+    assert.throws(() => validateHumanInput({ ...good, contribution: null }), /contribution/);
+    assert.throws(() => validateHumanInput({ ...good, direction: null }), /both/);
+    const floaty = JSON.parse(JSON.stringify(good));
+    floaty.contribution.human_chars = 0.5;
+    assert.throws(() => validateHumanInput(floaty), /non-negative integer/);
   });
 });

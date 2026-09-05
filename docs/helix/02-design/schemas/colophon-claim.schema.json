@@ -65,6 +65,53 @@
           }
         },
         "notes": { "type": ["string", "null"] },
+        "human_input": {
+          "type": "object",
+      "required": ["method", "basis", "percent", "weights", "direction", "contribution", "review"],
+      "properties": {
+        "method": { "const": "hi1" },
+        "basis": { "const": "session-journal" },
+        "percent": { "type": "integer", "minimum": 0, "maximum": 100 },
+        "weights": {
+          "type": "object",
+          "required": ["direction", "contribution", "review"],
+          "properties": {
+            "direction": { "type": "integer", "minimum": 0 },
+            "contribution": { "type": "integer", "minimum": 0 },
+            "review": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "direction": {
+          "type": ["object", "null"],
+          "required": ["percent", "user_prompts", "model_write_bursts"],
+          "properties": {
+            "percent": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "user_prompts": { "type": "integer", "minimum": 0 },
+            "model_write_bursts": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "contribution": {
+          "type": "object",
+          "required": ["percent", "human_chars", "model_chars", "human_write_events", "coverage"],
+          "properties": {
+            "percent": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "human_chars": { "type": "integer", "minimum": 0 },
+            "model_chars": { "type": "integer", "minimum": 0 },
+            "human_write_events": { "type": "integer", "minimum": 0 },
+            "coverage": { "enum": ["full", "partial"] }
+          }
+        },
+        "review": {
+          "type": ["object", "null"],
+          "required": ["percent", "post_output_prompts", "review_events"],
+          "properties": {
+            "percent": { "type": "integer", "minimum": 0, "maximum": 100 },
+            "post_output_prompts": { "type": "integer", "minimum": 0 },
+            "review_events": { "type": "integer", "minimum": 0 }
+          }
+        }
+      }
+        },
         "provenance": {
           "type": "object",
           "required": ["kind", "digest"],

@@ -1,5 +1,44 @@
 # Changelog
 
+## [0.3.0] — 2026-09-04
+
+**Declared human-input percentage (`colophon.human_input`, method `hi1`).**
+CONTRACT-001 → v1.1 (additive; colophon `schema_version` stays `"1"`, existing
+attestations and v1 verifiers unaffected).
+
+### Product
+
+- New optional signed colophon object `human_input`: integer percent of human
+  input computed from the maker's own session journal — direction 25 ·
+  contribution 40 · review 35, exact-rational round-half-up, raw counts
+  recorded so the headline is recomputable (PRD FR-20/FR-20a)
+- Contribution (char evidence) is required for a headline: no journal chars →
+  no percent, omitted — never invented; not a detection score
+- Journal v1 additions: `chars` / `chars_added` / `chars_removed` fields and a
+  human `review` event type; Claude Code importer emits char evidence (old
+  transcripts re-import retroactively) and strips `<system-reminder>` text
+- Seal/claim-build refuse fudged arithmetic (percent must recompute from its
+  own counts; exit 5); `seal --auto` review and `verify` print
+  `human_input=NN% (declared, method hi1)`
+- Quarto footer renders "… · NN% human input" with modifier class
+  `innsigle-seal--hi` + suggested CSS (badge visibility); skills document the
+  evidence fields and the no-tuning rule
+
+### Docs / site
+
+- Normative spec "Human-input measure (hi1)" in session-provenance.md; PRD
+  FR-20/FR-20a; claim-system `mixed` sub-ratio question resolved; non-goals
+  reworded ("no detection scores"; a declared measure is not detection)
+- New golden vectors `claim-hi.*` / `attestation-hi.json`; hi fixtures with
+  0/100/null/rounding-boundary cases
+
+## [0.2.0] — 2026-09-03
+
+PLAN-001 wild-usage fixes: canonical slug attestation naming, idempotent
+self-verifying seal, `status` / `verify --all` / `seal --stale`, Claude Code
+transcript import + provenance sync + `seal --auto`, vendored Quarto
+integration, `innsigle-seal` skill, npm packaging (published via CI on tags).
+
 ## [0.1.0] — 2026-07-29
 
 First public cut of **Innsigle** (content-origin seal CLI + microsite).

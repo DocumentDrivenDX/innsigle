@@ -565,3 +565,92 @@ describe("seal --auto (PLAN-001 B3)", () => {
     rmSync(repo, { recursive: true, force: true });
   });
 });
+
+describe("seal human_input (FR-20 / CONTRACT-001 v1.1)", () => {
+  const transcriptFixture = join(
+    root,
+    "tests/fixtures/provenance/claude-code-transcript.jsonl",
+  );
+
+  function addAutoFixtures(repo) {
+    mkdirSync(join(repo, "posts/demo"), { recursive: true });
+    writeFileSync(join(repo, "posts/demo/index.qmd"), "# demo post\n\nsealed by test\n");
+    const tdir = join(repo, "transcripts");
+    mkdirSync(tdir);
+    copyFileSync(transcriptFixture, join(tdir, "session-one.jsonl"));
+    return tdir;
+  }
+
+  it("--auto --yes seals a consistent human_input and prints it at review + success + verify", async () => {
+    const { repo, env } = setupRepo("hiauto");
+    const tdir = addAutoFixtures(repo);
+    const r = run(
+      ["seal", "posts/demo/index.qmd", "--auto", "--yes", "--transcript-dir", tdir],
+      { cwd: repo, env },
+    );
+    assert.equal(r.status, 0, r.stderr + r.stdout);
+    // PROV-05: the measure is part of what the operator reviews.
+    assert.match(r.stderr, /human_input=\d+% \(method hi1\)/);
+    assert.match(r.stderr, /human_input=\d+% \(declared, method hi1\)/);
+
+    const att = JSON.parse(
+      readFileSync(
+        join(repo, ".innsigle/public/claims/posts-demo-index-qmd.attestation.json"),
+        "utf8",
+      ),
+    );
+    const hi = att.payload.colophon.human_input;
+    assert.ok(hi, "colophon carries human_input");
+    assert.equal(hi.method, "hi1");
+    assert.ok(Number.isInteger(hi.percent) && hi.percent >= 0 && hi.percent <= 100);
+    const { validateHumanInput } = await import("../src/provenance/index.mjs");
+    validateHumanInput(hi); // signed object recomputes from its own counts
+
+    const v = run(["verify", "posts/demo/index.qmd"], { cwd: repo, env });
+    assert.equal(v.status, 0, v.stderr + v.stdout);
+    assert.match(v.stdout, new RegExp(`human_input=${hi.percent}% \\(declared, method hi1\\)`));
+    rmSync(repo, { recursive: true, force: true });
+  });
+
+  it("hand-written colo with fudged human_input percent is refused (exit 5)", () => {
+    const { repo, env } = setupRepo("hifudge");
+    writeFileSync(join(repo, "page.html"), "<html>page</html>\n");
+    const badColo = {
+      schema_version: "1",
+      composition: "model-primary",
+      ingredients: [{ kind: "model", name: "Claude", role: "draft" }],
+      notes: null,
+      human_input: {
+        method: "hi1",
+        basis: "session-journal",
+        percent: 75, // recomputes to 48 from the counts below
+        weights: { direction: 25, contribution: 40, review: 35 },
+        direction: { percent: 100, user_prompts: 3, model_write_bursts: 3 },
+        contribution: {
+          percent: 0,
+          human_chars: 0,
+          model_chars: 812,
+          human_write_events: 0,
+          coverage: "full",
+        },
+        review: { percent: 67, post_output_prompts: 2, review_events: 0 },
+      },
+    };
+    writeFileSync(join(repo, "bad-colo.json"), JSON.stringify(badColo, null, 2) + "\n");
+    const r = run(["seal", "page.html", "--colo", "bad-colo.json"], { cwd: repo, env });
+    assert.equal(r.status, 5, r.stderr + r.stdout);
+    assert.match(r.stderr, /INVALID: colophon human_input percent 75 does not recompute/);
+    assert.equal(
+      existsSync(join(repo, ".innsigle/public/claims/page-html.attestation.json")),
+      false,
+    );
+    // The honest percent seals fine.
+    const goodColo = structuredClone(badColo);
+    goodColo.human_input.percent = 48;
+    writeFileSync(join(repo, "good-colo.json"), JSON.stringify(goodColo, null, 2) + "\n");
+    const r2 = run(["seal", "page.html", "--colo", "good-colo.json"], { cwd: repo, env });
+    assert.equal(r2.status, 0, r2.stderr + r2.stdout);
+    assert.match(r2.stderr, /human_input=48% \(declared, method hi1\)/);
+    rmSync(repo, { recursive: true, force: true });
+  });
+});

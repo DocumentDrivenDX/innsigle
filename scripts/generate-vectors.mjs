@@ -102,6 +102,49 @@ const attestation = {
 };
 writeFileSync(join(root, "attestation.json"), JSON.stringify(attestation, null, 2) + "\n");
 
+// CONTRACT-001 v1.1: second claim carrying colophon.human_input (hi1) so
+// signed-payload JCS coverage includes the field (worked example numbers from
+// session-provenance.md "Human-input measure (hi1)").
+const coloHi = {
+  schema_version: "1",
+  composition: "model-primary",
+  ingredients: [
+    { kind: "model", name: "Claude", role: "draft" },
+    { kind: "human", name: "operator", role: "prompter-reviewer" },
+  ],
+  notes: null,
+  human_input: {
+    method: "hi1",
+    basis: "session-journal",
+    percent: 48,
+    weights: { direction: 25, contribution: 40, review: 35 },
+    direction: { percent: 100, user_prompts: 3, model_write_bursts: 3 },
+    contribution: {
+      percent: 0,
+      human_chars: 0,
+      model_chars: 812,
+      human_write_events: 0,
+      coverage: "full",
+    },
+    review: { percent: 67, post_output_prompts: 2, review_events: 0 },
+  },
+};
+writeFileSync(join(root, "colo-human-input.json"), JSON.stringify(coloHi, null, 2) + "\n");
+const payloadHi = { ...payload, colophon: coloHi };
+writeFileSync(join(root, "claim-hi.json"), JSON.stringify(payloadHi, null, 2) + "\n");
+const canonicalHi = jcs(payloadHi);
+writeFileSync(join(root, "claim-hi.jcs.txt"), canonicalHi + "\n");
+writeFileSync(join(root, "claim-hi.jcs.sha256"), sha256Hex(canonicalHi) + "\n");
+const sigHi = signPayload(payloadHi, privateKeyPem);
+const attestationHi = {
+  payload: payloadHi,
+  payload_encoding: "json",
+  signatures: [
+    { key_id: keyId, alg: "ed25519", sig: b64url(sigHi), signed_at: "2026-07-22T12:00:01Z" },
+  ],
+};
+writeFileSync(join(root, "attestation-hi.json"), JSON.stringify(attestationHi, null, 2) + "\n");
+
 writeFileSync(
   join(root, "expected.json"),
   JSON.stringify(
@@ -110,6 +153,8 @@ writeFileSync(
       key_id: keyId,
       public_key_b64url: b64url(publicKeyRaw),
       claim_jcs_sha256: sha256Hex(canonical),
+      claim_hi_jcs_sha256: sha256Hex(canonicalHi),
+      signature_hi_b64url: b64url(sigHi),
       signature_b64url: b64url(sig),
       note: "TEST KEY ONLY — regenerate with node scripts/generate-vectors.mjs if crypto changes",
     },

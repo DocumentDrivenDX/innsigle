@@ -4,9 +4,9 @@
   "issuer_name": "Azgaard Test",
   "keys": [
     {
-      "key_id": "ed25519:02ba9ce3c4c385cfae5f6bf75bfa3cb7",
+      "key_id": "ed25519:cd89509bfdc9b5cf0df4e462517b59eb",
       "alg": "ed25519",
-      "public_key": "atbIGtWzMAwUHKArqhMPY77b_-v953DdR1mrRjcwLIU",
+      "public_key": "ojCCFbZSoz6xNMD503p6UiWE8kGeb9sprSDeerrgkTE",
       "created_at": "2026-07-22T00:00:00Z",
       "revoked_at": null
     }

@@ -86,7 +86,9 @@ UCs as one brand + claim system.
 
 ### Non-Goals
 
-- AI content detection or decoding SynthID/Video Seal.
+- AI content detection or decoding SynthID/Video Seal (the FR-20 human-input
+  measure is a maker declaration derived from the maker's own session journal,
+  not detection of unknown text).
 - Replacing C2PA/CAI as the media industry standard or camera capture chain.
 - Guaranteeing colophon factual truth (only declaration + optional signature).
 - Multi-tenant accounts, marketplace, or social network in v1.
@@ -147,7 +149,7 @@ UCs as one brand + claim system.
 2. IPTC `digitalSourceType` mapping from colophon fields.
 3. Hosted key directory.
 4. Native platform integrations.
-5. Quantitative percentages in colophon.
+5. ~~Quantitative percentages in colophon.~~ Promoted to FR-20/FR-20a (declared human-input measure).
 6. Optional agent/skill hook that proposes a colophon after a sloptimizer pass
    (still human-confirmed composition state).
 
@@ -167,6 +169,14 @@ UCs as one brand + claim system.
 - **FR-4a** Composition state is independent of prose "AI-tell" cleanliness:
   an editorial rewrite (including sloptimizer) must not, by itself, flip
   `model-primary` or `mixed` to `human-authored`. Guidelines state this boundary.
+- **FR-20** Colophon MAY carry a declared, evidence-derived human-input measure
+  (`human_input`): an integer percent computed from the maker's own session
+  journal by a versioned method (`hi1` weighs direction, contribution, and
+  review), recorded with the raw counts and weights so any holder can
+  recompute it.
+- **FR-20a** The measure is a maker declaration, never a detection verdict:
+  omitted when journal evidence is absent (never invented), and product
+  surfaces MUST NOT present it as an AI-detection score or purity ranking.
 
 ### Subsystem: Visual Seal System
 

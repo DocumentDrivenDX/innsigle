@@ -41,6 +41,15 @@ function userText(content) {
   return null;
 }
 
+/**
+ * Harness-injected <system-reminder> blocks are not human-typed text; strip
+ * them before counting prompt chars (hi1 direction evidence must reflect the
+ * operator, not the harness). Unterminated blocks strip to end of string.
+ */
+function stripSystemReminders(text) {
+  return text.replace(/<system-reminder>[\s\S]*?(?:<\/system-reminder>|$)/g, "");
+}
+
 /** Slash-command wrappers and injected command output are not human prompts. */
 function isCommandWrapper(text) {
   return (
@@ -136,12 +145,13 @@ export function transformTranscript(lines, opts = {}) {
       const text = userText(rec.message.content);
       if (text == null) continue; // tool_result-only line
       if (isCommandWrapper(text)) continue;
-      const trimmed = text.trim();
-      if (!trimmed) continue;
+      const trimmed = stripSystemReminders(text).trim();
+      if (!trimmed) continue; // reminder-only injection, not a human prompt
       // PROV-09: never carry prompt-body text — derived metadata only.
       push({
         type: "user_prompt",
         actor: { kind: "human", name: "operator" },
+        chars: trimmed.length,
         summary: `user prompt (${trimmed.length} chars)`,
       });
       continue;
@@ -175,6 +185,17 @@ export function transformTranscript(lines, opts = {}) {
         if (FILE_WRITE_TOOLS.has(block.name)) {
           const path = input.file_path || input.notebook_path;
           if (!path) continue; // drifted shape: no usable path
+          // hi1 contribution evidence: char counts only (PROV-09 — never the
+          // bodies). Omit fields on drifted shapes rather than guessing.
+          // Edit with replace_all still counts one occurrence (documented
+          // limitation in session-provenance.md).
+          const added =
+            typeof input.content === "string" ? input.content.length
+            : typeof input.new_string === "string" ? input.new_string.length
+            : typeof input.new_source === "string" ? input.new_source.length
+            : null;
+          const removed =
+            typeof input.old_string === "string" ? input.old_string.length : null;
           push({
             type: "file_write",
             actor: { kind: "model", name: model, agent_id: "claude" },
@@ -182,6 +203,8 @@ export function transformTranscript(lines, opts = {}) {
             path,
             by: "model",
             role: "primary-output",
+            ...(added !== null ? { chars_added: added } : {}),
+            ...(removed !== null ? { chars_removed: removed } : {}),
             summary: summarize(`${block.name} ${path}`),
           });
         } else if (AGENT_TOOLS.has(block.name)) {

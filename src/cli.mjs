@@ -14,7 +14,15 @@ import { runInit } from "./init.mjs";
 import { readPrivateKeyPem } from "./onepassword.mjs";
 import { runSeal, resolveVerifyPaths } from "./seal.mjs";
 import { runStatus, runVerifyAll } from "./status.mjs";
-import { loadJournal, mergeJournals, buildProvenance, proposeColo, cmdProvenanceImport, runProvenanceSync } from "./provenance/index.mjs";
+import {
+  loadJournal,
+  mergeJournals,
+  buildProvenance,
+  proposeColo,
+  cmdProvenanceImport,
+  runProvenanceSync,
+  validateHumanInput,
+} from "./provenance/index.mjs";
 
 const EXIT = { ok: 0, usage: 1, badSig: 2, contentMismatch: 3, badKey: 4, badSchema: 5 };
 
@@ -148,6 +156,15 @@ function cmdClaimBuild(args) {
   if (!colophon.composition || !Array.isArray(colophon.ingredients)) {
     console.error("INVALID: colophon schema");
     process.exit(EXIT.badSchema);
+  }
+  // CONTRACT-001 v1.1: a declared human_input must be arithmetically honest.
+  if (colophon.human_input !== undefined) {
+    try {
+      validateHumanInput(colophon.human_input);
+    } catch (e) {
+      console.error(`INVALID: colophon ${e.message}`);
+      process.exit(EXIT.badSchema);
+    }
   }
   colophon.schema_version = "1";
   const uri = arg(args, "--uri");
@@ -328,6 +345,11 @@ function cmdVerify(args) {
   console.log(`issuer=${payload.issuer.id}`);
   console.log(`key_url=${payload.issuer.key_url}`);
   console.log(`composition=${payload.colophon.composition}`);
+  if (payload.colophon.human_input) {
+    console.log(
+      `human_input=${payload.colophon.human_input.percent}% (declared, method ${payload.colophon.human_input.method})`,
+    );
+  }
   console.log(`key_id=${sigBlock.key_id}`);
   process.exit(EXIT.ok);
 }

@@ -26,6 +26,21 @@ CLI short name for the object and commands: **`colo`**.
 | `mixed` | Material human and model authorship both present | M |
 | `model-primary` | Models produced most substantive content | A |
 
+## Human input percent (optional)
+
+A colophon MAY carry `human_input`: an integer percent of human input over the
+sealed work, computed from the maker's **own session journal** by a versioned
+method (`hi1` weighs direction 25 · contribution 40 · review 35). The object
+records the raw counts (prompts, human/model chars, review events), so anyone
+holding it can recompute the headline — tooling refuses a percent that does
+not recompute from its own counts.
+
+Intent over keystrokes: model-drafted work that a human prompted, steered, and
+reviewed scores well; unreviewed autonomous output does not. No journal char
+evidence → no percent (the field is omitted, never invented). It is a
+declaration under the seal, not a detection score — see
+[Non-goals](../../non-goals/).
+
 ## Ingredients
 
 Each line is `kind` (`model` · `tool` · `human` · `other`) plus `name` and optional

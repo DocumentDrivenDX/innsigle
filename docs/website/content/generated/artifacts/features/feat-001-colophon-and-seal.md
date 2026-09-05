@@ -63,6 +63,7 @@ tools appear as tools, not as proof of human authorship.
 **COLO-02.** Colophon lists ingredients with `kind` in `model|tool|human|other` and required `name`.  
 **COLO-03.** Guidelines forbid ranking compositions as better/worse in required fields.  
 **COLO-04.** Editorial rewrite alone MUST NOT change composition to `human-authored` (FR-4a).  
+**COLO-05.** A declared human-input percent (FR-20) renders as colophon chrome text only — no new seal cues, no ranking presentation (FR-3/FR-4).
 **SEAL-01.** SVG seal family ships with base + H + M + A cues.  
 **SEAL-02.** Placement guidance covers docs footer and social mark/link patterns.  
 **SEAL-03.** Mark chrome forbids verified-true / purity traffic-light motifs.

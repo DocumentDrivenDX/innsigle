@@ -161,3 +161,69 @@ describe("claude-code transcript importer (PLAN-001 B1)", () => {
     assert.ok(errs.length >= 1);
   });
 });
+
+describe("hi1 evidence fields from the importer (M2)", () => {
+  it("user_prompt events carry chars matching the summary count", () => {
+    const events = transformTranscriptText(fixtureText);
+    const prompts = events.filter((e) => e.type === "user_prompt");
+    assert.ok(prompts.length >= 1);
+    for (const p of prompts) {
+      assert.ok(Number.isInteger(p.chars) && p.chars > 0);
+      assert.equal(p.summary, `user prompt (${p.chars} chars)`);
+    }
+  });
+
+  it("file_write events carry exact chars_added/chars_removed from tool inputs", () => {
+    // Derive expectations straight from the fixture's tool_use blocks.
+    const expected = [];
+    for (const line of fixtureText.split("\n")) {
+      if (!line.trim()) continue;
+      let rec;
+      try { rec = JSON.parse(line); } catch { continue; }
+      const content = rec?.message?.content;
+      if (!Array.isArray(content)) continue;
+      for (const b of content) {
+        if (b?.type !== "tool_use" || !["Write", "Edit", "NotebookEdit"].includes(b.name)) continue;
+        const input = b.input || {};
+        expected.push({
+          added:
+            typeof input.content === "string" ? input.content.length
+            : typeof input.new_string === "string" ? input.new_string.length
+            : typeof input.new_source === "string" ? input.new_source.length
+            : null,
+          removed: typeof input.old_string === "string" ? input.old_string.length : null,
+        });
+      }
+    }
+    const writes = transformTranscriptText(fixtureText).filter((e) => e.type === "file_write");
+    assert.equal(writes.length, expected.length);
+    writes.forEach((w, i) => {
+      assert.equal(w.chars_added, expected[i].added ?? undefined);
+      assert.equal(w.chars_removed, expected[i].removed ?? undefined);
+    });
+    // The fixture must actually exercise both fields.
+    assert.ok(writes.some((w) => Number.isInteger(w.chars_added)));
+    assert.ok(writes.some((w) => Number.isInteger(w.chars_removed)));
+  });
+
+  it("system-reminder text never counts as human prompt chars", () => {
+    const mk = (content) =>
+      JSON.stringify({
+        type: "user",
+        sessionId: "0f0f0f0f-1111-4222-8333-444455556666",
+        message: { role: "user", content },
+        timestamp: "2026-09-03T10:00:00.000Z",
+      });
+    // Reminder appended to a real prompt: only the human part is counted.
+    const both = transformTranscriptText(
+      mk("Real prompt<system-reminder>injected context, not typed</system-reminder>") + "\n",
+    ).filter((e) => e.type === "user_prompt");
+    assert.equal(both.length, 1);
+    assert.equal(both[0].chars, "Real prompt".length);
+    // Reminder-only injection: no user_prompt at all.
+    const only = transformTranscriptText(
+      mk("<system-reminder>injected context, not typed</system-reminder>") + "\n",
+    ).filter((e) => e.type === "user_prompt");
+    assert.equal(only.length, 0);
+  });
+});

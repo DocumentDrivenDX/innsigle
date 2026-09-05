@@ -58,7 +58,9 @@ innsigle seal <file> --auto --save-colo
 ```
 
 This runs sync, prints the proposed colophon (composition, ingredients,
-user_prompts count), writes it to `<content-dir>/colo.json`, and exits
+user_prompts count, and — when the transcripts carry char evidence — the
+declared `human_input` percent, method hi1), writes it to
+`<content-dir>/colo.json`, and exits
 **without sealing**. **Show that proposal to the operator and wait for their
 approval (PROV-05).** They may edit `colo.json` before you continue.
 
@@ -85,5 +87,9 @@ Optional, after the operator publishes the L2 somewhere:
 - **FR-4a:** NEVER pass `--force-composition` to make model-assisted work
   claim `human-authored`. The CLI refuses laundered compositions; do not work
   around the refusal.
+- **FR-20a:** NEVER edit `human_input` component counts to reach a target
+  percent — the CLI recomputes the headline from the raw counts and refuses
+  fudged arithmetic (exit 5). If the operator disputes the measure, remove
+  the whole `human_input` object instead of tuning it.
 - Never auto-publish L2 provenance, never upload or print private keys.
 - List this skill as a tool ingredient in colophons for sessions where it ran.

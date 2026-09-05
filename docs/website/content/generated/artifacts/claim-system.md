@@ -329,7 +329,7 @@ Exact flags belong in Contract, not here.
 - [x] Absolute issuer `key_url` in every signature + WoT endorsements → **ADR-003**
 - [ ] Type URI host (`innsigle.dev` vs azgaard.net path) when domain bought
 - [ ] Multi-subject release claims for whole site versions (schema allows array)
-- [ ] Whether `mixed` needs sub-ratios (human-led vs model-led)
+- [x] Whether `mixed` needs sub-ratios → **resolved: optional `colophon.human_input` (method hi1)** — see session-provenance.md “Human-input measure (hi1)” and CONTRACT-001 v1.1
 - [ ] P2: map ingredients to IPTC digitalSourceType / C2PA assertions
 
 ## Implementation sequence (suggested)

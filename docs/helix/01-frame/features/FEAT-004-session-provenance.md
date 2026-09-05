@@ -65,6 +65,7 @@ Transcripts stay local unless explicitly published.
 **PROV-08.** Auto-publish of L2 and auto-sign are **off** by default.  
 **PROV-09.** Published L2 MUST NOT require raw transcript bodies; transcript URI is opt-in.  
 **PROV-10.** Skill MUST NOT set `human-authored` solely due to rewrite/cleanup tools.
+**PROV-11.** Tooling MAY compute a human-input measure (`hi1`, FR-20) from journal char/prompt/review evidence; it records raw counts, is omitted when evidence is absent (never invented), and is shown during PROV-05 operator review.
 
 ### Non-Functional
 
@@ -80,6 +81,7 @@ Transcripts stay local unless explicitly published.
 | PROV-05 | Skill offers sign without review | Blocked / requires confirm |
 | PROV-06 | L2 bytes changed after claim | Provenance digest mismatch when checked |
 | PROV-10 | Journal includes sloptimizer only | Composition not upgraded to human-authored |
+| PROV-11 | Journal with char evidence | L2 `human_input` percent recomputable from recorded counts; journal without char fields → measure null in L2 and omitted from colo |
 
 ## Dependencies
 

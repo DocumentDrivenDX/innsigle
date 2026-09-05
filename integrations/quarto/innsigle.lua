@@ -96,19 +96,47 @@ local function colophon_block(claim, raw_json, claim_file, subject)
 
   local composition = html_escape(colo.composition or "unknown")
   local issuer_name = html_escape(issuer.name or "unknown issuer")
+
+  -- Declared human-input measure (CONTRACT-001 v1.1): colophon chrome text
+  -- only — a maker declaration from the session journal, never a detection
+  -- score, and never a new seal cue (COLO-05).
+  local hi = colo.human_input
+  local hi_pct = nil
+  if type(hi) == "table" and type(hi.percent) == "number" then
+    hi_pct = string.format("%d", hi.percent)
+  end
+  local seal_class = hi_pct and "innsigle-seal innsigle-seal--hi" or "innsigle-seal"
+  local summary_extra = hi_pct
+      and (' \194\183 <strong>' .. hi_pct .. '% human input</strong>')
+    or ""
+  local hi_row = ""
+  if hi_pct then
+    local function sub_pct(x)
+      if type(x) == "table" and type(x.percent) == "number" then
+        return string.format("%d%%", x.percent)
+      end
+      return "\226\128\147"
+    end
+    hi_row = '<dt>Human input</dt><dd>' .. hi_pct .. '% \226\128\148 direction '
+      .. sub_pct(hi.direction) .. ' \194\183 contribution ' .. sub_pct(hi.contribution)
+      .. ' \194\183 review ' .. sub_pct(hi.review)
+      .. ' (method ' .. html_escape(tostring(hi.method or "?"))
+      .. ', declared from the maker&#39;s session journal)</dd>'
+  end
   local att_href = "/.well-known/innsigle/claims/" .. claim_file
   local keys_href = html_escape(issuer.key_url or "/.well-known/innsigle/keys.json")
 
   local html = table.concat({
     '<div class="innsigle-colophon">',
-    '<details class="innsigle-seal">',
+    '<details class="', seal_class, '">',
     '<summary title="View Innsigle attestation">',
     SEAL_GLYPH,
-    '<span>Innsigle seal: <strong>', composition, '</strong> by ', issuer_name, '</span>',
+    '<span>Innsigle seal: <strong>', composition, '</strong>', summary_extra, ' by ', issuer_name, '</span>',
     '</summary>',
     '<div class="innsigle-viewer">',
     '<dl>',
     '<dt>Composition</dt><dd>', composition, '</dd>',
+    hi_row,
     '<dt>Issuer</dt><dd>', issuer_name, ' <code>', html_escape(issuer.id or ""), '</code></dd>',
     '<dt>Signing key</dt><dd><a href="', keys_href, '"><code>',
     html_escape(truncate_middle(issuer.key_id or "", 12)), '</code></a></dd>',

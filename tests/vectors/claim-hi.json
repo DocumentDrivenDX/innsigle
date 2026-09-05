@@ -27,16 +27,38 @@
         "role": "draft"
       },
       {
-        "kind": "tool",
-        "name": "sloptimizer",
-        "role": "rewrite"
-      },
-      {
         "kind": "human",
         "name": "operator",
-        "role": "structure-edit"
+        "role": "prompter-reviewer"
       }
     ],
-    "notes": null
+    "notes": null,
+    "human_input": {
+      "method": "hi1",
+      "basis": "session-journal",
+      "percent": 48,
+      "weights": {
+        "direction": 25,
+        "contribution": 40,
+        "review": 35
+      },
+      "direction": {
+        "percent": 100,
+        "user_prompts": 3,
+        "model_write_bursts": 3
+      },
+      "contribution": {
+        "percent": 0,
+        "human_chars": 0,
+        "model_chars": 812,
+        "human_write_events": 0,
+        "coverage": "full"
+      },
+      "review": {
+        "percent": 67,
+        "post_output_prompts": 2,
+        "review_events": 0
+      }
+    }
   }
 }

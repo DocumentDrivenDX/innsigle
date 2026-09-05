@@ -12,7 +12,10 @@ work. Saying what we are *not* keeps the seal honest.
 
 We do **not** ship:
 
-- **An AI detector**: no scores, no SynthID decode, no authorship percentages
+- **An AI detector**: no detection scores, no SynthID decode. A sealed
+  colophon may *declare* a human-input percentage computed from the maker's
+  own session journal — a declaration under the seal, never a detection
+  verdict about unknown text
 - **A C2PA replacement**: media-pipeline Content Credentials stay in their lane
 - **A purity product**: human is not the only first-class state
 - **A guarantee of truth**: declaration plus optional signature only

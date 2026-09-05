@@ -18,7 +18,7 @@ created: 2026-07-22
 
 **Contract ID:** CONTRACT-001  
 **Type:** schema + CLI  
-**Version:** v1  
+**Version:** v1.1  
 **Status:** draft (normative for implementers; bump version on breaking field changes)  
 **Related:** ADR-001; ADR-003; claim-system.md; PRD FR-1–4a, FR-8–12, FR-18–19
 
@@ -77,6 +77,7 @@ A claim payload MUST be a JSON object with:
 | `composition` | string | yes | MUST be one of `human-authored`, `mixed`, `model-primary` |
 | `ingredients` | array | yes | MAY be empty only if composition is `human-authored` and notes explain; SHOULD list tools/models when used |
 | `notes` | string or null | no | Free text; MUST NOT replace required composition honesty |
+| `human_input` | object | no | Declared human-input measure (v1.1); when present MUST satisfy the human_input rules below. MUST be omitted (never null) when journal evidence is absent |
 
 #### ingredient object
 
@@ -87,6 +88,28 @@ A claim payload MUST be a JSON object with:
 | `role` | string | no | e.g. `draft`, `edit`, `rewrite` |
 | `version` | string or null | no | Model/tool version when known |
 | `uri` | string | no | Link to tool/model docs |
+
+#### human_input object (v1.1)
+
+| Element | Type | Required | Rules |
+|---------|------|----------|-------|
+| `method` | string | yes | MUST be `"hi1"` in this contract version |
+| `basis` | string | yes | MUST be `"session-journal"` |
+| `percent` | integer | yes | 0–100. MUST equal the round-half-up recomputation from the component raw counts and `weights` over non-null components (exact rationals, not floats) |
+| `weights` | object | yes | Integer weights per component; MUST match the method's published weights (`hi1`: direction 25, contribution 40, review 35) |
+| `direction` | object or null | yes | `{percent, user_prompts, model_write_bursts}`, all integers ≥ 0 |
+| `contribution` | object or null | yes | `{percent, human_chars, model_chars, human_write_events, coverage}`; `coverage` MUST be `full` or `partial` |
+| `review` | object or null | yes | `{percent, post_output_prompts, review_events}`, all integers ≥ 0 |
+
+All numeric fields MUST be integers (JCS float hazards, ADR-001).
+`contribution` MUST be non-null — char evidence is the required core of the
+measure; a headline computed from direction/review alone would overstate human
+input on works with no char evidence. `direction` and `review` MUST be null
+when and only when there are no model write bursts. The measure is a **maker declaration derived from
+the maker's own session journal** (see session-provenance.md "Human-input
+measure (hi1)") — implementations MUST NOT present it as an AI-detection
+verdict about the text (PRD FR-20a), and MUST NOT alter component counts to
+reach a target percent.
 
 **Composition integrity:** Implementations MUST NOT offer a mode that sets
 `composition` to `human-authored` solely because an editorial tool (including
@@ -239,7 +262,8 @@ Binary name: `innsigle` (package may ship as such).
 
 MUST include lines sufficient to see: result keyword (`VALID` / `INVALID`),
 issuer id, composition, and failure reason when invalid. MUST NOT print AI
-detection scores.
+detection scores. The declared `colophon.human_input` measure MAY be printed
+with its method tag (it is a maker declaration, not a detection score).
 
 ## Precedence and Compatibility
 
@@ -252,6 +276,9 @@ detection scores.
   signed; producers SHOULD avoid unknown fields in v1).
 - Deprecation: announce in release notes; keep verify for prior `innsigle: "1"`
   for at least one minor series after a bump.
+- v1.1 adds the optional `colophon.human_input` object. Additive: colophon
+  `schema_version` stays `"1"`; v1 verifiers ignore it under the unknown-field
+  rule and existing attestations remain valid.
 
 ## Error Semantics
 

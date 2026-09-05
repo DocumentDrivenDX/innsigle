@@ -22,7 +22,8 @@
         "file_write",
         "file_read",
         "model_switch",
-        "note"
+        "note",
+        "review"
       ]
     },
     "actor": {
@@ -41,6 +42,10 @@
     "path": { "type": "string" },
     "bytes": { "type": "integer", "minimum": 0 },
     "by": { "enum": ["human", "model", "mixed", "unknown"] },
+    "chars": { "type": "integer", "minimum": 0 },
+    "chars_added": { "type": "integer", "minimum": 0 },
+    "chars_removed": { "type": "integer", "minimum": 0 },
+    "verdict": { "enum": ["approved", "changes-requested"] },
     "tool": { "type": "string" },
     "skill": { "type": "string" },
     "role": { "type": "string" },
@@ -62,6 +67,15 @@
     {
       "if": { "properties": { "type": { "const": "assistant_turn" } } },
       "then": { "required": ["model"] }
+    },
+    {
+      "if": { "properties": { "type": { "const": "review" } } },
+      "then": {
+        "required": ["summary"],
+        "properties": {
+          "actor": { "properties": { "kind": { "const": "human" } } }
+        }
+      }
     }
   ]
 }

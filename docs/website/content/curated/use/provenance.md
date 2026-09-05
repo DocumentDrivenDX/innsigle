@@ -33,6 +33,18 @@ You review · optionally publish the record · sign claim to content bytes
 
 Signing stays a separate, deliberate step. Auto-sign is out of scope.
 
+## Human-input percent
+
+When journal events carry char evidence (`user_prompt.chars`,
+`file_write.chars_added`), the session record and proposed colophon include
+`human_input`: an integer percent from method `hi1` — **direction** (prompts
+per model write burst) · **contribution** (human vs model chars) · **review**
+(post-output prompts and explicit human `review` events). A sealed page's
+footer can then read "model-primary · **48% human input**". Raw counts ride
+along, so the headline is recomputable by anyone; journals without char
+evidence get no percent. Spec: [human-input measure
+(hi1)](../../reference/artifacts/session-provenance/).
+
 ## Layers
 
 | Layer | What | Public? |

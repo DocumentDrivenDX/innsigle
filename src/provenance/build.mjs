@@ -5,6 +5,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { sha256Hex } from "../crypto.mjs";
 import { redactEvents } from "./redact.mjs";
+import { computeHumanInput } from "./human-input.mjs";
 
 /**
  * @param {object[]} events validated journal events
@@ -117,6 +118,10 @@ export function buildProvenance(events, opts) {
     throw new Error("no artifacts: journal needs file_write or --artifact");
   }
 
+  // hi1 (FR-20): measured over the primary artifact; null without char
+  // evidence — never invented.
+  const human_input = computeHumanInput(use, artifacts[0].path);
+
   const starts = use.filter((e) => e.type === "session_start");
   const ends = use.filter((e) => e.type === "session_end");
   const times = use.map((e) => e.t).sort();
@@ -180,6 +185,7 @@ export function buildProvenance(events, opts) {
       approx_input_tokens: null,
       approx_output_tokens: null,
     },
+    human_input,
     models: [...models.values()],
     skills: [...skills.values()],
     tools: [...tools.values()],

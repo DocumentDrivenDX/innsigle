@@ -221,7 +221,7 @@ Or embed as a **document** referenced from a colophon claim (preferred for docs)
 
 - Entries are **summaries**, not full message bodies (default).  
 - `type` enum (open set with documented core):  
-  `user_prompt` | `assistant_turn` | `tool_call` | `skill_call` | `file_write` | `file_read` | `model_switch` | `note`  
+  `user_prompt` | `assistant_turn` | `tool_call` | `skill_call` | `file_write` | `file_read` | `model_switch` | `note` | `review`  
 - Max recommended published timeline length: **50** events (truncate with `metrics` still full).  
 - Optional `transcript`: `{ "digest", "uri" }` only if operator explicitly publishes raw/redacted log.
 
@@ -237,6 +237,85 @@ Or embed as a **document** referenced from a colophon claim (preferred for docs)
 
 **Honesty:** Counts are best-effort from the harness. Document generator limits in
 `generator` / `privacy.notes`. Do not claim forensic completeness.
+
+## Human-input measure (hi1)
+
+An optional, declared measure of human input over an artifact, computed
+deterministically from the merged redacted journal (FR-20). It summarizes how
+much human **direction**, **contribution**, and **review** shaped the artifact.
+It is **not** a detection score (FR-20a), and it is never invented: no journal
+evidence → no number.
+
+Journal inputs: `user_prompt.chars`; `file_write.chars_added` /
+`chars_removed`; `file_write` with `by: "human"` for operator edits; and the
+`review` event type (human actor required; optional `path` and
+`verdict: approved | changes-requested`).
+
+Derived per artifact A (writesA = `file_write` events matching A's path, in
+merged journal order):
+
+| Symbol | Meaning |
+|--------|---------|
+| `M` | Σ `chars_added` over writesA with `by` `model`/`mixed` (`mixed` counts as model — conservative, FR-4a spirit) |
+| `H` | Σ `chars_added` over writesA with `by: human` |
+| `B` | Model write **bursts**: maximal runs of model writes with no intervening `user_prompt` |
+| `P` | `user_prompt` count (session scope) |
+| `Rp` | `user_prompt` events after the first model write in writesA |
+| `Re` | `review` events matching A's path (or carrying no `path`) |
+
+Components (exact rationals in [0,1]):
+
+| Component | Formula | null when |
+|-----------|---------|-----------|
+| direction `D` | `min(1, P/B)` | `B = 0` (nothing to direct) |
+| contribution `C` | `H/(H+M)` | `H + M = 0` (no char evidence) |
+| review `R` | `min(1, (Rp+Re)/B)` | `B = 0` |
+
+Contribution records `coverage: full | partial` — `partial` when any model
+write in writesA lacks `chars_added` (computed over known chars; the flag keeps
+the claim honest).
+
+Headline: weights `direction 25, contribution 40, review 35` (integers, sum
+100; a governance choice versioned by the method string — a reweighting ships
+as `hi2`, never as a silent change to `hi1`).
+
+```text
+percent = round_half_up( 100 · Σ wᵢ·compᵢ / Σ wᵢ )   over non-null components
+```
+
+Rounding is exact-rational round-half-up (BigInt in the reference
+implementation) — never floating point; every recorded number is an integer,
+so the object is JCS-safe (ADR-001). The headline requires char evidence:
+when `contribution` is null the whole measure is null (direction/review alone
+would inflate the number on works with no char evidence), and a null measure
+is **omitted** from L1 entirely — the colophon never carries an invented
+number. `direction` and `review` are null only when `B = 0` (nothing to
+direct or review; possible non-null sets are `{C}` and `{D, C, R}`).
+An `Edit` with `replace_all` counts its chars once — a documented importer
+limitation.
+
+Worked example: `P=3`, `B=3` → `D=1`; `H=0`, `M=812` → `C=0`; `Rp=2`, `Re=0`
+→ `R=2/3`; headline `round(25·1 + 40·0 + 35·⅔) = round(48.33…) = 48`.
+
+Record shape (identical object on L2 `human_input` and the optional colophon
+`human_input`):
+
+```json
+"human_input": {
+  "method": "hi1", "basis": "session-journal", "percent": 48,
+  "weights": { "direction": 25, "contribution": 40, "review": 35 },
+  "direction":    { "percent": 100, "user_prompts": 3, "model_write_bursts": 3 },
+  "contribution": { "percent": 0, "human_chars": 0, "model_chars": 812,
+                    "human_write_events": 0, "coverage": "full" },
+  "review":       { "percent": 67, "post_output_prompts": 2, "review_events": 0 }
+}
+```
+
+Sub-`percent` fields are display conveniences; seal-time validation and
+verifiers recompute the headline from the raw counts (CONTRACT-001 v1.1
+consistency rule). Intent over keystrokes: model-drafted work that was
+prompted, steered, and reviewed by a human scores well; unreviewed autonomous
+output does not — char share alone is deliberately only 40% of the weight.
 
 ## L1 colo extension — pointer to L2
 
@@ -258,6 +337,9 @@ Additive fields on colophon (schema_version stays `"1"` with optional object; or
 
 **Canonicalization for L2 digest:** JCS (RFC 8785) of the provenance document,
 same spirit as ADR-001, so independent verifiers agree.
+
+With CONTRACT-001 v1.1 the colophon MAY also carry the optional `human_input`
+object (see "Human-input measure (hi1)" above); `schema_version` stays `"1"`.
 
 ### Binding strategies (both allowed)
 
@@ -332,6 +414,7 @@ Skill wrappers (Claude Code, Cursor, etc.) call these or embed equivalent logic.
 |-----------|--------|
 | “This L2 was signed by issuer K for these digests” | Yes, if claim verifies |
 | “The metrics are complete and ungameable” | No — harness-mediated |
+| “The human-input percent is exact” | No — a declaration recomputable from recorded counts; harness-mediated, not forensic. Padded prompts or review events can inflate capped components |
 | “The model is named honestly” | Declaration + optional automation, not oracle |
 | “Therefore content is true” | **No** |
 

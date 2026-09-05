@@ -14,6 +14,7 @@ const TYPES = new Set([
   "file_read",
   "model_switch",
   "note",
+  "review",
 ]);
 
 export function parseJournal(text) {
@@ -58,6 +59,20 @@ function validateEvent(ev, line) {
   }
   if (ev.type === "assistant_turn" && !ev.model) {
     throw new Error(`line ${line}: assistant_turn requires model`);
+  }
+  if (ev.type === "review") {
+    if (!ev.summary) throw new Error(`line ${line}: review requires summary`);
+    if (ev.actor?.kind !== "human") {
+      throw new Error(`line ${line}: review requires a human actor`);
+    }
+    if (ev.verdict !== undefined && !["approved", "changes-requested"].includes(ev.verdict)) {
+      throw new Error(`line ${line}: review verdict must be approved|changes-requested`);
+    }
+  }
+  for (const k of ["chars", "chars_added", "chars_removed"]) {
+    if (ev[k] !== undefined && (!Number.isInteger(ev[k]) || ev[k] < 0)) {
+      throw new Error(`line ${line}: ${k} must be a non-negative integer`);
+    }
   }
 }
 

@@ -10,7 +10,12 @@ use the Innsigle CLI to build L2 provenance and propose a colophon.
 
 ## Do
 
-1. Append versioned JSONL events (`session-journal-event` schema).  
+1. Append versioned JSONL events (`session-journal-event` schema).
+   Carry the hi1 evidence fields (FR-20): `chars` on `user_prompt`,
+   `chars_added`/`chars_removed` on `file_write`, and emit a `review` event
+   (human actor, required `summary`, optional `path` and
+   `verdict: approved|changes-requested`) when the operator reviews an
+   artifact and confirms it matches their intent.  
 2. On request (or session end), run:
 
 ```bash
