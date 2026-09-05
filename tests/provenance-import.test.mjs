@@ -289,6 +289,9 @@ describe("Bash heredoc writes count as file_write (shell-first agents)", () => {
       [],
     );
     assert.deepEqual(extractHeredocWrites("ls -la"), []);
+    // unexpanded variables cannot be attributed to a file
+    assert.deepEqual(extractHeredocWrites(`cat > $S/colo.json <<'EOF'\n{}\nEOF`), []);
+    assert.deepEqual(extractHeredocWrites("cat > \"$W/x.md\" <<'EOF'\nhi\nEOF"), []);
     assert.deepEqual(extractHeredocWrites(undefined), []);
   });
 

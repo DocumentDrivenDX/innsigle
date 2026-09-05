@@ -74,6 +74,9 @@ export function extractHeredocWrites(command) {
       const start = m.index + m[0].length;
       const body = heredocBody(command.slice(start), delim, dash);
       if (!body) continue;
+      // An unexpanded variable or substitution in the path cannot be attributed
+      // to a file; measuring it would credit chars to a name that never existed.
+      if (/[$`]/.test(path)) continue;
       found.push({ at: m.index, write: { path, chars: body.chars, append } });
       re.lastIndex = start + body.consumed;
     }
