@@ -13,7 +13,7 @@ import { homedir, tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
-import { defaultTranscriptDir, sessionTouchesFile } from "../src/provenance/sync.mjs";
+import { defaultTranscriptDir, historicalPaths, sessionTouchesFile } from "../src/provenance/sync.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const cli = join(root, "src/cli.mjs");
@@ -274,6 +274,63 @@ describe("provenance sync (PLAN-001 B2)", () => {
     );
     assert.notEqual(r.status, 0);
     assert.match(r.stderr, /INVALID: no Claude Code transcript dir/);
+    rmSync(repo, { recursive: true, force: true });
+  });
+});
+
+describe("provenance sync follows renames (git log --follow)", () => {
+  const git = (repo, ...args) =>
+    spawnSync(
+      "git",
+      ["-c", "user.name=t", "-c", "user.email=t@example.com", "-c", "commit.gpgsign=false", ...args],
+      { cwd: repo, encoding: "utf8" },
+    );
+
+  function setupRenamedRepo() {
+    const repo = mkdtempSync(join(tmpdir(), "innsigle-sync-rename-"));
+    assert.equal(git(repo, "init", "-q").status, 0);
+    mkdirSync(join(repo, "posts/old-slug"), { recursive: true });
+    writeFileSync(join(repo, "posts/old-slug/index.qmd"), "# post\n\nfirst draft\n");
+    assert.equal(git(repo, "add", "-A").status, 0);
+    assert.equal(git(repo, "commit", "-q", "-m", "draft").status, 0);
+    assert.equal(git(repo, "mv", "posts/old-slug", "posts/new-slug").status, 0);
+    assert.equal(git(repo, "commit", "-q", "-m", "rename").status, 0);
+    const tdir = join(repo, "transcripts");
+    mkdirSync(tdir);
+    writeFileSync(
+      join(tdir, "session-before-rename.jsonl"),
+      makeTranscript({
+        sessionId: "55555555-5555-4555-8555-555555555555",
+        model: "claude-fable-5",
+        path: "posts/old-slug/index.qmd",
+        hour: "09",
+      }),
+    );
+    return { repo, tdir };
+  }
+
+  it("lists earlier paths of a renamed file and nothing for untracked or non-git", () => {
+    const { repo } = setupRenamedRepo();
+    assert.deepEqual(historicalPaths(repo, "posts/new-slug/index.qmd"), ["posts/old-slug/index.qmd"]);
+    assert.deepEqual(historicalPaths(repo, "posts/never-tracked.qmd"), []);
+    const plain = mkdtempSync(join(tmpdir(), "innsigle-nogit-"));
+    assert.deepEqual(historicalPaths(plain, "a.md"), []);
+    rmSync(repo, { recursive: true, force: true });
+    rmSync(plain, { recursive: true, force: true });
+  });
+
+  it("attributes writes recorded under the old path to the renamed artifact", () => {
+    const { repo, tdir } = setupRenamedRepo();
+    const r = run(["provenance", "sync", "posts/new-slug/index.qmd", "--transcript-dir", tdir], {
+      cwd: repo,
+    });
+    assert.equal(r.status, 0, r.stderr + r.stdout);
+    const l2 = JSON.parse(
+      readFileSync(join(repo, ".innsigle/provenance/posts-new-slug-index-qmd.l2.json"), "utf8"),
+    );
+    assert.equal(l2.artifacts.length, 1);
+    assert.ok(l2.artifacts[0].path.endsWith("posts/new-slug/index.qmd"));
+    assert.equal(l2.metrics.files_touched, 1);
     rmSync(repo, { recursive: true, force: true });
   });
 });

@@ -141,6 +141,8 @@ innsigle provenance import claude-code session.jsonl --out journal.jsonl  # one 
 
 Your Claude Code transcripts already record who wrote what.
 `innsigle provenance sync <content-file>` finds the repo's transcripts
+(following the file through `git mv` renames, and counting Bash heredoc
+writes such as `cat > file <<'EOF'` alongside `Write`/`Edit`)
 (`~/.claude/projects/<cwd with every non-alphanumeric character → "-">/`,
 e.g. `/home/erik/my.site` → `-home-erik-my-site`), imports every session whose file
 writes touched the content file — summaries and counts only, never message

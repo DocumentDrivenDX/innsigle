@@ -1,5 +1,17 @@
 # Changelog
 
+## [Unreleased]
+
+### Product
+
+- Claude Code importer counts Bash heredoc writes (`cat > path <<'EOF'`,
+  `cat <<EOF > path`, `tee`, `>>`, `<<-`) as model `file_write` events with
+  `chars_added` = heredoc body length, so shell-first sessions carry char
+  evidence for `human_input`; indirect writers (python heredocs) stay
+  `tool_call`; bodies are measured, never carried (PROV-09)
+- `provenance sync` follows renames via `git log --follow`: writes recorded
+  under a content file's earlier paths attribute to the current artifact
+
 ## [0.3.1] — 2026-09-04
 
 Operator/agent surfacing for the hi1 human-input measure (no behavior change):
@@ -10,6 +22,7 @@ Operator/agent surfacing for the hi1 human-input measure (no behavior change):
 - README "Human-input percent" section; init's `.innsigle/AGENTS.md` template
   states the no-tuning rule and the shape-reference command
 
+||||||| parent of da9c254 (provenance: count Bash heredoc writes; follow renames in sync)
 ## [0.3.0] — 2026-09-04
 
 **Declared human-input percentage (`colophon.human_input`, method `hi1`).**

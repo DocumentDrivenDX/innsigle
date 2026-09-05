@@ -21,6 +21,7 @@ import {
   readFileSync,
   writeFileSync,
 } from "node:fs";
+import { spawnSync } from "node:child_process";
 import { homedir } from "node:os";
 import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { sha256Hex } from "../crypto.mjs";
@@ -80,10 +81,43 @@ function pathMatches(eventPath, relPath, repoRoot) {
   return false;
 }
 
-/** Does this journal contain a file_write touching the content file? */
-export function sessionTouchesFile(events, relPath, repoRoot) {
+/**
+ * Earlier repo-relative paths of the content file, from `git log --follow`.
+ * A renamed post keeps its provenance: writes recorded under the old path are
+ * the same artifact. Empty when git is unavailable, the repo has no history,
+ * or the file is untracked. Never a hard failure.
+ */
+export function historicalPaths(repoRoot, relPath) {
+  try {
+    const r = spawnSync(
+      "git",
+      ["log", "--follow", "--name-only", "--format=", "--", relPath],
+      { cwd: repoRoot, encoding: "utf8" },
+    );
+    if (r.status !== 0 || !r.stdout) return [];
+    const seen = new Set();
+    for (const line of r.stdout.split("\n")) {
+      const p = line.trim().replace(/\\/g, "/");
+      if (p && p !== relPath) seen.add(p);
+    }
+    return [...seen];
+  } catch {
+    return [];
+  }
+}
+
+function matchesAny(eventPath, relPath, repoRoot, aliases) {
+  if (pathMatches(eventPath, relPath, repoRoot)) return true;
+  return aliases.some((a) => pathMatches(eventPath, a, repoRoot));
+}
+
+/**
+ * Does this journal contain a file_write touching the content file, under its
+ * current path or any earlier path it was renamed from?
+ */
+export function sessionTouchesFile(events, relPath, repoRoot, aliases = []) {
   return events.some(
-    (e) => e.type === "file_write" && e.path && pathMatches(e.path, relPath, repoRoot),
+    (e) => e.type === "file_write" && e.path && matchesAny(e.path, relPath, repoRoot, aliases),
   );
 }
 
@@ -114,6 +148,7 @@ export function syncProvenance(opts) {
     );
   }
   const rel = contentRelPath(repoRoot, contentPath);
+  const aliases = historicalPaths(repoRoot, rel);
 
   const files = readdirSync(transcriptDir)
     .filter((f) => f.endsWith(".jsonl"))
@@ -127,7 +162,7 @@ export function syncProvenance(opts) {
     } catch {
       continue; // unreadable/drifted transcript never blocks the sync
     }
-    if (!sessionTouchesFile(events, rel, repoRoot)) continue;
+    if (!sessionTouchesFile(events, rel, repoRoot, aliases)) continue;
     lists.push(events);
     sessions.push(f);
   }
@@ -141,7 +176,7 @@ export function syncProvenance(opts) {
   // repo-relative path so one content file is one artifact across sessions.
   const normalized = lists.map((events) =>
     events.map((e) =>
-      e.type === "file_write" && e.path && pathMatches(e.path, rel, repoRoot)
+      e.type === "file_write" && e.path && matchesAny(e.path, rel, repoRoot, aliases)
         ? { ...e, path: rel }
         : e,
     ),
@@ -164,7 +199,7 @@ export function syncProvenance(opts) {
   const body = JSON.stringify(l2, null, 2) + "\n";
   mkdirSync(dirname(outPath), { recursive: true });
   writeFileSync(outPath, body);
-  return { l2, outPath, body, digestHex: sha256Hex(body), sessions, rel };
+  return { l2, outPath, body, digestHex: sha256Hex(body), sessions, rel, aliases };
 }
 
 /**

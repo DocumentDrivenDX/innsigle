@@ -17,6 +17,72 @@ import { redactEvents } from "./redact.mjs";
 export const SUMMARY_MAX = 120;
 
 const FILE_WRITE_TOOLS = new Set(["Write", "Edit", "NotebookEdit"]);
+
+/**
+ * Bash heredoc file writes. Agents running in shell-first modes write whole
+ * files as `cat > path <<'EOF' … EOF` (or `cat <<EOF > path`, `tee path <<EOF`,
+ * `>>` append, `<<-`) instead of calling Write/Edit. The heredoc body is
+ * model-written text and counts toward contribution exactly like a Write.
+ * Only the byte count is measured; bodies never leave the transcript
+ * (PROV-09). Unterminated heredocs and scripts that write files indirectly
+ * (a python3 heredoc calling open().write) are not measurable and stay
+ * ordinary tool_call events.
+ */
+const HEREDOC_REDIRECT_FIRST =
+  /(?:^|[\s;&|(])(?:cat\s*(>>?)\s*|tee(?:\s+(-a))?\s+)(?:"([^"\n]+)"|'([^'\n]+)'|([^\s<>|&;'"]+))\s*<<(-)?\s*(?:"(\w+)"|'(\w+)'|(\w+))[^\n]*\n/gm;
+const HEREDOC_REDIRECT_LAST =
+  /(?:^|[\s;&|(])cat\s*<<(-)?\s*(?:"(\w+)"|'(\w+)'|(\w+))\s*(>>?)\s*(?:"([^"\n]+)"|'([^'\n]+)'|([^\s<>|&;'"]+))[^\n]*\n/gm;
+
+function heredocBody(rest, delim, dash) {
+  let bodyLen = 0;
+  let consumed = 0;
+  for (const line of rest.split("\n")) {
+    consumed += line.length + 1;
+    const probe = dash ? line.replace(/^\t+/, "") : line;
+    if (probe === delim) {
+      return { chars: Math.max(0, bodyLen - 1), consumed };
+    }
+    bodyLen += line.length + 1;
+  }
+  return null; // unterminated: not a write we can measure
+}
+
+/** @returns {{path: string, chars: number, append: boolean}[]} */
+export function extractHeredocWrites(command) {
+  const out = [];
+  if (typeof command !== "string" || !command.includes("<<")) return out;
+  const forms = [
+    { re: HEREDOC_REDIRECT_FIRST, pick: (m) => ({
+        append: m[1] === ">>" || Boolean(m[2]),
+        path: m[3] ?? m[4] ?? m[5],
+        dash: Boolean(m[6]),
+        delim: m[7] ?? m[8] ?? m[9],
+      }) },
+    { re: HEREDOC_REDIRECT_LAST, pick: (m) => ({
+        dash: Boolean(m[1]),
+        delim: m[2] ?? m[3] ?? m[4],
+        append: m[5] === ">>",
+        path: m[6] ?? m[7] ?? m[8],
+      }) },
+  ];
+  const found = [];
+  for (const { re, pick } of forms) {
+    re.lastIndex = 0;
+    let m;
+    while ((m = re.exec(command))) {
+      const { path, delim, dash, append } = pick(m);
+      const start = m.index + m[0].length;
+      const body = heredocBody(command.slice(start), delim, dash);
+      if (!body) continue;
+      found.push({ at: m.index, write: { path, chars: body.chars, append } });
+      re.lastIndex = start + body.consumed;
+    }
+  }
+  // Two regex passes; report writes in command order.
+  found.sort((a, b) => a.at - b.at);
+  for (const f of found) out.push(f.write);
+  return out;
+}
 const AGENT_TOOLS = new Set(["Skill", "Agent", "Task"]);
 
 /** Truncate to a short single-line summary (PROV-09: never full bodies). */
@@ -207,6 +273,19 @@ export function transformTranscript(lines, opts = {}) {
             ...(removed !== null ? { chars_removed: removed } : {}),
             summary: summarize(`${block.name} ${path}`),
           });
+        } else if (block.name === "Bash" && extractHeredocWrites(input.command).length) {
+          for (const w of extractHeredocWrites(input.command)) {
+            push({
+              type: "file_write",
+              actor: { kind: "model", name: model, agent_id: "claude" },
+              model,
+              path: w.path,
+              by: "model",
+              role: "primary-output",
+              chars_added: w.chars,
+              summary: summarize(`Bash heredoc ${w.append ? ">>" : ">"} ${w.path}`),
+            });
+          }
         } else if (AGENT_TOOLS.has(block.name)) {
           const skill = input.skill || input.name || block.name;
           push({
