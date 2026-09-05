@@ -334,6 +334,18 @@ describe("mid-turn queued messages count as user prompts", () => {
     const events = transformTranscriptText(lines);
     const prompts = events.filter((e) => e.type === "user_prompt");
     assert.equal(prompts.length, 2);
+    // A queued message later delivered as a user record counts ONCE (at
+    // delivery) — enqueue+delivery double counting would inflate the measure.
+    const sid2 = "0c0c0c0c-1111-4222-8333-444455556666";
+    const delivered = [
+      { type: "queue-operation", operation: "enqueue", sessionId: sid2, timestamp: "2026-09-04T11:00:00.000Z",
+        content: "Tighten the intro." },
+      { type: "user", sessionId: sid2, uuid: `${sid2}-u1`, timestamp: "2026-09-04T11:00:10.000Z",
+        message: { role: "user", content: "Tighten the intro." } },
+    ].map((r) => JSON.stringify(r)).join("\n") + "\n";
+    const once = transformTranscriptText(delivered).filter((e) => e.type === "user_prompt");
+    assert.equal(once.length, 1);
+    assert.doesNotMatch(once[0].summary, /queued mid-turn/);
     assert.equal(prompts[1].chars, "This sentence is slop, rewrite it.".length);
     assert.equal(prompts[1].actor.kind, "human");
     assert.match(prompts[1].summary, /queued mid-turn/);

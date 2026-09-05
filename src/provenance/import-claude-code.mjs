@@ -175,6 +175,21 @@ export function transformTranscript(lines, opts = {}) {
   const firstT = timestamps[0] || "1970-01-01T00:00:00Z";
   const lastT = timestamps[timestamps.length - 1] || firstT;
 
+  // A message the operator queues mid-turn is usually delivered later as a
+  // normal `user` record. Counting it at enqueue AND at delivery would
+  // inflate direction/review (in sampled real transcripts ~42% of enqueues
+  // are also delivered). Count those once, at delivery; count an enqueue only
+  // when its text never lands in a user record (e.g. consumed by an
+  // interrupt). Containment matching errs toward under-counting — never
+  // inflation.
+  const deliveredUserTexts = [];
+  for (const rec of records) {
+    if (rec.__unparseable || rec.type !== "user" || !rec.message || rec.isMeta) continue;
+    const text = userText(rec.message.content);
+    if (text != null) deliveredUserTexts.push(text);
+  }
+  const deliveredAsUser = (queued) => deliveredUserTexts.some((u) => u.includes(queued));
+
   const events = [];
   let seq = 0;
   let t = firstT;
@@ -319,6 +334,7 @@ export function transformTranscript(lines, opts = {}) {
     if (rec.type === "queue-operation" && rec.operation === "enqueue") {
       const queued = typeof rec.content === "string" ? stripSystemReminders(rec.content).trim() : "";
       if (!queued) continue;
+      if (deliveredAsUser(queued)) continue; // counted at delivery, not twice
       push({
         type: "user_prompt",
         actor: { kind: "human", name: "operator" },

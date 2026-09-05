@@ -26,7 +26,6 @@ Operator/agent surfacing for the hi1 human-input measure (no behavior change):
 - README "Human-input percent" section; init's `.innsigle/AGENTS.md` template
   states the no-tuning rule and the shape-reference command
 
-||||||| parent of da9c254 (provenance: count Bash heredoc writes; follow renames in sync)
 ## [0.3.0] — 2026-09-04
 
 **Declared human-input percentage (`colophon.human_input`, method `hi1`).**
