@@ -47,13 +47,18 @@ Low-level:
   innsigle claim build --content <file> [--uri <uri>] --colo <colo.json> [issuer flags…] [--out file]
   innsigle sign --claim <file> [--key <private.pem>] [--out file]
   innsigle verify --attestation <file> --content <file> --keys <file>
-  innsigle colo example --kind model-primary|human-authored|mixed
+  innsigle colo example --kind model-primary|human-authored|mixed [--human-input]
+                                       # --human-input: include a valid example of the optional
+                                       # declared human_input measure (method hi1, CONTRACT-001 v1.1)
   innsigle provenance build|propose-colo …
   innsigle provenance import claude-code <transcript.jsonl> [--out journal.jsonl]
   innsigle provenance sync <content-file> [--transcript-dir <dir>] [--out <l2.json>]
 
   seal     claim+sign in one step; attestation → .innsigle/public/claims/
   verify   short form finds att + keys from .innsigle/ (or public/.well-known/)
+           both print human_input=NN% (declared, method hi1) when the colophon
+           carries the optional human-input measure; seal refuses a measure
+           whose percent does not recompute from its own recorded counts
   init     house key in 1Password; repo state under .innsigle/ only
 `);
   process.exit(EXIT.usage);
@@ -452,7 +457,28 @@ function cmdColoExample(args) {
     },
   };
   if (!colos[kind]) usage("kind must be model-primary|human-authored|mixed");
-  writeOut(undefined, JSON.stringify(colos[kind], null, 2));
+  const colo = colos[kind];
+  if (args.includes("--human-input")) {
+    // Valid worked example (session-provenance.md "Human-input measure (hi1)"):
+    // percent recomputes from the counts, so this seals as-is. Hand-authored
+    // measures MUST keep that property — tooling refuses fudged arithmetic.
+    colo.human_input = {
+      method: "hi1",
+      basis: "session-journal",
+      percent: 48,
+      weights: { direction: 25, contribution: 40, review: 35 },
+      direction: { percent: 100, user_prompts: 3, model_write_bursts: 3 },
+      contribution: {
+        percent: 0,
+        human_chars: 0,
+        model_chars: 812,
+        human_write_events: 0,
+        coverage: "full",
+      },
+      review: { percent: 67, post_output_prompts: 2, review_events: 0 },
+    };
+  }
+  writeOut(undefined, JSON.stringify(colo, null, 2));
 }
 
 const argv = process.argv.slice(2);

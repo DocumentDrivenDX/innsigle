@@ -124,3 +124,25 @@ describe("innsigle CLI CONTRACT-001", () => {
     assert.match(r.stderr, /key_url|absolute/i);
   });
 });
+
+describe("colo example --human-input (CONTRACT-001 v1.1)", () => {
+  it("emits a valid, sealable human_input reference object", async () => {
+    const r = spawnSync(process.execPath, [cli, "colo", "example", "--kind", "model-primary", "--human-input"], {
+      encoding: "utf8",
+    });
+    assert.equal(r.status, 0, r.stderr);
+    const colo = JSON.parse(r.stdout);
+    assert.equal(colo.human_input.method, "hi1");
+    assert.equal(colo.human_input.percent, 48);
+    const { validateHumanInput } = await import("../src/provenance/index.mjs");
+    validateHumanInput(colo.human_input); // must recompute from its own counts
+  });
+
+  it("plain examples stay percent-free", () => {
+    const r = spawnSync(process.execPath, [cli, "colo", "example", "--kind", "model-primary"], {
+      encoding: "utf8",
+    });
+    assert.equal(r.status, 0, r.stderr);
+    assert.equal(JSON.parse(r.stdout).human_input, undefined);
+  });
+});

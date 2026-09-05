@@ -149,12 +149,32 @@ Re-running after more conversation folds in new sessions; the provenance
 accumulates.
 
 `innsigle seal <file> --auto` runs that sync, prints the proposed colophon
-(composition, ingredients, prompt count), and seals only after you confirm
+(composition, ingredients, prompt count, and — when transcripts carry char
+evidence — the declared `human_input` percent), and seals only after you confirm
 (`--yes` skips the prompt; `--save-colo` writes the proposal to
 `<content-dir>/colo.json` for editing instead of sealing). The review gate and
 the no-laundering refusal stay on: `--force-composition` will not turn model
 work into `human-authored`. The L2 is never auto-published; once you publish
 it yourself, `--provenance-uri <uri>` embeds the link and digest in the claim.
+
+### Human-input percent (optional, CONTRACT-001 v1.1)
+
+A colophon MAY carry `human_input`: an integer percent of human input computed
+from the maker's own session journal by method `hi1` (direction 25 ·
+contribution 40 · review 35). The raw counts ride along, so the headline is
+recomputable — `seal`/`claim build` refuse a percent that does not recompute
+from its own counts (exit 5), and `verify` prints
+`human_input=NN% (declared, method hi1)`. No journal char evidence → no
+percent (omitted, never invented). It is a maker declaration, not an AI
+detection score. See the shape:
+
+```bash
+innsigle colo example --kind model-primary --human-input
+```
+
+Spec: `docs/helix/02-design/session-provenance.md` ("Human-input measure
+(hi1)") and CONTRACT-001 v1.1. Quarto footers render it as
+"model-primary · **48% human input**" (`integrations/quarto/README.md`).
 
 Agent-side: install the `innsigle-seal` Claude Code skill from
 [`skills/innsigle-seal/`](skills/innsigle-seal/README.md).

@@ -281,6 +281,13 @@ innsigle verify path/to/page.html
 # finds attestation + keys under .innsigle/ (or public/.well-known/)
 \`\`\`
 
+Colophons MAY carry the optional \`human_input\` measure (integer percent,
+method hi1, declared from the operator's session journal — proposed
+automatically by \`innsigle seal <file> --auto\`). NEVER edit its component
+counts to reach a target percent: the CLI recomputes the headline from the
+counts and refuses mismatches (exit 5). No journal evidence → omit the object
+entirely. Shape reference: \`innsigle colo example --kind model-primary --human-input\`.
+
 Issuer metadata and the private key ref come from \`.innsigle/config.json\` +
 1Password. Attestation lands in \`.innsigle/public/claims/\` — include that tree
 in the publish copy step.
