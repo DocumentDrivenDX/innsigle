@@ -20,9 +20,11 @@ const CORE_LEAVES = [
   "/use/provenance/",
   "/use/verify/",
   "/use/marks/",
+  "/use/profile/",
   "/use/walkthrough-docs/",
   "/use/walkthrough-social/",
   "/use/walkthrough-provenance/",
+  "/use/walkthrough-profile/",
   "/reference/",
   "/reference/artifacts/",
   "/reference/glossary/",
@@ -117,6 +119,22 @@ describe("site build (product-microsite-ia)", () => {
     );
     assert.equal(r.status, 0, r.stderr + r.stdout);
     assert.match(r.stdout, /VALID/);
+  });
+
+  it("sample maker profile is unsigned and has no VALID", () => {
+    const html = readFileSync(join(site, "examples/profile/index.html"), "utf8");
+    assert.match(html, /Unsigned declaration/);
+    assert.match(html, /Sample maker/);
+    assert.match(html, /Q3 strategy memo/);
+    assert.equal(/\bVALID\b/.test(html), false);
+    assert.ok(existsSync(join(site, "examples/profile/profile.json")));
+    assert.ok(existsSync(join(site, "assets/js/profile.mjs")));
+    assert.ok(existsSync(join(site, "assets/js/profile-builder.js")));
+    const builderPage = readFileSync(join(site, "use/profile/index.html"), "utf8");
+    assert.match(builderPage, /innsigle-profile-builder/);
+    assert.match(builderPage, /profile-builder\.js/);
+    const js = readFileSync(join(site, "assets/js/profile.mjs"), "utf8");
+    assert.equal(/\bfrom ["']node:/.test(js), false);
   });
 
   it("generated artifact pages carry generation banner", () => {

@@ -49,6 +49,8 @@ Details: `attestation-prior-art.md`.
 | **Maker** | Publisher/operator who applies the seal (not human-author-only) |
 | **Sigil** | Bounded synonym for the mark as recognition surface; not occult |
 | **Signet** | Optional act of cryptographically signing; not always-on chrome |
+| **Plain seal** | Unsigned colophon bound to a title/URI, not a content digest. Type `https://innsigle.dev/claim/plain-colophon/v1`. Never VALID. |
+| **Maker profile** | Linktree-style page (`innsigle_profile`) listing a maker, links, and plain seals. Bio URL. Optional issuer discovery. |
 
 Avoid public "credentials" for the product object (C2PA collision). Internal
 type URIs may still say `attestation`.

@@ -25,6 +25,10 @@ Publisher or operator who puts an Innsigle on work—not restricted to human-aut
 Optional act of cryptographically signing a claim. Interior operator term; not always-on chrome.
 ## Issuer
 Person or house whose key signs the claim.
+## Plain seal
+Unsigned colophon for a title or URL, with no content digest and no signature. Never reported as VALID.
+## Maker profile
+A short public page listing a maker, links, and plain seals. The one URL for bios. Optional issuer discovery; not a cryptographic seal.
 ## Sources
 - [Claim system](../artifacts/claim-system/)
 - [DESIGN.md](../artifacts/design/)

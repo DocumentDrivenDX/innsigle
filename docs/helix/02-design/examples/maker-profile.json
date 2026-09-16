@@ -1,0 +1,60 @@
+{
+  "innsigle_profile": "1",
+  "id": "sample-maker",
+  "name": "Sample maker",
+  "bio": "Example Innsigle profile: unsigned declarations for work that lives in Docs, mail, and slides.",
+  "profile_url": "https://documentdrivendx.github.io/innsigle/examples/profile/",
+  "links": [
+    {
+      "label": "Innsigle",
+      "url": "https://documentdrivendx.github.io/innsigle/"
+    }
+  ],
+  "issuer": null,
+  "works": [
+    {
+      "slug": "q3-strategy-memo",
+      "title": "Q3 strategy memo",
+      "kind": "plain",
+      "url": "https://example.com/docs/q3-strategy-memo",
+      "issued_at": "2026-09-15T12:00:00Z",
+      "colophon": {
+        "schema_version": "1",
+        "composition": "mixed",
+        "ingredients": [
+          { "kind": "model", "name": "Claude", "role": "draft" },
+          { "kind": "human", "name": "Sample maker", "role": "edit" }
+        ]
+      }
+    },
+    {
+      "slug": "api-design-deck",
+      "title": "API design deck",
+      "kind": "plain",
+      "url": "https://example.com/slides/api-design",
+      "issued_at": "2026-09-10T15:00:00Z",
+      "colophon": {
+        "schema_version": "1",
+        "composition": "model-primary",
+        "ingredients": [
+          { "kind": "model", "name": "Claude", "role": "draft" },
+          { "kind": "human", "name": "Sample maker", "role": "review" }
+        ]
+      }
+    },
+    {
+      "slug": "board-note",
+      "title": "Board note, 12 Sep",
+      "kind": "plain",
+      "url": "https://example.com/mail/board-note",
+      "issued_at": "2026-09-12T09:00:00Z",
+      "colophon": {
+        "schema_version": "1",
+        "composition": "human-authored",
+        "ingredients": [
+          { "kind": "human", "name": "Sample maker", "role": "author" }
+        ]
+      }
+    }
+  ]
+}

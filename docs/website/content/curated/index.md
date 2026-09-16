@@ -55,8 +55,9 @@ Expect: `VALID`. Live page: [Sample](sample/).
 
 ## Start here
 
-1. [See the sealed sample](sample/): model-primary page you can re-verify
-2. [Install the CLI](use/cli/): keygen, claim, sign, verify
-3. [Seal a docs page](use/walkthrough-docs/): full walkthrough
-4. [Why Innsigle](why/): gap vs badges, C2PA, watermarks
-5. [Non-goals](non-goals/): not a detector, not a purity product
+1. [Make a profile](use/profile/): unsigned seals for Docs, mail, and slides (no keys)
+2. [See the sealed sample](sample/): model-primary page you can re-verify
+3. [Install the CLI](use/cli/): keygen, claim, sign, verify
+4. [Seal a docs page](use/walkthrough-docs/): full walkthrough
+5. [Why Innsigle](why/): gap vs badges, C2PA, watermarks
+6. [Non-goals](non-goals/): not a detector, not a purity product

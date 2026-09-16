@@ -1,23 +1,21 @@
-# Official GitHub Pages deploy (no gh-pages branch required).
-# Repo Settings → Pages → Source must be "GitHub Actions".
-name: Deploy microsite
+# Test gate for pull requests and main. Deploy microsite (pages.yml) still
+# re-runs tests before publishing GitHub Pages.
+name: CI
 
 on:
+  pull_request:
   push:
     branches: [main]
-  workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: pages
-  cancel-in-progress: false
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -43,19 +41,6 @@ jobs:
         env:
           CI: true
 
-      - name: Publish artifacts + build site (Pages base)
-        env:
-          SITE_BASE: /innsigle
-        run: npm run site:build
-
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: site
-
       - name: Upload Playwright report
         if: failure()
         uses: actions/upload-artifact@v4
@@ -63,14 +48,3 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 14
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4

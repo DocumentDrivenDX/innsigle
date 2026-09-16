@@ -49,7 +49,9 @@ inside the signature**. Changing the host later does not rewrite old seals.
 
 ## Embed on social profiles
 
-Profiles are for **discovery**, not crypto. Use a short **issuer card**:
+Profiles are for **discovery**, not crypto. Prefer a [maker profile](../profile/)
+URL in the website / link field (plain seals, no keys required). If you also
+publish keys, you MAY add a short **issuer card**:
 
 ```text
 Innsigle · My House

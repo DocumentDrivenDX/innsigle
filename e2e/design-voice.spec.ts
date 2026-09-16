@@ -62,6 +62,16 @@ const SHOT_PAGES: {
     mustSee: [/Marks/i, /Matrix|Brand|Cartouche|Ring/i, /human-authored|model-primary/i, /Check it|sample/i],
   },
   {
+    name: "profile",
+    path: "/use/profile/",
+    mustSee: [/Maker profile/i, /plain seal|Unsigned declaration/i, /bio/i, /Check it|sample/i],
+  },
+  {
+    name: "walkthrough-profile",
+    path: "/use/walkthrough-profile/",
+    mustSee: [/Walkthrough/i, /bio/i, /Google Doc|Slack|LinkedIn/i, /Check it|validate/i],
+  },
+  {
     name: "walkthrough-docs",
     path: "/use/walkthrough-docs/",
     mustSee: [/Walkthrough/i, /seal a docs page/i, /keygen|claim build|verify/i, /Check it|Sample/i],

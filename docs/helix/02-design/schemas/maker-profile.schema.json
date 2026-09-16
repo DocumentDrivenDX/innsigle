@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://innsigle.dev/schema/maker-profile/v1.json",
+  "title": "Innsigle maker profile v1",
+  "description": "FEAT-005 Linktree-style page: maker identity, social links, and plain (unsigned) work seals. Optional issuer discovery. Not a signed attestation.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["innsigle_profile", "id", "name", "works"],
+  "properties": {
+    "innsigle_profile": { "const": "1" },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{0,63}$"
+    },
+    "name": { "type": "string", "minLength": 1 },
+    "bio": { "type": "string" },
+    "profile_url": { "type": "string", "minLength": 8 },
+    "generated_at": { "type": "string" },
+    "links": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["label", "url"],
+        "properties": {
+          "label": { "type": "string", "minLength": 1 },
+          "url": { "type": "string", "minLength": 8 }
+        }
+      }
+    },
+    "issuer": {
+      "type": ["object", "null"],
+      "properties": {
+        "key_id": { "type": "string", "pattern": "^ed25519:[0-9a-f]{32}$" },
+        "key_url": { "type": "string", "minLength": 8 }
+      }
+    },
+    "works": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["slug", "title", "kind", "issued_at", "colophon"],
+        "properties": {
+          "slug": { "type": "string", "minLength": 1 },
+          "title": { "type": "string", "minLength": 1 },
+          "kind": { "const": "plain" },
+          "url": { "type": "string", "minLength": 8 },
+          "issued_at": { "type": "string", "minLength": 1 },
+          "colophon": {
+            "type": "object",
+            "required": ["schema_version", "composition", "ingredients"]
+          }
+        }
+      }
+    }
+  }
+}

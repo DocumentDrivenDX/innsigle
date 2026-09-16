@@ -127,11 +127,13 @@ Expect: `VALID`.
 | Command | Role |
 |---------|------|
 | `innsigle colo example --kind …` | Print example colophon JSON |
+| `innsigle profile init` / `add` / `render` | Maker page and plain (unsigned) seals; no keys |
 | `innsigle provenance build …` | Journal → detailed session provenance |
 | `innsigle provenance propose-colo …` | Session record → draft colophon |
 
 ## Next
 
+- [Maker profile](../profile/): plain seals and a bio URL (no keys)
 - [Seal a docs page](../walkthrough-docs/): full walkthrough
 - [Hugo site](../walkthrough-hugo/): init → `.innsigle/` → publish wire (screencast)
 - [Issuer](../issuer/): keys without a server

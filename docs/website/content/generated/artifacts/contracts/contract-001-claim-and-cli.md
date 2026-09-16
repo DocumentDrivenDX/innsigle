@@ -50,6 +50,11 @@ content hashing rules for v1, and CLI commands that produce and verify them.
 - **Out of scope:** C2PA embed; DSSE/in-toto wire format (MAY export later);
   multi-tenant accounts; social platform APIs; HTML DOM normalization beyond
   "hash the file bytes given."
+- **Sibling type (FEAT-005):** maker profiles (`innsigle_profile`) and plain
+  colophon claims (`https://innsigle.dev/claim/plain-colophon/v1`) are unsigned
+  declarations with no content digest. They are **not** this contract's claim
+  payload. `innsigle verify` MUST reject them (exit 5) and MUST NOT print
+  `VALID`.
 - **Owning system:** Innsigle CLI / library (TypeScript + Bun assumed).
 
 ## Normative Surface
@@ -260,8 +265,11 @@ Binary name: `innsigle` (package may ship as such).
 | `innsigle claim build` | `--content <file>` `--uri <uri?>` `--colo <colo.json>` `--issuer-*` `--key-url` | MUST emit claim payload JSON; MUST reject non-absolute `key_url` (exit 5); MAY accept `--bill` as alias for `--colo`; MAY default issuer fields from `.innsigle/config.json` |
 | `innsigle sign` | `--claim <file>` `--key <private?>` | MUST emit attestation envelope; SHOULD refuse unsigned path if claim lacks absolute `key_url`; MAY load private key from `--key`, `--op-ref`, or `.innsigle/config.json` → 1Password (`op read`) |
 | `innsigle verify` | `<content>` **or** `--attestation` `--content` `--keys` | Short form MUST resolve attestation and keys from `.innsigle/` (or published well-known next to content) when possible |
-| `innsigle verify` | `--attestation <file>` `--content <file>` `--keys <file\|url>` | MUST exit 0 iff signature valid, key not revoked, and content digest matches; MUST exit non-zero otherwise. Identity/WoT recognition is separate (ADR-003) |
+| `innsigle verify` | `--attestation <file>` `--content <file>` `--keys <file\|url>` | MUST exit 0 iff signature valid, key not revoked, and content digest matches; MUST exit non-zero otherwise. Identity/WoT recognition is separate (ADR-003). MUST reject maker profiles and `plain-colophon` documents (exit 5) and MUST NOT print `VALID` for them |
 | `innsigle colo example` | `--kind model-primary\|human-authored\|mixed` | MUST print example colophon JSON; MAY accept `bill example` as alias |
+| `innsigle profile init` | `--id` `--name` `[--out-dir]` `[--url]` `[--bio]` `[--force]` | MUST write `profile.json` + `index.html` without keys or `.innsigle/` |
+| `innsigle profile add` | `--title` `--kind` `[--url]` `[--model]` `[--ingredient]` `[--profile]` | MUST append a `kind=plain` work; MUST refuse `human-authored` plus a model ingredient (FR-4a); MUST print a footer line |
+| `innsigle profile render` / `footer` / `bio` / `validate` / `claim` | `[--profile]` | Render standalone HTML; copy bio/footer; schema check; emit a plain-colophon JSON. MUST NOT call the verify success path |
 
 #### verify exit codes
 

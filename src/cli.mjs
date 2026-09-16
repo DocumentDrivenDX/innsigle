@@ -23,6 +23,8 @@ import {
   runProvenanceSync,
   validateHumanInput,
 } from "./provenance/index.mjs";
+import { PLAIN_TYPE } from "./profile.mjs";
+import { runProfile } from "./profile-cli.mjs";
 
 const EXIT = { ok: 0, usage: 1, badSig: 2, contentMismatch: 3, badKey: 4, badSchema: 5 };
 
@@ -53,7 +55,11 @@ Low-level:
   innsigle provenance build|propose-colo …
   innsigle provenance import claude-code <transcript.jsonl> [--out journal.jsonl]
   innsigle provenance sync <content-file> [--transcript-dir <dir>] [--out <l2.json>]
+  innsigle profile init --id <slug> --name <name> [--out-dir DIR]
+  innsigle profile add --title <title> --kind mixed|human-authored|model-primary [--url URL] [--model NAME]
+  innsigle profile render|footer|bio|validate|claim …
 
+  profile  maker page + plain (unsigned) seals; no keys required
   seal     claim+sign in one step; attestation → .innsigle/public/claims/
   verify   short form finds att + keys from .innsigle/ (or public/.well-known/)
            both print human_input=NN% (declared, method hi1) when the colophon
@@ -307,6 +313,17 @@ function cmdVerify(args) {
     process.exit(EXIT.badSchema);
   }
   const payload = attestation.payload;
+  if (
+    payload?.type === PLAIN_TYPE ||
+    attestation?.type === PLAIN_TYPE ||
+    payload?.innsigle_profile ||
+    attestation?.innsigle_profile
+  ) {
+    console.error(
+      "INVALID: plain seal / maker profile is an unsigned declaration; not a signed attestation",
+    );
+    process.exit(EXIT.badSchema);
+  }
   if (!payload?.innsigle || !attestation.signatures?.length) {
     console.error("INVALID: schema");
     process.exit(EXIT.badSchema);
@@ -529,6 +546,9 @@ switch (cmd) {
     else if (rest[0] === "import") process.exit(cmdProvenanceImport(rest.slice(1), {}));
     else if (rest[0] === "sync") process.exit(runProvenanceSync(rest.slice(1), { nowIso }));
     else usage("provenance build|propose-colo|import|sync");
+    break;
+  case "profile":
+    process.exit(runProfile(rest, { nowIso }));
     break;
   default:
     usage();

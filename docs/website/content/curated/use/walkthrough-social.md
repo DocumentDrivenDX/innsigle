@@ -34,9 +34,12 @@ If you sign anything (optional for social, required when you do sign):
 
 See [Issuer identity](../issuer/).
 
-### 3. Embed an issuer card on your profile
+### 3. Point the bio at a maker profile (or an issuer card)
 
-Bio / about + website field:
+Preferred: publish a [maker profile](../profile/) and put that URL in the
+website / link field. Keys are optional.
+
+If you already publish keys, you MAY also embed an issuer card in bio / about:
 
 ```text
 Innsigle · Your Name

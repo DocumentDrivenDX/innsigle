@@ -208,6 +208,14 @@ function renderGlossary() {
       term: "Issuer",
       def: "Person or house whose key signs the claim.",
     },
+    {
+      term: "Plain seal",
+      def: "Unsigned colophon for a title or URL, with no content digest and no signature. Never reported as VALID.",
+    },
+    {
+      term: "Maker profile",
+      def: "A short public page listing a maker, links, and plain seals. The one URL for bios. Optional issuer discovery; not a cryptographic seal.",
+    },
   ];
   const lines = [
     "---",

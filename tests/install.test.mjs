@@ -111,6 +111,7 @@ describe("innsigle install + use (pack → install → CLI)", () => {
     assert.match(out, /innsigle/i);
     assert.match(out, /keygen/);
     assert.match(out, /claim build|sign|verify/i);
+    assert.match(out, /profile init/);
   });
 
   it("installed bin: keygen → claim → sign → verify; tamper fails", () => {
@@ -366,6 +367,49 @@ describe("innsigle install + use (pack → install → CLI)", () => {
       colo.composition === "model-primary" || colo.composition === "mixed",
       colo.composition,
     );
+  });
+
+  it("installed bin: profile init/add/validate; verify refuses the profile", () => {
+    const dir = join(consumer, "profile-work");
+    let r = innsigle(consumer, [
+      "profile",
+      "init",
+      "--id",
+      "ada",
+      "--name",
+      "Ada Maker",
+      "--out-dir",
+      dir,
+    ]);
+    assert.equal(r.status, 0, r.stderr + r.stdout);
+    r = innsigle(consumer, [
+      "profile",
+      "add",
+      "--profile",
+      join(dir, "profile.json"),
+      "--title",
+      "Memo",
+      "--kind",
+      "mixed",
+      "--model",
+      "Claude",
+    ]);
+    assert.equal(r.status, 0, r.stderr + r.stdout);
+    r = innsigle(consumer, ["profile", "validate", "--profile", join(dir, "profile.json")]);
+    assert.equal(r.status, 0, r.stderr + r.stdout);
+    assert.match(r.stdout, /OK/);
+    r = innsigle(consumer, [
+      "verify",
+      "--attestation",
+      join(dir, "profile.json"),
+      "--content",
+      join(dir, "index.html"),
+      "--keys",
+      join(dir, "profile.json"),
+    ]);
+    assert.equal(r.status, 5, r.stderr + r.stdout);
+    assert.match(r.stderr, /unsigned declaration/i);
+    assert.equal(/\bVALID\b/.test(r.stdout), false);
   });
 
   it("docs still describe GitHub install", () => {

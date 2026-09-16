@@ -582,3 +582,127 @@ ul.tight li {
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
+
+/* Maker profile builder (FEAT-005) */
+.profile-builder {
+  margin: 1.5rem 0 2rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--line);
+  font-family: var(--sans);
+  font-size: 0.95rem;
+}
+.profile-builder fieldset {
+  border: 1px solid var(--line);
+  background: var(--paper-raised);
+  margin: 0 0 1rem;
+  padding: 0.85rem 1rem 1rem;
+}
+.profile-builder legend {
+  font-weight: 650;
+  padding: 0 0.35rem;
+}
+.profile-builder label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--ink-mute);
+  margin-bottom: 0.2rem;
+}
+.profile-builder input:not([type="radio"]) {
+  width: 100%;
+  max-width: 28rem;
+  font: inherit;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+}
+.profile-builder .pb-kind {
+  display: grid;
+  gap: 0.35rem;
+}
+.profile-builder .pb-kind label {
+  color: var(--ink);
+  font-size: 0.95rem;
+}
+.profile-builder .pb-kind input {
+  width: auto;
+  margin-right: 0.4rem;
+}
+.profile-builder button {
+  font: inherit;
+  font-weight: 650;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+}
+.profile-builder button:hover {
+  background: var(--paper-raised);
+}
+.profile-builder .pb-error {
+  color: #8a2f2f;
+  font-size: 0.9rem;
+  margin: 0.5rem 0 0;
+}
+.profile-builder .pb-pre {
+  white-space: pre-wrap;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  padding: 0.6rem 0.75rem;
+  min-height: 2.5rem;
+}
+.profile-builder .pb-works {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.profile-builder .pb-works li {
+  margin: 0 0 0.5rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.profile-builder .pb-works code {
+  display: block;
+  margin-top: 0.2rem;
+}
+.profile-builder .pb-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.profile-builder .pb-hint,
+.profile-builder .pb-integrity {
+  font-size: 0.85rem;
+  color: var(--ink-mute);
+}
+.profile-builder .pb-preview-wrap {
+  margin-top: 1.25rem;
+}
+.profile-builder .pb-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-mute);
+  font-weight: 650;
+}
+.profile-builder iframe {
+  width: 100%;
+  min-height: 28rem;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  border-radius: 0.25rem;
+}
+.profile-builder .pb-row {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0 0 0.6rem;
+}
+@media (min-width: 640px) {
+  .profile-builder .pb-row {
+    grid-template-columns: 1fr 1.4fr auto;
+    align-items: end;
+  }
+}

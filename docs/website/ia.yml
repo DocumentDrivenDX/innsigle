@@ -14,7 +14,7 @@ reader_modes:
     path: [use, use/cli, sample]
   decide:
     question: What concept do I need next?
-    path: [use/issuer, use/colophon, use/provenance, use/verify, use/marks]
+    path: [use/issuer, use/colophon, use/provenance, use/verify, use/marks, use/profile]
   operate:
     question: How do I look up exact behavior?
     path: [reference/artifacts, reference/glossary, reference/contracts]
@@ -51,9 +51,11 @@ core_leaves:
   - /use/provenance/
   - /use/verify/
   - /use/marks/
+  - /use/profile/
   - /use/walkthrough-docs/
   - /use/walkthrough-social/
   - /use/walkthrough-provenance/
+  - /use/walkthrough-profile/
   - /use/walkthrough-hugo/
   - /reference/artifacts/
   - /reference/glossary/

@@ -122,6 +122,23 @@ export INNSIGLE_OP_BIN="mac op"   # command to reach the host op (split on white
 export OP_ACCOUNT=<account>       # or: innsigle seal … --op-account <account>
 ```
 
+## Maker profile (plain seals, no keys)
+
+Daily Docs / mail / slides: declare composition without hashing a living file.
+The profile is the one URL for bios.
+
+```bash
+innsigle profile init --id you --name "Your Name" --out-dir ./innsigle-profile
+innsigle profile add --profile ./innsigle-profile/profile.json \
+  --title "Q3 strategy memo" --url https://example.com/memo \
+  --kind mixed --model Claude
+innsigle profile bio --profile ./innsigle-profile/profile.json
+```
+
+Or use the website builder (no install):
+[Maker profile](https://documentdrivendx.github.io/innsigle/use/profile/).
+`verify` will not print VALID for these files; they are unsigned declarations.
+
 ## Everyday commands
 
 ```bash

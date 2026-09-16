@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://innsigle.dev/schema/plain-colophon/v1.json",
+  "title": "Innsigle plain colophon (unsigned declaration) v1",
+  "description": "FEAT-005. No content digest, no issuer key, no signature. MUST NOT be reported as VALID by innsigle verify.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["innsigle", "type", "issued_at", "maker", "subject", "colophon"],
+  "properties": {
+    "innsigle": { "const": "1" },
+    "type": { "const": "https://innsigle.dev/claim/plain-colophon/v1" },
+    "issued_at": { "type": "string", "minLength": 1 },
+    "maker": {
+      "type": "object",
+      "required": ["id", "name"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "profile_url": { "type": "string", "minLength": 8 }
+      }
+    },
+    "subject": {
+      "type": "object",
+      "required": ["title"],
+      "properties": {
+        "title": { "type": "string", "minLength": 1 },
+        "uri": { "type": "string", "minLength": 8 }
+      }
+    },
+    "colophon": {
+      "type": "object",
+      "required": ["schema_version", "composition", "ingredients"],
+      "properties": {
+        "schema_version": { "const": "1" },
+        "composition": {
+          "enum": ["human-authored", "mixed", "model-primary"]
+        },
+        "ingredients": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["kind", "name"],
+            "properties": {
+              "kind": { "enum": ["model", "tool", "human", "other"] },
+              "name": { "type": "string", "minLength": 1 },
+              "role": { "type": "string" },
+              "version": { "type": ["string", "null"] },
+              "uri": { "type": "string" }
+            }
+          }
+        },
+        "notes": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

@@ -5,6 +5,7 @@
 | `link-integrity.spec.ts` | Core IA leaves load; crawl same-origin links; `aria-current` on nav |
 | `design-voice.spec.ts` | Visible copy, no detector theater claims, text not clipped, full-page screenshots (desktop + mobile) |
 | `hugo-workflow.spec.ts` | Walkthrough page + screencast assets; documents Hugo × Innsigle path |
+| `profile-builder.spec.ts` | Maker profile sample + in-browser builder (unsigned, FR-4a, JSON download) |
 
 **CLI workflow e2e** (Hugo on PATH): `npm run test:hugo` →
 `scripts/hugo-innsigle-workflow.mjs` (init, static wire, build, sign, VALID).

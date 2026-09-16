@@ -99,7 +99,8 @@ Geometry locked in `docs/sample/assets/marks/` (craft-matrix exploration). Const
 | Docs footer | Glyph (+ wordmark) left or right; cue B4; link to colophon / claim |
 | Docs about | Larger seal + full colophon table |
 | Social image | Glyph baked into image or attached still; caption optional short URL |
-| Social profile | Link in bio to house keys + "how to read Innsigle" |
+| Social profile | Link in bio to the maker profile (plain seals); optional house keys + "how to read Innsigle" |
+| Maker profile | Standalone page: name, links, unsigned work rows with H/M/A cues |
 | Verify page | Glyph + validity line + colo + signer fingerprint |
 
 ### Interaction states (web)

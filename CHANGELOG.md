@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.4.0] — 2026-09-15
+
+### Product
+
+- **Maker profile + plain seals (FEAT-005).** Unsigned declarations for work
+  that has no stable bytes (Docs, mail, slides). One bio URL for X, LinkedIn,
+  Slack. Keys and `innsigle seal` stay a later step.
+- CLI: `innsigle profile init|add|render|footer|bio|validate|claim`
+- Site builder at `/use/profile/` (same `src/profile.mjs` as the CLI)
+- Sample profile at `/examples/profile/`; walkthrough at `/use/walkthrough-profile/`
+- `innsigle verify` refuses profiles and plain-colophon JSON (exit 5, never VALID)
+- FR-4a: `human-authored` plus a model ingredient is refused on this path too
+
+### Tests / CI
+
+- Unit + CLI coverage in `tests/profile.test.mjs`; site-build assertions for
+  the sample profile and builder assets
+- Playwright: builder fill/download + sample profile page (`e2e/profile-builder.spec.ts`)
+- New `CI` workflow on pull requests and `main` (unit + e2e)
+
 ## [0.3.2] — 2026-09-04
 
 ### Product

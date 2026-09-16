@@ -22,6 +22,7 @@ import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { mdToHtml, splitFrontmatter } from "./md.mjs";
 import { BRAND } from "./brand-lines.mjs";
+import { renderProfileHtml, validateProfile } from "../src/profile.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "site");
@@ -152,9 +153,11 @@ function sidebar(pageUrl) {
         { t: "Provenance", h: `${BASE}/use/provenance/` },
         { t: "Verify", h: `${BASE}/use/verify/` },
         { t: "Marks", h: `${BASE}/use/marks/` },
+        { t: "Maker profile", h: `${BASE}/use/profile/` },
         { t: "Walkthrough: conversation → colophon", h: `${BASE}/use/walkthrough-provenance/` },
         { t: "Walkthrough: docs", h: `${BASE}/use/walkthrough-docs/` },
         { t: "Walkthrough: social", h: `${BASE}/use/walkthrough-social/` },
+        { t: "Walkthrough: profile", h: `${BASE}/use/walkthrough-profile/` },
         { t: "Walkthrough: Hugo", h: `${BASE}/use/walkthrough-hugo/` },
       ],
     },
@@ -286,6 +289,21 @@ function extractH1(body) {
   return m ? m[1].trim() : null;
 }
 
+function writeSampleProfile() {
+  const src = join(ROOT, "docs/website/static/examples/profile/profile.json");
+  if (!existsSync(src)) {
+    throw new Error("missing sample maker profile: docs/website/static/examples/profile/profile.json");
+  }
+  const profile = validateProfile(JSON.parse(readFileSync(src, "utf8")));
+  const html = renderProfileHtml(profile, {
+    markHrefPrefix: `${BASE}/assets/marks/`,
+  });
+  const outDir = join(OUT, "examples/profile");
+  mkdirSync(outDir, { recursive: true });
+  writeFileSync(join(outDir, "index.html"), html);
+  writeFileSync(join(outDir, "profile.json"), JSON.stringify(profile, null, 2) + "\n");
+}
+
 function copyStatic() {
   mkdirSync(join(OUT, "assets/css"), { recursive: true });
   mkdirSync(join(OUT, "assets/marks"), { recursive: true });
@@ -311,6 +329,14 @@ function copyStatic() {
     mkdirSync(join(OUT, "examples"), { recursive: true });
     cpSync(examples, join(OUT, "examples"), { recursive: true });
   }
+
+  mkdirSync(join(OUT, "assets/js"), { recursive: true });
+  cpSync(join(ROOT, "src/profile.mjs"), join(OUT, "assets/js/profile.mjs"));
+  const builderJs = join(ROOT, "docs/website/static/profile-builder.js");
+  if (existsSync(builderJs)) {
+    cpSync(builderJs, join(OUT, "assets/js/profile-builder.js"));
+  }
+  writeSampleProfile();
   // Sample is a sealed subject: copy the tree byte-for-byte so published
   // site/sample/index.html matches docs/sample/index.html (and its claim).
   // Relative hrefs (.well-known/, assets/marks/) resolve under /sample/.

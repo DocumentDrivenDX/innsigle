@@ -11,9 +11,11 @@ const CORE_LEAVES = [
   "/use/provenance/",
   "/use/verify/",
   "/use/marks/",
+  "/use/profile/",
   "/use/walkthrough-docs/",
   "/use/walkthrough-social/",
   "/use/walkthrough-provenance/",
+  "/use/walkthrough-profile/",
   "/reference/",
   "/reference/artifacts/",
   "/reference/glossary/",
@@ -90,7 +92,7 @@ test.describe("Link integrity", () => {
         const normalized = href.endsWith("/") || href.includes(".") ? href : href + "/";
         if (!seen.has(normalized) && !seen.has(href)) {
           // BFS one hop from core for HTML pages
-          if (href.startsWith("/reference/") || href.startsWith("/use/") || href.startsWith("/why/") || href === "/" || href.startsWith("/sample") || href.startsWith("/non-goals")) {
+          if (href.startsWith("/reference/") || href.startsWith("/use/") || href.startsWith("/why/") || href === "/" || href.startsWith("/sample") || href.startsWith("/non-goals") || href.startsWith("/examples/")) {
             queue.push(href.endsWith("/") || href.includes(".") ? href : href + "/");
           }
         }
