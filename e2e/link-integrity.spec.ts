@@ -117,6 +117,17 @@ test.describe("Link integrity", () => {
     await expect(useNav).toHaveAttribute("aria-current", "page");
   });
 
+  test("docs pages render a source-byte Innsigle colophon", async ({ page }) => {
+    await page.goto("/use/cli/");
+    const colo = page.locator(".innsigle-colophon");
+    await expect(colo).toBeVisible();
+    await expect(colo).toContainText(/Innsigle seal:/);
+    await expect(colo).toContainText(/mixed/);
+    await expect(colo).toContainText(/human key/);
+    await colo.getByTitle("View Innsigle attestation").click();
+    await expect(colo.getByRole("link", { name: /attestation file/i })).toBeVisible();
+  });
+
   test("generated artifact index groups activities", async ({ page }) => {
     await page.goto("/reference/artifacts/");
     await expect(page.getByRole("heading", { name: /Artifacts/i }).first()).toBeVisible();

@@ -243,7 +243,10 @@ Binary name: `innsigle` (package may ship as such).
 | Command | Args (normative intent) | Behavior |
 |---------|-------------------------|----------|
 | `innsigle init` | `--onepassword` `[--dir]` `[--site-url]` `[--issuer-*]` `[--vault]` `[--force]` | MUST create house key custody outside the repo (1Password when `--onepassword`); MUST write all repo-local state under `.innsigle/` only (no framework web-root detection); MUST stage public issuer document at `.innsigle/public/keys.json` for publish to site `/.well-known/innsigle/keys.json`; MUST write commit-safe `.innsigle/config.json` with `key_id` fingerprint and custody reference; MUST write agent-oriented publish instructions under `.innsigle/`; MUST NOT write private key material into the repo |
-| `innsigle seal` | `<content>` `[--kind]` `[--colo]` `[--uri]` `[--out]` | MUST claim+sign using `.innsigle/config.json` issuer fields and 1Password (or `--key`); MUST write attestation under `.innsigle/public/claims/` by default; MUST NOT require repeating issuer flags |
+| `innsigle seal` | `<content>` `[--kind]` `[--colo]` `[--uri]` `[--out]` `[--role human\|build]` | MUST claim+sign using `.innsigle/config.json` issuer fields and 1Password (or `--key`); MUST write attestation under `.innsigle/public/claims/` by default; MUST NOT require repeating issuer flags. When `keys.human` / `keys.build` are configured (ADR-004), MUST sign `human-authored`/`mixed` with the human key and `model-primary` with the build key unless `--role` overrides |
+| `innsigle seal --all` | `[--role human\|build]` `[--force]` | MUST walk `content_globs`; MUST pick composition from frontmatter `generated: true` → `model-primary` else `mixed` when `kind_from_frontmatter` is set; MUST skip up-to-date claims signed by the same `key_id`; MUST skip (not fail) files whose role key is absent unless `--role` was required; MUST remove ORPHAN claims |
+| `innsigle endorse` | `--subject-key-id` `[--subject-key-url]` `[--purpose]` `[--level]` | MUST sign a key-endorsement (ADR-003 D4) with the human key; MUST index it on the issuer document `endorsements[]`; MUST NOT let the build key endorse the human key |
+| `innsigle publish` | `[site-dir]` | MUST copy `.innsigle/public/` to `<site-dir>/.well-known/innsigle/` |
 | `innsigle keygen` | `--out-dir <dir>` | MUST write private key (permissions 0600 when FS supports) and public material; MUST NOT print private key |
 | `innsigle keys template` | `--issuer-id` `--issuer-name` `--public-key` `--key-id` | MUST emit issuer document skeleton (`innsigle_issuer` preferred; includes `endorsements: []`) |
 | `innsigle claim build` | `--content <file>` `--uri <uri?>` `--colo <colo.json>` `--issuer-*` `--key-url` | MUST emit claim payload JSON; MUST reject non-absolute `key_url` (exit 5); MAY accept `--bill` as alias for `--colo`; MAY default issuer fields from `.innsigle/config.json` |
@@ -278,7 +281,7 @@ with its method tag (it is a maker declaration, not a detection score).
 - Versioning: `innsigle` field and `schema_version` / `innsigle_keys` /
   `innsigle_issuer` govern payload and issuer-document compatibility. Breaking
   changes MUST bump these and the contract version.
-- Related decision records: **ADR-001** (crypto), **ADR-003** (issuer URL + WoT).
+- Related decision records: **ADR-001** (crypto), **ADR-003** (issuer URL + WoT), **ADR-004** (human vs build keys; derived pages quote source seals).
 - Unknown JSON fields in payload: verifiers MUST ignore unknown fields when
   verifying signatures (signature covers canonical form of known payload as
   signed; producers SHOULD avoid unknown fields in v1).

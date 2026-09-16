@@ -1,0 +1,53 @@
+{
+  "payload": {
+    "innsigle": "1",
+    "type": "https://innsigle.dev/claim/colophon/v1",
+    "issued_at": "2026-09-16T03:29:36Z",
+    "issuer": {
+      "id": "innsigle",
+      "name": "Innsigle",
+      "key_id": "ed25519:09e7437aadf9a63a81e40906582c9cb9",
+      "key_url": "https://documentdrivendx.github.io/innsigle/.well-known/innsigle/keys.json"
+    },
+    "subjects": [
+      {
+        "uri": "https://documentdrivendx.github.io/innsigle/reference/artifacts/product-vision/",
+        "digest": {
+          "alg": "sha256",
+          "value": "2070a27fce9adbf7d0266428e3c5968bf9c868db492ad1dccc1b1a30b1073333"
+        }
+      }
+    ],
+    "colophon": {
+      "schema_version": "1",
+      "composition": "model-primary",
+      "ingredients": [
+        {
+          "kind": "model",
+          "name": "Claude",
+          "role": "draft"
+        },
+        {
+          "kind": "tool",
+          "name": "sloptimizer",
+          "role": "rewrite"
+        },
+        {
+          "kind": "human",
+          "name": "operator",
+          "role": "structure-edit"
+        }
+      ],
+      "notes": null
+    }
+  },
+  "payload_encoding": "json",
+  "signatures": [
+    {
+      "key_id": "ed25519:09e7437aadf9a63a81e40906582c9cb9",
+      "alg": "ed25519",
+      "sig": "zJeEtmBn1olg2zMxcJeuvVGvMQc9QRfiFpjwliTn9YYqyZ_cLri9aLKAWo6BEW900sqf4StJDlMtLM0dcYH1Dg",
+      "signed_at": "2026-09-16T03:29:36Z"
+    }
+  ]
+}

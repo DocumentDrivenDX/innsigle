@@ -1,0 +1,53 @@
+{
+  "payload": {
+    "innsigle": "1",
+    "type": "https://innsigle.dev/claim/colophon/v1",
+    "issued_at": "2026-09-16T03:37:45Z",
+    "issuer": {
+      "id": "innsigle",
+      "name": "Innsigle",
+      "key_id": "ed25519:09e7437aadf9a63a81e40906582c9cb9",
+      "key_url": "https://documentdrivendx.github.io/innsigle/.well-known/innsigle/keys.json"
+    },
+    "subjects": [
+      {
+        "uri": "https://documentdrivendx.github.io/innsigle/reference/artifacts/claim-system/",
+        "digest": {
+          "alg": "sha256",
+          "value": "d9f8d6b6d69e5930ec7334d070223567d04882156c2ddd769528e93f037086f4"
+        }
+      }
+    ],
+    "colophon": {
+      "schema_version": "1",
+      "composition": "model-primary",
+      "ingredients": [
+        {
+          "kind": "model",
+          "name": "Claude",
+          "role": "draft"
+        },
+        {
+          "kind": "tool",
+          "name": "sloptimizer",
+          "role": "rewrite"
+        },
+        {
+          "kind": "human",
+          "name": "operator",
+          "role": "structure-edit"
+        }
+      ],
+      "notes": null
+    }
+  },
+  "payload_encoding": "json",
+  "signatures": [
+    {
+      "key_id": "ed25519:09e7437aadf9a63a81e40906582c9cb9",
+      "alg": "ed25519",
+      "sig": "zCMi5eumm_8r_p0hcrhuIhniuCcRTEc0LHJ34dTlEBZwT0dN-K5YAKT4SE3KnYNt3Jrncle0fy7SaxprberPDg",
+      "signed_at": "2026-09-16T03:37:45Z"
+    }
+  ]
+}

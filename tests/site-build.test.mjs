@@ -121,6 +121,22 @@ describe("site build (product-microsite-ia)", () => {
     assert.match(r.stdout, /VALID/);
   });
 
+  it("every content markdown page is sealed and HTML renders the colophon", () => {
+    const r = spawnSync(process.execPath, [join(root, "src/cli.mjs"), "verify", "--all"], {
+      cwd: root,
+      encoding: "utf8",
+    });
+    assert.equal(r.status, 0, r.stderr + r.stdout);
+    assert.match(r.stdout, /VALID all/);
+    assert.ok(existsSync(join(site, ".well-known/innsigle/keys.json")));
+    const home = readFileSync(join(site, "index.html"), "utf8");
+    assert.match(home, /class="innsigle-colophon"/);
+    assert.match(home, /Innsigle seal:/);
+    const prd = readFileSync(join(site, "reference/artifacts/prd/index.html"), "utf8");
+    assert.match(prd, /class="innsigle-colophon"/);
+    assert.match(prd, /model-primary/);
+  });
+
   it("sample maker profile is unsigned and has no VALID", () => {
     const html = readFileSync(join(site, "examples/profile/index.html"), "utf8");
     assert.match(html, /Unsigned declaration/);

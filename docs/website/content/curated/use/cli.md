@@ -70,6 +70,22 @@ innsigle init --onepassword --site-url https://example.com
 
 After init, everyday commands stay short — repo config + 1Password supply the rest.
 
+For a HELIX-style docs site, add `--content-root` so slugs match the content
+tree, then split keys (ADR-004):
+
+```bash
+innsigle init --onepassword --site-url https://example.com/ \
+  --content-root docs/website/content
+# then add keys.build + INNSIGLE_BUILD_KEY (CI); human key stays in 1Password
+innsigle endorse --subject-key-id ed25519:… --purpose build-signing
+innsigle seal --all --role human    # mixed / human-authored, locally
+innsigle seal --all --role build    # generated, in CI
+innsigle publish site
+innsigle verify --all
+```
+
+Hugo mounts and the colophon partial: [integrations/hugo](https://github.com/DocumentDrivenDX/innsigle/tree/main/integrations/hugo).
+
 ## Seal a page
 
 ```bash
@@ -127,6 +143,7 @@ Expect: `VALID`.
 | Command | Role |
 |---------|------|
 | `innsigle colo example --kind …` | Print example colophon JSON |
+| `innsigle seal --all` / `publish` | Helix microsite: seal every `content_globs` file; copy well-known |
 | `innsigle profile init` / `add` / `render` | Maker page and plain (unsigned) seals; no keys |
 | `innsigle provenance build …` | Journal → detailed session provenance |
 | `innsigle provenance propose-colo …` | Session record → draft colophon |

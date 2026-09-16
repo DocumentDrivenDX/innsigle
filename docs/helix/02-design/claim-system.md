@@ -51,6 +51,9 @@ Details: `attestation-prior-art.md`.
 | **Signet** | Optional act of cryptographically signing; not always-on chrome |
 | **Plain seal** | Unsigned colophon bound to a title/URI, not a content digest. Type `https://innsigle.dev/claim/plain-colophon/v1`. Never VALID. |
 | **Maker profile** | Linktree-style page (`innsigle_profile`) listing a maker, links, and plain seals. Bio URL. Optional issuer discovery. |
+| **Human key** | Operator-held key (1Password / local PEM, never CI). Seals `human-authored` and `mixed` sources in git (ADR-004). |
+| **Build key** | CI-held key (`INNSIGLE_BUILD_KEY`). Seals `model-primary` / `generated: true` sources. Endorsed by the human key. |
+| **Derived page** | Deterministic HTML (or other render) of a sealed source. Quotes the source attestation; the human signature does not cover the HTML bytes. |
 
 Avoid public "credentials" for the product object (C2PA collision). Internal
 type URIs may still say `attestation`.
@@ -262,6 +265,7 @@ Never report "this is 80% AI."
 | Discover | Absolute HTTPS `key_url` **inside signed claim** (ADR-003); fetch issuer document from any durable host (not only self-hosted) |
 | Social bootstrap | Issuer card on profiles (fingerprint + keys URL); corroboration only (ADR-003 D7) |
 | WoT | Optional key-endorsement attestations listed on issuer document (ADR-003) |
+| Dual role | Human key and build key in one issuer document; human endorses build (ADR-004). Build MUST NOT endorse human. |
 
 ### Trust policy (verifier) — ADR-003
 
@@ -283,6 +287,9 @@ SLSA lesson: separate crypto success from policy trust.
 | `colo example` / edit | Write colophon fields |
 | `claim build` | Bind subjects + colo → claim payload |
 | `sign` | Attach signature with local key |
+| `seal --all [--role human\|build]` | Walk `content_globs`; mixed/human → human key; generated → build key |
+| `endorse` | Human key publishes a key-endorsement over the build key |
+| `publish` | Copy `.innsigle/public` → site `/.well-known/innsigle/` |
 | `verify` | Path or URL to attestation + content |
 | `keygen` / `key publish-template` | Key material + sample keys.json |
 
@@ -292,7 +299,7 @@ Exact flags belong in Contract, not here.
 
 | Prior art | Innsigle v1 choice |
 |-----------|-------------------|
-| PGP WoT | ADR-003: signed key-endorsements published at issuer URL; transitive path optional |
+| PGP WoT | ADR-003: signed key-endorsements published at issuer URL; ADR-004 uses that edge for human → build |
 | DKIM | Steal domain/URL-published pubkey + sig over content |
 | in-toto | Steal subject + predicate typing |
 | SLSA | Steal provenance ≠ truth; policy separate |

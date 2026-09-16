@@ -1,6 +1,6 @@
 {
   "name": "innsigle",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "The maker's seal for published work \u2014 content provenance CLI (claim, sign, verify).",
   "type": "module",
   "bin": {
@@ -40,7 +40,9 @@
     "vectors": "node scripts/generate-vectors.mjs",
     "site:publish": "node scripts/publish-artifacts.mjs",
     "site:build": "node scripts/build-site.mjs",
-    "site:build:local": "SITE_BASE= node scripts/build-site.mjs"
+    "site:build:local": "SITE_BASE= node scripts/build-site.mjs",
+    "seal": "node src/cli.mjs seal --all",
+    "verify:site": "node src/cli.mjs verify --all"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.1",

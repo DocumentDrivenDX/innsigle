@@ -1,0 +1,53 @@
+{
+  "payload": {
+    "innsigle": "1",
+    "type": "https://innsigle.dev/claim/colophon/v1",
+    "issued_at": "2026-09-16T03:09:32Z",
+    "issuer": {
+      "id": "innsigle",
+      "name": "Innsigle",
+      "key_id": "ed25519:2816ffee6fd355c1e0703b876e49b1b0",
+      "key_url": "https://documentdrivendx.github.io/innsigle/.well-known/innsigle/keys.json"
+    },
+    "subjects": [
+      {
+        "uri": "https://documentdrivendx.github.io/innsigle/use/marks/",
+        "digest": {
+          "alg": "sha256",
+          "value": "4ca81ab0b889c67888636e3e85f078371a65d455e62ba4a2ba28cf52343111d1"
+        }
+      }
+    ],
+    "colophon": {
+      "schema_version": "1",
+      "composition": "mixed",
+      "ingredients": [
+        {
+          "kind": "human",
+          "name": "operator",
+          "role": "outline"
+        },
+        {
+          "kind": "model",
+          "name": "Claude",
+          "role": "expand"
+        },
+        {
+          "kind": "human",
+          "name": "operator",
+          "role": "final-edit"
+        }
+      ],
+      "notes": null
+    }
+  },
+  "payload_encoding": "json",
+  "signatures": [
+    {
+      "key_id": "ed25519:2816ffee6fd355c1e0703b876e49b1b0",
+      "alg": "ed25519",
+      "sig": "cInj_Nv_WTY3HKvYHiLJfeQEfPIkJX9EORVs0gmJ7iSG2EYROk2VgZNnIbpaLsSckTHw0HK_4zTe7UKXaDShDw",
+      "signed_at": "2026-09-16T03:09:32Z"
+    }
+  ]
+}

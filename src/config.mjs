@@ -1,6 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { basename, dirname, join, relative, resolve, sep } from "node:path";
+import { publishedContentUri } from "./site-pages.mjs";
 
 /** Directory under the repo that owns all Innsigle project state. */
 export const DIR_NAME = ".innsigle";
@@ -138,15 +139,31 @@ export function loadProject(startDir = process.cwd()) {
  * @param {string} repoRoot
  * @param {string} contentPath
  */
-export function attestationSlug(repoRoot, contentPath) {
-  let rel = relative(repoRoot, resolve(contentPath));
-  if (!rel || rel.startsWith("..")) rel = basename(contentPath);
+export function attestationSlug(repoRoot, contentPath, opts = {}) {
+  const abs = resolve(contentPath);
+  const bases = [];
+  if (opts.contentRoot) bases.push(resolve(repoRoot, opts.contentRoot));
+  bases.push(resolve(repoRoot));
+  let rel = "";
+  for (const base of bases) {
+    const r = relative(base, abs);
+    if (!r.startsWith("..")) {
+      rel = r;
+      break;
+    }
+  }
+  if (!rel) rel = basename(contentPath);
   const slug = rel
     .split(sep)
     .join("/")
     .replace(/[^a-zA-Z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
   return slug || "content";
+}
+
+/** Slug options from a loaded project (Helix: content_root = docs/website/content). */
+export function slugOpts(project) {
+  return { contentRoot: project?.config?.content_root };
 }
 
 /**
@@ -165,11 +182,11 @@ export function legacyAttestationName(contentPath) {
  * @param {string} repoRoot
  * @param {string} contentPath
  */
-export function defaultAttestationPath(repoRoot, contentPath) {
+export function defaultAttestationPath(repoRoot, contentPath, opts = {}) {
   return join(
     repoRoot,
     PATHS.claims_dir,
-    `${attestationSlug(repoRoot, contentPath)}.attestation.json`,
+    `${attestationSlug(repoRoot, contentPath, opts)}.attestation.json`,
   );
 }
 
@@ -183,6 +200,12 @@ export function defaultAttestationPath(repoRoot, contentPath) {
 export function guessContentUri(config, repoRoot, contentPath) {
   const keyUrl = config?.issuer?.key_url;
   if (!keyUrl) return undefined;
+  // Markdown under content_root publishes at the site path, not the source path
+  // (Helix / innsigle microsite). Other files keep the older origin+rel guess.
+  if (config?.content_root) {
+    const uri = publishedContentUri(config, repoRoot, resolve(contentPath));
+    if (uri) return uri;
+  }
   try {
     const origin = new URL(keyUrl).origin;
     let rel = relative(repoRoot, resolve(contentPath)).split(sep).join("/");
@@ -197,6 +220,8 @@ export function guessContentUri(config, repoRoot, contentPath) {
     return undefined;
   }
 }
+
+
 
 /**
  * @param {string} repoRoot

@@ -1,0 +1,29 @@
+{
+  "payload": {
+    "innsigle": "1",
+    "type": "https://innsigle.dev/claim/key-endorsement/v1",
+    "issued_at": "2026-09-16T03:29:36Z",
+    "issuer": {
+      "id": "innsigle",
+      "name": "Innsigle",
+      "key_id": "ed25519:2816ffee6fd355c1e0703b876e49b1b0",
+      "key_url": "https://documentdrivendx.github.io/innsigle/.well-known/innsigle/keys.json"
+    },
+    "endorsement": {
+      "subject_key_id": "ed25519:09e7437aadf9a63a81e40906582c9cb9",
+      "subject_key_url": "https://documentdrivendx.github.io/innsigle/.well-known/innsigle/keys.json",
+      "subject_issuer_id": "innsigle",
+      "level": "full",
+      "purpose": "build-signing"
+    }
+  },
+  "payload_encoding": "json",
+  "signatures": [
+    {
+      "key_id": "ed25519:2816ffee6fd355c1e0703b876e49b1b0",
+      "alg": "ed25519",
+      "sig": "Q0P8GmGIzDRMdA2zZO0y6mB1JwOvpv6_XDnA6sOre2ESw_1auQwQcupOmBwJ-zPfIv6mBdWumq_eF2dJEpGMAg",
+      "signed_at": "2026-09-16T03:29:36Z"
+    }
+  ]
+}

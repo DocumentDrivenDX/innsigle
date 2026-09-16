@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.5.0] — 2026-09-16
+
+### Product
+
+- **Helix microsite pattern in the CLI:** `innsigle seal --all` walks
+  `content_globs` (frontmatter `generated: true` → model-primary, else mixed),
+  `innsigle publish [site]` copies `.innsigle/public` to `/.well-known/innsigle/`.
+  Init accepts `--content-root`. Hugo partial at `integrations/hugo/`.
+- This microsite's curated + generated markdown is sealed; `site:build` injects
+  the colophon and CI runs `innsigle verify --all`.
+- **ADR-004:** human key signs mixed/human sources; build key (GitHub secret
+  `INNSIGLE_BUILD_KEY`) signs generated sources; human endorses build.
+  Rendered HTML **quotes** the source attestation (`application/innsigle+json`);
+  the signature covers markdown, not HTML bytes.
+- CLI: `innsigle endorse` (human key endorses the build key); `seal --all --role human|build`.
+
 ## [0.4.0] — 2026-09-15
 
 ### Product

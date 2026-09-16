@@ -12,7 +12,8 @@ import {
 import { loadConfig } from "./config.mjs";
 import { runInit } from "./init.mjs";
 import { readPrivateKeyPem } from "./onepassword.mjs";
-import { runSeal, resolveVerifyPaths } from "./seal.mjs";
+import { runSeal, runPublish, resolveVerifyPaths } from "./seal.mjs";
+import { runEndorse } from "./endorse.mjs";
 import { runStatus, runVerifyAll } from "./status.mjs";
 import {
   loadJournal,
@@ -39,6 +40,9 @@ Common (uses .innsigle/ + 1Password + optional ~/.config/innsigle/config.json):
   innsigle seal <file> --auto [--yes] [--save-colo] [--provenance-uri <uri>]
                                        # colophon proposed from Claude Code transcripts
   innsigle seal --stale                # re-seal claims whose content drifted
+  innsigle seal --all [--role human|build]  # human: mixed/human; build: generated
+  innsigle endorse --subject-key-id <id>    # human key endorses build key (ADR-004)
+  innsigle publish [site-dir]          # copy .innsigle/public → site/.well-known/innsigle
   innsigle status                      # VALID | STALE | ORPHAN | UNSEALED per claim
   innsigle verify <content-file>
   innsigle verify --all                # CI gate: nonzero if anything not VALID
@@ -510,6 +514,16 @@ switch (cmd) {
   }
   case "seal": {
     const code = runSeal(rest, { nowIso });
+    process.exit(code);
+    break;
+  }
+  case "publish": {
+    const code = runPublish(rest, {});
+    process.exit(code);
+    break;
+  }
+  case "endorse": {
+    const code = runEndorse(rest, { nowIso });
     process.exit(code);
     break;
   }

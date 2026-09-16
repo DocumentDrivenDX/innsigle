@@ -55,3 +55,6 @@ blob-report/
 
 # Site is built by CI (pages.yml) and locally by npm run site:build; never committed
 site/
+
+# Local house key (public half lives in .innsigle/public/keys.json)
+.innsigle/keys/

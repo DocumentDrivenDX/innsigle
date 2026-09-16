@@ -1,0 +1,31 @@
+{
+  "innsigle_issuer": "1",
+  "issuer_id": "innsigle",
+  "issuer_name": "Innsigle",
+  "keys": [
+    {
+      "key_id": "ed25519:2816ffee6fd355c1e0703b876e49b1b0",
+      "alg": "ed25519",
+      "public_key": "fjz2YGEko2zbJ4KElTzOlI9CV8cweZlCsuCgZVmztu4",
+      "created_at": "2026-09-16T03:09:32Z",
+      "revoked_at": null,
+      "role": "human"
+    },
+    {
+      "key_id": "ed25519:09e7437aadf9a63a81e40906582c9cb9",
+      "alg": "ed25519",
+      "public_key": "4Zg10iKB2d0dIIftGk5URdNNIAQm_Ld6gEVzDdng0_E",
+      "created_at": "2026-09-16T03:29:36Z",
+      "revoked_at": null,
+      "role": "build"
+    }
+  ],
+  "endorsements": [
+    {
+      "attestation_url": "https://documentdrivendx.github.io/innsigle/.well-known/innsigle/endorsements/ed25519-09e7437aadf9a63a81e40906582c9cb9.attestation.json",
+      "subject_key_id": "ed25519:09e7437aadf9a63a81e40906582c9cb9",
+      "subject_key_url": "https://documentdrivendx.github.io/innsigle/.well-known/innsigle/keys.json",
+      "issued_at": "2026-09-16T03:29:36Z"
+    }
+  ]
+}

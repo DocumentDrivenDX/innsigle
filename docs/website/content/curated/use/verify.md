@@ -57,7 +57,8 @@ Expect: `VALID`. Live: [Sample](../../sample/).
 |-------|-----------------|
 | Crypto valid | Did this key seal this colophon for these bytes? |
 | Discovery | Absolute keys URL is inside the signed claim |
-| Recognized | You pin that fingerprint, and/or follow key-endorsements (published statements naming another fingerprint) |
+| Recognized | You pin that fingerprint, and/or follow key-endorsements (published statements naming another fingerprint). On this site the human key endorses the build key, so a generated-page seal can be recognized without pinning the CI key. |
+| Derived page | The HTML colophon quotes the **source** attestation. VALID is for those markdown bytes, not the rendered HTML. |
 
 `issuer.id` is a display slug and may collide. Prefer **fingerprints**.
 
@@ -69,3 +70,4 @@ social bio **issuer card** is discovery only, not a signature. See
 
 Crypto: [ADR-001](../../reference/artifacts/adrs/adr-001-signing-and-canonicalization/).
 Issuer URL and web of trust: [ADR-003](../../reference/artifacts/adrs/adr-003-issuer-url-and-web-of-trust/).
+Human vs build keys, derived pages: [ADR-004](../../reference/artifacts/adrs/adr-004-human-and-build-keys/).

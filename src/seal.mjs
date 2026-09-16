@@ -1,13 +1,16 @@
 import {
+  copyFileSync,
   existsSync,
   mkdirSync,
+  readdirSync,
   readFileSync,
   readSync,
   renameSync,
+  statSync,
   unlinkSync,
   writeFileSync,
 } from "node:fs";
-import { basename, dirname, join, resolve } from "node:path";
+import { basename, dirname, join, relative, resolve } from "node:path";
 import { jcs } from "./canonical.mjs";
 import { b64url, sha256Hex, signPayload } from "./crypto.mjs";
 import {
@@ -18,10 +21,17 @@ import {
   legacyAttestationName,
   loadProject,
   PATHS,
+  slugOpts,
 } from "./config.mjs";
-import { readPrivateKeyPem } from "./onepassword.mjs";
 import { proposeColo, syncProvenance, validateHumanInput } from "./provenance/index.mjs";
-import { checkAttestation, collectStatus } from "./status.mjs";
+import { checkAttestation, collectStatus, filesMatchingGlobs } from "./status.mjs";
+import { kindFromFrontmatter } from "./site-pages.mjs";
+import {
+  issuerForKey,
+  loadPrivateKeyForRole,
+  roleForComposition,
+  tryLoadPrivateKeyForRole,
+} from "./keys.mjs";
 
 const EXAMPLE_COLO = {
   "model-primary": {
@@ -115,16 +125,8 @@ function resolveColophon(args, project, contentPath) {
   return structuredClone(EXAMPLE_COLO[kind]);
 }
 
-function loadPrivateKey(args, project) {
-  const keyPath = arg(args, "--key");
-  if (keyPath) return readFileSync(keyPath, "utf8");
-  const ref = arg(args, "--op-ref") || project?.config?.onepassword?.private_key_ref;
-  if (!ref) {
-    throw new Error(
-      "no signing key: run innsigle init --onepassword, or pass --key / --op-ref",
-    );
-  }
-  return readPrivateKeyPem(ref, { account: arg(args, "--op-account") });
+function loadPrivateKey(args, project, role = "human") {
+  return loadPrivateKeyForRole(args, project, role).pem;
 }
 
 function issuerFromProject(project, err) {
@@ -271,28 +273,29 @@ function runSealStale(args, deps) {
     return 0;
   }
 
-  let privateKeyPem;
-  try {
-    privateKeyPem = loadPrivateKey(args, project); // once, for the whole loop
-  } catch (e) {
-    err(`INVALID: ${e.message}`);
-    return 1;
-  }
-
   let failures = 0;
   for (const e of stale) {
     const srcAbs = join(project.repoRoot, e.source);
     const contentBytes = readFileSync(srcAbs);
     const old = e.attestation.payload;
+    const role = roleForComposition(old.colophon?.composition);
+    let material;
+    try {
+      material = loadPrivateKeyForRole(args, project, role);
+    } catch (ex) {
+      err(`INVALID: reseal ${e.source}: ${ex.message}`);
+      failures++;
+      continue;
+    }
     const claim = buildClaim({
-      issuer,
+      issuer: issuerForKey(project, material.keyId),
       uri: old.subjects?.[0]?.uri,
       digestHex: sha256Hex(contentBytes),
       colophon: old.colophon,
       nowIso,
     });
-    const attestation = signAttestation(claim, privateKeyPem, nowIso);
-    const outPath = defaultAttestationPath(project.repoRoot, srcAbs);
+    const attestation = signAttestation(claim, material.pem, nowIso);
+    const outPath = defaultAttestationPath(project.repoRoot, srcAbs, slugOpts(project));
     const res = writeVerified({ outPath, attestation, project, contentBytes });
     if (!res.ok) {
       err(`INVALID: reseal self-verify failed for ${e.source} (${res.reason})`);
@@ -322,6 +325,169 @@ function confirmTTY(question) {
 }
 
 /**
+ * innsigle seal --all — Helix microsite pattern: walk config.content_globs,
+ * skip up-to-date claims, pick composition from frontmatter `generated: true`
+ * → model-primary else mixed, remove ORPHAN claims. Reads the private key once.
+ * @returns {number} exit code
+ */
+function runSealAll(args, deps) {
+  const log = deps.log || ((s) => console.error(s));
+  const err = deps.err || ((s) => console.error(s));
+  const nowIso = deps.nowIso;
+  const project = loadProject();
+  if (!project?.config?.issuer) {
+    err("INVALID: no .innsigle/config.json — run: innsigle init --onepassword --site-url https://…");
+    return 1;
+  }
+  const issuer = issuerFromProject(project, err);
+  if (!issuer) return 5;
+  const globs = project.config.content_globs;
+  if (!Array.isArray(globs) || !globs.length) {
+    err("INVALID: seal --all needs content_globs in .innsigle/config.json");
+    return 5;
+  }
+
+  const files = filesMatchingGlobs(project.repoRoot, globs);
+  if (!files.length) {
+    err("INVALID: content_globs matched no files");
+    return 5;
+  }
+
+  const roleFilter = arg(args, "--role"); // human | build | undefined (both)
+  if (roleFilter && roleFilter !== "human" && roleFilter !== "build") {
+    err("INVALID: --role must be human|build");
+    return 5;
+  }
+
+  const humanKey = tryLoadPrivateKeyForRole(args, project, "human");
+  const buildKey = tryLoadPrivateKeyForRole(args, project, "build");
+  if (roleFilter === "human" && !humanKey) {
+    err("INVALID: no human key");
+    return 1;
+  }
+  if (roleFilter === "build" && !buildKey) {
+    err("INVALID: no build key");
+    return 1;
+  }
+
+  const force = args.includes("--force");
+  const kindOverride = arg(args, "--kind");
+  if (kindOverride && !EXAMPLE_COLO[kindOverride]) {
+    err("INVALID: kind must be model-primary|human-authored|mixed");
+    return 5;
+  }
+  const fromFm = project.config.kind_from_frontmatter !== false;
+  let sealed = 0;
+  let skipped = 0;
+  let failed = 0;
+  let omitted = 0;
+
+  for (const rel of files) {
+    const abs = join(project.repoRoot, rel);
+    const contentBytes = readFileSync(abs);
+    const digestHex = sha256Hex(contentBytes);
+    const outPath = defaultAttestationPath(project.repoRoot, abs, slugOpts(project));
+    let kind = kindOverride;
+    if (!kind && fromFm) kind = kindFromFrontmatter(contentBytes.toString("utf8"));
+    if (!kind) kind = project.config.default_composition || "mixed";
+    const role = roleForComposition(kind);
+    if (roleFilter && role !== roleFilter) {
+      omitted++;
+      continue;
+    }
+    const material = role === "build" ? buildKey : humanKey;
+    if (!material) {
+      log(`skip (${role} key missing): ${rel}`);
+      omitted++;
+      continue;
+    }
+    const colophon = structuredClone(EXAMPLE_COLO[kind] || EXAMPLE_COLO.mixed);
+    if (!force && existsSync(outPath)) {
+      try {
+        const prev = JSON.parse(readFileSync(outPath, "utf8"));
+        if (
+          prev?.payload?.subjects?.[0]?.digest?.value === digestHex &&
+          jcs(prev.payload.colophon ?? null) === jcs(colophon) &&
+          prev?.payload?.issuer?.key_id === material.keyId
+        ) {
+          skipped++;
+          continue;
+        }
+      } catch {
+        /* re-seal */
+      }
+    }
+    const uri = arg(args, "--uri") || guessContentUri(project.config, project.repoRoot, abs);
+    const claimIssuer = issuerForKey(project, material.keyId);
+    const claim = buildClaim({ issuer: claimIssuer, uri, digestHex, colophon, nowIso });
+    const attestation = signAttestation(claim, material.pem, nowIso);
+    const res = writeVerified({ outPath, attestation, project, contentBytes });
+    if (!res.ok) {
+      err(`INVALID: seal self-verify failed for ${rel} (${res.reason})`);
+      failed++;
+      continue;
+    }
+    log(`sealed (${kind}/${role}): ${rel}`);
+    sealed++;
+  }
+
+  const { entries } = collectStatus(project);
+  let removed = 0;
+  for (const e of entries) {
+    if (e.state !== "ORPHAN") continue;
+    try {
+      unlinkSync(e.claimPath);
+      log(`removed orphan claim: ${e.fname}`);
+      removed++;
+    } catch {
+      /* ignore */
+    }
+  }
+
+  log(
+    `innsigle-seal: ${sealed} sealed, ${skipped} up to date, ${failed} failed, ${removed} orphan claims removed, ${omitted} skipped`,
+  );
+  return failed ? 2 : 0;
+}
+
+/**
+ * Copy .innsigle/public → <site>/.well-known/innsigle (Helix publish contract).
+ * @returns {number}
+ */
+export function runPublish(args, deps = {}) {
+  const log = deps.log || ((s) => console.error(s));
+  const err = deps.err || ((s) => console.error(s));
+  const project = loadProject();
+  if (!project?.config) {
+    err("INVALID: no .innsigle/config.json — run: innsigle init --onepassword");
+    return 1;
+  }
+  const destArg = args.find((a) => !a.startsWith("-")) || arg(args, "--to") || "site";
+  const dest = resolve(project.repoRoot, destArg, ".well-known", "innsigle");
+  const src = project.publicDir;
+  if (!existsSync(src)) {
+    err(`INVALID: missing ${PATHS.public}`);
+    return 1;
+  }
+  mkdirSync(dest, { recursive: true });
+  cpRecursive(src, dest);
+  log(`ok: copied ${PATHS.public}/ → ${relative(project.repoRoot, dest)}/`);
+  return 0;
+}
+
+function cpRecursive(src, dest) {
+  mkdirSync(dest, { recursive: true });
+  for (const name of readdirSync(src)) {
+    if (name === ".gitkeep") continue;
+    const from = join(src, name);
+    const to = join(dest, name);
+    const st = statSync(from);
+    if (st.isDirectory()) cpRecursive(from, to);
+    else copyFileSync(from, to);
+  }
+}
+
+/**
  * innsigle seal <content> [--kind …] [--colo …] [--uri …] [--out att.json]
  *                [--force] [--debug-claim] [--op-account <acct>]
  * innsigle seal --stale
@@ -338,6 +504,7 @@ export function runSeal(args, deps) {
   const nowIso = deps.nowIso;
 
   if (args.includes("--stale")) return runSealStale(args, deps);
+  if (args.includes("--all")) return runSealAll(args, deps);
 
   const contentPath = positionalContent(args);
   if (!contentPath) {
@@ -347,6 +514,7 @@ export function runSeal(args, deps) {
     err("       innsigle seal <file> --auto [--yes] [--save-colo] [--provenance-uri <uri>]");
     err("                                # propose colophon from Claude Code transcripts");
     err("       innsigle seal --stale   # re-seal drifted claims");
+    err("       innsigle seal --all [--role human|build]  # content_globs; role picks the key");
     err("Requires .innsigle/config.json (innsigle init --onepassword). Key from 1Password.");
     return 1;
   }
@@ -435,7 +603,8 @@ export function runSeal(args, deps) {
   const contentBytes = readFileSync(contentPath);
   const digestHex = sha256Hex(contentBytes);
   const outPath =
-    arg(args, "--out") || defaultAttestationPath(project.repoRoot, contentPath);
+    arg(args, "--out") ||
+    defaultAttestationPath(project.repoRoot, contentPath, slugOpts(project));
 
   // Idempotence (PLAN-001 A2): no-op only when the existing attestation covers
   // identical bytes AND carries the same colophon we are about to sign (F5) —
@@ -469,17 +638,22 @@ export function runSeal(args, deps) {
     }
   }
 
-  const claim = buildClaim({ issuer, uri, digestHex, colophon, nowIso });
-
-  let privateKeyPem;
+  const role = arg(args, "--role") || roleForComposition(colophon.composition);
+  let material;
   try {
-    privateKeyPem = loadPrivateKey(args, project);
+    material = loadPrivateKeyForRole(args, project, role);
   } catch (e) {
     err(`INVALID: ${e.message}`);
     return 1;
   }
-
-  const attestation = signAttestation(claim, privateKeyPem, nowIso);
+  const claim = buildClaim({
+    issuer: issuerForKey(project, material.keyId),
+    uri,
+    digestHex,
+    colophon,
+    nowIso,
+  });
+  const attestation = signAttestation(claim, material.pem, nowIso);
   const res = writeVerified({ outPath, attestation, project, contentBytes });
   if (!res.ok) {
     err(`INVALID: seal self-verify failed (${res.reason}) — attestation not kept`);
@@ -538,7 +712,9 @@ export function resolveVerifyPaths(args) {
     // Candidate filenames: slug (canonical) first, legacy basename second.
     const names = [];
     if (project) {
-      names.push(`${attestationSlug(project.repoRoot, contentAbs)}.attestation.json`);
+      names.push(
+        `${attestationSlug(project.repoRoot, contentAbs, slugOpts(project))}.attestation.json`,
+      );
     }
     names.push(legacyAttestationName(content));
     const candNames = [...new Set(names)];

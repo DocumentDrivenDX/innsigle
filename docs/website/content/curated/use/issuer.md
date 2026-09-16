@@ -18,6 +18,21 @@ You want people to know *who* sealed a page, not just that a seal exists. You do
 Anyone can paste a house name in a bio. **Identity is the key fingerprint**, not
 the slug.
 
+Microsites that mix hand-written pages with generated reference (HELIX's
+pattern) SHOULD use **two keys in one issuer document** (ADR-004):
+
+| Role | What it seals | Where the private key lives |
+|------|----------------|------------------------------|
+| **human** | `human-authored` and `mixed` sources in git | 1Password or a local PEM. Never GitHub. |
+| **build** | `model-primary` / `generated: true` sources | GitHub Actions secret `INNSIGLE_BUILD_KEY` |
+
+The human key **endorses** the build key (`innsigle endorse --subject-key-id
+… --purpose build-signing`). The build key MUST NOT endorse the human key. A
+CI compromise then cannot mint a mixed seal.
+
+Rendered HTML **quotes** the source attestation. The signature covers the
+markdown, not the HTML bytes.
+
 ## Create keys
 
 ```bash

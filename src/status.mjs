@@ -1,7 +1,7 @@
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { basename, join } from "node:path";
 import { b64urlDecode, sha256Hex, verifyPayload } from "./crypto.mjs";
-import { attestationSlug, loadProject } from "./config.mjs";
+import { attestationSlug, loadProject, slugOpts } from "./config.mjs";
 
 /** Directories never scanned for content sources. */
 const SKIP_DIRS = new Set([".git", "node_modules", ".innsigle"]);
@@ -75,6 +75,17 @@ export function listRepoFiles(repoRoot) {
  * Matches posix-relative paths.
  * @param {string} glob
  */
+/**
+ * Posix-relative repo files matching any of the globs.
+ * @param {string} repoRoot
+ * @param {string[]} globs
+ */
+export function filesMatchingGlobs(repoRoot, globs) {
+  if (!Array.isArray(globs) || !globs.length) return [];
+  const regexes = globs.map((g) => globToRegExp(g));
+  return listRepoFiles(repoRoot).filter((rel) => regexes.some((re) => re.test(rel)));
+}
+
 export function globToRegExp(glob) {
   let re = "";
   for (let i = 0; i < glob.length; i++) {
@@ -139,7 +150,7 @@ function sourceFromUri(repoRoot, uri, claimName, slugOf) {
 export function collectStatus(project) {
   const { repoRoot, claimsDir } = project;
   const files = listRepoFiles(repoRoot);
-  const slugOf = (rel) => attestationSlug(repoRoot, join(repoRoot, rel));
+  const slugOf = (rel) => attestationSlug(repoRoot, join(repoRoot, rel), slugOpts(project));
   // Multi-candidate maps: slugs and legacy basenames can collide across
   // distinct files, so keep every candidate and disambiguate per claim.
   const slugCandidates = new Map();

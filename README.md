@@ -78,10 +78,13 @@ This writes **only** under **`.innsigle/`** (Innsigle does not guess Quarto/Hugo
 .innsigle/public/  →  <site-root>/.well-known/innsigle/
 ```
 
-Then seal content (issuer + 1Password from `.innsigle/config.json`):
+Then seal a whole docs tree (Helix microsite pattern) or one file:
 
 ```bash
-innsigle seal ./page.html          # claim+sign → .innsigle/public/claims/
+innsigle seal --all                # every content_globs file; skip up-to-date
+innsigle publish site              # .innsigle/public → site/.well-known/innsigle
+innsigle verify --all              # CI gate
+innsigle seal ./page.html          # one file
 innsigle verify ./page.html        # finds att + keys from .innsigle/
 ```
 

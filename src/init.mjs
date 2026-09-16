@@ -25,6 +25,7 @@ export function runInit(args, deps) {
     err("init requires --onepassword (house key custody in 1Password)");
     err("Usage: innsigle init --onepassword [--dir <repo>] \\");
     err("         [--issuer-id <id>] [--issuer-name <name>] [--site-url <https://…>] \\");
+    err("         [--content-root <dir>] [--content-glob <glob>] \\");
     err("         [--vault <name>] [--title <item title>] [--force]");
     return 1;
   }
@@ -154,6 +155,12 @@ export function runInit(args, deps) {
       private_key_ref: opItem.privateKeyRef,
     },
   };
+  const contentRoot = arg(args, "--content-root");
+  const contentGlob = arg(args, "--content-glob");
+  if (contentRoot) config.content_root = contentRoot;
+  if (contentGlob) config.content_globs = [contentGlob];
+  else if (contentRoot) config.content_globs = [`${contentRoot.replace(/\/+$/, "")}/**/*.md`];
+  if (contentRoot || contentGlob) config.kind_from_frontmatter = true;
   writeConfig(configPath, config);
 
   log(`ok: wrote ${PATHS.config}`);
@@ -166,7 +173,7 @@ export function runInit(args, deps) {
     log(`next: set issuer.key_url in ${PATHS.config} to your public HTTPS keys URL`);
   } else {
     log(
-      "next: wire .innsigle/public → /.well-known/innsigle in your build (see .innsigle/AGENTS.md), then claim + sign",
+      "next: innsigle seal --all && innsigle publish <site-root>  (see .innsigle/AGENTS.md)",
     );
   }
   return 0;
@@ -246,9 +253,8 @@ well-known path (adjust only the left side if your tool needs a different
 source path — the **destination path is fixed**):
 
 \`\`\`bash
-# Generic: after your site is rendered into SITE_ROOT
-mkdir -p "$SITE_ROOT/.well-known/innsigle"
-cp -a .innsigle/public/. "$SITE_ROOT/.well-known/innsigle/"
+innsigle publish "$SITE_ROOT"
+# equivalent: cp -a .innsigle/public/. "$SITE_ROOT/.well-known/innsigle/"
 \`\`\`
 
 Examples (illustrative only — pick what this repo uses):
@@ -268,7 +274,20 @@ Examples (illustrative only — pick what this repo uses):
 If the public host differs, update \`.innsigle/config.json\` \`issuer.key_url\`
 **before** signing new claims (old seals keep their frozen URL).
 
-## Seal a content file
+## Seal a whole microsite (Helix pattern)
+
+Set \`content_root\` + \`content_globs\` in config (init \`--content-root\`), then:
+
+\`\`\`bash
+innsigle seal --all          # skip up-to-date; generated: true → model-primary, else mixed
+innsigle publish SITE_ROOT   # copies .innsigle/public → SITE_ROOT/.well-known/innsigle
+innsigle verify --all        # CI gate
+\`\`\`
+
+Hugo: mount \`.innsigle/public\` at \`static/.well-known/innsigle\` and use
+\`integrations/hugo/layouts/_partials/innsigle-colophon.html\`.
+
+## Seal one file
 
 Finalize the **exact bytes** you will publish, then:
 

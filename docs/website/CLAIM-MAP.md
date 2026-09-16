@@ -8,6 +8,7 @@ it may not **expand** it.
 |--------------------|-------|--------|
 | When signed, verify answers: this issuer sealed this colophon for these content bytes | home, verify, sample, walkthroughs | Live `/sample/` + `innsigle verify` → VALID; golden vectors; `tests/install.test.mjs` |
 | Unsigned mark is still a valid Innsigle (signature optional) | home, verify, DESIGN | Principles (signet optional); no test requires every page signed |
+| Human key seals mixed sources in git; build key seals generated sources; HTML quotes the source seal | issuer, verify, cli | ADR-004; `innsigle seal --all --role`; `tests/seal-all.test.mjs` |
 | Plain seals / maker profiles are unsigned declarations; verify MUST NOT print VALID | profile, walkthrough-profile | `tests/profile.test.mjs`; e2e `profile-builder.spec.ts`; sample `/examples/profile/` |
 | Absolute HTTPS `key_url` is required in signed claims | issuer, CLI, verify | ADR-003; CLI exit 5 on relative URL |
 | Composition is declaration, not a purity score or AI detector | home, non-goals, colophon | Non-goals; e2e FORBIDDEN_VOICE; no detector verbs |

@@ -43,7 +43,7 @@ mark language. Complements claim schema and signing in
 | Register | Short nouns; seal / mark / colophon; signet = crypto depth only; avoid "credentials," "authentic real," "verified true content" |
 | Dual composition | Human and model-primary use the **same seal family**; state is in the colo and optional mark variant, never shame color |
 | Pride | Model names (e.g. Claude) and human roles both allowed as credit |
-| Trust copy | "Who sealed this colo for these bytes," not "this content is true" |
+| Trust copy | "Who sealed this colo for these bytes," not "this content is true". On a rendered docs page: the signature covers the **markdown source**, not the HTML. |
 | Spoken name | **INN-siggle** (rhymes with *single*) |
 | Chrome (B4) | `The maker's seal for published work` (footer cue; straight `'`) |
 | Category (A1) | `Content provenance for the AI era` (meta / Non-goals—not footer) |
@@ -112,6 +112,7 @@ Geometry locked in `docs/sample/assets/marks/` (craft-matrix exploration). Const
 | Surface | Pattern |
 |---------|---------|
 | Docs footer | Glyph (+ wordmark) left or right; cue B4; link to colophon / claim |
+| Docs page colophon | Quotes the **source** attestation (`application/innsigle+json`); names human vs build key; says the signature covers markdown, not HTML |
 | Docs about | Larger seal + full colophon table |
 | Social image | Glyph baked into image or attached still; caption optional short URL |
 | Social profile | Link in bio to the maker profile (plain seals); optional house keys + "how to read Innsigle" |
@@ -125,7 +126,7 @@ Geometry locked in `docs/sample/assets/marks/` (craft-matrix exploration). Const
 | Default | High contrast glyph; focus ring on link/button wrapper |
 | Hover / `:focus-visible` | Slight lift or ring; no color-only state change |
 | Open colo | Inline expand or dedicated `/use/colophon/` / hash route |
-| Verify OK | Text: "Signature valid for this content" + signer id; not a green truth badge alone |
+| Verify OK | Text: "Signature valid for this content" + signer id + key role (human / build); not a green truth badge alone |
 | Verify fail | Text: fail reason (mismatch, bad key, mutated content); no detector language |
 
 ### Accessibility

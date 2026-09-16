@@ -38,6 +38,19 @@ jobs:
       - name: Unit / integration tests
         run: npm test
 
+      - name: Seal generated sources (build key)
+        env:
+          INNSIGLE_BUILD_KEY: ${{ secrets.INNSIGLE_BUILD_KEY }}
+        run: |
+          if [ -n "$INNSIGLE_BUILD_KEY" ]; then
+            node src/cli.mjs seal --all --role build
+          else
+            echo "No INNSIGLE_BUILD_KEY; using committed generated claims"
+          fi
+
+      - name: Verify microsite seals
+        run: npm run verify:site
+
       - name: Playwright e2e (link integrity + design voice + profile builder)
         run: npm run test:e2e
         env:

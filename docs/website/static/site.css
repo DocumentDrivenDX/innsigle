@@ -706,3 +706,64 @@ ul.tight li {
     align-items: end;
   }
 }
+
+/* Helix-style page colophon (source-byte seal, not a detector) */
+.innsigle-colophon {
+  margin-top: 2.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+  font-family: var(--sans);
+  font-size: 0.88rem;
+}
+.innsigle-colophon .innsigle-seal > summary {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  list-style: none;
+}
+.innsigle-colophon .innsigle-seal > summary::-webkit-details-marker {
+  display: none;
+}
+.innsigle-colophon .innsigle-glyph {
+  width: 1.1rem;
+  height: 1.1rem;
+  flex-shrink: 0;
+}
+.innsigle-colophon .innsigle-viewer {
+  margin-top: 0.75rem;
+  padding: 0.75rem 0.9rem;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: 0.35rem;
+}
+.innsigle-colophon dl {
+  display: grid;
+  grid-template-columns: 9rem 1fr;
+  gap: 0.25rem 0.75rem;
+  margin: 0 0 0.75rem;
+}
+.innsigle-colophon dt {
+  color: var(--ink-mute);
+  font-weight: 650;
+}
+.innsigle-colophon dd {
+  margin: 0;
+}
+.innsigle-colophon .innsigle-raw pre {
+  overflow: auto;
+  font-size: 0.78rem;
+  max-height: 18rem;
+}
+.innsigle-colophon .innsigle-links {
+  margin: 0.5rem 0 0;
+}
+.innsigle-colophon .innsigle-covers,
+.innsigle-colophon .innsigle-trust {
+  color: var(--ink-mute);
+  font-size: 0.82rem;
+  margin: 0 0 0.75rem;
+}
+.innsigle-colophon script[type="application/innsigle+json"] {
+  display: none;
+}

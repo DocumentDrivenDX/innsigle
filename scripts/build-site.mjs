@@ -23,6 +23,14 @@ import { spawnSync } from "node:child_process";
 import { mdToHtml, splitFrontmatter } from "./md.mjs";
 import { BRAND } from "./brand-lines.mjs";
 import { renderProfileHtml, validateProfile } from "../src/profile.mjs";
+import { sha256Hex } from "../src/crypto.mjs";
+import {
+  attestationSlug,
+  loadProject,
+  slugOpts,
+} from "../src/config.mjs";
+import { renderColophonHtml } from "../src/site-pages.mjs";
+import { runPublish } from "../src/seal.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "site");
@@ -64,7 +72,7 @@ function hrefActive(pageUrl, navHref) {
   return pageUrl === navHref || pageUrl.startsWith(navHref);
 }
 
-function layout({ title, description, pageUrl, bodyHtml, crumbs }) {
+function layout({ title, description, pageUrl, bodyHtml, crumbs, colophonHtml }) {
   const navHtml = NAV.map((n) => {
     const cur = hrefActive(pageUrl, n.href);
     return `<a href="${n.href}"${cur ? ' aria-current="page"' : ""}>${n.title}</a>`;
@@ -108,6 +116,7 @@ function layout({ title, description, pageUrl, bodyHtml, crumbs }) {
       </aside>
       <main class="docs-main prose">
         ${bodyHtml}
+        ${colophonHtml || ""}
       </main>
     </div>
   </div>
@@ -241,8 +250,44 @@ function writePage(urlPath, html) {
   writeFileSync(file, html);
 }
 
+function colophonForSource(file, rawBytes) {
+  const project = loadProject(ROOT);
+  if (!project?.claimsDir) return "";
+  const slug = attestationSlug(project.repoRoot, file, slugOpts(project));
+  const attPath = join(project.claimsDir, `${slug}.attestation.json`);
+  if (!existsSync(attPath)) return "";
+  let attestation;
+  try {
+    attestation = JSON.parse(readFileSync(attPath, "utf8"));
+  } catch {
+    return "";
+  }
+  const claimed = attestation?.payload?.subjects?.[0]?.digest?.value;
+  const digest = sha256Hex(rawBytes);
+  if (!claimed || claimed !== digest) {
+    console.error(`innsigle: ${relative(ROOT, file)} no longer matches its seal; no colophon rendered`);
+    return "";
+  }
+  let keysDoc = null;
+  try {
+    keysDoc = JSON.parse(readFileSync(project.keysPath, "utf8"));
+  } catch {
+    keysDoc = null;
+  }
+  return renderColophonHtml({
+    attestation,
+    slug,
+    assetBase: `${BASE}/assets/marks`,
+    attHref: `${BASE}/.well-known/innsigle/claims/${slug}.attestation.json`,
+    keysHref: `${BASE}/.well-known/innsigle/keys.json`,
+    keysDoc,
+    sourceRel: relative(ROOT, file),
+  });
+}
+
 function renderMdFile(file, contentRoot, kind) {
-  const raw = readFileSync(file, "utf8");
+  const rawBytes = readFileSync(file);
+  const raw = rawBytes.toString("utf8");
   const { data, body } = splitFrontmatter(raw);
   const title = data.title || extractH1(body) || file;
   const description = data.description || title;
@@ -279,6 +324,7 @@ function renderMdFile(file, contentRoot, kind) {
     pageUrl,
     bodyHtml,
     crumbs,
+    colophonHtml: colophonForSource(file, rawBytes),
   });
   writePage(pageUrl, html);
   return pageUrl;
@@ -287,6 +333,17 @@ function renderMdFile(file, contentRoot, kind) {
 function extractH1(body) {
   const m = body.match(/^#\s+(.+)$/m);
   return m ? m[1].trim() : null;
+}
+
+function publishInnsigleWellKnown() {
+  if (!existsSync(join(ROOT, ".innsigle/public/keys.json"))) return;
+  const code = runPublish(["site"], {
+    log: (s) => console.error(s),
+    err: (s) => console.error(s),
+  });
+  if (code !== 0) {
+    throw new Error("innsigle publish into site/ failed");
+  }
 }
 
 function writeSampleProfile() {
@@ -337,6 +394,7 @@ function copyStatic() {
     cpSync(builderJs, join(OUT, "assets/js/profile-builder.js"));
   }
   writeSampleProfile();
+  publishInnsigleWellKnown();
   // Sample is a sealed subject: copy the tree byte-for-byte so published
   // site/sample/index.html matches docs/sample/index.html (and its claim).
   // Relative hrefs (.well-known/, assets/marks/) resolve under /sample/.
