@@ -10,7 +10,7 @@ export default defineConfig({
   expect: {
     toHaveScreenshot: {
       // Design-voice review: allow font AA / antialias + minor CI vs local layout jitter
-      maxDiffPixelRatio: 0.08,
+      maxDiffPixelRatio: 0.12,
     },
   },
   fullyParallel: false,

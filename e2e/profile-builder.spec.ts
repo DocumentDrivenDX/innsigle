@@ -23,7 +23,11 @@ test.describe("Maker profile builder", () => {
   }) => {
     await page.goto("/use/profile/", { waitUntil: "networkidle" });
     await expect(page.locator("#innsigle-profile-builder")).toBeVisible();
-    await expect(page.locator("#pb-name")).toBeVisible();
+    const builderJs = await page.request.get("/assets/js/profile-builder.js");
+    expect(builderJs.ok(), `profile-builder.js ${builderJs.status()}`).toBeTruthy();
+    const profileMod = await page.request.get("/assets/js/profile.mjs");
+    expect(profileMod.ok(), `profile.mjs ${profileMod.status()}`).toBeTruthy();
+    await expect(page.locator("#pb-name")).toBeVisible({ timeout: 15_000 });
 
     await page.locator("#pb-name").fill("Ada Maker");
     await page.locator("#pb-id").fill("ada");
@@ -61,7 +65,7 @@ test.describe("Maker profile builder", () => {
 
   test("builder refuses human-authored plus a named model", async ({ page }) => {
     await page.goto("/use/profile/", { waitUntil: "networkidle" });
-    await expect(page.locator("#pb-name")).toBeVisible();
+    await expect(page.locator("#pb-name")).toBeVisible({ timeout: 15_000 });
     await page.locator("#pb-name").fill("Ada Maker");
     await page.locator("#pb-id").fill("ada");
     await page.locator("#pb-title").fill("Laundered memo");

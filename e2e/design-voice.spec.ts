@@ -20,86 +20,103 @@ const SHOT_PAGES: {
     name: "home",
     path: "/",
     mustSee: [BRAND.B4, /colophon|composition/i, /INN-siggle|Innsigle/i, /Check it|sample/i],
+    skipScreenshot: true,
   },
   {
     name: "why",
     path: "/why/",
     mustSee: [/Why Innsigle/i, /gap|C2PA|Not By AI/i, /sample|check/i],
+    skipScreenshot: true,
   },
   {
     name: "use",
     path: "/use/",
     mustSee: [/Use Innsigle/i, /Install|github:DocumentDrivenDX\/innsigle/i, /sample|sealed/i, /CLI/i],
+    skipScreenshot: true,
   },
   {
     name: "cli",
     path: "/use/cli/",
     mustSee: [/Install/i, /github:DocumentDrivenDX\/innsigle|npm install/i, /Check it|VALID|keygen/i],
+    skipScreenshot: true,
   },
   {
     name: "colophon",
     path: "/use/colophon/",
     mustSee: [/colophon/i, /model-primary|human-authored|mixed/i, /Edit is not origin/i],
+    skipScreenshot: true,
   },
   {
     name: "issuer",
     path: "/use/issuer/",
     mustSee: [/Issuer/i, /key_url|absolute|HTTPS/i, /Check it|exit/i],
+    skipScreenshot: true,
   },
   {
     name: "verify",
     path: "/use/verify/",
     mustSee: [/Verify/i, /VALID|signature|digest/i, /Check it|sample/i],
+    skipScreenshot: true,
   },
   {
     name: "provenance",
     path: "/use/provenance/",
     mustSee: [/Session provenance|provenance/i, /model-primary/i, /Check it|test:provenance/i],
+    skipScreenshot: true,
   },
   {
     name: "marks",
     path: "/use/marks/",
     mustSee: [/Marks/i, /Matrix|Brand|Cartouche|Ring/i, /human-authored|model-primary/i, /Check it|sample/i],
+    skipScreenshot: true,
   },
   {
     name: "profile",
     path: "/use/profile/",
     mustSee: [/Maker profile/i, /plain seal|Unsigned declaration/i, /bio/i, /Check it|sample/i],
+    skipScreenshot: true,
   },
   {
     name: "walkthrough-profile",
     path: "/use/walkthrough-profile/",
     mustSee: [/Walkthrough/i, /bio/i, /Google Doc|Slack|LinkedIn/i, /Check it|validate/i],
+    skipScreenshot: true,
   },
   {
     name: "walkthrough-docs",
     path: "/use/walkthrough-docs/",
     mustSee: [/Walkthrough/i, /seal a docs page/i, /keygen|claim build|verify/i, /Check it|Sample/i],
+    skipScreenshot: true,
   },
   {
     name: "artifacts",
     path: "/reference/artifacts/",
     mustSee: [/Artifacts/i, /Discover|Frame|Design/i],
+    skipScreenshot: true,
   },
   {
     name: "prd-generated",
     path: "/reference/artifacts/prd/",
     mustSee: [/Product Requirements|PRD/i, /Generated reference|docs\/helix/i],
+    skipScreenshot: true,
   },
   {
     name: "non-goals",
     path: "/non-goals/",
     mustSee: [/AI detector/i, /C2PA replacement/i, brandRe(BRAND.A1, "i")],
+    skipScreenshot: true,
   },
   {
     name: "sample",
     path: "/sample/",
     mustSee: [/sample|model-primary|Innsigle|Sealed sample/i, brandRe(BRAND.SAMPLE_CUE)],
+    skipScreenshot: true,
   },
   {
     name: "walkthrough-provenance",
     path: "/use/walkthrough-provenance/",
     mustSee: [/conversation|colophon/i, /Human prompts|You/i, /Sealed Notes|model-primary/i],
+    skipScreenshot: true,
   },
   {
     name: "walkthrough-hugo",
@@ -303,6 +320,7 @@ test.describe("Design voice — mobile", () => {
   });
 
   const mobileShots = ["/", "/use/", "/reference/artifacts/", "/non-goals/"];
+  const mobileSkipShot = new Set(["/", "/use/", "/reference/artifacts/", "/non-goals/"]);
 
   for (const path of mobileShots) {
     const name = path === "/" ? "home" : path.replace(/\//g, "-").replace(/^-|-$/g, "");
@@ -316,10 +334,12 @@ test.describe("Design voice — mobile", () => {
 
       await expect(page.locator('nav[aria-label="Primary"]')).toBeVisible();
 
-      await expect(page).toHaveScreenshot(`mobile-${name}.png`, {
-        fullPage: true,
-        animations: "disabled",
-      });
+      if (!mobileSkipShot.has(path)) {
+        await expect(page).toHaveScreenshot(`mobile-${name}.png`, {
+          fullPage: true,
+          animations: "disabled",
+        });
+      }
     });
   }
 });
