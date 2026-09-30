@@ -3,9 +3,9 @@
   "issuer": {
     "id": "innsigle",
     "name": "Innsigle",
-    "key_id": "ed25519:2816ffee6fd355c1e0703b876e49b1b0",
+    "key_id": "ed25519:15c6242b6ef825413847e221267959c9",
     "key_url": "https://documentdrivendx.github.io/innsigle/.well-known/innsigle/keys.json",
-    "public_key": "fjz2YGEko2zbJ4KElTzOlI9CV8cweZlCsuCgZVmztu4"
+    "public_key": "0PHYEC5dfpK6zErbW1A078WP_1fU1NF05DC_bsXpeyI"
   },
   "paths": {
     "public": ".innsigle/public",
@@ -24,17 +24,20 @@
     "docs/website/content/**/*.md"
   ],
   "kind_from_frontmatter": true,
-  "signing_key": ".innsigle/keys/ed25519.priv.pem",
   "keys": {
     "human": {
-      "key_id": "ed25519:2816ffee6fd355c1e0703b876e49b1b0",
-      "role": "human",
-      "signing_key": ".innsigle/keys/ed25519.priv.pem"
+      "key_id": "ed25519:15c6242b6ef825413847e221267959c9",
+      "role": "human"
     },
     "build": {
-      "key_id": "ed25519:09e7437aadf9a63a81e40906582c9cb9",
-      "role": "build",
-      "signing_key": ".innsigle/keys/build/ed25519.priv.pem"
+      "key_id": "ed25519:050bf4d0361a96aa3b6baa3fc2ffd0cb",
+      "role": "build"
     }
+  },
+  "onepassword": {
+    "vault": "Private",
+    "item_title": "Innsigle \u00b7 innsigle",
+    "item_id": "vq6ckcqmee4mk6kh3htjp5jdjq",
+    "private_key_ref": "op://Private/vq6ckcqmee4mk6kh3htjp5jdjq/private key"
   }
 }

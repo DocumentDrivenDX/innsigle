@@ -2,11 +2,11 @@
   "payload": {
     "innsigle": "1",
     "type": "https://innsigle.dev/claim/colophon/v1",
-    "issued_at": "2026-09-16T03:09:32Z",
+    "issued_at": "2026-09-30T20:46:37Z",
     "issuer": {
       "id": "innsigle",
       "name": "Innsigle",
-      "key_id": "ed25519:2816ffee6fd355c1e0703b876e49b1b0",
+      "key_id": "ed25519:15c6242b6ef825413847e221267959c9",
       "key_url": "https://documentdrivendx.github.io/innsigle/.well-known/innsigle/keys.json"
     },
     "subjects": [
@@ -44,10 +44,10 @@
   "payload_encoding": "json",
   "signatures": [
     {
-      "key_id": "ed25519:2816ffee6fd355c1e0703b876e49b1b0",
+      "key_id": "ed25519:15c6242b6ef825413847e221267959c9",
       "alg": "ed25519",
-      "sig": "n7oaDzeClsnVdff6u2aJdWRBDxEd9HtVXNQ_25VE5Dk55DHJoB3yMitJm2moH_s1670tBdJb4709KSl_Nq19CA",
-      "signed_at": "2026-09-16T03:09:32Z"
+      "sig": "SWXrNmgapujAPmfX1ikjXhYzoBI6dZuBh5xJWX04UX-2R6RQ40-x_TTX1zQf4_RE1g_hE6rTZ1Z14a7K81oJCg",
+      "signed_at": "2026-09-30T20:46:37Z"
     }
   ]
 }

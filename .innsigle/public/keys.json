@@ -8,7 +8,7 @@
       "alg": "ed25519",
       "public_key": "fjz2YGEko2zbJ4KElTzOlI9CV8cweZlCsuCgZVmztu4",
       "created_at": "2026-09-16T03:09:32Z",
-      "revoked_at": null,
+      "revoked_at": "2026-09-30T20:46:26Z",
       "role": "human"
     },
     {
@@ -16,6 +16,22 @@
       "alg": "ed25519",
       "public_key": "4Zg10iKB2d0dIIftGk5URdNNIAQm_Ld6gEVzDdng0_E",
       "created_at": "2026-09-16T03:29:36Z",
+      "revoked_at": "2026-09-30T20:46:26Z",
+      "role": "build"
+    },
+    {
+      "key_id": "ed25519:15c6242b6ef825413847e221267959c9",
+      "alg": "ed25519",
+      "public_key": "0PHYEC5dfpK6zErbW1A078WP_1fU1NF05DC_bsXpeyI",
+      "created_at": "2026-09-30T20:46:26Z",
+      "revoked_at": null,
+      "role": "human"
+    },
+    {
+      "key_id": "ed25519:050bf4d0361a96aa3b6baa3fc2ffd0cb",
+      "alg": "ed25519",
+      "public_key": "7ninPLFIJB4CTXUgZNDzwS3k5ItAewBU_2u05H47M5I",
+      "created_at": "2026-09-30T20:47:57Z",
       "revoked_at": null,
       "role": "build"
     }
@@ -26,6 +42,12 @@
       "subject_key_id": "ed25519:09e7437aadf9a63a81e40906582c9cb9",
       "subject_key_url": "https://documentdrivendx.github.io/innsigle/.well-known/innsigle/keys.json",
       "issued_at": "2026-09-16T03:29:36Z"
+    },
+    {
+      "attestation_url": "https://documentdrivendx.github.io/innsigle/.well-known/innsigle/endorsements/ed25519-050bf4d0361a96aa3b6baa3fc2ffd0cb.attestation.json",
+      "subject_key_id": "ed25519:050bf4d0361a96aa3b6baa3fc2ffd0cb",
+      "subject_key_url": "https://documentdrivendx.github.io/innsigle/.well-known/innsigle/keys.json",
+      "issued_at": "2026-09-30T20:48:08Z"
     }
   ]
 }
