@@ -26,8 +26,8 @@ export function runInit(args, deps) {
     err("init requires --onepassword (house key custody in 1Password)");
     err("Usage: innsigle init --onepassword [--dir <repo>] \\");
     err("         [--issuer-id <id>] [--issuer-name <name>] [--site-url <https://…>] \\");
-    err("         [--content-root <dir>] [--content-glob <glob>] [--hugo] \\");
-    err("         [--vault <name>] [--title <item title>] [--force]");
+    err("         [--content-root <dir>] [--content-glob <glob>]... [--hugo] \\");
+    err("         [--vault <name>] [--title <item title>] [--op-account <account>] [--force]");
     return 1;
   }
 
@@ -91,6 +91,7 @@ export function runInit(args, deps) {
       keyId,
       publicKeyB64url,
       issuerId,
+      account: arg(args, "--op-account"),
     });
   } catch (e) {
     err(`INVALID: ${e.message}`);
@@ -117,6 +118,11 @@ export function runInit(args, deps) {
         public_key: publicKeyB64url,
         created_at: deps.nowIso(),
         revoked_at: null,
+        // A fresh site has one key, held by a person in 1Password rather than
+        // by CI. keys.mjs falls the build role back to it when no build key is
+        // configured, so label it "human": that is what the colophon reports
+        // to a reader, and an unlabelled key renders no role at all.
+        role: "human",
       },
     ],
     endorsements: [],
@@ -157,11 +163,11 @@ export function runInit(args, deps) {
     },
   };
   const contentRoot = arg(args, "--content-root");
-  const contentGlob = arg(args, "--content-glob");
+  const contentGlobs = argAll(args, "--content-glob");
   if (contentRoot) config.content_root = contentRoot;
-  if (contentGlob) config.content_globs = [contentGlob];
+  if (contentGlobs.length) config.content_globs = contentGlobs;
   else if (contentRoot) config.content_globs = [`${contentRoot.replace(/\/+$/, "")}/**/*.md`];
-  if (contentRoot || contentGlob) config.kind_from_frontmatter = true;
+  if (contentRoot || contentGlobs.length) config.kind_from_frontmatter = true;
   // The Hugo integration's badge partial reads a `composition:` frontmatter
   // key by default. Sealing in legacy mode would make the badge and the seal
   // disagree on the same page, so --hugo opts into the named field.
@@ -352,6 +358,15 @@ in the publish copy step.
 - Do not re-run \`innsigle init\` unless the operator asked (creates a new key).
 - Do not rewrite Innsigle crypto or move keys outside \`.innsigle/\` + 1Password.
 `;
+}
+
+/** Collect every occurrence of a repeatable flag, in order. */
+function argAll(args, name) {
+  const out = [];
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === name && args[i + 1] !== undefined) out.push(args[i + 1]);
+  }
+  return out;
 }
 
 function arg(args, name) {

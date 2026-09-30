@@ -1,5 +1,38 @@
 # Changelog
 
+## [0.6.1] — 2026-09-30
+
+Four bugs that only surface against a real 1Password and a real two-section
+site. Found by wiring 0.6.0 into erik.labianca.org; each one made `init` or
+`seal` fail in a way that looked like user error.
+
+### Fixed
+
+- **`init` produced a `private_key_ref` that can never be read.** The default
+  item title is `Innsigle · <issuer>`, and `op` rejects non-ASCII in a secret
+  reference outright. Every subsequent `seal` reported "key missing". The
+  reference is now built from a reference-safe segment: the readable name when
+  it is valid, otherwise the item uuid, which is also stable across renames.
+- **`assertOpSignedIn` used `op whoami`,** which reports "account is not signed
+  in" for every account under 1Password's desktop-app integration, because
+  there is no persistent session token. That blocked `init` entirely for anyone
+  using the desktop app. The probe is now `op vault list`, which exercises the
+  same path a real call takes.
+- **`createHouseKeyItem` ignored account selection** while `readPrivateKeyPem`
+  honoured it, so with `OP_ACCOUNT` set to a non-default account the key was
+  created in one account and looked up in another. Both now resolve the account
+  the same way, and `init` accepts `--op-account` to match `seal`.
+- **`--content-glob` silently kept only the first value.** A site with two
+  content sections sealed one and ignored the other, with nothing reported. It
+  is now repeatable.
+
+### Changed
+
+- `init` records `role: "human"` on the key it mints. Without a role the
+  colophon rendered no key label and no trust line, because it resolves both
+  from the issuer document. A fresh site's single key is human-held in
+  1Password, and `keys.mjs` already falls the build role back to it.
+
 ## [0.6.0] — 2026-09-30
 
 First-class Hugo integration, and four silent failures made loud.

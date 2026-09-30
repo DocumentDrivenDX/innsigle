@@ -23,6 +23,27 @@ export function opBin() {
 }
 
 /**
+ * op rejects non-ASCII and `/` inside a secret reference, so a pretty item
+ * title (innsigle's default contains a middle dot) produces a reference that
+ * can never be read back. Use the human-readable name when it is valid in a
+ * reference, otherwise fall back to the uuid, which is always safe and also
+ * survives a rename.
+ *
+ * @param {string | undefined} name
+ * @param {string | undefined} id
+ * @returns {string}
+ */
+export function refSegment(name, id) {
+  const safe = typeof name === "string" && /^[\x20-\x7E]+$/.test(name) && !name.includes("/");
+  if (safe) return name;
+  if (id) return id;
+  throw Object.assign(
+    new Error(`cannot build an op:// reference for ${JSON.stringify(name)}: not reference-safe and no id available`),
+    { code: "OP_REF" },
+  );
+}
+
+/**
  * @param {string[]} args
  * @param {{ input?: string, env?: NodeJS.ProcessEnv }} [opts]
  */
@@ -52,13 +73,38 @@ export function assertOpAvailable() {
   }
 }
 
-/** Best-effort: is the CLI signed in? */
-export function assertOpSignedIn() {
-  const r = runOp(["whoami", "--format=json"]);
+/**
+ * Resolve which 1Password account a call should target: an explicit option
+ * wins, then the OP_ACCOUNT env var, then op's own default account.
+ * @param {{ account?: string }} [opts]
+ * @returns {string | undefined}
+ */
+export function resolveAccount(opts = {}) {
+  return opts.account || process.env.OP_ACCOUNT || undefined;
+}
+
+/**
+ * Best-effort: can we actually reach the vault we are about to write to?
+ *
+ * This deliberately does not use `op whoami`. Under 1Password's desktop-app
+ * integration there is no persistent session token, so `whoami` reports
+ * "account is not signed in" even while reads and writes succeed via
+ * biometric authorization. Probing with `op vault list` exercises the same
+ * path a real call takes, and honours account selection the way
+ * readPrivateKeyPem does.
+ *
+ * @param {{ account?: string }} [opts]
+ */
+export function assertOpSignedIn(opts = {}) {
+  const account = resolveAccount(opts);
+  const args = ["vault", "list", "--format=json"];
+  if (account) args.push("--account", account);
+  const r = runOp(args);
   if (r.status !== 0) {
     const msg = (r.stderr || r.stdout || "").trim() || "not signed in";
+    const where = account ? ` for account ${account}` : "";
     const err = new Error(
-      `1Password CLI is not signed in (${msg}). Run: op signin  (or enable desktop app integration)`,
+      `1Password CLI is not authorized${where} (${msg}). Run: op signin  (or enable desktop app integration and approve the prompt)`,
     );
     err.code = "OP_AUTH";
     throw err;
@@ -77,11 +123,13 @@ export function assertOpSignedIn() {
  * @param {string} p.publicKeyB64url
  * @param {string} [p.issuerId]
  * @param {string} [p.notes]
+ * @param {string} [p.account] 1Password account; defaults to OP_ACCOUNT
  * @returns {{ id: string, title: string, vault: { id?: string, name?: string }, privateKeyRef: string }}
  */
 export function createHouseKeyItem(p) {
   assertOpAvailable();
-  assertOpSignedIn();
+  const account = resolveAccount(p);
+  assertOpSignedIn({ account });
 
   const notes =
     p.notes ||
@@ -133,6 +181,9 @@ export function createHouseKeyItem(p) {
     writeFileSync(templatePath, JSON.stringify(template), { mode: 0o600 });
     const args = ["item", "create", "--template", templatePath, "--format=json"];
     if (p.vault) args.push("--vault", p.vault);
+    // Must match the account readPrivateKeyPem will later read from,
+    // otherwise the key is created in one account and looked up in another.
+    if (account) args.push("--account", account);
     const r = runOp(args);
     if (r.status !== 0) {
       const err = new Error(
@@ -151,8 +202,10 @@ export function createHouseKeyItem(p) {
     }
     const vaultName = item.vault?.name || p.vault || "Private";
     const title = item.title || p.title;
-    // Field label is the reference segment (spaces allowed).
-    const privateKeyRef = `op://${vaultName}/${title}/private key`;
+    // Field label is the reference segment (spaces allowed, non-ASCII not).
+    const vaultRef = refSegment(vaultName, item.vault?.id);
+    const itemRef = refSegment(title, item.id);
+    const privateKeyRef = `op://${vaultRef}/${itemRef}/private key`;
     return {
       id: item.id,
       title,
@@ -174,7 +227,7 @@ export function createHouseKeyItem(p) {
  */
 export function readPrivateKeyPem(ref, opts = {}) {
   assertOpAvailable();
-  const account = opts.account || process.env.OP_ACCOUNT;
+  const account = resolveAccount(opts);
   const args = ["read", ref];
   if (account) args.push("--account", account);
   const r = runOp(args);
