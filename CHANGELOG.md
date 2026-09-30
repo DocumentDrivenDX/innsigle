@@ -26,6 +26,15 @@ site. Found by wiring 0.6.0 into erik.labianca.org; each one made `init` or
   content sections sealed one and ignored the other, with nothing reported. It
   is now repeatable.
 
+- **`provenance sync` dropped every session recorded through a symlinked
+  repo root.** `pathMatches` compared an event path against the repo root as
+  given but never its canonical form, so a transcript that recorded the
+  resolved path (macOS `/var` → `/private/var`, or any symlinked project
+  directory) matched nothing and the sessions vanished with no warning. It now
+  compares canonical forms on both sides, which stays an exact match and still
+  refuses a mirror-tree write (F2). This is why two provenance-sync tests
+  failed on macOS while CI was green.
+
 ### Changed
 
 - `init` records `role: "human"` on the key it mints. Without a role the

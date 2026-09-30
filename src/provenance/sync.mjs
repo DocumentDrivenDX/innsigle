@@ -19,6 +19,7 @@ import {
   mkdirSync,
   readdirSync,
   readFileSync,
+  realpathSync,
   writeFileSync,
 } from "node:fs";
 import { spawnSync } from "node:child_process";
@@ -74,11 +75,47 @@ function contentRelPath(repoRoot, contentPath) {
 function pathMatches(eventPath, relPath, repoRoot) {
   const p = String(eventPath).replace(/\\/g, "/");
   if (p === relPath) return true;
-  const root = resolve(repoRoot).replace(/\\/g, "/").replace(/\/+$/, "");
-  if (p === `${root}/${relPath}`) return true;
-  const redactedRoot = redactText(root);
-  if (redactedRoot !== root && p === `${redactedRoot}/${relPath}`) return true;
+  // Compare against both the given root and its canonical form. A repo
+  // reached through a symlink (macOS /var -> /private/var, or a symlinked
+  // project dir) records the resolved path in the transcript, and comparing
+  // only the unresolved root silently drops every session in it.
+  for (const root of rootForms(repoRoot)) {
+    if (p === `${root}/${relPath}`) return true;
+  }
+  // Last resort for a symlinked root: compare canonical forms. Both sides
+  // must resolve to the very same file, so this stays an exact match and
+  // still refuses a mirror-tree write (F2).
+  if (isAbsolute(p)) {
+    const canonical = realpathish(p);
+    if (canonical !== p) {
+      for (const root of rootForms(repoRoot)) {
+        if (canonical === realpathish(`${root}/${relPath}`)) return true;
+      }
+    }
+  }
   return false;
+}
+
+/** Every spelling of the repo root an event path might legitimately use. */
+function rootForms(repoRoot) {
+  const out = new Set();
+  const abs = resolve(repoRoot);
+  for (const candidate of [abs, realpathish(abs)]) {
+    const root = candidate.replace(/\\/g, "/").replace(/\/+$/, "");
+    out.add(root);
+    const redacted = redactText(root);
+    if (redacted !== root) out.add(redacted);
+  }
+  return out;
+}
+
+/** realpathSync, but never throws for a path that does not exist yet. */
+function realpathish(p) {
+  try {
+    return realpathSync(p);
+  } catch {
+    return p;
+  }
 }
 
 /**
