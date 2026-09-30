@@ -1,5 +1,72 @@
 # Changelog
 
+## [0.6.0] — 2026-09-30
+
+First-class Hugo integration, and four silent failures made loud.
+
+### Product
+
+- **`innsigle init --hugo`** scaffolds the whole Hugo integration: partials,
+  CSS, a theme adapter at whatever path the theme calls (PaperMod, Hextra),
+  `static/` if missing, and the `module.mounts` block appended to a root
+  `hugo.yaml`. It handles `layouts/_partials` and `layouts/partials`, is
+  idempotent, and prints anything it cannot do safely.
+- **`innsigle doctor --hugo`** checks a site's wiring: config validity, all
+  three mounts declared *and resolved by Hugo itself* (`hugo config mounts`),
+  the partial present and actually called, stale or unsealed claims, and
+  whether each page's declared composition matches its seal. It exists because
+  a wrong mount makes the partial render nothing while the build still
+  succeeds — a site that ships unsealed with no indication.
+- **`kind_from_frontmatter` accepts a named field.** `{ "field": "composition" }`
+  reads `model-primary | human-authored | mixed`. The legacy `true` form only
+  recognised `generated: true` and so could not express human-authored versus
+  mixed at all. A value outside the three now fails instead of coercing to
+  mixed.
+- **`innsigle --version`**, whose absence was the reason downstream repos carry
+  a wrapper script to pin the CLI.
+- `default_composition` works again. It had been unreachable since
+  `kindFromFrontmatter` always returned a string.
+
+### Hugo assets
+
+- `innsigle-colophon.html` replaced with the version helix had diverged to:
+  embeds the attestation as `application/innsigle+json`, resolves key role and
+  endorsement from `keys.json`, and builds hrefs from the base URL's path so
+  links survive a deploy under a subdirectory.
+- `innsigle-badge.html` (new) for list and archive views.
+- `innsigle-glyph.html` and `assets/css/innsigle.css` (new), the CSS driven by
+  custom properties.
+
+### Fixes
+
+- `tryLoadPrivateKeyForRole` swallowed its exception, so `seal --all` with the
+  1Password CLI missing or locked printed unexplained skips and **exited 0**.
+  The reason is now reported once.
+- Three path helpers diffed an unresolved root against a resolved path. On
+  macOS `/var` is a symlink to `/private/var`, so `relative()` emitted a
+  `../../../..` chain that `guessContentUri` **signed into the claim's subject
+  URI**, and that made `attestationSlug` drop its directory prefix — seal wrote
+  one filename while verify looked for another. This is why the shipped Hugo
+  workflow test was failing.
+- A composition derived from frontmatter was never validated against the three
+  legal values.
+
+### Quality
+
+- `validateConfig`, the first config validation in the repo. `CONFIG_SCHEMA`
+  had been written by `init` and never read, so `{ "feild": "composition" }`
+  silently disabled the feature. It runs before the glob scan so a config
+  mistake is reported as one.
+- The site-build test now guards on the build key the way `ci.yml` does, so
+  editing a generated page no longer turns the suite red on a laptop that
+  cannot re-seal it.
+
+### Docs
+
+- `integrations/hugo/README.md` rewritten.
+- CONTRACT-001 updated (normative) for the new frontmatter modes.
+
+
 ## [0.5.0] — 2026-09-16
 
 ### Product
