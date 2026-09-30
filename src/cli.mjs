@@ -15,6 +15,7 @@ import { runInit } from "./init.mjs";
 import { readPrivateKeyPem } from "./onepassword.mjs";
 import { runSeal, runPublish, resolveVerifyPaths } from "./seal.mjs";
 import { runEndorse } from "./endorse.mjs";
+import { runDoctor } from "./doctor.mjs";
 import { runStatus, runVerifyAll } from "./status.mjs";
 import {
   loadJournal,
@@ -56,6 +57,8 @@ Common (uses .innsigle/ + 1Password + optional ~/.config/innsigle/config.json):
   innsigle publish [site-dir]          # copy .innsigle/public → site/.well-known/innsigle
   innsigle status                      # VALID | STALE | ORPHAN | UNSEALED per claim
   innsigle verify <content-file>
+  innsigle init --onepassword --hugo   # also scaffold the Hugo integration
+  innsigle doctor --hugo [site-dir]    # check mounts, partial, claims, keys
   innsigle --version                   # pin without a wrapper script
   innsigle verify --all                # CI gate: nonzero if anything not VALID
 
@@ -524,6 +527,11 @@ switch (cmd) {
   case "-v": {
     process.stdout.write(`${packageVersion()}\n`);
     process.exit(0);
+    break;
+  }
+  case "doctor": {
+    const code = runDoctor(rest, {});
+    process.exit(code);
     break;
   }
   case "init": {

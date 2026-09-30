@@ -10,6 +10,7 @@ import {
   writeConfig,
 } from "./config.mjs";
 import { createHouseKeyItem } from "./onepassword.mjs";
+import { scaffoldHugo } from "./hugo.mjs";
 
 /**
  * @param {string[]} args
@@ -25,7 +26,7 @@ export function runInit(args, deps) {
     err("init requires --onepassword (house key custody in 1Password)");
     err("Usage: innsigle init --onepassword [--dir <repo>] \\");
     err("         [--issuer-id <id>] [--issuer-name <name>] [--site-url <https://…>] \\");
-    err("         [--content-root <dir>] [--content-glob <glob>] \\");
+    err("         [--content-root <dir>] [--content-glob <glob>] [--hugo] \\");
     err("         [--vault <name>] [--title <item title>] [--force]");
     return 1;
   }
@@ -161,6 +162,10 @@ export function runInit(args, deps) {
   if (contentGlob) config.content_globs = [contentGlob];
   else if (contentRoot) config.content_globs = [`${contentRoot.replace(/\/+$/, "")}/**/*.md`];
   if (contentRoot || contentGlob) config.kind_from_frontmatter = true;
+  // The Hugo integration's badge partial reads a `composition:` frontmatter
+  // key by default. Sealing in legacy mode would make the badge and the seal
+  // disagree on the same page, so --hugo opts into the named field.
+  if (args.includes("--hugo")) config.kind_from_frontmatter = { field: "composition" };
   writeConfig(configPath, config);
 
   log(`ok: wrote ${PATHS.config}`);
@@ -169,6 +174,23 @@ export function runInit(args, deps) {
   log(`key_id=${keyId}`);
   log(`onepassword=${opItem.privateKeyRef}`);
   log(`item_id=${opItem.id}`);
+  if (args.includes("--hugo")) {
+    try {
+      const { wrote, skipped, manual } = scaffoldHugo({
+        siteDir: dir,
+        contentRoot: config.content_root || "content",
+        log,
+      });
+      for (const f of wrote) log(`ok: hugo ${f}`);
+      for (const f of skipped) log(`skip: hugo ${f}`);
+      for (const m of manual) log(`todo: ${m}`);
+      log("check the wiring with: innsigle doctor --hugo");
+    } catch (e) {
+      err(`INVALID: --hugo scaffolding failed: ${e.message}`);
+      return 1;
+    }
+  }
+
   if (keyUrl.includes("example.invalid")) {
     log(`next: set issuer.key_url in ${PATHS.config} to your public HTTPS keys URL`);
   } else {
