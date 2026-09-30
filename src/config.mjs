@@ -1,7 +1,16 @@
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { basename, dirname, join, relative, resolve, sep } from "node:path";
 import { publishedContentUri } from "./site-pages.mjs";
+
+/** realpathSync that tolerates a path that does not exist yet. */
+function realpathish(p) {
+  try {
+    return realpathSync(p);
+  } catch {
+    return p;
+  }
+}
 
 /** Directory under the repo that owns all Innsigle project state. */
 export const DIR_NAME = ".innsigle";
@@ -140,10 +149,15 @@ export function loadProject(startDir = process.cwd()) {
  * @param {string} contentPath
  */
 export function attestationSlug(repoRoot, contentPath, opts = {}) {
-  const abs = resolve(contentPath);
+  // realpath both sides: an unresolved repoRoot against a resolved contentPath
+  // (macOS /var -> /private/var) matches no base, silently falls through to
+  // basename() below, and produces a slug missing its directory prefix — so
+  // seal writes one filename and verify looks for another.
+  const abs = realpathish(resolve(contentPath));
+  const root = realpathish(resolve(repoRoot));
   const bases = [];
-  if (opts.contentRoot) bases.push(resolve(repoRoot, opts.contentRoot));
-  bases.push(resolve(repoRoot));
+  if (opts.contentRoot) bases.push(resolve(root, opts.contentRoot));
+  bases.push(root);
   let rel = "";
   for (const base of bases) {
     const r = relative(base, abs);
@@ -208,7 +222,14 @@ export function guessContentUri(config, repoRoot, contentPath) {
   }
   try {
     const origin = new URL(keyUrl).origin;
-    let rel = relative(repoRoot, resolve(contentPath)).split(sep).join("/");
+    // Resolve symlinks on both sides: on macOS /var is a symlink to
+    // /private/var, so diffing an unresolved root against a resolved path
+    // produced a "../../../.." chain that was then signed into the claim.
+    let rel = relative(realpathish(repoRoot), realpathish(resolve(contentPath)))
+      .split(sep)
+      .join("/");
+    // Outside the repo entirely: no derivable published location.
+    if (!rel || rel.startsWith("..")) return undefined;
     // common publish trees: public/, _site/, dist/ strip for site URL
     rel = rel.replace(/^(public|_site|dist|site)\//, "");
     if (rel === "index.html") return `${origin}/`;

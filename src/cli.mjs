@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { chmodSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   b64url,
   b64urlDecode,
@@ -29,6 +30,16 @@ import { runProfile } from "./profile-cli.mjs";
 
 const EXIT = { ok: 0, usage: 1, badSig: 2, contentMismatch: 3, badKey: 4, badSchema: 5 };
 
+/** Version of the running CLI, so callers can pin without a wrapper script. */
+function packageVersion() {
+  try {
+    const here = dirname(fileURLToPath(import.meta.url));
+    return JSON.parse(readFileSync(join(here, "../package.json"), "utf8")).version || "unknown";
+  } catch {
+    return "unknown";
+  }
+}
+
 function usage(msg) {
   if (msg) console.error(msg);
   console.error(`innsigle — content origin seal (CONTRACT-001)
@@ -45,6 +56,7 @@ Common (uses .innsigle/ + 1Password + optional ~/.config/innsigle/config.json):
   innsigle publish [site-dir]          # copy .innsigle/public → site/.well-known/innsigle
   innsigle status                      # VALID | STALE | ORPHAN | UNSEALED per claim
   innsigle verify <content-file>
+  innsigle --version                   # pin without a wrapper script
   innsigle verify --all                # CI gate: nonzero if anything not VALID
 
 Low-level:
@@ -507,6 +519,13 @@ const cmd = argv[0];
 const rest = argv.slice(1);
 
 switch (cmd) {
+  case "version":
+  case "--version":
+  case "-v": {
+    process.stdout.write(`${packageVersion()}\n`);
+    process.exit(0);
+    break;
+  }
   case "init": {
     const code = runInit(rest, { nowIso });
     process.exit(code);

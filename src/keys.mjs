@@ -63,11 +63,21 @@ export function loadPrivateKeyForRole(args, project, role) {
   return { pem, keyId };
 }
 
+/**
+ * Load signing material without throwing, keeping the reason when it fails.
+ *
+ * The reason matters: a missing or locked 1Password CLI raises an actionable
+ * message ("Install: …" / "Run: op signin"), and discarding it leaves
+ * `seal --all` printing an unexplained "skip (… key missing)" per file and
+ * exiting 0.
+ *
+ * @returns {{ key: { pem: string, keyId: string } | null, error: Error | null }}
+ */
 export function tryLoadPrivateKeyForRole(args, project, role) {
   try {
-    return loadPrivateKeyForRole(args, project, role);
-  } catch {
-    return null;
+    return { key: loadPrivateKeyForRole(args, project, role), error: null };
+  } catch (error) {
+    return { key: null, error };
   }
 }
 

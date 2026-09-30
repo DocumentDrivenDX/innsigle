@@ -359,14 +359,24 @@ function runSealAll(args, deps) {
     return 5;
   }
 
-  const humanKey = tryLoadPrivateKeyForRole(args, project, "human");
-  const buildKey = tryLoadPrivateKeyForRole(args, project, "build");
+  const human = tryLoadPrivateKeyForRole(args, project, "human");
+  const build = tryLoadPrivateKeyForRole(args, project, "build");
+  const humanKey = human.key;
+  const buildKey = build.key;
+  // Say once why a key is unavailable. Without this the per-file
+  // "skip (… key missing)" lines below give the operator nothing to act on.
+  for (const [role, slot] of [
+    ["human", human],
+    ["build", build],
+  ]) {
+    if (!slot.key && slot.error) log(`note: no ${role} key — ${slot.error.message}`);
+  }
   if (roleFilter === "human" && !humanKey) {
-    err("INVALID: no human key");
+    err(`INVALID: no human key${human.error ? `: ${human.error.message}` : ""}`);
     return 1;
   }
   if (roleFilter === "build" && !buildKey) {
-    err("INVALID: no build key");
+    err(`INVALID: no build key${build.error ? `: ${build.error.message}` : ""}`);
     return 1;
   }
 
@@ -401,7 +411,15 @@ function runSealAll(args, deps) {
       omitted++;
       continue;
     }
-    const colophon = structuredClone(EXAMPLE_COLO[kind] || EXAMPLE_COLO.mixed);
+    // A kind that is not one of the three legal compositions used to coerce
+    // silently to `mixed`, mislabelling the seal. Fail like --kind does.
+    if (!EXAMPLE_COLO[kind]) {
+      err(
+        `INVALID: ${rel}: composition ${JSON.stringify(kind)} must be model-primary|human-authored|mixed`,
+      );
+      return 5;
+    }
+    const colophon = structuredClone(EXAMPLE_COLO[kind]);
     if (!force && existsSync(outPath)) {
       try {
         const prev = JSON.parse(readFileSync(outPath, "utf8"));

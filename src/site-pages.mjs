@@ -5,6 +5,7 @@
  * Helix seals source bytes (not built HTML) and shows a colophon only when
  * the committed claim digest still matches. Same rule here.
  */
+import { realpathSync } from "node:fs";
 import { join, relative, sep } from "node:path";
 
 const COMPOSITION_MARK = {
@@ -66,6 +67,15 @@ function generatedToPath(rel) {
  * @param {string} repoRoot
  * @param {string} contentPath absolute or repo-relative
  */
+/** realpathSync that tolerates a path that does not exist yet. */
+function realpathish(p) {
+  try {
+    return realpathSync(p);
+  } catch {
+    return p;
+  }
+}
+
 export function publishedContentUri(config, repoRoot, contentPath) {
   const keyUrl = config?.issuer?.key_url;
   if (!keyUrl) return undefined;
@@ -78,11 +88,23 @@ export function publishedContentUri(config, repoRoot, contentPath) {
   } catch {
     return undefined;
   }
-  const root = config.content_root ? join(repoRoot, config.content_root) : repoRoot;
-  let rel = relative(root, contentPath).split(sep).join("/");
+  // Resolve symlinks on both sides before diffing. On macOS /var is a symlink
+  // to /private/var, so an unresolved repoRoot against a resolved contentPath
+  // (or the reverse) yields a "../../../.." chain that then gets signed into
+  // the claim's subject URI.
+  const realRepoRoot = realpathish(repoRoot);
+  const realContent = realpathish(contentPath);
+  const root = config.content_root
+    ? join(realRepoRoot, config.content_root)
+    : realRepoRoot;
+  let rel = relative(root, realContent).split(sep).join("/");
   if (!rel || rel.startsWith("..")) {
-    rel = relative(repoRoot, contentPath).split(sep).join("/");
+    rel = relative(realRepoRoot, realContent).split(sep).join("/");
   }
+  // Still outside the repo: this file has no published location we can derive.
+  // Returning undefined lets guessContentUri fall back to its own origin+rel
+  // guess (which strips public/, _site/, dist/) instead of emitting nonsense.
+  if (!rel || rel.startsWith("..")) return undefined;
   const path = contentRelToPath(rel);
   if (path === "/") return `${origin}${prefix}/`;
   return `${origin}${prefix}${path}`;
