@@ -1,7 +1,50 @@
 import { existsSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { basename, dirname, join, relative, resolve, sep } from "node:path";
-import { publishedContentUri } from "./site-pages.mjs";
+import { COMPOSITIONS, publishedContentUri } from "./site-pages.mjs";
+
+/**
+ * Check the config keys this CLI actually reads.
+ *
+ * Nothing validated config before, so a typo like `{ "feild": "composition" }`
+ * left the feature quietly off. Unknown keys inside a known object are
+ * therefore errors, not warnings.
+ *
+ * @param {object} config
+ * @returns {string[]} human-readable problems; empty means valid
+ */
+export function validateConfig(config) {
+  const problems = [];
+
+  const kff = config?.kind_from_frontmatter;
+  if (kff !== undefined && typeof kff !== "boolean") {
+    if (typeof kff !== "object" || kff === null || Array.isArray(kff)) {
+      problems.push('kind_from_frontmatter must be true, false, or { "field": "<name>" }');
+    } else {
+      const unknown = Object.keys(kff).filter((k) => k !== "field");
+      if (unknown.length) {
+        problems.push(`kind_from_frontmatter: unknown key(s): ${unknown.join(", ")}`);
+      }
+      if (typeof kff.field !== "string" || !kff.field.trim()) {
+        problems.push("kind_from_frontmatter.field must be a non-empty string");
+      }
+    }
+  }
+
+  const dc = config?.default_composition;
+  if (dc !== undefined && !COMPOSITIONS.includes(dc)) {
+    problems.push(`default_composition must be one of: ${COMPOSITIONS.join(", ")}`);
+  }
+
+  const globs = config?.content_globs;
+  if (globs !== undefined) {
+    if (!Array.isArray(globs) || globs.some((g) => typeof g !== "string")) {
+      problems.push("content_globs must be an array of strings");
+    }
+  }
+
+  return problems;
+}
 
 /** realpathSync that tolerates a path that does not exist yet. */
 function realpathish(p) {

@@ -14,18 +14,19 @@ import { basename, dirname, join, relative, resolve } from "node:path";
 import { jcs } from "./canonical.mjs";
 import { b64url, sha256Hex, signPayload } from "./crypto.mjs";
 import {
+  DIR_NAME,
+  PATHS,
   attestationSlug,
   defaultAttestationPath,
-  DIR_NAME,
   guessContentUri,
   legacyAttestationName,
   loadProject,
-  PATHS,
   slugOpts,
+  validateConfig,
 } from "./config.mjs";
 import { proposeColo, syncProvenance, validateHumanInput } from "./provenance/index.mjs";
 import { checkAttestation, collectStatus, filesMatchingGlobs } from "./status.mjs";
-import { kindFromFrontmatter } from "./site-pages.mjs";
+import { COMPOSITIONS, kindFromFrontmatter } from "./site-pages.mjs";
 import {
   issuerForKey,
   loadPrivateKeyForRole,
@@ -341,6 +342,15 @@ function runSealAll(args, deps) {
   }
   const issuer = issuerFromProject(project, err);
   if (!issuer) return 5;
+
+  // Validate before touching the filesystem: a config typo should be reported
+  // as a config typo, not hidden behind "content_globs matched no files".
+  const configProblems = validateConfig(project.config);
+  if (configProblems.length) {
+    for (const problem of configProblems) err(`INVALID: .innsigle/config.json: ${problem}`);
+    return 5;
+  }
+
   const globs = project.config.content_globs;
   if (!Array.isArray(globs) || !globs.length) {
     err("INVALID: seal --all needs content_globs in .innsigle/config.json");
@@ -386,7 +396,13 @@ function runSealAll(args, deps) {
     err("INVALID: kind must be model-primary|human-authored|mixed");
     return 5;
   }
-  const fromFm = project.config.kind_from_frontmatter !== false;
+  const fmConfig = project.config.kind_from_frontmatter;
+  const fromFm = fmConfig !== false;
+  const fmField = fmConfig && typeof fmConfig === "object" ? fmConfig.field : undefined;
+  // default_composition used to be unreachable: kindFromFrontmatter always
+  // returned a string, so the `if (!kind)` below never fired. Pass it in as
+  // the fallback so the setting actually does something.
+  const fallbackKind = project.config.default_composition || "mixed";
   let sealed = 0;
   let skipped = 0;
   let failed = 0;
@@ -398,8 +414,19 @@ function runSealAll(args, deps) {
     const digestHex = sha256Hex(contentBytes);
     const outPath = defaultAttestationPath(project.repoRoot, abs, slugOpts(project));
     let kind = kindOverride;
-    if (!kind && fromFm) kind = kindFromFrontmatter(contentBytes.toString("utf8"));
-    if (!kind) kind = project.config.default_composition || "mixed";
+    if (!kind && fromFm) {
+      kind = kindFromFrontmatter(contentBytes.toString("utf8"), {
+        field: fmField,
+        fallback: fallbackKind,
+      });
+      if (!kind) {
+        err(
+          `INVALID: ${rel}: frontmatter ${JSON.stringify(fmField)} must be ${COMPOSITIONS.join("|")}`,
+        );
+        return 5;
+      }
+    }
+    if (!kind) kind = fallbackKind;
     const role = roleForComposition(kind);
     if (roleFilter && role !== roleFilter) {
       omitted++;

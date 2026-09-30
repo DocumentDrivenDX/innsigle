@@ -14,15 +14,44 @@ const COMPOSITION_MARK = {
   "model-primary": "innsigle-model.svg",
 };
 
+/** The three legal compositions (CONTRACT-001). */
+export const COMPOSITIONS = ["model-primary", "human-authored", "mixed"];
+
 /**
- * Frontmatter `generated: true` → model-primary (Helix); otherwise mixed.
+ * Derive a composition from a page's frontmatter.
+ *
+ * Two modes:
+ *
+ *   - legacy (`opts` omitted, a string, or `{}`): `generated: true` means
+ *     model-primary, anything else falls back. This is what Helix and
+ *     innsigle's own microsite use, so it stays byte-identical.
+ *   - named field (`{ field: "composition" }`): read that key and accept any
+ *     of COMPOSITIONS. Unlike the boolean, this can say human-authored and
+ *     mixed, which the legacy form cannot express at all.
+ *
+ * An unrecognised value returns undefined so the caller can reject it rather
+ * than silently sealing the page as something it is not.
+ *
  * @param {string} text
- * @param {string} [fallback]
+ * @param {string | {field?: string, fallback?: string}} [opts] fallback, or options
+ * @returns {string | undefined}
  */
-export function kindFromFrontmatter(text, fallback = "mixed") {
+export function kindFromFrontmatter(text, opts = "mixed") {
+  const o = typeof opts === "string" ? { fallback: opts } : opts || {};
+  const fallback = o.fallback ?? "mixed";
   const m = String(text || "").match(/^---\r?\n([\s\S]*?)\r?\n---/);
   if (!m) return fallback;
-  if (/^generated:\s*"?true"?\s*$/m.test(m[1])) return "model-primary";
+  const fm = m[1];
+
+  if (o.field) {
+    const key = String(o.field).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const hit = fm.match(new RegExp(`^${key}:[ \t]*["']?([^"'\r\n]+?)["']?[ \t]*$`, "m"));
+    if (!hit) return fallback;
+    const value = hit[1].trim();
+    return COMPOSITIONS.includes(value) ? value : undefined;
+  }
+
+  if (/^generated:\s*"?true"?\s*$/m.test(fm)) return "model-primary";
   return fallback;
 }
 

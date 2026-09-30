@@ -14,7 +14,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { kindFromFrontmatter, contentRelToPath } from "../src/site-pages.mjs";
-import { attestationSlug } from "../src/config.mjs";
+import { attestationSlug, validateConfig } from "../src/config.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const cli = join(root, "src/cli.mjs");
@@ -95,6 +95,51 @@ describe("kindFromFrontmatter + content paths", () => {
     assert.equal(kindFromFrontmatter("# no fm\n"), "mixed");
   });
 
+  it("a named field reads all three compositions", () => {
+    const opts = { field: "composition" };
+    for (const kind of ["model-primary", "human-authored", "mixed"]) {
+      assert.equal(kindFromFrontmatter(`---\ncomposition: ${kind}\n---\n# Hi\n`, opts), kind);
+    }
+    // quoted and padded values are the same value
+    assert.equal(kindFromFrontmatter('---\ncomposition: "mixed"\n---\n', opts), "mixed");
+    assert.equal(kindFromFrontmatter("---\ncomposition:   mixed  \n---\n", opts), "mixed");
+  });
+
+  it("a named field falls back when absent and rejects a bad value", () => {
+    const opts = { field: "composition", fallback: "human-authored" };
+    // absent -> fallback, so a site can default its hand-written pages
+    assert.equal(kindFromFrontmatter("---\ntitle: Hand\n---\n", opts), "human-authored");
+    assert.equal(kindFromFrontmatter("# no fm\n", opts), "human-authored");
+    // present but not a legal composition -> undefined, so the caller errors
+    // instead of silently sealing it as mixed
+    assert.equal(kindFromFrontmatter("---\ncomposition: humanauthored\n---\n", opts), undefined);
+  });
+
+  it("the named field does not disturb the legacy generated: true rule", () => {
+    // legacy mode ignores a composition field entirely
+    assert.equal(kindFromFrontmatter("---\ncomposition: mixed\ngenerated: true\n---\n"), "model-primary");
+    // named mode ignores generated:
+    assert.equal(
+      kindFromFrontmatter("---\ngenerated: true\n---\n", { field: "composition" }),
+      "mixed",
+    );
+  });
+
+  it("validateConfig catches a misspelled kind_from_frontmatter key", () => {
+    assert.deepEqual(validateConfig({ kind_from_frontmatter: true }), []);
+    assert.deepEqual(validateConfig({ kind_from_frontmatter: { field: "composition" } }), []);
+    // the typo that used to turn the feature off in silence
+    const problems = validateConfig({ kind_from_frontmatter: { feild: "composition" } });
+    assert.equal(problems.length, 2);
+    assert.match(problems.join(" "), /unknown key\(s\): feild/);
+    assert.match(problems.join(" "), /field must be a non-empty string/);
+    assert.match(
+      validateConfig({ default_composition: "nonsense" })[0],
+      /default_composition must be one of/,
+    );
+    assert.match(validateConfig({ content_globs: "content/**" })[0], /array of strings/);
+  });
+
   it("maps curated/generated rels to site paths", () => {
     assert.equal(contentRelToPath("curated/index.md"), "/");
     assert.equal(contentRelToPath("curated/use/cli.md"), "/use/cli/");
@@ -154,6 +199,67 @@ describe("innsigle seal --all + publish (Helix pattern)", () => {
       existsSync(join(repo, "public/.well-known/innsigle/claims/why-index-md.attestation.json")),
     );
 
+    rmSync(repo, { recursive: true, force: true });
+  });
+
+  it("a named composition field drives kind and signing key end to end", () => {
+    const { repo, env, cfgPath, buildId } = setupRepo();
+    const cfg = JSON.parse(readFileSync(cfgPath, "utf8"));
+    cfg.kind_from_frontmatter = { field: "composition" };
+    cfg.default_composition = "human-authored";
+    writeFileSync(cfgPath, JSON.stringify(cfg, null, 2) + "\n");
+
+    mkdirSync(join(repo, "content"), { recursive: true });
+    writeFileSync(join(repo, "content/agent.md"), "---\ncomposition: model-primary\n---\n# A\n");
+    writeFileSync(join(repo, "content/hand.md"), "---\ncomposition: human-authored\n---\n# H\n");
+    writeFileSync(join(repo, "content/both.md"), "---\ncomposition: mixed\n---\n# M\n");
+    // no composition key at all -> default_composition, which used to be dead
+    writeFileSync(join(repo, "content/bare.md"), "---\ntitle: Bare\n---\n# B\n");
+
+    const r = run(["seal", "--all"], { cwd: repo, env });
+    assert.equal(r.status, 0, r.stderr + r.stdout);
+
+    const claim = (name) =>
+      JSON.parse(readFileSync(join(repo, `.innsigle/public/claims/${name}.attestation.json`), "utf8"));
+
+    assert.equal(claim("agent-md").payload.colophon.composition, "model-primary");
+    assert.equal(claim("hand-md").payload.colophon.composition, "human-authored");
+    assert.equal(claim("both-md").payload.colophon.composition, "mixed");
+    assert.equal(claim("bare-md").payload.colophon.composition, "human-authored");
+
+    // model-primary routes to the build key; the rest to the human key
+    assert.equal(claim("agent-md").signatures[0].key_id, buildId);
+    assert.equal(claim("hand-md").signatures[0].key_id, cfg.issuer.key_id);
+    assert.equal(claim("both-md").signatures[0].key_id, cfg.issuer.key_id);
+
+    const v = run(["verify", "--all"], { cwd: repo, env });
+    assert.equal(v.status, 0, v.stderr + v.stdout);
+    rmSync(repo, { recursive: true, force: true });
+  });
+
+  it("an illegal composition value fails instead of sealing as mixed", () => {
+    const { repo, env, cfgPath } = setupRepo();
+    const cfg = JSON.parse(readFileSync(cfgPath, "utf8"));
+    cfg.kind_from_frontmatter = { field: "composition" };
+    writeFileSync(cfgPath, JSON.stringify(cfg, null, 2) + "\n");
+    mkdirSync(join(repo, "content"), { recursive: true });
+    writeFileSync(join(repo, "content/bad.md"), "---\ncomposition: humanauthored\n---\n# X\n");
+
+    const r = run(["seal", "--all"], { cwd: repo, env });
+    assert.equal(r.status, 5, r.stderr + r.stdout);
+    assert.match(r.stderr, /must be model-primary\|human-authored\|mixed/);
+    assert.ok(!existsSync(join(repo, ".innsigle/public/claims/bad-md.attestation.json")));
+    rmSync(repo, { recursive: true, force: true });
+  });
+
+  it("a misconfigured kind_from_frontmatter is rejected, not ignored", () => {
+    const { repo, env, cfgPath } = setupRepo();
+    const cfg = JSON.parse(readFileSync(cfgPath, "utf8"));
+    cfg.kind_from_frontmatter = { feild: "composition" };
+    writeFileSync(cfgPath, JSON.stringify(cfg, null, 2) + "\n");
+    const r = run(["seal", "--all"], { cwd: repo, env });
+    assert.equal(r.status, 5, r.stderr + r.stdout);
+    assert.match(r.stderr, /unknown key\(s\): feild/);
     rmSync(repo, { recursive: true, force: true });
   });
 

@@ -22,4 +22,9 @@ innsigle publish site
 innsigle verify --all
 ```
 
-`kind_from_frontmatter`: `generated: true` → model-primary, else mixed (Helix).
+`kind_from_frontmatter`: how a page declares its composition.
+- `true` — `generated: true` means model-primary, otherwise
+  `default_composition` (default `mixed`). Cannot distinguish human-authored
+  from mixed.
+- `{ "field": "composition" }` — that frontmatter key holds one of
+  `model-primary`, `human-authored`, `mixed`. Any other value is an error.

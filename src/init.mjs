@@ -279,7 +279,7 @@ If the public host differs, update \`.innsigle/config.json\` \`issuer.key_url\`
 Set \`content_root\` + \`content_globs\` in config (init \`--content-root\`), then:
 
 \`\`\`bash
-innsigle seal --all          # skip up-to-date; generated: true → model-primary, else mixed
+innsigle seal --all          # skip up-to-date; composition from frontmatter
 innsigle publish SITE_ROOT   # copies .innsigle/public → SITE_ROOT/.well-known/innsigle
 innsigle verify --all        # CI gate
 \`\`\`
