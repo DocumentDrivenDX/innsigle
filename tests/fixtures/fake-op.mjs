@@ -24,6 +24,16 @@ if (argv[0] === "--version") {
   process.exit(0);
 }
 
+if (argv[0] === "vault" && argv[1] === "list") {
+  // innsigle probes authorization with `vault list`, not `whoami`:
+  // under desktop-app integration `whoami` reports "not signed in" even
+  // when reads and writes succeed.
+  process.stdout.write(
+    JSON.stringify([{ id: "vault-1", name: "Private" }]) + "\n",
+  );
+  process.exit(0);
+}
+
 if (argv[0] === "whoami") {
   process.stdout.write(JSON.stringify({ email: "test@example.com" }) + "\n");
   process.exit(0);
@@ -36,6 +46,8 @@ if (argv[0] === "item" && argv[1] === "create") {
   const template = JSON.parse(readFileSync(templatePath, "utf8"));
   const vaultFlag = argv.indexOf("--vault");
   const vaultName = vaultFlag !== -1 ? argv[vaultFlag + 1] : "Private";
+  const acctFlag = argv.indexOf("--account");
+  const account = acctFlag !== -1 ? argv[acctFlag + 1] : null;
   const priv = template.fields?.find((f) => f.label === "private key")?.value;
   if (!priv) die("fake-op: template missing private key field");
   mkdirSync(store, { recursive: true });
@@ -46,14 +58,19 @@ if (argv[0] === "item" && argv[1] === "create") {
     vault: { id: "vault-1", name: vaultName },
   };
   writeFileSync(join(store, id + ".pem"), priv);
-  writeFileSync(join(store, "last.json"), JSON.stringify({ ...item, private_key: priv }));
-  // Map op:// refs for read
-  const refKey = `${vaultName}/${template.title}/private key`;
+  writeFileSync(
+    join(store, "last.json"),
+    JSON.stringify({ ...item, private_key: priv, account }),
+  );
+  // Map op:// refs for read. Real op resolves an item by title OR by uuid,
+  // and innsigle prefers the uuid whenever the title is not reference-safe,
+  // so register both forms.
   writeFileSync(join(store, "refs.json"), JSON.stringify({
     ...(existsSync(join(store, "refs.json"))
       ? JSON.parse(readFileSync(join(store, "refs.json"), "utf8"))
       : {}),
-    [refKey]: id,
+    [`${vaultName}/${template.title}/private key`]: id,
+    [`${vaultName}/${id}/private key`]: id,
   }));
   process.stdout.write(JSON.stringify(item) + "\n");
   process.exit(0);
