@@ -1,21 +1,33 @@
-# Test gate for pull requests and main. Deploy microsite (pages.yml) still
-# re-runs tests before publishing GitHub Pages.
+# PR tier: npm test + seal verification (fast). Playwright e2e is heavy: runs
+# on dispatch, weekly, or a PR labelled `ci:full`. Deploy (pages.yml, on main)
+# and release (release.yml, on tags) re-run the full suite before publishing,
+# so there is no separate push-to-main run here.
 name: CI
 
 on:
   pull_request:
-  push:
-    branches: [main]
+    types: [opened, synchronize, reopened, labeled]
+    paths-ignore:
+      - '**.md'
+      - 'LICENSE*'
+  schedule:
+    - cron: '41 5 * * 1'
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  FULL: ${{ github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'ci:full') }}
 
 jobs:
   test:
+    if: github.event.action != 'labeled' || github.event.label.name == 'ci:full'
+    timeout-minutes: 20
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -31,6 +43,7 @@ jobs:
         run: npm ci
 
       - name: Install Playwright Chromium
+        if: env.FULL == 'true'
         run: npx playwright install chromium --with-deps
 
       - name: Unit / integration tests
@@ -50,12 +63,13 @@ jobs:
         run: npm run verify:site
 
       - name: Playwright e2e (link integrity + design voice + profile builder)
+        if: env.FULL == 'true'
         run: npm run test:e2e
         env:
           CI: true
 
       - name: Upload Playwright report
-        if: failure()
+        if: failure() && env.FULL == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
