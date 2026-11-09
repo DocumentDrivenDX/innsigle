@@ -14,6 +14,7 @@ permissions:
 
 jobs:
   publish:
+    timeout-minutes: 25
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -37,6 +38,17 @@ jobs:
 
       - name: Tests
         run: npm test
+
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium --with-deps
+
+      - name: Verify microsite seals
+        run: npm run verify:site
+
+      - name: Playwright e2e
+        run: npm run test:e2e
+        env:
+          CI: true
 
       - name: Publish
         run: npm publish --provenance --access public
