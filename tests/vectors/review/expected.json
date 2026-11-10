@@ -1,0 +1,9 @@
+{
+  "source_sha256": "fee628677c0aa1e4457430da6160bfbc563645d1d3a40564fdc3487ae5c2e244",
+  "output_sha256": "fe3e14ee4023e62cfffb6088592611aef5ab3a233e0ff4645f60c0fbaebfc9df",
+  "human_key_id": "ed25519:cd89509bfdc9b5cf0df4e462517b59eb",
+  "build_key_id": "ed25519:9f40421c4bc1db418c80979448217e93",
+  "review_jcs_sha256": "f4518a28782a1baa5dd9274b437e52d685657b469fb2e90b0a24238302f215a7",
+  "derivation_jcs_sha256": "53a06d40f3ecce1fa217e0000e174a22646c761fb524d2dfd3f04ead1dd04ea6",
+  "verify_at": "2026-12-01T00:00:00Z"
+}

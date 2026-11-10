@@ -58,3 +58,4 @@ site/
 
 # Local house key (public half lives in .innsigle/public/keys.json)
 .innsigle/keys/
+!tests/vectors/review/build.priv.pem

@@ -1,0 +1,29 @@
+{
+  "payload": {
+    "innsigle": "1",
+    "type": "https://innsigle.dev/claim/key-endorsement/v1",
+    "issued_at": "2026-11-01T09:00:00Z",
+    "issuer": {
+      "id": "azgaard-test",
+      "name": "Azgaard Test",
+      "key_id": "ed25519:cd89509bfdc9b5cf0df4e462517b59eb",
+      "key_url": "https://example.com/.well-known/innsigle/keys.json"
+    },
+    "endorsement": {
+      "subject_key_id": "ed25519:9f40421c4bc1db418c80979448217e93",
+      "subject_key_url": "https://example.com/.well-known/innsigle/keys.json",
+      "subject_issuer_id": "azgaard-test",
+      "level": "full",
+      "purpose": "build-signing"
+    }
+  },
+  "payload_encoding": "json",
+  "signatures": [
+    {
+      "key_id": "ed25519:cd89509bfdc9b5cf0df4e462517b59eb",
+      "alg": "ed25519",
+      "sig": "F05wxim8CaMzXgNldkiCp0w9xVdfFydvDjTfyHIkQjywf61TkPReW8ITISGxMzpc3piM-9iAZF-1ndhVtkYyCg",
+      "signed_at": "2026-11-01T09:00:00Z"
+    }
+  ]
+}

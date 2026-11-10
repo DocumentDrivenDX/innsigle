@@ -1,0 +1,84 @@
+{
+  "payload": {
+    "innsigle": "1",
+    "type": "https://innsigle.dev/claim/colophon/v1",
+    "issued_at": "2026-11-01T09:00:00Z",
+    "issuer": {
+      "id": "azgaard-test",
+      "name": "Azgaard Test",
+      "key_id": "ed25519:9f40421c4bc1db418c80979448217e93",
+      "key_url": "https://example.com/.well-known/innsigle/keys.json"
+    },
+    "subjects": [
+      {
+        "uri": "https://example.com/briefs/sample/",
+        "digest": {
+          "alg": "sha256",
+          "value": "fee628677c0aa1e4457430da6160bfbc563645d1d3a40564fdc3487ae5c2e244"
+        }
+      }
+    ],
+    "colophon": {
+      "schema_version": "1",
+      "composition": "model-primary",
+      "ingredients": [
+        {
+          "kind": "model",
+          "name": "Claude",
+          "role": "draft"
+        }
+      ],
+      "notes": null
+    }
+  },
+  "payload_encoding": "json",
+  "signatures": [
+    {
+      "key_id": "ed25519:9f40421c4bc1db418c80979448217e93",
+      "alg": "ed25519",
+      "sig": "wOZthzKEVWbdpYXGzuUxLkpOlyAGJx1SThjO1g7W-Tf38DshRzZlhsZRG3m_pIo8pHHuqWWKZfXv8xcXWPhCCg",
+      "signed_at": "2026-11-01T09:00:00Z"
+    }
+  ],
+  "reviews": [
+    {
+      "payload": {
+        "innsigle": "1",
+        "type": "https://innsigle.dev/claim/review/v1",
+        "issued_at": "2026-11-01T10:00:00Z",
+        "issuer": {
+          "id": "azgaard-test",
+          "name": "Azgaard Test",
+          "key_id": "ed25519:cd89509bfdc9b5cf0df4e462517b59eb",
+          "key_url": "https://example.com/.well-known/innsigle/keys.json"
+        },
+        "subjects": [
+          {
+            "uri": "https://example.com/briefs/sample/",
+            "digest": {
+              "alg": "sha256",
+              "value": "fee628677c0aa1e4457430da6160bfbc563645d1d3a40564fdc3487ae5c2e244"
+            }
+          }
+        ],
+        "review": {
+          "schema_version": "1",
+          "reviewer": {
+            "key_id": "ed25519:cd89509bfdc9b5cf0df4e462517b59eb"
+          },
+          "scope": "full",
+          "expires_at": "2027-11-01T10:00:00Z"
+        }
+      },
+      "payload_encoding": "json",
+      "signatures": [
+        {
+          "key_id": "ed25519:cd89509bfdc9b5cf0df4e462517b59eb",
+          "alg": "ed25519",
+          "sig": "ofacjR321iGW31KwhatmuWSRLyahTZJwD5C1I4Se0Gi--HgjAOTxMzUX0SY9kkqgowE0zKqdeHFs2ioWtm9QDw",
+          "signed_at": "2026-11-01T10:00:01Z"
+        }
+      ]
+    }
+  ]
+}

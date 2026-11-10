@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://innsigle.dev/schema/derivation-claim/v1.json",
+  "title": "Innsigle derivation claim payload v1 (ADR-005)",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["innsigle", "type", "issued_at", "issuer", "subjects", "derivation"],
+  "not": { "required": ["colophon"] },
+  "properties": {
+    "innsigle": { "const": "1" },
+    "type": { "const": "https://innsigle.dev/claim/derivation/v1" },
+    "issued_at": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$" },
+    "issuer": {
+      "type": "object",
+      "required": ["id", "name", "key_id", "key_url"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "key_id": { "type": "string", "pattern": "^ed25519:[0-9a-f]{32}$", "description": "MUST be a build-role key endorsed by a human key" },
+        "key_url": { "type": "string", "minLength": 8 }
+      }
+    },
+    "subjects": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Output files (fan-out: one claim may list several).",
+      "items": {
+        "type": "object",
+        "required": ["path", "digest"],
+        "properties": {
+          "path": { "type": "string", "minLength": 1, "description": "Tree-relative posix path; no leading slash, no .." },
+          "uri": { "type": "string" },
+          "digest": {
+            "type": "object",
+            "required": ["alg", "value"],
+            "properties": {
+              "alg": { "const": "sha256" },
+              "value": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+            }
+          }
+        }
+      }
+    },
+    "derivation": {
+      "type": "object",
+      "required": ["schema_version", "inputs"],
+      "properties": {
+        "schema_version": { "const": "1" },
+        "transform": {
+          "type": "object",
+          "required": ["name"],
+          "properties": { "name": { "type": "string", "minLength": 1 }, "version": { "type": "string" } }
+        },
+        "inputs": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Sources (bundle: several). Verification is all-of.",
+          "items": {
+            "type": "object",
+            "required": ["path", "digest", "reviews"],
+            "properties": {
+              "path": { "type": "string", "minLength": 1 },
+              "id": { "type": "string" },
+              "digest": {
+                "type": "object",
+                "required": ["alg", "value"],
+                "properties": {
+                  "alg": { "const": "sha256" },
+                  "value": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+                }
+              },
+              "reviews": {
+                "type": "array",
+                "description": "Human review attestations, embedded verbatim (never re-signed). Each is a full envelope validating against review-claim.schema.json.",
+                "items": { "type": "object", "required": ["payload", "signatures"] }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
