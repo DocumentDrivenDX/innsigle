@@ -173,6 +173,13 @@ innsigle derive --tree site --from docs/brief.md --output brief/index.html   # b
 innsigle verify --derived site                 # output -> derivation -> build key -> source -> human review
 ```
 
+The gates need a **pinned human key** (`keys.human` in config, written by
+`init`; or `--human-key-id` / `INNSIGLE_HUMAN_KEY_ID`, which overrides config —
+use it in CI so a PR cannot move the pin) and refuse to run without one. Full
+scope is required by default (`--allow-partial-scope` opts out). `--yes` proves
+use of the human key, not that you read the document. Only `content_globs`
+files are sealed or flagged, so make the globs cover everything you publish.
+
 Set `"attestation_key": {"frontmatter": "ddx.id"}` in `.innsigle/config.json` to
 key seals by a stable front-matter id so a rename keeps its seal. Pin
 `keys.human` in the same file. Design: ADR-005 and FEAT-006 under `docs/helix/`.

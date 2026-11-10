@@ -193,14 +193,15 @@ describe("review claim", () => {
     assert.equal(verifyAll([], "2026-11-11T00:00:00Z").code, 0, "authorship still VALID");
   });
 
-  it("review.paths narrows the gate; --require-full-scope rejects partial scope", () => {
+  it("review.paths narrows the gate; partial scope fails the gate by default", () => {
     const { repo, quiet } = setup({ extraConfig: { review: { paths: ["docs/a.md"] } } });
     doc(repo, "a.md", "t.a");
     doc(repo, "b.md", "t.b");
     sealAll(quiet);
     review(["docs/a.md", "--scope", "claim-1,claim-2"], quiet);
-    assert.equal(verifyAll(["--require-review"]).code, 0, "b.md is out of scope");
-    assert.equal(verifyAll(["--require-review", "--require-full-scope"]).code, 6);
+    assert.equal(verifyAll(["--require-review"]).code, 6, "partial scope is not enough by default");
+    assert.equal(verifyAll(["--require-review", "--allow-partial-scope"]).code, 0, "b.md is out of scope");
+    assert.match(statusOf(["--reviews"]).join("\n"), /VALID docs\/a\.md .*REVIEWED/, "status does not apply the gate's scope rule");
   });
 
   it("refuses to review without a current authorship seal; bulk needs confirmation", () => {
@@ -242,6 +243,113 @@ describe("review claim", () => {
     const t = structuredClone(att.reviews[0]);
     t.payload.review.scope = "full ";
     assert.equal(ok(t).state, "REVIEW-INVALID");
+  });
+
+  describe("trust-root pin", () => {
+    const unpin = (repo) => {
+      const p = join(repo, ".innsigle/config.json");
+      const c = JSON.parse(readFileSync(p, "utf8"));
+      delete c.keys.human;
+      writeFileSync(p, JSON.stringify(c));
+    };
+
+    it("--require-review refuses to run without a pin; status labels reviews unpinned", () => {
+      const { repo, quiet } = setup();
+      doc(repo, "a.md", "t.a");
+      sealAll(quiet);
+      review(["docs/a.md"], quiet);
+      unpin(repo);
+      const r = verifyAll(["--require-review"]);
+      assert.equal(r.code, 1);
+      assert.equal(r.lines.length, 0, "no per-claim verdicts without a pin");
+      assert.match(statusOf(["--reviews"]).join("\n"), /REVIEWED\(unpinned\)/);
+      assert.equal(verifyAll([]).code, 0, "plain verify --all is unaffected");
+    });
+
+    it("a self-declared role:human key is rejected under a pin", () => {
+      const { repo, quiet } = setup();
+      doc(repo, "a.md", "t.a");
+      sealAll(quiet);
+      const rogue = generateEd25519();
+      const kp = join(repo, ".innsigle/public/keys.json");
+      const keys = JSON.parse(readFileSync(kp, "utf8"));
+      keys.keys.push({ key_id: rogue.keyId, alg: "ed25519", public_key: b64url(rogue.publicKeyRaw), created_at: T0, revoked_at: null, role: "human" });
+      writeFileSync(kp, JSON.stringify(keys));
+      const attPath = join(repo, ".innsigle/public/claims/id-t.a.attestation.json");
+      const att = JSON.parse(readFileSync(attPath, "utf8"));
+      const payload = {
+        innsigle: "1", type: REVIEW_TYPE, issued_at: T0,
+        issuer: { id: "t", name: "T", key_id: rogue.keyId, key_url: "https://example.com/k.json" },
+        subjects: [{ digest: att.payload.subjects[0].digest }],
+        review: { schema_version: "1", reviewer: { key_id: rogue.keyId }, scope: "full" },
+      };
+      att.reviews = [{ payload, payload_encoding: "json", signatures: [{ key_id: rogue.keyId, alg: "ed25519", sig: b64url(signPayload(payload, rogue.privateKeyPem)), signed_at: T0 }] }];
+      writeFileSync(attPath, JSON.stringify(att));
+      assert.match(statusOf(["--reviews"]).join("\n"), /REVIEW-INVALID\(wrong_role\)/);
+      assert.equal(verifyAll(["--require-review"]).code, 6);
+      // the same review is only accepted when nothing is pinned (the hole)
+      const roles = makeRoles({ keysDoc: keys });
+      assert.equal(roles.pinned, false);
+      assert.equal(roles.isHuman(rogue.keyId), true);
+      assert.equal(makeRoles({ config: JSON.parse(readFileSync(join(repo, ".innsigle/config.json"), "utf8")), keysDoc: keys }).isHuman(rogue.keyId), false);
+    });
+
+    it("an endorsement-bootstrapped key (A endorses B) is not human under a pin", () => {
+      const { repo, human, build, keyUrl } = setup();
+      const keysDoc = JSON.parse(readFileSync(join(repo, ".innsigle/public/keys.json"), "utf8"));
+      const rogue = generateEd25519();
+      keysDoc.keys.push({ key_id: rogue.keyId, alg: "ed25519", public_key: b64url(rogue.publicKeyRaw), created_at: T0, revoked_at: null });
+      const payload = {
+        innsigle: "1", type: "https://innsigle.dev/claim/key-endorsement/v1", issued_at: T0,
+        issuer: { id: "t", name: "T", key_id: rogue.keyId, key_url: keyUrl },
+        endorsement: { subject_key_id: build.keyId, subject_key_url: keyUrl, level: "full", purpose: "build-signing" },
+      };
+      const e = { payload, payload_encoding: "json", signatures: [{ key_id: rogue.keyId, alg: "ed25519", sig: b64url(signPayload(payload, rogue.privateKeyPem)), signed_at: T0 }] };
+      const unpinned = makeRoles({ keysDoc: { ...keysDoc, keys: keysDoc.keys.map(({ role, ...k }) => k) }, endorsements: [e] });
+      assert.equal(unpinned.isHuman(rogue.keyId), true, "without a pin the endorser bootstraps itself");
+      const pinned = makeRoles({ config: { keys: { human: { key_id: human.keyId } } }, keysDoc, endorsements: [e] });
+      assert.equal(pinned.isHuman(rogue.keyId), false);
+      assert.equal(pinned.isHuman(human.keyId), true);
+      assert.equal(pinned.endorserOf(build.keyId), null, "an unpinned endorser cannot vouch for a build key");
+    });
+
+    it("an external pin (flag or env) overrides the config pin", () => {
+      const { repo, human, quiet } = setup();
+      doc(repo, "a.md", "t.a");
+      sealAll(quiet);
+      review(["docs/a.md"], quiet);
+      assert.equal(verifyAll(["--require-review"]).code, 0);
+      const other = generateEd25519();
+      assert.equal(verifyAll(["--require-review", "--human-key-id", other.keyId]).code, 6, "flag moves the pin away from the config key");
+      assert.equal(verifyAll(["--require-review", "--human-key-id", human.keyId]).code, 0);
+      process.env.INNSIGLE_HUMAN_KEY_ID = other.keyId;
+      try {
+        assert.equal(verifyAll(["--require-review"]).code, 6, "env overrides config");
+        assert.equal(verifyAll(["--require-review", "--human-key-id", human.keyId]).code, 0, "flag beats env");
+      } finally {
+        delete process.env.INNSIGLE_HUMAN_KEY_ID;
+      }
+      assert.equal(verifyAll(["--require-review", "--human-key-id", "nonsense"]).code, 5);
+    });
+
+    it("derive --require-review and verify --derived need a pin", () => {
+      const { repo, quiet } = setup();
+      doc(repo, "a.md", "t.a");
+      sealAll(quiet);
+      review(["docs/a.md"], quiet);
+      const tree = join(repo, "site");
+      mkdirSync(tree);
+      writeFileSync(join(tree, "a.html"), "<h1>a</h1>");
+      cpSync(join(repo, ".innsigle/public"), join(tree, ".well-known/innsigle"), { recursive: true });
+      assert.equal(runDerive(["--tree", tree, "--from", "docs/a.md", "--output", "a.html", "--require-review"], { nowIso: clock("2026-11-03T00:00:00Z"), ...quiet }), 0);
+      const v = () => capture((o) => runVerifyDerived(["--derived", tree], { out: o, err() {}, nowIso: clock("2026-11-04T00:00:00Z") }));
+      assert.equal(v().code, 0);
+      unpin(repo);
+      assert.equal(v().code, 1, "unpinned verify --derived refuses");
+      assert.equal(runDerive(["--tree", tree, "--from", "docs/a.md", "--output", "a.html", "--require-review"], { nowIso: clock("2026-11-03T00:00:00Z"), ...quiet }), 1);
+      const pinArg = ["--human-key-id", JSON.parse(readFileSync(join(repo, ".innsigle/public/keys.json"), "utf8")).keys[0].key_id];
+      assert.equal(capture((o) => runVerifyDerived(["--derived", tree, ...pinArg], { out: o, err() {}, nowIso: clock("2026-11-04T00:00:00Z") })).code, 0);
+    });
   });
 
   it("status output is unchanged for projects that do not use reviews", () => {

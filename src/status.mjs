@@ -3,7 +3,9 @@ import { basename, join } from "node:path";
 import { b64urlDecode, sha256Hex, verifyPayload } from "./crypto.mjs";
 import { attestationSlug, loadProject, slugOpts } from "./config.mjs";
 import {
+  UNPINNED_MSG,
   annotateReviews,
+  resolveHumanPin,
   reviewColumnWanted,
   reviewLabel,
 } from "./review.mjs";
@@ -294,7 +296,15 @@ export function runStatus(args, deps = {}) {
       return 4;
     }
     const nowMs = Date.parse((deps.nowIso || nowIsoDefault)());
-    annotateReviews(project, entries, { keysDoc, now: nowMs });
+    let pin;
+    try {
+      pin = resolveHumanPin(args);
+    } catch (e) {
+      err(`INVALID: ${e.message}`);
+      return 5;
+    }
+    const roles = annotateReviews(project, entries, { keysDoc, now: nowMs, pin });
+    if (!roles.pinned) err(`warn: ${UNPINNED_MSG} (reviews shown as unpinned)`);
   }
   for (const e of entries) {
     const base = formatLine(e);
@@ -343,11 +353,25 @@ export function runVerifyAll(args, deps = {}) {
   const showReview = reviewColumnWanted(args, project, entries);
   if (showReview) {
     const nowMs = Date.parse((deps.nowIso || nowIsoDefault)());
-    annotateReviews(project, entries, {
+    let pin;
+    try {
+      pin = resolveHumanPin(args);
+    } catch (e) {
+      err(`INVALID: ${e.message}`);
+      return 5;
+    }
+    // The gate never trusts repo-declared roles: no pin, no gate. Full scope
+    // is the default for the gate; --allow-partial-scope opts out.
+    const roles = annotateReviews(project, entries, {
       keysDoc,
       now: nowMs,
-      fullScope: args.includes("--require-full-scope"),
+      fullScope: requireReview && !args.includes("--allow-partial-scope"),
+      pin,
     });
+    if (requireReview && !roles.pinned) {
+      err(`INVALID: --require-review: ${UNPINNED_MSG}`);
+      return 1;
+    }
   }
   let failures = 0;
   let reviewFailures = 0;

@@ -48,6 +48,19 @@ human involved. Design: ADR-005, FEAT-006, CONTRACT-001 v1.2.
 - Golden vectors for the new claims in `tests/vectors/review/`
   (`scripts/generate-review-vectors.mjs`), JSON schemas and examples.
 
+### Trust root
+
+- Review gates require a **pinned human key**. `verify --all --require-review`,
+  `verify --derived` and `derive --require-review` exit 1 without one and never
+  fall back to a `role` declared in `keys.json` or to endorsers (both are
+  repo-controlled). `status` may still show such reviews, labelled
+  `REVIEWED(unpinned)`.
+- `--human-key-id <id[,id]>` / `INNSIGLE_HUMAN_KEY_ID` supply the pin from
+  outside the repo and override `config.keys.human`.
+- `innsigle init` writes `keys.human`.
+- The gate requires full-scope reviews by default; `--allow-partial-scope` opts
+  out.
+
 ### Compatibility
 
 Existing attestation files, commands and exit codes are unchanged. v1.0/v1.1

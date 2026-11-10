@@ -155,6 +155,9 @@ export function runInit(args, deps) {
         to: ".well-known/innsigle",
       },
     },
+    // Trust-root pin for review claims (ADR-005 D2): the key init just made is
+    // the human key. A review gate refuses to run without a pin.
+    keys: { human: { key_id: keyId, role: "human" } },
     onepassword: {
       vault: opItem.vault?.name || vault || null,
       item_title: opItem.title,

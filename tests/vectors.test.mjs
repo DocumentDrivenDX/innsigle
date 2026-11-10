@@ -1,6 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
@@ -178,8 +179,12 @@ describe("golden vectors: review and derivation claims (CONTRACT-001 v1.2)", () 
   });
 
   it("CLI: verify --derived on the vector tree exits 0 and fails once the output changes", () => {
-    const ok = spawnSync(process.execPath, [cli, "verify", "--derived", join(vec, "review/built")], { encoding: "utf8" });
+    const ok = spawnSync(process.execPath, [cli, "verify", "--derived", join(vec, "review/built"), "--human-key-id", exp.human_key_id], { encoding: "utf8" });
     assert.equal(ok.status, 0, ok.stdout + ok.stderr);
     assert.match(ok.stdout, /VALID sample\.html/);
+    // no pin, no verdict
+    const bare = spawnSync(process.execPath, [cli, "verify", "--derived", join(vec, "review/built")], { encoding: "utf8", cwd: tmpdir(), env: { ...process.env, INNSIGLE_HUMAN_KEY_ID: "" } });
+    assert.equal(bare.status, 1, bare.stderr);
+    assert.match(bare.stderr, /no human key is pinned/);
   });
 });

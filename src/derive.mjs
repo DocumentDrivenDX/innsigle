@@ -24,7 +24,10 @@ import {
   loadEndorsements,
   makeRoles,
   reviewStateOf,
+  UNPINNED_MSG,
+  resolveHumanPin,
   rolesForProject,
+  scopeIsFull,
   writeJsonAtomic,
 } from "./review.mjs";
 import { globToRegExp } from "./status.mjs";
@@ -84,7 +87,7 @@ export function validateDerivationPayload(p) {
  * @returns {{ ok: boolean, code?: number, reason?: string, inputs: Array<{path: string, state: string, reason?: string}> }}
  *   code uses the verify exit table: 2 bad signature, 4 key/role, 5 schema, 6 review chain
  */
-export function checkDerivation({ att, keysDoc, roles, now }) {
+export function checkDerivation({ att, keysDoc, roles, now, fullScope = false }) {
   const fail = (code, reason, inputs = []) => ({ ok: false, code, reason, inputs });
   const pl = att?.payload;
   if (!att?.signatures?.length) return fail(5, "schema");
@@ -110,7 +113,7 @@ export function checkDerivation({ att, keysDoc, roles, now }) {
   for (const inp of pl.derivation.inputs) {
     const st = reviewStateOf(
       { reviews: inp.reviews },
-      { contentDigest: inp.digest.value, keysDoc, roles, now },
+      { contentDigest: inp.digest.value, keysDoc, roles, now, fullScope },
     );
     const reason =
       st.state === "REVIEWED"
@@ -197,7 +200,19 @@ export function runDerive(args, deps = {}) {
     err(`INVALID: ${e.message}`);
     return 1;
   }
-  const roles = rolesForProject(project, keysDoc);
+  let pin;
+  try {
+    pin = resolveHumanPin(args);
+  } catch (e) {
+    err(`INVALID: ${e.message}`);
+    return 5;
+  }
+  const roles = rolesForProject(project, keysDoc, pin);
+  if (args.includes("--require-review") && !roles.pinned) {
+    err(`INVALID: --require-review: ${UNPINNED_MSG}`);
+    return 1;
+  }
+  const allowPartial = args.includes("--allow-partial-scope");
   if (!roles.isBuild(material.keyId)) {
     err(
       `INVALID: key ${material.keyId} is not a build-role key (a derivation needs a build key distinct from the human key — ADR-004)`,
@@ -224,7 +239,9 @@ export function runDerive(args, deps = {}) {
     const att = readJson(defaultAttestationPath(project.repoRoot, abs, slugOpts(project)));
     const list = Array.isArray(att?.reviews) ? att.reviews : [];
     const good = list.filter(
-      (review) => checkReview({ review, keysDoc, roles, contentDigest: digest, now }).state === "REVIEWED",
+      (review) =>
+        checkReview({ review, keysDoc, roles, contentDigest: digest, now }).state === "REVIEWED" &&
+        (allowPartial || scopeIsFull(review)),
     );
     const rel = posix(relative(project.repoRoot, abs));
     if (!good.length) {
@@ -343,12 +360,26 @@ export function runVerifyDerived(args, deps = {}) {
     join(root, WELL_KNOWN, "endorsements"),
     join(dirname(resolve(keysPath)), "endorsements"),
   ].filter(Boolean);
-  const usesProjectConfig = project && resolve(keysPath) === resolve(project.keysPath);
+  let pin;
+  try {
+    pin = resolveHumanPin(args);
+  } catch (e) {
+    err(`INVALID: ${e.message}`);
+    return 5;
+  }
   const roles = makeRoles({
-    config: usesProjectConfig ? project.config : undefined,
+    config: project?.config, // pin only; a foreign tree fails closed on key-id mismatch
     keysDoc,
     endorsements: loadEndorsements(endDirs),
+    pin,
   });
+  // A derivation proves review only relative to a pinned human key; never
+  // fall back to roles the published keys.json declares about itself.
+  if (!roles.pinned) {
+    err(`INVALID: verify --derived: ${UNPINNED_MSG}`);
+    return 1;
+  }
+  const fullScope = !args.includes("--allow-partial-scope");
 
   const dDir = join(root, WELL_KNOWN, "derivations");
   const names = existsSync(dDir)
@@ -363,7 +394,7 @@ export function runVerifyDerived(args, deps = {}) {
 
   for (const n of names) {
     const att = readJson(join(dDir, n));
-    const chk = checkDerivation({ att, keysDoc, roles, now });
+    const chk = checkDerivation({ att, keysDoc, roles, now, fullScope });
     const subjects = att?.payload?.subjects || [];
     if (!chk.ok) {
       const paths = subjects.map((s) => s.path).filter(Boolean);

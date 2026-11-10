@@ -109,12 +109,18 @@ export function validateReviewPayload(p) {
  *
  * @param {{ config?: object, keysDoc: object, endorsements?: object[] }} p
  */
-export function makeRoles({ config, keysDoc, endorsements = [] }) {
+export function makeRoles({ config, keysDoc, endorsements = [], pin }) {
   const keys = keysDoc?.keys || [];
   const active = keys.filter((k) => !k.revoked_at);
+  // An external pin (flag/env, see resolveHumanPin) replaces the config pin
+  // entirely: a same-PR edit of config.json must not be able to move it.
   const pinnedHuman = new Set();
-  if (config?.keys?.human?.key_id) pinnedHuman.add(config.keys.human.key_id);
-  for (const id of config?.review?.reviewer_key_ids || []) pinnedHuman.add(id);
+  if (pin && pin.length) {
+    for (const id of pin) pinnedHuman.add(id);
+  } else {
+    if (config?.keys?.human?.key_id) pinnedHuman.add(config.keys.human.key_id);
+    for (const id of config?.review?.reviewer_key_ids || []) pinnedHuman.add(id);
+  }
   const hasPin = pinnedHuman.size > 0;
 
   const build = new Set();
@@ -156,6 +162,8 @@ export function makeRoles({ config, keysDoc, endorsements = [] }) {
   for (const id of build) human.delete(id);
 
   return {
+    /** true only when human keys come from a pin, not from repo-declared roles */
+    pinned: hasPin,
     isHuman: (id) => human.has(id),
     isBuild: (id) => build.has(id) && !human.has(id),
     /** the human key that endorsed this build key, or null */
@@ -183,13 +191,39 @@ export function loadEndorsements(dirs) {
   return out;
 }
 
-/** Roles for a project (repo form): config pins + keys.json + local endorsements. */
-export function rolesForProject(project, keysDoc) {
+/**
+ * Human-key pin supplied from outside the repo: `--human-key-id <id[,id]>`, then
+ * INNSIGLE_HUMAN_KEY_ID. Returns null when none is given (config pin applies).
+ * @returns {string[] | null}
+ */
+export function resolveHumanPin(args = [], env = process.env) {
+  const raw = arg(args, "--human-key-id") ?? env.INNSIGLE_HUMAN_KEY_ID;
+  if (raw === undefined || raw === "") return null;
+  const ids = String(raw).split(",").map((s) => s.trim()).filter(Boolean);
+  if (!ids.length || ids.some((id) => !KEY_ID.test(id))) {
+    throw new Error("--human-key-id / INNSIGLE_HUMAN_KEY_ID must be ed25519:<32 hex> id(s), comma separated");
+  }
+  return ids;
+}
+
+export const UNPINNED_MSG =
+  "no human key is pinned: set keys.human in .innsigle/config.json, or pass --human-key-id / INNSIGLE_HUMAN_KEY_ID. " +
+  "Without a pin a role declared in keys.json (repo-controlled) would decide who counts as a reviewer";
+
+/** Roles for a project (repo form): pin (external, else config) + keys.json + local endorsements. */
+export function rolesForProject(project, keysDoc, pin) {
   return makeRoles({
     config: project.config,
     keysDoc,
     endorsements: loadEndorsements([join(project.repoRoot, PATHS.public, "endorsements")]),
+    pin,
   });
+}
+
+/** Full scope required unless the review is scope "full"/absent. */
+export function scopeIsFull(reviewAtt) {
+  const sc = reviewAtt?.payload?.review?.scope;
+  return sc === undefined || sc === "full";
 }
 
 // ─── checking ──────────────────────────────────────────────────────────────
@@ -337,8 +371,8 @@ export function inReviewScope(project, source) {
 }
 
 /** Annotate entries (mutates) with `.review` = result of reviewStateOf. */
-export function annotateReviews(project, entries, { keysDoc, now, fullScope }) {
-  const roles = rolesForProject(project, keysDoc);
+export function annotateReviews(project, entries, { keysDoc, now, fullScope, pin }) {
+  const roles = rolesForProject(project, keysDoc, pin);
   for (const e of entries) {
     if (!e.source || !e.attestation) continue;
     let bytes;
@@ -355,6 +389,7 @@ export function annotateReviews(project, entries, { keysDoc, now, fullScope }) {
       fullScope,
     });
     e.reviewInScope = inReviewScope(project, e.source);
+    e.unpinned = !roles.pinned;
   }
   return roles;
 }
@@ -362,6 +397,7 @@ export function annotateReviews(project, entries, { keysDoc, now, fullScope }) {
 export function reviewLabel(e) {
   if (!e.review) return "";
   const r = e.review;
+  if (r.state === "REVIEWED" && e.unpinned) return "REVIEWED(unpinned)";
   return r.reason && r.state === "REVIEW-INVALID" ? `REVIEW-INVALID(${r.reason})` : r.state;
 }
 
@@ -381,7 +417,7 @@ export function confirmTTY(question) {
 // ─── CLI: innsigle review ──────────────────────────────────────────────────
 
 const VALUE_FLAGS = new Set([
-  "--scope", "--expires", "--reviewer-name", "--key", "--op-ref", "--op-account", "--role",
+  "--scope", "--expires", "--reviewer-name", "--key", "--op-ref", "--op-account", "--role", "--human-key-id",
 ]);
 
 function positional(args) {
@@ -480,7 +516,15 @@ export function runReview(args, deps = {}) {
     err(`INVALID: ${e.message}`);
     return 1;
   }
-  const roles = rolesForProject(project, keysDoc);
+  let pin;
+  try {
+    pin = resolveHumanPin(args);
+  } catch (e) {
+    err(`INVALID: ${e.message}`);
+    return 5;
+  }
+  const roles = rolesForProject(project, keysDoc, pin);
+  if (!roles.pinned) log(`warn: ${UNPINNED_MSG}; this review will not satisfy a gate until one is`);
   if (!roles.isHuman(material.keyId)) {
     err(`INVALID: key ${material.keyId} is not a human-role key; a review cannot be signed with it`);
     return 1;

@@ -70,6 +70,8 @@ describe("innsigle init --onepassword", () => {
     assert.equal(cfg.issuer.id, "demo-blog");
     assert.equal(cfg.issuer.name, "Demo Blog");
     assert.match(cfg.issuer.key_id, /^ed25519:[0-9a-f]{32}$/);
+    // review trust-root pin (ADR-005 D2): the generated key is the human key
+    assert.equal(cfg.keys.human.key_id, cfg.issuer.key_id);
     assert.equal(
       cfg.issuer.key_url,
       "https://blog.example.com/.well-known/innsigle/keys.json",

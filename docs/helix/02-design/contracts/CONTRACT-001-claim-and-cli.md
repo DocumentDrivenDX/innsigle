@@ -160,7 +160,9 @@ attestations beside the authorship claim:
 
 Producers that rewrite an attestation file (any `seal` path) MUST carry
 `reviews` over unchanged. The authorship signature MUST NOT cover `reviews`.
-Verifiers that do not know `reviews` ignore it.
+Verifiers that do not know `reviews` ignore it. Only files matching
+`content_globs` are sealed or flagged `UNSEALED`; content outside them is not
+covered by any check.
 
 ### Review claim (v1.2)
 
@@ -197,10 +199,14 @@ is absent or `> t`. Otherwise the state is `REVIEW-INVALID(reason)` (reasons:
 is decided before freshness. A key that is build-role by any rule MUST NOT be
 accepted as a reviewer.
 
-Roles: **human** = `config.keys.human` (plus `review.reviewer_key_ids`) when
-pinned, otherwise `keys.json` `role: "human"`, the signer of a valid
-`build-signing` endorsement, or the sole active key of a house with no build
-key. **build** = `config.keys.build`, `keys.json` `role: "build"`, or the
+Roles: **human** = the pin: `--human-key-id` / `INNSIGLE_HUMAN_KEY_ID` when
+given (replacing the config pin), else `config.keys.human` (plus
+`review.reviewer_key_ids`). Gating operations (`verify --all --require-review`,
+`verify --derived`, `derive --require-review`) MUST refuse to run (exit 1) when
+no pin exists and MUST NOT fall back to repo-declared roles. Only non-gating
+display MAY fall back to `keys.json` `role: "human"`, the signer of a valid
+`build-signing` endorsement, or the sole active key, and MUST label the result
+unpinned. `innsigle init` writes `keys.human`. **build** = `config.keys.build`, `keys.json` `role: "build"`, or the
 subject of a valid human-signed `build-signing` endorsement.
 
 ### Derivation claim (v1.2)
@@ -346,8 +352,8 @@ Binary name: `innsigle` (package may ship as such).
 | `innsigle endorse` | `--subject-key-id` `[--subject-key-url]` `[--purpose]` `[--level]` | MUST sign a key-endorsement (ADR-003 D4) with the human key; MUST index it on the issuer document `endorsements[]`; MUST NOT let the build key endorse the human key |
 | `innsigle review` | `<file>` \| `--all` \| `--stale` `[--scope full\|id,id]` `[--expires Nd\|YYYY-MM-DD\|RFC3339]` `[--reviewer-name N \| --anonymous]` `[--yes]` `[--force]` | MUST sign with the human key only and MUST refuse `--role build`; MUST require a current authorship seal for the file; MUST require confirmation (TTY prompt or `--yes`; PROV-05); MUST merge into `reviews[]` (superseding only the same reviewer's older entries); MUST self-verify before writing; `--all` reviews in-scope files not currently REVIEWED, `--stale` only REVIEW-STALE/EXPIRED |
 | `innsigle derive` | `--tree <dir>` `--from <src>`… `--output <path>`… `[--transform name@ver]` `[--require-review]` `[--out file]` | MUST sign with an endorsed build key; MUST embed each source's currently valid reviews verbatim; with `--require-review` MUST refuse (exit 6) if any source has none; writes `<tree>/.well-known/innsigle/derivations/` |
-| `innsigle verify` | `--derived <tree>` `[--keys f]` `[--source-root dir]` `[--cover glob]`… | MUST verify every derivation claim in the tree per the derivation rules and always requires a valid human review for every input; exit codes below |
-| `innsigle verify --all` | `[--require-review]` `[--require-full-scope]` | As before; with `--require-review` exits 6 when all seals are VALID but an in-scope claim lacks a valid, unexpired human review; exit 1 if any seal is not VALID |
+| `innsigle verify` | `--derived <tree>` `[--human-key-id id]` `[--allow-partial-scope]` `[--keys f]` `[--source-root dir]` `[--cover glob]`… | MUST verify every derivation claim in the tree per the derivation rules and always requires a valid human review for every input; exit codes below |
+| `innsigle verify --all` | `[--require-review]` `[--allow-partial-scope]` `[--human-key-id id]` | As before; with `--require-review` MUST require a pinned human key (exit 1 otherwise), requires full-scope reviews unless `--allow-partial-scope`, and exits 6 when all seals are VALID but an in-scope claim lacks a valid, unexpired human review; exit 1 if any seal is not VALID |
 | `innsigle status` | `[--reviews]` | As before; adds REVIEWED / UNREVIEWED / REVIEW-STALE / REVIEW-EXPIRED / REVIEW-INVALID(reason) per claim when `--reviews`, `--require-review`, a `review` config object, or any stored review is present |
 | `innsigle publish` | `[site-dir]` | MUST copy `.innsigle/public/` to `<site-dir>/.well-known/innsigle/` |
 | `innsigle keygen` | `--out-dir <dir>` | MUST write private key (permissions 0600 when FS supports) and public material; MUST NOT print private key |

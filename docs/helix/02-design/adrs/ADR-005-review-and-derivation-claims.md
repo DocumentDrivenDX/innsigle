@@ -76,9 +76,10 @@ payload and signature are byte-identical before and after.
 
 **PROV-05.** Review precedes sign. `innsigle review` signs only after an
 explicit confirmation (TTY prompt, or `--yes` when non-interactive; bulk modes
-list every document and digest first). The tool cannot prove reading; it makes
-the signature a deliberate act of a human-role key and records nothing more
-than it knows.
+list every document and digest first). **`--yes` proves use of the human key,
+not that the document was read**: the tool cannot prove reading. Treat the
+signature as a deliberate act by whoever holds that key, and keep the key away
+from automation.
 
 **Reviewer identity.** `reviewer.key_id` is mandatory and must equal
 `issuer.key_id`; `reviewer.name` is optional and omitted unless supplied
@@ -103,9 +104,19 @@ A key that is build by any route is never human. Consequences:
   human key fails the self-check and writes nothing.
 - A review forged offline with the build key verifies as
   `REVIEW-INVALID(wrong_role)`.
-- Pin `keys.human` in `.innsigle/config.json`: `keys.json` is repo content, so
-  anyone who can edit it can relabel a role. The pin plus protected review of
-  changes to `config.json`/`keys.json` (CODEOWNERS) is the trust root.
+- **The pin is the trust root, and the gate requires it.** `keys.json` is repo
+  content: anyone who can edit it (including the bot being gated) can add a key
+  as `role: "human"`, or have one key endorse another to bootstrap itself. So
+  the repo-declared fallbacks (`keys.json` role, endorsers, sole-key) exist only
+  for the *non-gating* `status` display, which labels such reviews
+  `REVIEWED(unpinned)`. `verify --all --require-review`, `verify --derived` and
+  `derive --require-review` **refuse to run (exit 1) unless a human key is
+  pinned**. `innsigle init` writes the pin (`keys.human`).
+- **External pin.** `--human-key-id <id[,id]>` or `INNSIGLE_HUMAN_KEY_ID`
+  overrides the config pin entirely, so CI can supply it from a secret or
+  workflow file that the same pull request cannot edit. Otherwise a PR that
+  changes `config.json` can move the pin. Prefer the external pin in CI, and
+  protect `config.json`/`keys.json` (CODEOWNERS) either way.
 
 ### D3 — One attestation file, several independently signed claims
 
@@ -217,9 +228,16 @@ document and orphans the old file (reseal removes it).
   file already carries reviews. Existing output and exit codes are unchanged for
   existing sites.
 - `verify --all --require-review` exits **6** when every claim is otherwise
-  `VALID` but some in-scope claim lacks a valid, unexpired human review; exit 1
-  (as before) if any seal is broken. `review.paths` limits the in-scope set;
-  `--require-full-scope` rejects partial-scope reviews.
+  `VALID` but some in-scope claim lacks a valid, unexpired, **full-scope** human
+  review; exit 1 (as before) if any seal is broken or no human key is pinned.
+  Full scope is the default for the gate and for `verify --derived`;
+  `--allow-partial-scope` opts out (`--require-full-scope` is accepted as a
+  no-op). `review.paths` limits the in-scope set.
+- **Coverage is the consumer's job.** Only files matching `content_globs` are
+  sealed, reviewed and flagged UNSEALED. A published document outside the globs
+  is invisible to every check here; set the globs to cover all published
+  content (and use `verify --derived --cover` on the built tree to catch
+  outputs with no derivation).
 - Exit code 6 is additive to the verify table.
 - Transitive checks along a pin graph, expiry policy beyond `expires_at`, and
   per-claim checklists are consumer concerns; they use `scope` ids and
