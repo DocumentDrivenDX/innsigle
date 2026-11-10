@@ -17,6 +17,8 @@ import { runSeal, runPublish, resolveVerifyPaths } from "./seal.mjs";
 import { runEndorse } from "./endorse.mjs";
 import { runDoctor } from "./doctor.mjs";
 import { runStatus, runVerifyAll } from "./status.mjs";
+import { runReview } from "./review.mjs";
+import { runDerive, runVerifyDerived } from "./derive.mjs";
 import {
   loadJournal,
   mergeJournals,
@@ -54,6 +56,12 @@ Common (uses .innsigle/ + 1Password + optional ~/.config/innsigle/config.json):
   innsigle seal --stale                # re-seal claims whose content drifted
   innsigle seal --all [--role human|build]  # human: mixed/human; build: generated
   innsigle endorse --subject-key-id <id>    # human key endorses build key (ADR-004)
+  innsigle review <file> | --all | --stale   # human key signs "a human read this" (ADR-005)
+                [--scope full|<id,id>] [--expires 90d] [--reviewer-name N | --anonymous] [--yes]
+  innsigle derive --tree <built-dir> --from <src>… --output <path>…   # build key; embeds the human review
+  innsigle verify --derived <built-dir> [--source-root <repo>] [--cover <glob>]
+  innsigle verify --all --require-review     # CI gate: every claim needs a valid human review (exit 6)
+  innsigle status --reviews            # add REVIEWED | UNREVIEWED | REVIEW-STALE | REVIEW-EXPIRED
   innsigle publish [site-dir]          # copy .innsigle/public → site/.well-known/innsigle
   innsigle status                      # VALID | STALE | ORPHAN | UNSEALED per claim
   innsigle verify <content-file>
@@ -283,6 +291,10 @@ function cmdVerify(args) {
   // Repo form: innsigle verify --all (CI gate over .innsigle/public/claims/)
   if (args.includes("--all")) {
     process.exit(runVerifyAll(args, {}));
+  }
+  // Built-tree form (ADR-005): innsigle verify --derived <dir>
+  if (args.includes("--derived")) {
+    process.exit(runVerifyDerived(args, {}));
   }
   // Short form: innsigle verify <content>
   // Long form: --attestation --content --keys
@@ -546,6 +558,16 @@ switch (cmd) {
   }
   case "publish": {
     const code = runPublish(rest, {});
+    process.exit(code);
+    break;
+  }
+  case "review": {
+    const code = runReview(rest, { nowIso });
+    process.exit(code);
+    break;
+  }
+  case "derive": {
+    const code = runDerive(rest, { nowIso });
     process.exit(code);
     break;
   }

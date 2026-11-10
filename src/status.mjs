@@ -2,6 +2,11 @@ import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { basename, join } from "node:path";
 import { b64urlDecode, sha256Hex, verifyPayload } from "./crypto.mjs";
 import { attestationSlug, loadProject, slugOpts } from "./config.mjs";
+import {
+  annotateReviews,
+  reviewColumnWanted,
+  reviewLabel,
+} from "./review.mjs";
 
 /** Directories never scanned for content sources. */
 const SKIP_DIRS = new Set([".git", "node_modules", ".innsigle"]);
@@ -254,6 +259,10 @@ export function collectStatus(project) {
   return { entries, unsealed };
 }
 
+function nowIsoDefault() {
+  return new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
+}
+
 function formatLine(e) {
   if (e.source) return `${e.state} ${e.source} (${e.fname})`;
   return `${e.state} - (${e.fname})`;
@@ -273,14 +282,38 @@ export function runStatus(args, deps = {}) {
     return 1;
   }
   const { entries, unsealed } = collectStatus(project);
-  for (const e of entries) out(formatLine(e));
+  // Review column (ADR-005): shown only when asked for or when the project
+  // uses reviews, so existing output is byte-identical for existing sites.
+  const showReview = reviewColumnWanted(args, project, entries);
+  if (showReview) {
+    let keysDoc = null;
+    try {
+      keysDoc = JSON.parse(readFileSync(project.keysPath, "utf8"));
+    } catch {
+      err(`INVALID: cannot read issuer keys: ${project.keysPath}`);
+      return 4;
+    }
+    const nowMs = Date.parse((deps.nowIso || nowIsoDefault)());
+    annotateReviews(project, entries, { keysDoc, now: nowMs });
+  }
+  for (const e of entries) {
+    const base = formatLine(e);
+    out(showReview && e.review ? `${base} ${reviewLabel(e)}` : base);
+  }
   for (const rel of unsealed) out(`UNSEALED ${rel}`);
   const count = (s) => entries.filter((e) => e.state === s).length;
-  out(
+  let line =
     `total=${entries.length} valid=${count("VALID")} stale=${count("STALE")} ` +
-      `orphan=${count("ORPHAN")} unsealed=${unsealed.length} ` +
-      `ambiguous=${count("AMBIGUOUS")}`,
-  );
+    `orphan=${count("ORPHAN")} unsealed=${unsealed.length} ` +
+    `ambiguous=${count("AMBIGUOUS")}`;
+  if (showReview) {
+    const rc = (s) => entries.filter((e) => e.review?.state === s).length;
+    line +=
+      ` reviewed=${rc("REVIEWED")} unreviewed=${rc("UNREVIEWED")}` +
+      ` review-stale=${rc("REVIEW-STALE")} review-expired=${rc("REVIEW-EXPIRED")}` +
+      ` review-invalid=${rc("REVIEW-INVALID")}`;
+  }
+  out(line);
   return 0;
 }
 
@@ -306,7 +339,18 @@ export function runVerifyAll(args, deps = {}) {
     return 4;
   }
   const { entries, unsealed } = collectStatus(project);
+  const requireReview = args.includes("--require-review");
+  const showReview = reviewColumnWanted(args, project, entries);
+  if (showReview) {
+    const nowMs = Date.parse((deps.nowIso || nowIsoDefault)());
+    annotateReviews(project, entries, {
+      keysDoc,
+      now: nowMs,
+      fullScope: args.includes("--require-full-scope"),
+    });
+  }
   let failures = 0;
+  let reviewFailures = 0;
   for (const e of entries) {
     let state = e.state;
     if (state === "VALID") {
@@ -315,7 +359,16 @@ export function runVerifyAll(args, deps = {}) {
       if (!check.ok) state = `INVALID(${check.reason})`;
     }
     if (state !== "VALID") failures++;
-    out(e.source ? `${state} ${e.source} (${e.fname})` : `${state} - (${e.fname})`);
+    let line = e.source ? `${state} ${e.source} (${e.fname})` : `${state} - (${e.fname})`;
+    if (showReview && e.review) {
+      line += ` ${reviewLabel(e)}`;
+      // Only count review gaps on claims that are otherwise VALID, so a
+      // review-only failure is distinguishable (exit 6) from a broken seal.
+      if (requireReview && state === "VALID" && e.reviewInScope && e.review.state !== "REVIEWED") {
+        reviewFailures++;
+      }
+    }
+    out(line);
   }
   for (const rel of unsealed) {
     failures++;
@@ -323,8 +376,14 @@ export function runVerifyAll(args, deps = {}) {
   }
   if (failures) {
     err(`INVALID: ${failures} claim(s)/file(s) not VALID`);
+    if (reviewFailures) err(`INVALID: ${reviewFailures} claim(s) without a valid human review`);
     return 1;
   }
+  if (reviewFailures) {
+    err(`INVALID: ${reviewFailures} claim(s) without a valid, unexpired human review (--require-review)`);
+    return 6;
+  }
   out(`VALID all (${entries.length} claim(s))`);
+  if (requireReview) out(`REVIEWED all (${entries.filter((e) => e.reviewInScope).length} in scope)`);
   return 0;
 }

@@ -26,6 +26,8 @@ import {
 } from "./config.mjs";
 import { proposeColo, syncProvenance, validateHumanInput } from "./provenance/index.mjs";
 import { checkAttestation, collectStatus, filesMatchingGlobs } from "./status.mjs";
+import { carryOver, confirmTTY } from "./review.mjs";
+import { DOC_ID_PATTERN, docIdOf } from "./frontmatter.mjs";
 import { COMPOSITIONS, kindFromFrontmatter } from "./site-pages.mjs";
 import {
   issuerForKey,
@@ -180,6 +182,29 @@ function signAttestation(claim, privateKeyPem, nowIso) {
   };
 }
 
+/**
+ * With `attestation_key.frontmatter` configured, every sealed file needs a
+ * valid, unique id — otherwise the seal would silently fall back to the path
+ * key and orphan on the next rename. Returns a problem string or null.
+ */
+function docIdProblem(project, abs, rel) {
+  const keyPath = project.config?.attestation_key?.frontmatter;
+  if (!keyPath) return null;
+  const id = docIdOf(abs, keyPath);
+  if (!id) return `${rel}: no ${keyPath} in front matter (attestation_key is configured)`;
+  if (!DOC_ID_PATTERN.test(id)) {
+    return `${rel}: ${keyPath} ${JSON.stringify(id)} must match ${DOC_ID_PATTERN} (lowercase, [a-z0-9._-])`;
+  }
+  const globs = project.config.content_globs;
+  if (Array.isArray(globs) && globs.length) {
+    const clash = filesMatchingGlobs(project.repoRoot, globs).filter(
+      (r) => r !== rel && docIdOf(join(project.repoRoot, r), keyPath) === id,
+    );
+    if (clash.length) return `${rel}: ${keyPath} ${JSON.stringify(id)} is also used by ${clash.join(", ")}`;
+  }
+  return null;
+}
+
 function loadKeysDoc(project) {
   return JSON.parse(readFileSync(project.keysPath, "utf8"));
 }
@@ -204,6 +229,15 @@ function writeVerified({ outPath, attestation, project, contentBytes }) {
       /* ignore */
     }
   };
+  // Merge, never overwrite: human reviews already in the file survive a
+  // reseal (by any role). Edited content leaves them REVIEW-STALE by digest.
+  let prev = null;
+  try {
+    prev = JSON.parse(readFileSync(outPath, "utf8"));
+  } catch {
+    /* no previous file */
+  }
+  attestation = carryOver(prev, attestation);
   try {
     writeFileSync(tmpPath, JSON.stringify(attestation, null, 2) + "\n");
   } catch (e) {
@@ -312,19 +346,6 @@ function runSealStale(args, deps) {
   return failures ? 2 : 0;
 }
 
-/** Blocking y/N prompt on a TTY (line-buffered read of fd 0). */
-function confirmTTY(question) {
-  process.stderr.write(question);
-  try {
-    const buf = Buffer.alloc(256);
-    const n = readSync(0, buf, 0, 256, null);
-    const ans = buf.toString("utf8", 0, n).trim().toLowerCase();
-    return ans === "y" || ans === "yes";
-  } catch {
-    return false;
-  }
-}
-
 /**
  * innsigle seal --all — Helix microsite pattern: walk config.content_globs,
  * skip up-to-date claims, pick composition from frontmatter `generated: true`
@@ -412,6 +433,11 @@ function runSealAll(args, deps) {
     const abs = join(project.repoRoot, rel);
     const contentBytes = readFileSync(abs);
     const digestHex = sha256Hex(contentBytes);
+    const idProblem = docIdProblem(project, abs, rel);
+    if (idProblem) {
+      err(`INVALID: ${idProblem}`);
+      return 5;
+    }
     const outPath = defaultAttestationPath(project.repoRoot, abs, slugOpts(project));
     let kind = kindOverride;
     if (!kind && fromFm) {
@@ -645,6 +671,11 @@ export function runSeal(args, deps) {
   const uri =
     arg(args, "--uri") || guessContentUri(project.config, project.repoRoot, contentPath);
 
+  const idProblem = docIdProblem(project, resolve(contentPath), relative(project.repoRoot, resolve(contentPath)).split("\\").join("/"));
+  if (idProblem) {
+    err(`INVALID: ${idProblem}`);
+    return 5;
+  }
   const contentBytes = readFileSync(contentPath);
   const digestHex = sha256Hex(contentBytes);
   const outPath =

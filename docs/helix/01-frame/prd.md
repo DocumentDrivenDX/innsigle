@@ -177,6 +177,10 @@ UCs as one brand + claim system.
 - **FR-20a** The measure is a maker declaration, never a detection verdict:
   omitted when journal evidence is absent (never invented), and product
   surfaces MUST NOT present it as an AI-detection score or purity ranking.
+- **FR-21–FR-25** Signed human **review** claims, derivation across a build, and
+  stable document keying (FEAT-006, ADR-005): a review binds a human-role key to
+  a content digest without changing composition; `verify --all --require-review`
+  is the publish gate; a derivation claim carries the review to built outputs.
 
 ### Subsystem: Visual Seal System
 

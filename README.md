@@ -157,6 +157,26 @@ innsigle provenance import claude-code session.jsonl --out journal.jsonl  # one 
 `seal` also honors a content-adjacent `colo.json`: `--colo` →
 `<content-dir>/colo.json` → `.innsigle/colo.json` → `--kind`.
 
+## Human review (0.7.0)
+
+A seal says how content was made; a **review** says an identified human read
+those exact bytes. It is a separate signed claim stored in the same attestation
+file, signed by a human-role key only, and it never changes the declared
+composition.
+
+```bash
+innsigle review docs/brief.md --yes            # sign: "a human read this" (--scope, --expires 90d, --anonymous)
+innsigle review --stale --yes                  # re-review what changed or expired
+innsigle status --reviews                      # REVIEWED / UNREVIEWED / REVIEW-STALE / REVIEW-EXPIRED
+innsigle verify --all --require-review         # publish gate: exit 6 if any claim lacks a valid review
+innsigle derive --tree site --from docs/brief.md --output brief/index.html   # build key: carry the review to the built file
+innsigle verify --derived site                 # output -> derivation -> build key -> source -> human review
+```
+
+Set `"attestation_key": {"frontmatter": "ddx.id"}` in `.innsigle/config.json` to
+key seals by a stable front-matter id so a rename keeps its seal. Pin
+`keys.human` in the same file. Design: ADR-005 and FEAT-006 under `docs/helix/`.
+
 ## Automatic colophons from agent sessions
 
 Your Claude Code transcripts already record who wrote what.

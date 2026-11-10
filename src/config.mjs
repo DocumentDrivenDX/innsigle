@@ -2,6 +2,7 @@ import { existsSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from
 import { homedir } from "node:os";
 import { basename, dirname, join, relative, resolve, sep } from "node:path";
 import { COMPOSITIONS, publishedContentUri } from "./site-pages.mjs";
+import { DOC_ID_PATTERN, docIdOf } from "./frontmatter.mjs";
 
 /**
  * Check the config keys this CLI actually reads.
@@ -40,6 +41,46 @@ export function validateConfig(config) {
   if (globs !== undefined) {
     if (!Array.isArray(globs) || globs.some((g) => typeof g !== "string")) {
       problems.push("content_globs must be an array of strings");
+    }
+  }
+
+  const ak = config?.attestation_key;
+  if (ak !== undefined) {
+    if (typeof ak !== "object" || ak === null || Array.isArray(ak)) {
+      problems.push('attestation_key must be { "frontmatter": "<dotted.path>" }');
+    } else {
+      const unknown = Object.keys(ak).filter((k) => k !== "frontmatter");
+      if (unknown.length) problems.push(`attestation_key: unknown key(s): ${unknown.join(", ")}`);
+      if (typeof ak.frontmatter !== "string" || !/^[A-Za-z0-9_.-]+$/.test(ak.frontmatter)) {
+        problems.push("attestation_key.frontmatter must be a dotted key path such as ddx.id");
+      }
+    }
+  }
+
+  const rv = config?.review;
+  if (rv !== undefined) {
+    if (typeof rv !== "object" || rv === null || Array.isArray(rv)) {
+      problems.push("review must be an object");
+    } else {
+      const known = ["reviewer_name", "reviewer_key_ids", "expiry_days", "paths"];
+      const unknown = Object.keys(rv).filter((k) => !known.includes(k));
+      if (unknown.length) problems.push(`review: unknown key(s): ${unknown.join(", ")}`);
+      if (rv.reviewer_name !== undefined && (typeof rv.reviewer_name !== "string" || !rv.reviewer_name.trim())) {
+        problems.push("review.reviewer_name must be a non-empty string");
+      }
+      if (
+        rv.reviewer_key_ids !== undefined &&
+        (!Array.isArray(rv.reviewer_key_ids) ||
+          rv.reviewer_key_ids.some((k) => !/^ed25519:[0-9a-f]{32}$/.test(k)))
+      ) {
+        problems.push("review.reviewer_key_ids must be an array of ed25519:<32 hex> ids");
+      }
+      if (rv.expiry_days !== undefined && !(Number.isInteger(rv.expiry_days) && rv.expiry_days > 0)) {
+        problems.push("review.expiry_days must be a positive integer");
+      }
+      if (rv.paths !== undefined && (!Array.isArray(rv.paths) || rv.paths.some((g) => typeof g !== "string"))) {
+        problems.push("review.paths must be an array of glob strings");
+      }
     }
   }
 
@@ -192,6 +233,13 @@ export function loadProject(startDir = process.cwd()) {
  * @param {string} contentPath
  */
 export function attestationSlug(repoRoot, contentPath, opts = {}) {
+  // Stable document id (ADR-005 D5): when configured and the file carries an
+  // id, the key follows the id, so renaming the file keeps its seal. Files
+  // without an id fall back to the path key; seal enforces presence.
+  if (opts.idKey) {
+    const id = docIdOf(resolve(contentPath), opts.idKey);
+    if (id && DOC_ID_PATTERN.test(id)) return `id-${id}`;
+  }
   // realpath both sides: an unresolved repoRoot against a resolved contentPath
   // (macOS /var -> /private/var) matches no base, silently falls through to
   // basename() below, and produces a slug missing its directory prefix — so
@@ -220,7 +268,10 @@ export function attestationSlug(repoRoot, contentPath, opts = {}) {
 
 /** Slug options from a loaded project (Helix: content_root = docs/website/content). */
 export function slugOpts(project) {
-  return { contentRoot: project?.config?.content_root };
+  return {
+    contentRoot: project?.config?.content_root,
+    idKey: project?.config?.attestation_key?.frontmatter,
+  };
 }
 
 /**

@@ -1,5 +1,58 @@
 # Changelog
 
+## [0.7.0] — 2026-11-10
+
+Human review as a first-class, signed claim, and a way to carry it through a
+build. A seal says how content was made; until now nothing said a person read
+it, so a `model-primary` page sealed by a build key verified `VALID` with no
+human involved. Design: ADR-005, FEAT-006, CONTRACT-001 v1.2.
+
+### Added
+
+- **Review claim** (`https://innsigle.dev/claim/review/v1`). Bound to the same
+  content digest as the seal, so any edit makes it stale. Signed by a
+  human-role key only; reviewer is a key id with an optional name; optional
+  `scope` (`full` or a list of claim ids) and `expires_at`. It carries no
+  colophon, so reviewing a `model-primary` document never changes its declared
+  composition (FR-4a).
+- **`innsigle review <file> | --all | --stale`** signs a review after an
+  explicit confirmation (`--yes` when not on a TTY; PROV-05). Refuses
+  `--role build`.
+- **One attestation file per document, several claims.** The authorship claim
+  keeps its place at the top level, so every earlier verifier and file keeps
+  working; human reviews live in an optional `reviews[]`, each independently
+  signed. Every seal path (`seal`, `--all`, `--stale`) now merges: a build-role
+  reseal can never drop a human review.
+- **Review states** `REVIEWED | UNREVIEWED | REVIEW-STALE | REVIEW-EXPIRED |
+  REVIEW-INVALID(reason)` in `status` and `verify --all`. The column appears
+  only with `--reviews` / `--require-review`, a `review` config object, or
+  stored reviews, so existing output is unchanged.
+- **`innsigle verify --all --require-review`** exits 6 when every seal is VALID
+  but an in-scope claim lacks a valid, unexpired human review (exit 1 if a seal
+  is broken). `--require-full-scope` rejects partial-scope reviews;
+  `review.paths` narrows the in-scope set.
+- **Derivation claim** (`.../claim/derivation/v1`) and **`innsigle derive`**:
+  the build key signs "outputs O were built from sources D", embedding each
+  source's human review verbatim, never re-signed. The build key must be
+  endorsed by the human key. Several sources (bundle) are all-of; one claim may
+  list several outputs.
+- **`innsigle verify --derived <tree>`** checks output → derivation → build key
+  (role and endorsement) → source digest → human review, with `--source-root`
+  (source drift) and `--cover <glob>` (every matching output must be derived).
+  Exit 3 output, 4 key/role, 6 review chain.
+- **Stable document ids.** `attestation_key: {"frontmatter": "ddx.id"}` keys
+  attestations by the front-matter id instead of the file path, so a rename
+  keeps its seal. Opt-in; `seal` fails on a missing, malformed or duplicate id.
+  The content digest is unchanged: SHA-256 of the exact file bytes, front
+  matter included.
+- Golden vectors for the new claims in `tests/vectors/review/`
+  (`scripts/generate-review-vectors.mjs`), JSON schemas and examples.
+
+### Compatibility
+
+Existing attestation files, commands and exit codes are unchanged. v1.0/v1.1
+verifiers ignore `reviews[]`. Exit code 6 is new.
+
 ## [0.6.1] — 2026-09-30
 
 Four bugs that only surface against a real 1Password and a real two-section

@@ -9,6 +9,8 @@ ddx:
       kind: informed_by
     - target: innsigle.prd
       kind: informed_by
+    - target: innsigle.adr.005
+      kind: informed_by
 status: draft
 activity: 02-design
 created: 2026-07-22
@@ -18,9 +20,9 @@ created: 2026-07-22
 
 **Contract ID:** CONTRACT-001  
 **Type:** schema + CLI  
-**Version:** v1.1  
+**Version:** v1.2  
 **Status:** draft (normative for implementers; bump version on breaking field changes)  
-**Related:** ADR-001; ADR-003; claim-system.md; PRD FR-1–4a, FR-8–12, FR-18–19
+**Related:** ADR-001; ADR-003; ADR-005; claim-system.md; PRD FR-1–4a, FR-8–12, FR-18–25
 
 ## Purpose
 
@@ -146,6 +148,102 @@ Let `h = SHA-256(canonical)` (raw 32 bytes).
 Unsigned claims MAY be distributed as payload-only JSON for display; they MUST
 NOT be labeled as signed in UI or CLI success paths.
 
+### Attestation file with reviews (v1.2, ADR-005)
+
+A per-document attestation file MAY carry additional independently signed
+attestations beside the authorship claim:
+
+| Element | Type | Required | Rules |
+|---------|------|----------|-------|
+| `payload`, `payload_encoding`, `signatures` | | yes | The authorship (colophon) attestation, exactly as above. Earlier verifiers read only these |
+| `reviews` | array | no | Zero or more complete review attestations (envelope = `payload`, `payload_encoding`, `signatures`). Each is signed by its own key |
+
+Producers that rewrite an attestation file (any `seal` path) MUST carry
+`reviews` over unchanged. The authorship signature MUST NOT cover `reviews`.
+Verifiers that do not know `reviews` ignore it.
+
+### Review claim (v1.2)
+
+**Type** MUST be `https://innsigle.dev/claim/review/v1`. Schema:
+`schemas/review-claim.schema.json`; example: `examples/review-claim.json`.
+
+| Element | Type | Required | Rules |
+|---------|------|----------|-------|
+| `innsigle` | string | yes | `"1"` |
+| `type` | string | yes | Review type URI |
+| `issued_at` | string | yes | RFC 3339 UTC; the review date |
+| `issuer` | object | yes | As colophon claims; `key_id` is the reviewer's signing key |
+| `subjects` | array | yes | Exactly one subject; `digest` is the SHA-256 of the same bytes the colophon seal covers; `uri` optional |
+| `review` | object | yes | See below |
+| `colophon` | — | MUST NOT | A review claim MUST NOT carry a colophon (FR-4a) |
+
+`review` object:
+
+| Element | Type | Required | Rules |
+|---------|------|----------|-------|
+| `schema_version` | string | yes | `"1"` |
+| `reviewer` | object | yes | `{key_id, name?}`; `key_id` MUST equal `issuer.key_id`; `name` optional non-empty — deployments MAY publish key ids only |
+| `scope` | `"full"` or array | no | Omitted means `full`; otherwise a non-empty array of unique, non-empty opaque claim ids |
+| `expires_at` | string | no | RFC 3339 UTC, MUST be after `issued_at` |
+| `composition`, `human_input` | — | MUST NOT | A review never states or alters composition |
+
+**Validity.** A review is `REVIEWED` for content with digest `X` at time `t`
+iff: schema valid; `signatures[0].key_id == issuer.key_id`; the key exists, is
+not revoked, and the signature verifies over JCS(payload) (ADR-001); the key is
+**human-role** (ADR-005 D2); `subjects[0].digest.value == X`; and `expires_at`
+is absent or `> t`. Otherwise the state is `REVIEW-INVALID(reason)` (reasons:
+`schema`, `key_mismatch`, `unknown_key`, `revoked_key`, `bad_signature`,
+`wrong_role`), `REVIEW-STALE` (digest differs), or `REVIEW-EXPIRED`. Authenticity
+is decided before freshness. A key that is build-role by any rule MUST NOT be
+accepted as a reviewer.
+
+Roles: **human** = `config.keys.human` (plus `review.reviewer_key_ids`) when
+pinned, otherwise `keys.json` `role: "human"`, the signer of a valid
+`build-signing` endorsement, or the sole active key of a house with no build
+key. **build** = `config.keys.build`, `keys.json` `role: "build"`, or the
+subject of a valid human-signed `build-signing` endorsement.
+
+### Derivation claim (v1.2)
+
+**Type** MUST be `https://innsigle.dev/claim/derivation/v1`. Schema:
+`schemas/derivation-claim.schema.json`; example: `examples/derivation-claim.json`.
+Stored in a built tree at
+`<tree>/.well-known/innsigle/derivations/<slug>.derivation.json`.
+
+| Element | Type | Required | Rules |
+|---------|------|----------|-------|
+| `innsigle`, `type`, `issued_at`, `issuer` | | yes | As above; `issuer.key_id` MUST be a build-role key endorsed (`build-signing`) by a human key |
+| `subjects` | array | yes | ≥1 output: `{path, digest{alg,value}, uri?}`; `path` tree-relative posix, no leading `/`, no `..` |
+| `derivation.schema_version` | string | yes | `"1"` |
+| `derivation.transform` | object | no | `{name, version?}` |
+| `derivation.inputs` | array | yes | ≥1 source: `{path, id?, digest, reviews[]}`; `reviews` holds human review attestations **verbatim** (never re-signed); MAY be empty (which verifies as `review_missing`) |
+| `colophon` | — | MUST NOT | A derivation transfers review, not authorship |
+
+**Verification** (per output, in this order; each failure names its reason):
+output digest equals `subjects[].digest` (`output_missing`, `output_mismatch`);
+signature valid and key active (`bad_signature`, `unknown_key`, `revoked_key`);
+signer is build-role (`wrong_role`) and endorsed by a human key
+(`build_key_unendorsed`); every input has at least one embedded review that is
+`REVIEWED` for `inputs[].digest` at verification time (`review_missing`,
+`review_stale`, `review_expired`, `review_invalid(…)`). With a source tree,
+each `inputs[].digest` MUST equal the current source digest (`source_changed`).
+**Bundles:** all inputs MUST pass. **Fan-out:** a claim with N subjects is
+equivalent to N claims; a verifier indexes by output path and digest.
+
+### Content hashing of markdown with front matter
+
+Unchanged: SHA-256 of the exact file bytes. Front matter is part of the content;
+no normalization. A configured document id (below) is read from front matter
+without affecting the digest.
+
+### Attestation key (v1.2)
+
+Default attestation filename key is the project-relative path slug. With
+`attestation_key: {"frontmatter": "<dotted.path>"}` in `.innsigle/config.json`
+the key is `id-<id>` where `<id>` is the front-matter value, which MUST match
+`^[a-z0-9][a-z0-9._-]{0,127}$` and be unique among `content_globs`; `seal` MUST
+fail (exit 5) on a missing, malformed or duplicate id.
+
 ### Issuer document (at `key_url`)
 
 Canonical document for key discovery and optional web-of-trust edges (**ADR-003**).
@@ -246,6 +344,11 @@ Binary name: `innsigle` (package may ship as such).
 | `innsigle seal` | `<content>` `[--kind]` `[--colo]` `[--uri]` `[--out]` `[--role human\|build]` | MUST claim+sign using `.innsigle/config.json` issuer fields and 1Password (or `--key`); MUST write attestation under `.innsigle/public/claims/` by default; MUST NOT require repeating issuer flags. When `keys.human` / `keys.build` are configured (ADR-004), MUST sign `human-authored`/`mixed` with the human key and `model-primary` with the build key unless `--role` overrides |
 | `innsigle seal --all` | `[--role human\|build]` `[--force]` | MUST walk `content_globs`; MUST pick composition from frontmatter when `kind_from_frontmatter` is set — with `true`, `generated: true` → `model-primary` else `default_composition` (default `mixed`); with `{"field": "<name>"}`, that frontmatter key MUST hold one of `model-primary`, `human-authored`, `mixed`, and a value outside that set MUST fail rather than coerce; MUST skip up-to-date claims signed by the same `key_id`; MUST skip (not fail) files whose role key is absent unless `--role` was required; MUST remove ORPHAN claims |
 | `innsigle endorse` | `--subject-key-id` `[--subject-key-url]` `[--purpose]` `[--level]` | MUST sign a key-endorsement (ADR-003 D4) with the human key; MUST index it on the issuer document `endorsements[]`; MUST NOT let the build key endorse the human key |
+| `innsigle review` | `<file>` \| `--all` \| `--stale` `[--scope full\|id,id]` `[--expires Nd\|YYYY-MM-DD\|RFC3339]` `[--reviewer-name N \| --anonymous]` `[--yes]` `[--force]` | MUST sign with the human key only and MUST refuse `--role build`; MUST require a current authorship seal for the file; MUST require confirmation (TTY prompt or `--yes`; PROV-05); MUST merge into `reviews[]` (superseding only the same reviewer's older entries); MUST self-verify before writing; `--all` reviews in-scope files not currently REVIEWED, `--stale` only REVIEW-STALE/EXPIRED |
+| `innsigle derive` | `--tree <dir>` `--from <src>`… `--output <path>`… `[--transform name@ver]` `[--require-review]` `[--out file]` | MUST sign with an endorsed build key; MUST embed each source's currently valid reviews verbatim; with `--require-review` MUST refuse (exit 6) if any source has none; writes `<tree>/.well-known/innsigle/derivations/` |
+| `innsigle verify` | `--derived <tree>` `[--keys f]` `[--source-root dir]` `[--cover glob]`… | MUST verify every derivation claim in the tree per the derivation rules and always requires a valid human review for every input; exit codes below |
+| `innsigle verify --all` | `[--require-review]` `[--require-full-scope]` | As before; with `--require-review` exits 6 when all seals are VALID but an in-scope claim lacks a valid, unexpired human review; exit 1 if any seal is not VALID |
+| `innsigle status` | `[--reviews]` | As before; adds REVIEWED / UNREVIEWED / REVIEW-STALE / REVIEW-EXPIRED / REVIEW-INVALID(reason) per claim when `--reviews`, `--require-review`, a `review` config object, or any stored review is present |
 | `innsigle publish` | `[site-dir]` | MUST copy `.innsigle/public/` to `<site-dir>/.well-known/innsigle/` |
 | `innsigle keygen` | `--out-dir <dir>` | MUST write private key (permissions 0600 when FS supports) and public material; MUST NOT print private key |
 | `innsigle keys template` | `--issuer-id` `--issuer-name` `--public-key` `--key-id` | MUST emit issuer document skeleton (`innsigle_issuer` preferred; includes `endorsements: []`) |
@@ -268,6 +371,7 @@ Binary name: `innsigle` (package may ship as such).
 | 3 | Content digest mismatch |
 | 4 | Unknown or revoked key |
 | 5 | Invalid schema invalid |
+| 6 | (v1.2) Review chain failure: `verify --all --require-review` with an otherwise VALID tree, or `verify --derived` review_missing / review_stale / review_expired / review_invalid / source_changed. For `verify --derived`, 3 also covers output_missing/mismatch and no derivation, and 4 also covers wrong-role and unendorsed build keys |
 
 #### verify stdout (human)
 
@@ -287,6 +391,10 @@ with its method tag (it is a maker declaration, not a detection score).
   signed; producers SHOULD avoid unknown fields in v1).
 - Deprecation: announce in release notes; keep verify for prior `innsigle: "1"`
   for at least one minor series after a bump.
+- v1.2 adds the review and derivation claim types, the optional `reviews[]`
+  array on attestation files, `attestation_key`, config `review`, and exit code
+  6. Additive: existing attestation files, commands and exit codes are
+  unchanged; v1.0/v1.1 verifiers ignore `reviews[]`.
 - v1.1 adds the optional `colophon.human_input` object. Additive: colophon
   `schema_version` stays `"1"`; v1 verifiers ignore it under the unknown-field
   rule and existing attestations remain valid.
@@ -309,6 +417,9 @@ See:
 - `docs/helix/02-design/examples/keys.json` (legacy keys-only)
 - `docs/helix/02-design/examples/issuer-document.json` (ADR-003 issuer + endorsements index)
 - `docs/helix/02-design/examples/key-endorsement-claim.json`
+- `docs/helix/02-design/examples/review-claim.json`,
+  `document-with-review.attestation.json`, `derivation-claim.json` (golden
+  copies in `tests/vectors/review/`)
 
 ```text
 innsigle keygen --out-dir ~/.config/innsigle/azgaard

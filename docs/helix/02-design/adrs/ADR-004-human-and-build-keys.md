@@ -82,3 +82,10 @@ seal, without putting the human key in GitHub.
   (human pin → build via endorsement) is extra chrome, not a new VALID
   meaning.
 - Signing HTML with the human key remains a non-goal.
+
+## Update (ADR-005)
+
+D4's "derived pages quote the source seal" is generalized: a build-signed
+**derivation claim** now carries the human **review** of the source across the
+build, and the human-endorses-build relationship (D2) is what a verifier checks
+before trusting it. See ADR-005.
